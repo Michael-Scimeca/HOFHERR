@@ -1,0 +1,65 @@
+.banner {
+    position: relative;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--gold) 50%, var(--accent) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 4s linear infinite;
+    padding: 22px 0;
+    overflow: hidden;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(13, 11, 9, 0.65);
+    pointer-events: none;
+}
+
+.inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.left {}
+
+.label {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2px;
+}
+
+.text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.right {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+    .inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

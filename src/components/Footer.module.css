@@ -1,0 +1,271 @@
+.footer {
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+}
+
+.inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 64px 24px 64px;
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) 1fr;
+    gap: 80px;
+    align-items: start;
+}
+
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.logo span {
+    font-size: 2rem;
+}
+
+.logoMain {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+.logoSub {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-top: 2px;
+}
+
+.tagline {
+    font-size: 13px;
+    color: var(--text-3);
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.socials {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.social {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border: 1px solid var(--border-soft);
+    padding: 5px 12px;
+    border-radius: 20px;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.social:hover {
+    color: var(--accent-2);
+    border-color: var(--border);
+}
+
+.cols {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 56px;
+    justify-content: end;
+    align-items: start;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.colTitle {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 8px;
+}
+
+.col a {
+    font-size: 14px;
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+.col a:hover {
+    color: var(--text);
+}
+
+.bottom {
+    width: 100%;
+    border-top: 1px solid var(--border-soft);
+}
+
+.bottomInner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 24px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.contact {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.contact span {
+    font-size: 12.5px;
+    color: var(--text-3);
+}
+
+.contact a {
+    color: var(--text-2);
+    transition: color 0.2s;
+}
+
+.contact a:hover {
+    color: var(--accent-2);
+}
+
+.locations {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.location {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.locationTitle {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.5px;
+}
+
+.locationAddr {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-bottom: 4px;
+}
+
+.hours {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.hours span {
+    font-size: 11px;
+    color: var(--text-3);
+}
+
+.hours strong {
+    color: var(--text-2);
+}
+
+.copy {
+    background: var(--bg);
+    padding: 16px 24px;
+    text-align: center;
+}
+
+.copy p {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.legalLinks {
+    margin-top: 4px;
+}
+
+.legalLinks a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+.legalLinks a:hover {
+    color: var(--text-2);
+}
+
+@media (max-width: 1024px) {
+    .inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .cols {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .cols {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .bottomInner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .locations {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ─── Map section ─── */
+.mapSection {
+    border-bottom: 1px solid var(--border);
+}
+
+.mapWrap {
+    position: relative;
+    overflow: hidden;
+}
+
+.mapWrap iframe {
+    filter: grayscale(20%);
+    display: block;
+}
+
+.directionsBtn {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--red, #800020);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 22px;
+    border-radius: 999px;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    transition: background 0.2s, transform 0.2s;
+    z-index: 10;
+}
+
+.directionsBtn:hover {
+    background: #b53d2e;
+    transform: translateX(-50%) scale(1.03);
+}

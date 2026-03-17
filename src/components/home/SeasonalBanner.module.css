@@ -1,0 +1,116 @@
+.banner {
+    position: relative;
+    background: linear-gradient(135deg, #0e1a0c 0%, #1a2e15 50%, #0e1a0c 100%);
+    border-top: 1px solid rgba(74, 122, 66, 0.3);
+    border-bottom: 1px solid rgba(74, 122, 66, 0.3);
+    overflow: hidden;
+    padding: 64px 0;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(74, 122, 66, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+.left {
+    max-width: 560px;
+}
+
+.season {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #7ab862;
+    margin-bottom: 12px;
+}
+
+.title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.title em {
+    font-style: italic;
+    color: #a8d890;
+}
+
+.sub {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.7;
+    margin-bottom: 28px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.right {
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.countdown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.countUnit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(74, 122, 66, 0.3);
+    border-radius: 10px;
+    padding: 16px 20px;
+}
+
+.countNum {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: #a8d890;
+    line-height: 1;
+}
+
+.countLabel {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 4px;
+}
+
+.countSep {
+    font-size: 2rem;
+    color: rgba(74, 122, 66, 0.5);
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.deadline {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 600;
+    letter-spacing: 1px;
+}

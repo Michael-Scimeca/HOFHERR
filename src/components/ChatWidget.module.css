@@ -1,0 +1,650 @@
+/* ─── Speech bubble ─── */
+.speechBubble {
+    position: fixed;
+    bottom: 84px;
+    right: 16px;
+    background: #fff;
+    color: #1a1a1a;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 11px 20px;
+    border-radius: 22px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.13);
+    cursor: pointer;
+    white-space: nowrap;
+    z-index: 1998;
+    animation: bubblePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    user-select: none;
+    transition: all 0.35s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0.8;
+}
+
+.speechBubble:hover {
+    opacity: 1;
+}
+
+.bubbleClose {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: #999;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.bubbleClose:hover {
+    color: #D14836;
+}
+
+.speechBubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: 22px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #fff;
+}
+
+@keyframes bubblePop {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ─── Floating Action Button ─── */
+.fab {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 2000;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #800020;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+    overflow: hidden;
+    padding: 0;
+}
+
+.fabAvatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 50%;
+}
+
+.avatarImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    flex-shrink: 0;
+}
+
+.fab:hover {
+    transform: scale(1.08);
+}
+
+.fabOpen {
+    background: #333;
+}
+
+/* ─── Chat Panel ─── */
+.panel {
+    position: fixed;
+    bottom: 96px;
+    right: 20px;
+    z-index: 1999;
+    width: max(332px, min(360px, calc(100vw - 32px)));
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transform: scale(0.92) translateY(16px);
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: bottom right;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
+}
+
+.panelOpen {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ─── Header layout ─── */
+.header {
+    background: #800020;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ─── Font size toggle ─── */
+.fontToggle {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.fontBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 700;
+    padding: 2px 4px;
+    line-height: 1;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.fontBtn:hover {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.fontBtnSm {
+    font-size: 12px;
+    padding-bottom: 3px;
+}
+
+.fontBtnLg {
+    font-size: 18px;
+}
+
+.fontBtnActive {
+    color: #fff;
+    border-bottom-color: #fff;
+}
+
+/* ─── Large text mode (17px) ─── */
+.textLarge .hoursGrid {
+    font-size: 13px;
+}
+
+.textLarge .hoursTitle {
+    font-size: 12px;
+}
+
+.textLarge .note {
+    font-size: 13px;
+}
+
+.textLarge .input {
+    font-size: 17px;
+}
+
+.textLarge .textarea {
+    font-size: 17px;
+}
+
+.textLarge .sendBtn {
+    font-size: 17px;
+}
+
+.textLarge .errorMsg {
+    font-size: 17px;
+}
+
+.textLarge .successTitle {
+    font-size: 17px;
+}
+
+.textLarge .successSub {
+    font-size: 17px;
+}
+
+.headerInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.headerName {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.headerSub {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.75);
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.onlineBadge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #7dff7d;
+    letter-spacing: 0.3px;
+}
+
+.offlineBadge {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(245, 158, 11, 0.95);
+    letter-spacing: 0.3px;
+}
+
+.replyTime {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+@keyframes breathe {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+/* ─── Body ─── */
+.body {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 520px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #800020 #f0f0f0;
+}
+
+.body::-webkit-scrollbar {
+    width: 5px;
+}
+
+.body::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+
+.body::-webkit-scrollbar-thumb {
+    background: #800020;
+    border-radius: 10px;
+}
+
+.body::-webkit-scrollbar-thumb:hover {
+    background: #b53d2e;
+}
+
+/* ─── Social proof ─── */
+.socialProof {
+    background: #fff8f0;
+    border: 1px solid #fde8d0;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 15px;
+    color: #333;
+    text-align: center;
+}
+
+/* ─── Quick replies ─── */
+.quickSection {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sectionLabel {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #aaa;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.chip {
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.chip:hover {
+    background: #fdecea;
+    border-color: #D14836;
+    color: #D14836;
+}
+
+.chipActive {
+    background: #fdecea;
+    border-color: #D14836;
+    color: #D14836;
+    font-weight: 600;
+}
+
+.cateringNote {
+    font-size: 11px;
+    color: #999;
+    margin: 0;
+    font-style: italic;
+}
+
+/* ─── Featured cuts ─── */
+.featuredBlock {
+    background: #fafafa;
+    border: 1px solid #ececec;
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+.featuredTitle {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #999;
+    margin-bottom: 6px;
+}
+
+.cutsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.cutTag {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: #444;
+}
+
+/* ─── Pickup note ─── */
+.pickupNote {
+    font-size: 12px;
+    color: #666;
+    background: #f0f8ff;
+    border: 1px solid #d0e8f8;
+    border-radius: 8px;
+    padding: 7px 10px;
+}
+
+/* ─── Click-to-call ─── */
+.callLink {
+    display: block;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #D14836;
+    text-decoration: none;
+    padding: 8px;
+    border: 1px dashed #D14836;
+    border-radius: 10px;
+    transition: background 0.15s;
+}
+
+.callLink:hover {
+    background: #fdecea;
+}
+
+.callLinkSuccess {
+    display: block;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #D14836;
+    text-decoration: none;
+    padding: 6px;
+    margin-top: 4px;
+}
+
+/* incoming bubble (Sean's) */
+.bubbleIn {
+    background: #f0f0f0;
+    border-radius: 16px 16px 16px 4px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #222;
+    line-height: 1.55;
+    max-width: 90%;
+}
+
+/* ─── Response hours ─── */
+.hoursBlock {
+    background: #fafafa;
+    border: 1px solid #ececec;
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+.hoursTitle {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 5px;
+}
+
+.locationLabel {
+    font-size: 12px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1px;
+}
+
+.hoursAddr {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.hoursGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 10px;
+    font-size: 12px;
+    color: #444;
+}
+
+.closed {
+    color: #c62828;
+    font-weight: 600;
+}
+
+.note {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.55;
+    margin: 0;
+    font-style: italic;
+}
+
+/* ─── Fields ─── */
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input {
+    width: 100%;
+    font-size: 15px;
+    padding: 9px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    outline: none;
+    background: #fafafa;
+    color: #222;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.input:focus {
+    border-color: #D14836;
+    background: #fff;
+}
+
+.textarea {
+    width: 100%;
+    font-size: 15px;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    outline: none;
+    background: #fafafa;
+    color: #222;
+    resize: none;
+    line-height: 1.4;
+    transition: border-color 0.2s;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.textarea:focus {
+    border-color: #D14836;
+    background: #fff;
+}
+
+/* ─── Send button ─── */
+.sendBtn {
+    background: #D14836;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 11px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    width: 100%;
+}
+
+.sendBtn:hover:not(:disabled) {
+    background: #b53d2e;
+    transform: translateY(-1px);
+}
+
+.sendBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ─── Error ─── */
+.errorMsg {
+    font-size: 12px;
+    color: #c62828;
+    text-align: center;
+}
+
+/* ─── Success ─── */
+.success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 24px 0;
+    text-align: center;
+}
+
+.successIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 22px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.successTitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: #222;
+}
+
+.successSub {
+    font-size: 12.5px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.resetBtn {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #D14836;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 480px) {
+    .panel {
+        width: calc(100vw - 32px);
+        right: 16px;
+        bottom: 88px;
+    }
+
+    .fab {
+        right: 16px;
+        bottom: 20px;
+    }
+}

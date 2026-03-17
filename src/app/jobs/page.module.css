@@ -1,0 +1,98 @@
+.main {
+    padding-top: var(--nav-height);
+    background: var(--light-creme);
+    min-height: 100vh;
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, var(--light-creme) 0%, #EFEBE0 100%);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.positionsSection {
+    background: var(--bg-white);
+}
+
+.sectionTitle {
+    font-family: var(--font-primary);
+    font-size: 2.5rem;
+    color: var(--text-base);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.jobList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.jobCard {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.jobCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.jobInfo {
+    flex: 1;
+}
+
+.jobTitle {
+    font-family: var(--font-primary);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-base);
+}
+
+.jobDesc {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.generalAppBox {
+    background: var(--light-creme);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+    border: 1px dashed var(--border-color);
+}
+
+.generalAppBox h3 {
+    font-family: var(--font-primary);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-base);
+}
+
+.generalAppBox p {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .jobCard {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    .jobCard .btn {
+        width: 100%;
+        text-align: center;
+    }
+}

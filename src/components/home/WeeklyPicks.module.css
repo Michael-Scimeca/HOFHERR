@@ -1,0 +1,127 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+}
+
+.title em {
+    font-style: italic;
+    color: var(--gold);
+}
+
+.sub {
+    font-size: 14px;
+    color: var(--text-3);
+    max-width: 420px;
+    line-height: 1.7;
+    margin-top: 12px;
+}
+
+.meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.week {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+.cardTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 20px 12px;
+}
+
+.emoji {
+    font-size: 2.2rem;
+}
+
+.cardBody {
+    padding: 0 20px 16px;
+    flex: 1;
+}
+
+.cutLabel {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 6px;
+}
+
+.cutName {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.25;
+}
+
+.desc {
+    font-size: 12.5px;
+    color: var(--text-3);
+    line-height: 1.6;
+}
+
+.cardFoot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border-soft);
+    margin-top: auto;
+}
+
+.price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+@media (max-width: 1200px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 520px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

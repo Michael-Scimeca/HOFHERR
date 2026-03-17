@@ -1,0 +1,429 @@
+/* ═══════════════════════════════════════════════════════
+   BBQ Catering Page — Polished Layout
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Hero ──────────────────────────────────────────────── */
+.hero {
+    background: #1a1210;
+    background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(128, 0, 32, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 30%, rgba(128, 0, 32, 0.08) 0%, transparent 50%);
+    padding: 110px 24px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.heroInner {
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vw, 4.2rem);
+    color: #fff;
+    margin: 12px 0 20px;
+    line-height: 1.05;
+}
+
+.headline em {
+    font-style: italic;
+    color: var(--red);
+}
+
+.sub {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.8;
+    margin: 0 auto 32px;
+    max-width: 520px;
+}
+
+.heroBadges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+}
+
+/* ── Menu Section ─────────────────────────────────────── */
+.menuSection {
+    background: var(--bg);
+    padding: 0;
+}
+
+.menuSectionHeader {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.menuGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--bg-2);
+}
+
+.menuCategory {
+    padding: 32px 28px;
+    position: relative;
+    background: var(--bg);
+}
+
+.menuCategory:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 16%;
+    bottom: 16%;
+    width: 1px;
+    background: var(--border);
+}
+
+.catTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin: 0 0 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--red);
+    display: inline-block;
+}
+
+.menuList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menuList li {
+    font-size: 14px;
+    color: var(--fg-muted);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+}
+
+.menuList li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 6px;
+    height: 2px;
+    background: var(--red);
+    border-radius: 1px;
+}
+
+/* ── Pricing Section ──────────────────────────────────── */
+.pricingSection {
+    background: var(--bg-2);
+    padding: 56px 0;
+    position: relative;
+}
+
+
+
+.pricingHeader {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.pricingTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    color: var(--fg);
+    margin: 8px 0 8px;
+}
+
+.pricingNote {
+    font-size: 13px;
+    color: var(--fg-muted);
+    margin: 0;
+}
+
+.pricingCols {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.pricingCard {
+    background: var(--bg);
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
+}
+
+.pricingCardFeatured {
+    background: #1a1210;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pricingCardBadge {
+    position: absolute;
+    top: -11px;
+    left: 24px;
+    background: var(--red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+}
+
+.pricingCardTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--fg);
+}
+
+.pricingCardFeatured .pricingCardTitle {
+    color: #fff;
+}
+
+.pricingCardSub {
+    font-size: 12px;
+    color: var(--fg-muted);
+    line-height: 1.6;
+}
+
+.pricingCardFeatured .pricingCardSub {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.pricingCardDesc {
+    font-size: 14px;
+    color: var(--fg-muted);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.priceRows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.priceRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 10px 14px;
+}
+
+.priceRow span {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.priceRow strong {
+    font-size: 13.5px;
+    color: #fff;
+    white-space: nowrap;
+    font-weight: 700;
+}
+
+/* ── Beyond BBQ Services ──────────────────────────────── */
+.servicesSection {
+    background: var(--bg);
+    padding: 56px 0;
+}
+
+.servicesGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 32px;
+    justify-content: center;
+}
+
+.serviceCard {
+    flex: 0 1 calc(33.333% - 11px);
+    min-width: 260px;
+    background: var(--bg-2);
+    border-radius: 14px;
+    padding: 28px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+}
+
+.serviceCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--red), transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.serviceCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    border-color: var(--border);
+}
+
+.serviceCard:hover::before {
+    opacity: 1;
+}
+
+.serviceEmoji {
+    font-size: 1.8rem;
+    margin-bottom: 2px;
+}
+
+.serviceCard h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--fg);
+    margin: 0;
+}
+
+.serviceCard p {
+    font-size: 13.5px;
+    color: var(--fg-muted);
+    line-height: 1.65;
+    margin: 0;
+    flex: 1;
+}
+
+/* ── CTA Section ──────────────────────────────────────── */
+.cta {
+    background: #1a1210;
+    background-image:
+        radial-gradient(ellipse at 50% 0%, rgba(128, 0, 32, 0.12) 0%, transparent 60%);
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.ctaTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    color: #fff;
+    margin: 0 0 12px;
+}
+
+.ctaSub {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto 24px;
+}
+
+.ctaBtns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.ctaNote {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.25);
+    margin: 0;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 900px) {
+    .menuGrid {
+        grid-template-columns: 1fr;
+        border-radius: 12px;
+    }
+
+    .menuCategory:not(:last-child)::after {
+        right: 15%;
+        left: 15%;
+        bottom: 0;
+        top: auto;
+        width: auto;
+        height: 1px;
+    }
+
+    .pricingCols {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero {
+        padding: 90px 16px 60px;
+    }
+
+    .menuSection {
+        padding: 40px 0 36px;
+    }
+
+    .pricingSection {
+        padding: 44px 0;
+    }
+
+    .servicesSection {
+        padding: 44px 0;
+    }
+
+    .servicesGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .menuCategory {
+        padding: 24px 20px;
+    }
+
+    .cta {
+        padding: 48px 16px;
+    }
+}

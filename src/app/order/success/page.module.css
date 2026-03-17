@@ -1,0 +1,227 @@
+.page {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.splitLayout {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.leftPane {
+    flex: 1;
+    width: 50%;
+    background: #fdfcf0; /* Warm white/beige brand background */
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
+
+.contentWrapper {
+    max-width: 520px;
+    width: 100%;
+}
+
+.rightPane {
+    flex: 1;
+    width: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+.videoBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 2;
+}
+
+.state {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon {
+    font-size: 40px;
+    line-height: 1;
+    margin-bottom: -4px;
+}
+
+.successImgWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: -4px;
+}
+
+.successImg {
+    width: auto;
+    height: 90px;
+    object-fit: contain;
+}
+
+
+.state h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.1rem;
+    color: #1a1a1a;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.sub {
+    font-size: 15px;
+    color: #4b5563;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.summarySection {
+    width: 100%;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 0;
+    text-align: left;
+}
+
+.summaryTitle {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9ca3af;
+    font-weight: 800;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.summaryList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.summaryItem {
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    color: #1f2937;
+}
+
+.summaryItem span:first-child {
+    font-weight: 600;
+}
+
+.infoBox {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.infoCard {
+    background: transparent;
+    padding: 4px 0;
+    text-align: left;
+}
+
+.infoLabel {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #6b7280;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.infoValue {
+    font-size: 13px;
+    color: #111827;
+    font-weight: 600;
+    line-height: 1.4;
+    display: block;
+}
+
+a.infoValue {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.15s ease;
+}
+
+a.infoValue:hover {
+    color: #8b0000;
+}
+
+.note {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+    font-style: italic;
+}
+
+.btn {
+    display: inline-block;
+    background: #8b0000;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
+}
+
+.btn:hover {
+    background: #a00000;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 0, 0, 0.3);
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+    .state {
+        padding: 32px 24px;
+    }
+    .state h1 {
+        font-size: 2.2rem;
+    }
+    .infoBox {
+        grid-template-columns: 1fr;
+    }
+}

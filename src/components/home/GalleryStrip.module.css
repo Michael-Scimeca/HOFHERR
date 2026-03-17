@@ -1,0 +1,113 @@
+.section {
+    padding: 80px 0;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.title {
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+    font-weight: 800;
+}
+
+.title em {
+    font-style: italic;
+    color: var(--gold);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 240px 240px;
+    gap: 10px;
+}
+
+.tile {
+    border-radius: var(--radius);
+    border: 1px solid var(--border-soft);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    position: relative;
+}
+
+.tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), transparent);
+}
+
+.tile:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border);
+    z-index: 1;
+}
+
+.tileWide {
+    grid-column: 1;
+    grid-row: 1 / 3;
+}
+
+.tileInner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.tileEmoji {
+    font-size: 3rem;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+
+.tileLabel {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-2);
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(3, 180px);
+    }
+
+    .tileWide {
+        grid-column: 1 / 3;
+        grid-row: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(5, 160px);
+    }
+
+    .tileWide {
+        grid-column: 1;
+        grid-row: 1;
+    }
+}

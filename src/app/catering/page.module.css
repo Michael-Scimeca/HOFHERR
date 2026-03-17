@@ -1,0 +1,336 @@
+/* ── Hero ── */
+.hero {
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 24px 48px;
+    text-align: center;
+}
+
+.heroInner {
+    max-width: 640px;
+}
+
+.headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 5vw, 3.4rem);
+    color: var(--fg);
+    margin: 8px 0 16px;
+    line-height: 1.1;
+}
+
+.headline em {
+    font-style: italic;
+    color: var(--red);
+}
+
+.sub {
+    font-size: 15px;
+    color: var(--fg-muted);
+    line-height: 1.75;
+    max-width: 520px;
+    margin: 0 auto 24px;
+}
+
+.heroBtns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ── Services ── */
+.servicesSection {
+    padding: 56px 0;
+}
+
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.sectionTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    color: var(--fg);
+    margin: 0 0 8px;
+}
+
+.sectionSub {
+    font-size: 15px;
+    color: var(--fg-muted);
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+.cardEmoji {
+    font-size: 2rem;
+}
+
+.cardTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--fg);
+    margin: 0;
+}
+
+.cardDesc {
+    font-size: 13.5px;
+    color: var(--fg-muted);
+    line-height: 1.65;
+    margin: 0;
+    flex: 1;
+}
+
+.cardDetail {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-muted);
+    letter-spacing: 0.03em;
+}
+
+.cardLink {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red);
+    text-decoration: none;
+    margin-top: auto;
+}
+
+.cardLink:hover {
+    text-decoration: underline;
+}
+
+/* ── How It Works ── */
+.processSection {
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 0;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+
+.step {
+    text-align: center;
+    padding: 24px;
+}
+
+.stepNum {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--red);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.step h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--fg);
+    margin: 0 0 8px;
+}
+
+.step p {
+    font-size: 14px;
+    color: var(--fg-muted);
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* ── Pricing ── */
+.pricingSection {
+    padding: 56px 0;
+}
+
+.pricingGrid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.pricingCard {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pricingFeatured {
+    background: #1a1210;
+    border-color: rgba(255, 255, 255, 0.08);
+    position: relative;
+}
+
+.pricingBadge {
+    position: absolute;
+    top: -11px;
+    left: 24px;
+    background: var(--red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+}
+
+.pricingTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--fg);
+    margin: 0;
+}
+
+.pricingFeatured .pricingTitle {
+    color: #fff;
+}
+
+.pricingNote {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-muted);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.pricingFeatured .pricingNote {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.pricingIncludes {
+    font-size: 13px;
+    color: var(--fg-muted);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.pricingFeatured .pricingIncludes {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.priceRows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.priceRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--bg);
+}
+
+.pricingFeatured .priceRow {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.priceRow span {
+    font-size: 13px;
+    color: var(--fg-muted);
+}
+
+.pricingFeatured .priceRow span {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.priceRow strong {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--fg);
+    white-space: nowrap;
+}
+
+.pricingFeatured .priceRow strong {
+    color: #fff;
+}
+
+/* ── CTA ── */
+.cta {
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.ctaTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    color: var(--fg);
+    margin: 0 0 8px;
+}
+
+.ctaSub {
+    font-size: 15px;
+    color: var(--fg-muted);
+    max-width: 480px;
+    margin: 0 auto 24px;
+}
+
+.ctaBtns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .pricingGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    .steps {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

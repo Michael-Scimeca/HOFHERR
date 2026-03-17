@@ -1,0 +1,179 @@
+.section {
+    background: var(--bg);
+    padding: 96px 0;
+}
+
+.inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+}
+
+/* ── Left Side ── */
+.left {
+    max-width: 480px;
+}
+
+.title {
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    color: var(--text);
+    margin-bottom: 24px;
+}
+
+.title em {
+    font-style: italic;
+    color: var(--red);
+    font-weight: 400;
+}
+
+.sub {
+    font-size: 1.1rem;
+    color: var(--text-2);
+    line-height: 1.7;
+    margin-bottom: 32px;
+}
+
+.perks {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.perk {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.05rem;
+    color: var(--text-2);
+    font-weight: 500;
+}
+
+.check {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.contactBoxes {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.contactBox {
+    background: #EAE6D1;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.2s;
+}
+
+.contactBox:hover {
+    transform: translateY(-2px);
+}
+
+.contactIcon {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+}
+
+.contactInfo h4 {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.contactValue {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-2);
+}
+
+/* ── Right Side ── */
+.formBox {
+    background: #EEE9D3;
+    border-radius: 24px;
+    padding: 48px;
+    box-shadow: var(--shadow-sm);
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.formGroupFull {
+    grid-column: 1 / -1;
+}
+
+.label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.input, .select, .textarea {
+    background: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-size: 1rem;
+    color: var(--text);
+    width: 100%;
+}
+
+.textarea {
+    resize: none;
+    min-height: 120px;
+}
+
+.submit {
+    grid-column: 1 / -1;
+    margin-top: 12px;
+    width: 100%;
+    font-size: 14px;
+    padding: 18px;
+}
+
+.note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 20px;
+    grid-column: 1 / -1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 992px) {
+    .inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+    }
+    .left {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+    .formBox {
+        padding: 32px 24px;
+    }
+}

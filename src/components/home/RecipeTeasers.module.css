@@ -1,0 +1,160 @@
+.section {
+    background: var(--bg-2);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.title {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.title em {
+    font-style: italic;
+    color: var(--gold);
+}
+
+.sub {
+    font-size: 14px;
+    color: var(--text-3);
+    line-height: 1.8;
+    max-width: 440px;
+    margin-top: 12px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+.cardTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 22px 22px 12px;
+}
+
+.emoji {
+    font-size: 2.5rem;
+}
+
+.cardMeta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.tag {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+}
+
+.method {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.cardBody {
+    padding: 0 22px 16px;
+    flex: 1;
+}
+
+.recipeName {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.25;
+}
+
+.recipeDesc {
+    font-size: 12.5px;
+    color: var(--text-3);
+    line-height: 1.65;
+}
+
+.cardFoot {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 22px;
+    border-top: 1px solid var(--border-soft);
+    margin-top: auto;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text-3);
+    font-weight: 600;
+}
+
+.stat span {
+    opacity: .7;
+}
+
+.readMore {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-2);
+    transition: color 0.2s;
+}
+
+.card:hover .readMore {
+    color: var(--gold);
+}
+
+.footer {
+    text-align: center;
+    margin-top: 32px;
+    padding: 18px;
+    background: var(--bg-3);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+}
+
+.footerText {
+    font-size: 13px;
+    color: var(--text-3);
+}
+
+.footerText a {
+    color: var(--accent-2);
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.footerText a:hover {
+    color: var(--gold);
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

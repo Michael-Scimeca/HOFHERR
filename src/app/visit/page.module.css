@@ -1,0 +1,453 @@
+/* ── Hero ── */
+.hero {
+    position: relative;
+    margin-top: 0;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+}
+
+.heroOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0.2) 80%, transparent 100%);
+    z-index: 1;
+}
+
+.heroInner {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 100px 40px 36px;
+}
+
+.heroBox {
+    background: var(--bg, #f7f3ec);
+    border-left: 5px solid var(--red, #800020);
+    border-radius: 12px;
+    padding: 36px 40px;
+    max-width: 480px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+}
+
+.eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 10px;
+}
+
+.headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    color: #fff;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.sub {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.7;
+    margin-bottom: 28px;
+    max-width: 500px;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+
+.heroBtns {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ── Toggle pills ── */
+.toggleBar {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.toggleBtn {
+    padding: 12px 28px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 100px;
+    background: rgba(0, 0, 0, 0.35);
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.toggleBtn:hover {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.toggleActive {
+    background: var(--red, #800020);
+    border-color: var(--red, #800020);
+    color: #fff;
+}
+
+.toggleActive:hover {
+    background: var(--red-dark, #a93226);
+    border-color: var(--red-dark, #a93226);
+}
+
+.heroShopBtn {
+    margin-left: auto;
+    font-size: 13px;
+    padding: 10px 24px;
+}
+
+/* ── Order CTA ── */
+.orderBtn {
+    width: 100%;
+    text-align: center;
+    font-size: 15px;
+}
+
+/* ── Location Sections ── */
+.locationSection {
+    padding: 56px 0;
+}
+
+.locationSection+.locationSection {
+    border-top: 1px solid var(--border);
+    background: var(--bg-2);
+}
+
+.locationHeader {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.locationIcon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.locationName {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--fg);
+    margin-bottom: 8px;
+}
+
+.locationAddr {
+    font-size: 15px;
+    color: var(--fg-muted);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.mapCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.mapWrap {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    flex: 1;
+}
+
+.mapWrap iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.directionsBtn {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--red);
+    text-decoration: none;
+}
+
+.directionsBtn:hover {
+    text-decoration: underline;
+}
+
+/* ── Info cards ── */
+.infoCol {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+}
+
+.cardTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--fg);
+    margin-bottom: 20px;
+}
+
+/* Hours */
+.hoursList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hoursRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.hoursDay {
+    color: var(--fg-muted);
+}
+
+.hoursTime {
+    font-weight: 600;
+    color: var(--fg);
+}
+
+.hoursTime.closed {
+    color: var(--red);
+}
+
+.curbside {
+    font-size: 12px;
+    color: var(--fg-muted);
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    margin: 0;
+}
+
+/* Address */
+.address {
+    font-style: normal;
+    font-size: 15px;
+    color: var(--fg-muted);
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.contacts a {
+    font-size: 14px;
+    color: var(--fg);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s;
+}
+
+.contacts a:hover {
+    color: var(--red);
+}
+
+/* ── Directions ── */
+.directionsSection {
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 0;
+}
+
+.sectionTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--fg);
+    margin-bottom: 10px;
+}
+
+.sectionSub {
+    color: var(--fg-muted);
+    margin-bottom: 36px;
+    font-size: 15px;
+}
+
+.directionsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.dirCard {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+}
+
+.dirFrom {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 12px;
+}
+
+.dirCard p {
+    font-size: 15px;
+    color: var(--fg-muted);
+    line-height: 1.75;
+    margin: 0;
+}
+
+/* ── CTA ── */
+.cta {
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.cta h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--fg);
+    margin-bottom: 10px;
+}
+
+.cta p {
+    color: var(--fg-muted);
+    margin-bottom: 28px;
+}
+
+.ctaBtns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ── Gallery ── */
+.gallery {
+    padding: 72px 0;
+    background: var(--bg);
+}
+
+.galleryEyebrow {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 10px;
+}
+
+.galleryTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--fg);
+    margin-bottom: 12px;
+}
+
+.gallerySub {
+    color: var(--fg-muted);
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+}
+
+.galleryGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr auto;
+    gap: 12px;
+}
+
+.galleryItemLarge,
+.galleryItemSmallA,
+.galleryItemSmallB,
+.galleryItemWide {
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--bg-2);
+}
+
+/* Large: left column, spans both top rows */
+.galleryItemLarge {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    min-height: 400px;
+}
+
+/* Small top: right column, row 1 */
+.galleryItemSmallA {
+    grid-column: 2;
+    grid-row: 1;
+    aspect-ratio: 4/3;
+}
+
+/* Small bottom: right column, row 2 */
+.galleryItemSmallB {
+    grid-column: 2;
+    grid-row: 2;
+    aspect-ratio: 4/3;
+}
+
+/* Wide: full width, row 3 */
+.galleryItemWide {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    aspect-ratio: 16/6;
+}
+
+.galleryCaption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 0 0 14px 14px;
+}
+
+.galleryItemLarge:hover .galleryCaption,
+.galleryItemSmall:hover .galleryCaption,
+.galleryItemWide:hover .galleryCaption {
+    opacity: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .directionsGrid {
+        grid-template-columns: 1fr;
+    }
+}

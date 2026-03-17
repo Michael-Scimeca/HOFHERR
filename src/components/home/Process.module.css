@@ -1,0 +1,230 @@
+.section {
+    padding: 100px 0 96px;
+    background: var(--bg, #fff);
+    border-top: 1px solid var(--border-soft, #ece8d8);
+}
+
+/* ── Header ── */
+.header {
+    text-align: center;
+    margin-bottom: 72px;
+}
+
+.title {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    color: var(--text, #1a1210);
+    margin: 12px 0 18px;
+    font-family: var(--font-heading);
+    line-height: 1.1;
+}
+
+.title em {
+    font-style: italic;
+    color: var(--red, #8b0000);
+    font-weight: 400;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: var(--text-2, #5c4a3c);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+    opacity: 0.85;
+}
+
+/* ── Grid ── */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+    align-items: stretch;
+}
+
+/* ── Step wrapper (holds card + connector) ── */
+.step {
+    position: relative;
+    padding: 0 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Connector arrow ── */
+.connector {
+    position: absolute;
+    top: 56px; /* aligned to center of icon circle */
+    right: -16px;
+    width: 32px;
+    color: var(--red, #8b0000);
+    opacity: 0.4;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.connector svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ── Card ── */
+.card {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 32px 16px 24px;
+    text-align: center;
+    position: relative;
+    height: 100%;
+    flex: 1;
+}
+
+.card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* ── Step number badge ── */
+.stepNum {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background: var(--red-dark, #700012);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    border: 3px solid #fff;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    z-index: 2;
+}
+
+/* ── Icon ── */
+.iconWrap {
+    width: 100px;
+    min-height: 96px;
+    height: auto;
+    margin: 0 auto 22px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ── HTML Payment Icon (step 03) ── */
+.paymentIcon {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 4px 0;
+}
+
+.paymentRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.paypal {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.visa {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-weight: 900;
+    font-size: 1.35rem;
+    font-style: italic;
+    color: #1a1f71;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.applePay {
+    display: inline-flex;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #111;
+    line-height: 1;
+    gap: 3px;
+}
+
+.paymentDivider {
+    width: 100%;
+    height: 1px;
+    background: #ccc8b8;
+    margin: 2px 0;
+}
+
+.giftText {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #2a1a0e;
+    white-space: nowrap;
+}
+
+/* ── Card text ── */
+.cardTitle {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text, #1a1210);
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.cardDesc {
+    font-size: 0.875rem;
+    color: var(--text-2, #5c4a3c);
+    line-height: 1.65;
+    opacity: 0.85;
+}
+
+/* ── Responsive ── */
+@media (max-width: 992px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 52px 32px;
+    }
+
+    .connector {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+    }
+
+    .section {
+        padding: 64px 0;
+    }
+
+    .step {
+        padding: 0 4px;
+    }
+}

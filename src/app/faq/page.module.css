@@ -1,0 +1,219 @@
+/* ── Hero ── */
+.hero {
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 40px 48px;
+    text-align: center;
+}
+
+.eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 14px;
+}
+
+.headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--fg);
+    margin-bottom: 16px;
+}
+
+.sub {
+    font-size: 1rem;
+    color: var(--fg-muted);
+    line-height: 1.7;
+}
+
+.sub a {
+    color: var(--red);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.sub a:hover {
+    text-decoration: underline;
+}
+
+/* ── Layout ── */
+.faqSection {
+    padding: 56px 0;
+}
+
+.faqGrid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 56px;
+    align-items: start;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+    position: sticky;
+    top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sideLink {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg-muted);
+    padding: 8px 12px 8px 0;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    line-height: 1.4;
+}
+
+.sideLink:hover {
+    background: var(--bg-2);
+    color: var(--red);
+}
+
+.sideCard {
+    margin-top: 24px;
+    padding: 20px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.sideCard p {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+}
+
+/* ── Accordion ── */
+.accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.group {
+    scroll-margin-top: 100px;
+}
+
+.groupTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--fg);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+}
+
+.item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.itemOpen {
+    border-color: var(--red);
+}
+
+.question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--fg);
+    font-family: inherit;
+    transition: background 0.15s;
+}
+
+.question:hover {
+    background: var(--bg-2);
+}
+
+.itemOpen .question {
+    color: var(--red);
+    background: rgba(193, 57, 43, 0.04);
+}
+
+.chevron {
+    flex-shrink: 0;
+    color: var(--fg-muted);
+    transition: transform 0.25s ease;
+}
+
+.chevronOpen {
+    transform: rotate(180deg);
+    color: var(--red);
+}
+
+.answer {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+}
+
+.answer p {
+    margin: 16px 0 0;
+    font-size: 15px;
+    color: var(--fg-muted);
+    line-height: 1.8;
+}
+
+/* ── CTA ── */
+.cta {
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.cta h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--fg);
+    margin-bottom: 10px;
+}
+
+.cta p {
+    font-size: 14px;
+    color: var(--fg-muted);
+    margin-bottom: 28px;
+}
+
+.ctaBtns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+    .faqGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .sideCard {
+        display: none;
+    }
+}

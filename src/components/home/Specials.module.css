@@ -1,0 +1,89 @@
+.section {
+    padding: 56px 0;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    color: var(--fg);
+    margin: 8px 0 8px;
+}
+
+.title em {
+    font-style: italic;
+    color: var(--red);
+}
+
+.sub {
+    font-size: 15px;
+    color: var(--fg-muted);
+    margin: 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+.emoji {
+    font-size: 2rem;
+}
+
+.cardTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--fg);
+    margin: 0;
+}
+
+.cardDesc {
+    font-size: 13.5px;
+    color: var(--fg-muted);
+    line-height: 1.65;
+    margin: 0;
+    flex: 1;
+}
+
+.cardLink {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red);
+    margin-top: auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
