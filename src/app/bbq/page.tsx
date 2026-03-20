@@ -5,14 +5,19 @@ import { BBQ_MENU_QUERY, BBQ_PRICING_QUERY, BBQ_SERVICES_QUERY } from '@/sanity/
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-    title: 'BBQ Catering Menu | Hofherr Meat Co.',
-    description: 'Full BBQ catering menu from Hofherr Meat Co. — smoked brisket, pulled pork, ribs, and more. Serving 20–500+ guests. Northfield, IL.',
+    title: 'BBQ Catering Menu & Pricing | Hofherr Meat Co. — Northfield, IL',
+    description: 'Chicago North Shore BBQ catering from Hofherr Meat Co. Smoked brisket, ribs, pulled pork, sausages & sides. 20–500+ guests. Pickup or drop-off. Northfield & Winnetka, IL.',
     alternates: { canonical: 'https://hofherrmeatco.com/bbq' },
     openGraph: {
-        title: 'BBQ Catering Menu | Hofherr Meat Co.',
-        description: 'Authentic low-and-slow BBQ catering. Brisket, pulled pork, ribs, and full sides. From 20 to 500+ guests.',
+        title: 'BBQ Catering Menu & Pricing | Hofherr Meat Co.',
+        description: 'Authentic low-and-slow BBQ catering for any event. Brisket, pulled pork, ribs, and full sides. 20 to 500+ guests. Northfield, IL.',
         url: 'https://hofherrmeatco.com/bbq',
-        images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-bbq.png', width: 1200, height: 630 }],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'BBQ Catering | Hofherr Meat Co.',
+        description: 'Smoked brisket, ribs, pulled pork & sides. 20–500+ guests. Chicago North Shore.',
     },
 };
 

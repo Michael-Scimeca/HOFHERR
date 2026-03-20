@@ -1,7 +1,7 @@
 /* ─── Section shell ─── */
 .section {
     position: relative;
-    background: linear-gradient(135deg, #0d0b09 0%, #1a1410 50%, #0d0b09 100%);
+    background: var(--bg);
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     padding: 96px 0;
@@ -23,17 +23,13 @@
 .videoOverlay {
     position: absolute;
     inset: 0;
-    background: rgba(4, 2, 1, 0.93);
+    background: rgba(0, 0, 0, 0.95);
     z-index: 1;
     pointer-events: none;
 }
 
 .overlay {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-    background: radial-gradient(ellipse at 80% 50%, rgba(212, 168, 71, 0.05) 0%, transparent 60%);
+    display: none;
 }
 
 /* ─── Grid layout ─── */
@@ -232,7 +228,7 @@
 }
 
 .success h3 {
-    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.5rem;
     color: var(--red);
     margin-bottom: 8px;

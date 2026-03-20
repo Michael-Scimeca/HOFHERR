@@ -16,7 +16,14 @@ const STEPS: Step[] = [
     {
         num: '01',
         title: 'Choose Your Items',
-        desc: 'Browse all cuts, prepared foods, soups, and specials. Add exactly what you want to your cart.',
+        desc: (
+            <>
+                Browse all cuts, prepared foods, soups, and specials. Add exactly what you want to your cart.{' '}
+                <a href="/order" style={{ color: 'var(--red-dark, #700012)', fontWeight: 600, textDecoration: 'underline' }}>
+                    Order Online
+                </a>
+            </>
+        ),
         img: '/howitworks/cart.png',
         alt: 'Shopping cart',
     },
@@ -29,14 +36,14 @@ const STEPS: Step[] = [
     },
     {
         num: '03',
-        title: 'Pay Securely Online',
+        title: 'Pay Online or at Pickup',
         desc: (
             <>
                 Checkout with Visa, Apple Pay, Google Pay, PayPal, or{' '}
                 <a href="/gift-cards" style={{ color: 'var(--red-dark, #700012)', fontWeight: 600, textDecoration: 'underline' }}>
                     a gift card
                 </a>
-                . Your order is confirmed instantly.
+                — or choose to pay at the store when you pick up.
             </>
         ),
         img: '/howitworks/giftcard.png',
@@ -48,8 +55,8 @@ const STEPS: Step[] = [
         desc: (
             <>
                 Pull up curbside or walk in. Your order is packed and ready — no waiting around.{' '}
-                <a href="mailto:butcher@hofherrmeatco.com?subject=Delivery Info" style={{ color: 'var(--red-dark, #700012)', fontWeight: 600, textDecoration: 'underline' }}>
-                    Questions about delivery?
+                <a href="mailto:butcher@hofherrmeatco.com?subject=Pick up at the store" style={{ color: 'var(--red-dark, #700012)', fontWeight: 600, textDecoration: 'underline' }}>
+                    Questions about pick up at store
                 </a>
             </>
         ),
@@ -75,7 +82,7 @@ export default function Process() {
                             {i < STEPS.length - 1 && (
                                 <div className={styles.connector}>
                                     <svg viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M0 6h34M28 1l6 5-6 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                                        <path d="M0 6h34M28 1l6 5-6 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
                                 </div>
                             )}
@@ -89,8 +96,8 @@ export default function Process() {
                                         <Image
                                             src={step.img!}
                                             alt={step.alt!}
-                                            width={100}
-                                            height={100}
+                                            width={120}
+                                            height={120}
                                             className={styles.icon}
                                         />
                                     )}

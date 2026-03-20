@@ -4,6 +4,7 @@ import styles from './QuotesSection.module.css';
 
 export default function QuotesSection() {
     const [status, setStatus] = useState<'idle' | 'sending' | 'success'>('idle');
+    const [contactPref, setContactPref] = useState<'phone' | 'email'>('phone');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -78,8 +79,21 @@ export default function QuotesSection() {
                             <input type="text" placeholder="John Smith" required className={styles.input} />
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Phone / Email</label>
-                            <input type="text" placeholder="(847) 555-0100" required className={styles.input} />
+                            <label className={styles.label}>How should we reach you?</label>
+                            <div className={styles.contactToggle}>
+                                <button type="button"
+                                    className={`${styles.contactToggleBtn} ${contactPref === 'phone' ? styles.contactToggleBtnActive : ''}`}
+                                    onClick={() => setContactPref('phone')}
+                                >📞 Call Me</button>
+                                <button type="button"
+                                    className={`${styles.contactToggleBtn} ${contactPref === 'email' ? styles.contactToggleBtnActive : ''}`}
+                                    onClick={() => setContactPref('email')}
+                                >✉️ Email Me</button>
+                            </div>
+                            {contactPref === 'phone'
+                                ? <input type="tel" placeholder="(847) 555-0100" required className={styles.input} />
+                                : <input type="email" placeholder="your@email.com" required className={styles.input} />
+                            }
                         </div>
                         
                         <div className={`${styles.formGroup} ${styles.formGroupFull}`}>
@@ -96,7 +110,7 @@ export default function QuotesSection() {
 
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Event / Pickup Date</label>
-                            <input type="date" className={styles.input} />
+                            <input type="date" className={styles.input} style={{ colorScheme: 'dark' }} />
                         </div>
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Guest Count (if applicable)</label>

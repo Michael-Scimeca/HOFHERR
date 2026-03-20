@@ -1,6 +1,6 @@
 .banner {
     position: relative;
-    background: linear-gradient(135deg, #0e1a0c 0%, #1a2e15 50%, #0e1a0c 100%);
+    background: var(--bg);
     border-top: 1px solid rgba(74, 122, 66, 0.3);
     border-bottom: 1px solid rgba(74, 122, 66, 0.3);
     overflow: hidden;

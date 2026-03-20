@@ -163,7 +163,7 @@ export default function AdminDashboard() {
         };
     });
 
-    const COLORS = ['#800020', '#9a1030', '#600018', '#c4302b', '#4E3629']; 
+    const COLORS = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
     const revenueByDate = orders.reduce((acc, order) => {
         const dateStr = new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -553,7 +553,10 @@ export default function AdminDashboard() {
                                         <tr key={order._id} className={styles.rowClickable} onClick={() => handleOrderRowClick(order)}>
                                             <td><strong>#{order.orderNumber}</strong></td>
                                             <td>{order.customer?.name || order.metadata?.customer_name || 'Guest'}<br/><a href={`mailto:${order.customer?.email || order.metadata?.customer_email}`} className={styles.tableLink} style={{fontSize: '11px'}}>{order.customer?.email || order.metadata?.customer_email}</a></td>
-                                            <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                                            <td>
+                                                <div style={{fontWeight: 600, fontSize: '13px'}}>{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                                                <div style={{fontSize: '11px', color: '#64748b', marginTop: '2px'}}>{new Date(order.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</div>
+                                            </td>
                                             <td>{order.items?.length || 0} items</td>
                                             <td>${(order.total / 100).toFixed(2)}</td>
                                             <td onClick={e => e.stopPropagation()}>
@@ -639,6 +642,7 @@ export default function AdminDashboard() {
             </div>
 
             <div className={styles.metricsContainer}>
+                {/* Row 1: Status, Revenue, Category */}
                 <div className={styles.chartCard}>
                     <h3>Order Status Distribution</h3>
                     <div className={styles.chartWrapper}>
@@ -688,6 +692,156 @@ export default function AdminDashboard() {
                         ) : <div className={styles.emptyChart}>No category data yet</div>}
                     </div>
                 </div>
+
+                {/* Row 2: Pickup Times, Busiest Days, Order Size */}
+                <div className={styles.chartCard}>
+                    <h3>📍 Peak Pickup Times</h3>
+                    <div className={styles.chartWrapper}>
+                        {pickupBins.some(b => b.orders > 0) ? (
+                            <ResponsiveContainer width="100%" height={250}>
+                                <BarChart data={pickupBins} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                                    <RechartsTooltip cursor={{fill: '#334155', opacity: 0.4}} contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#f8fafc' }} />
+                                    <Bar dataKey="orders" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        ) : <div className={styles.emptyChart}>No pickup data yet</div>}
+                    </div>
+                </div>
+
+                <div className={styles.chartCard}>
+                    <h3>📅 Busiest Days of the Week</h3>
+                    <div className={styles.chartWrapper}>
+                        {dayData.some(d => d.orders > 0) ? (
+                            <ResponsiveContainer width="100%" height={250}>
+                                <BarChart data={dayData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                                    <RechartsTooltip cursor={{fill: '#334155', opacity: 0.4}} contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#f8fafc' }} />
+                                    <Bar dataKey="orders" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        ) : <div className={styles.emptyChart}>No day data yet</div>}
+                    </div>
+                </div>
+
+                <div className={styles.chartCard}>
+                    <h3>💰 Order Size Distribution</h3>
+                    <div className={styles.chartWrapper}>
+                        {sizeBuckets.some(b => b.value > 0) ? (
+                            <ResponsiveContainer width="100%" height={250}>
+                                <PieChart>
+                                    <Pie data={sizeBuckets} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={5} dataKey="value" label={(props) => `${props.name}`}>
+                                        {sizeBuckets.map((_, index) => <Cell key={`size-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b'][index]} />)}
+                                    </Pie>
+                                    <RechartsTooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#f8fafc' }} />
+                                    <Legend verticalAlign="bottom" height={36} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        ) : <div className={styles.emptyChart}>No size data yet</div>}
+                    </div>
+                </div>
+
+                {/* Row 3: Top Items, VIP Customers, New vs Returning */}
+                <div className={styles.chartCard}>
+                    <h3>🔥 Top 5 Items</h3>
+                    <div className={styles.chartWrapper}>
+                        {topItemsData.length > 0 ? (
+                            <ResponsiveContainer width="100%" height={250}>
+                                <BarChart data={topItemsData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" horizontal={false} />
+                                    <XAxis type="number" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                                    <YAxis type="category" dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} width={120} />
+                                    <RechartsTooltip cursor={{fill: '#334155', opacity: 0.4}} contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#f8fafc' }} />
+                                    <Bar dataKey="quantity" fill="#ef4444" radius={[0, 4, 4, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        ) : <div className={styles.emptyChart}>No item data yet</div>}
+                    </div>
+                </div>
+
+                <div className={styles.chartCard}>
+                    <h3>🏆 VIP Customers (Top Spenders)</h3>
+                    <div style={{ width: '100%', padding: '8px 0' }}>
+                        {vipData.length > 0 ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                {vipData.map((vip, i) => {
+                                    const maxSpend = vipData[0]?.spend || 1;
+                                    const pct = (vip.spend / maxSpend) * 100;
+                                    const medals = ['🥇', '🥈', '🥉', '4.', '5.'];
+                                    return (
+                                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                            <span style={{ fontSize: '16px', width: '24px', textAlign: 'center' }}>{medals[i]}</span>
+                                            <div style={{ flex: 1 }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#e2e8f0' }}>{vip.name}</span>
+                                                    <span style={{ fontSize: '13px', fontWeight: 700, color: '#4ade80' }}>${vip.spend.toFixed(2)}</span>
+                                                </div>
+                                                <div style={{ height: '6px', borderRadius: '3px', background: '#1e293b', overflow: 'hidden' }}>
+                                                    <div style={{ height: '100%', width: `${pct}%`, borderRadius: '3px', background: i === 0 ? '#f59e0b' : i === 1 ? '#94a3b8' : i === 2 ? '#b45309' : '#475569', transition: 'width 0.5s ease' }} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : <div className={styles.emptyChart}>No VIP data yet</div>}
+                    </div>
+                </div>
+
+                <div className={styles.chartCard}>
+                    <h3>👥 New vs Returning</h3>
+                    <div style={{ width: '100%' }}>
+                        {customerTypesData.some(d => d.value > 0) ? (
+                            <>
+                                <ResponsiveContainer width="100%" height={200}>
+                                    <PieChart>
+                                        <Pie data={customerTypesData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={5} dataKey="value" startAngle={90} endAngle={-270}>
+                                            <Cell fill="#3b82f6" />
+                                            <Cell fill="#10b981" />
+                                        </Pie>
+                                        <RechartsTooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#f8fafc' }} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '16px' }}>
+                                    <div style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
+                                        <div style={{ fontSize: '11px', color: '#60a5fa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>New Customers</div>
+                                        <div style={{ fontSize: '28px', fontWeight: 700, color: '#f8fafc' }}>{newCustCount}</div>
+                                        <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>AOV ${newAOV.toFixed(2)}</div>
+                                    </div>
+                                    <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
+                                        <div style={{ fontSize: '11px', color: '#34d399', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Returning</div>
+                                        <div style={{ fontSize: '28px', fontWeight: 700, color: '#f8fafc' }}>{retCustCount}</div>
+                                        <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>AOV ${retAOV.toFixed(2)}</div>
+                                    </div>
+                                </div>
+                            </>
+                        ) : <div className={styles.emptyChart}>No customer data yet</div>}
+                    </div>
+                </div>
+
+                {/* Row 4: Promo Codes (only if any used) */}
+                {promoData.length > 0 && (
+                    <div className={styles.chartCard}>
+                        <h3>🎟️ Promo Code Performance</h3>
+                        <div className={styles.chartWrapper}>
+                            <ResponsiveContainer width="100%" height={250}>
+                                <BarChart data={promoData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                                    <RechartsTooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#f8fafc' }} />
+                                    <Bar dataKey="Uses" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="Revenue" fill="#10b981" radius={[4, 4, 0, 0]} />
+                                    <Legend />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {selectedCustomerMeta && (
@@ -695,29 +849,21 @@ export default function AdminDashboard() {
                     <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
                         <div className={styles.modalHeader}>
                             <div>
-                                <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '24px', margin: 0, color: '#f8fafc' }}>{selectedCustomerMeta.user.name}</h2>
-                                <div style={{ fontSize: '14px', color: '#94a3b8', marginTop: '6px' }}>{selectedCustomerMeta.user.email} {selectedCustomerMeta.user.phone && `• ${selectedCustomerMeta.user.phone}`}</div>
+                                <h2 style={{ fontFamily: '"Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif', fontSize: '24px', margin: 0, color: '#f8fafc' }}>{selectedCustomerMeta.user.name}</h2>
+                                <div style={{ fontSize: '14px', color: '#94a3b8', marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                    <a href={`mailto:${selectedCustomerMeta.user.email}`} style={{ color: '#94a3b8', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span style={{ fontSize: '13px' }}>✉️</span> {selectedCustomerMeta.user.email}
+                                    </a>
+                                    {selectedCustomerMeta.user.phone ? (
+                                        <a href={`tel:${selectedCustomerMeta.user.phone}`} style={{ color: '#94a3b8', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <span style={{ fontSize: '13px' }}>📞</span> {selectedCustomerMeta.user.phone}
+                                        </a>
+                                    ) : (
+                                        <span style={{ color: '#475569', fontStyle: 'italic', fontSize: '13px' }}>No phone on file</span>
+                                    )}
+                                </div>
                             </div>
-                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                <button 
-                                    className={styles.tab} 
-                                    style={{ fontSize: '12px', padding: '6px 12px', background: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.2)' }}
-                                    onClick={async () => {
-                                        if (confirm(`Send password reset link to ${selectedCustomerMeta.user.email}?`)) {
-                                            try {
-                                                const res = await fetch('/api/auth/forgot-password', {
-                                                    method: 'POST',
-                                                    headers: { 'Content-Type': 'application/json' },
-                                                    body: JSON.stringify({ email: selectedCustomerMeta.user.email })
-                                                });
-                                                if (res.ok) alert('Reset link sent successfully.');
-                                                else alert('Failed to send reset link.');
-                                            } catch { alert('An error occurred.'); }
-                                        }
-                                    }}
-                                >
-                                    Reset Password
-                                </button>
+                            <div>
                                 <button className={styles.modalClose} onClick={() => setSelectedCustomerMeta(null)}>&times;</button>
                             </div>
                         </div>
@@ -733,7 +879,10 @@ export default function AdminDashboard() {
                                 <div key={order._id} style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: '8px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                                         <strong>Order #{order.orderNumber}</strong>
-                                        <span>{new Date(order.createdAt).toLocaleDateString()}</span>
+                                        <div style={{textAlign: 'right'}}>
+                                            <div style={{fontSize: '13px', color: '#e2e8f0'}}>{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                                            <div style={{fontSize: '11px', color: '#64748b', marginTop: '2px'}}>{new Date(order.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</div>
+                                        </div>
                                     </div>
                                     <div style={{ fontSize: '13px', color: '#cbd5e1' }}>{order.items?.map((i: any) => `${i.qty || 1}x ${i.name}`).join(', ')}</div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>

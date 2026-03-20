@@ -36,11 +36,13 @@ function getSameDayCutoff(): string | null {
 }
 
 const QUICK_REPLIES = [
+    { emoji: '🍗', label: 'Reserve Chicken Dinner', starter: "Hi! I'd like to reserve a Rotisserie Chicken Dinner. Pickup date: ___, pickup time: ___, number of birds: ___." },
+    { emoji: '🥩', label: 'Order Italian Beef', starter: "Hi! I'd like to order Italian beef by the pound. Pounds needed: ___, pickup date: ___, pickup time: ___." },
     { emoji: '🚗', label: 'Curbside Pickup', starter: "Hi! I'd like to order for curbside pickup — " },
-    { emoji: '📞', label: 'Call Shop', url: 'tel:8474416328' },
-    { emoji: '💬', label: 'Text Shop', url: 'sms:8474416328&body=Hi%20Hofherr!%20' },
     { emoji: '📦', label: 'Place an Order', starter: "Hi! I'd like to place an order — " },
     { emoji: '🎉', label: 'Catering Quote', starter: "Hi! I'm interested in a catering quote. We're expecting about " },
+    { emoji: '📞', label: 'Call Shop', url: 'tel:8474416328' },
+    { emoji: '💬', label: 'Text Shop', url: 'sms:8474416328&body=Hi%20Hofherr!%20' },
 ];
 
 const CTA_PHRASES = [
@@ -207,7 +209,7 @@ export default function ChatWidget() {
                         <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
                 ) : (
-                    <Image src="/sean-avatar.jpg" alt="Sean" width={56} height={56} className={styles.fabAvatar} />
+                    <Image src="/assets/sean-avatar.jpg" alt="Sean" width={56} height={56} className={styles.fabAvatar} />
                 )}
             </button>
 
@@ -217,7 +219,7 @@ export default function ChatWidget() {
                 {/* Header */}
                 <div className={styles.header}>
                     <div className={styles.headerInfo}>
-                        <Image src="/sean-avatar.jpg" alt="Shop" width={40} height={40} className={styles.avatarImg} />
+                        <Image src="/assets/sean-avatar.jpg" alt="Shop" width={40} height={40} className={styles.avatarImg} />
                         <div>
                             <div className={styles.headerName}>Hofherr Meat Co.</div>
                             <div className={styles.headerSub}>

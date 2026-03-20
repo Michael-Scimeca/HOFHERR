@@ -16,6 +16,10 @@ import { legalPageType } from './legalPage';
 import customer from './customer';
 import order from './order';
 import coupon from './coupon';
+import { cateringEventType } from './cateringEvent';
+import { cateringCalendarPricingType } from './cateringCalendarPricing';
+import { cateringLeadType } from './cateringLead';
+import { rotisserieStatusType } from './rotisserieStatus';
 
 export const schemaTypes = [
     // Site-wide
@@ -44,4 +48,10 @@ export const schemaTypes = [
     customer,
     order,
     coupon,
+    // Catering Calendar
+    cateringEventType,
+    cateringCalendarPricingType,
+    cateringLeadType,
+    // Daily Inventory
+    rotisserieStatusType,
 ];

@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     try {
         const session = await auth();
 
-        if (!session?.user?.isAdmin && process.env.NODE_ENV !== 'development') {
+        if (!session?.user?.isAdmin) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
 

@@ -1,17 +1,25 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { draftMode } from 'next/headers';
+import { getClient } from '@/sanity/client';
+import { BBQ_PRICING_QUERY, CATERING_EVENTS_QUERY } from '@/sanity/queries';
+import CateringCalendar from '@/components/CateringCalendar';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-    title: 'Catering | Hofherr Meat Co.',
-    description:
-        'Full-service catering from Hofherr Meat Co. — pig roasts, competition BBQ, rotisserie chicken packages, and custom menus for events of 20 to 500+ guests. Northfield & Winnetka, IL.',
+    title: 'Catering | Pig Roasts, BBQ & Events | Hofherr Meat Co. — Northfield, IL',
+    description: 'Full-service event catering from Hofherr Meat Co. — whole pig roasts, competition BBQ, rotisserie chicken packages, and custom menus. Serving 20 to 500+ guests across Chicago\'s North Shore.',
     alternates: { canonical: 'https://hofherrmeatco.com/catering' },
     openGraph: {
         title: 'Catering | Hofherr Meat Co.',
-        description: 'Pig roasts, BBQ catering, rotisserie packages & custom menus for any event.',
+        description: 'Pig roasts, BBQ catering, rotisserie packages & custom menus for any event. Northfield & Winnetka, IL.',
         url: 'https://hofherrmeatco.com/catering',
-        images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-catering.png', width: 1200, height: 630 }],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Catering | Hofherr Meat Co.',
+        description: 'Pig roasts, BBQ catering & custom event menus. 20–500+ guests. Chicago North Shore.',
     },
 };
 
@@ -50,7 +58,7 @@ const SERVICES = [
     },
 ];
 
-const PRICING = [
+const FALLBACK_PRICING = [
     { label: '1 Meat + 1 Side', price: '$16/person' },
     { label: 'Each Additional Meat', price: '+$4/person' },
     { label: 'Each Additional Side', price: '+$2/person' },
@@ -69,7 +77,41 @@ const PIG_PRICING = [
     { label: '1 Add\'l Meat + 3 Sides', price: '$40/person' },
 ];
 
-export default function CateringPage() {
+type SanityPricing = {
+    _id: string;
+    tier: string;
+    title: string;
+    subtitle: string;
+    description?: string;
+    priceLines?: { label: string; price: string }[];
+    isFeatured: boolean;
+};
+
+export default async function CateringPage() {
+    const { isEnabled: preview } = await draftMode();
+    const sanityClient = getClient(preview);
+
+    let bbqPricing = FALLBACK_PRICING;
+    try {
+        const pricingData: SanityPricing[] = await sanityClient.fetch(BBQ_PRICING_QUERY);
+        const featured = pricingData?.find(p => p.isFeatured && p.priceLines?.length);
+        if (featured?.priceLines?.length) {
+            bbqPricing = featured.priceLines;
+        }
+    } catch {
+        // Use fallback
+    }
+
+    // Catering events
+    type CateringEventData = { _id: string; date: string; eventType: string; status: string };
+    let cateringEvents: CateringEventData[] = [];
+    try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        cateringEvents = await sanityClient.fetch(CATERING_EVENTS_QUERY, { today: todayStr });
+    } catch {
+        // No events to show
+    }
+
     return (
         <div>
             {/* ── Hero ── */}
@@ -121,7 +163,7 @@ export default function CateringPage() {
                         <div className={styles.step}>
                             <div className={styles.stepNum}>1</div>
                             <h3>Tell Us About Your Event</h3>
-                            <p>Email or call with your date, guest count, and any dietary needs. We&apos;ll get back to you same day.</p>
+                            <p>Email <a href="mailto:catering@hofherrmeatco.com" style={{color:'var(--gold)',textDecoration:'underline'}}>catering@hofherrmeatco.com</a> or call <a href="tel:8474416328" style={{color:'var(--gold)',textDecoration:'underline'}}>(847) 441-MEAT</a> with your date, guest count, and any dietary needs. We&apos;ll get back to you same day.</p>
                         </div>
                         <div className={styles.step}>
                             <div className={styles.stepNum}>2</div>
@@ -146,7 +188,7 @@ export default function CateringPage() {
                             <p className={styles.pricingNote}>20+ People · Pickup · Tax not included</p>
                             <p className={styles.pricingIncludes}>Includes paperware, cutlery, serving utensils, buns, condiments &amp; sauce.</p>
                             <div className={styles.priceRows}>
-                                {PRICING.map(p => (
+                                {bbqPricing.map(p => (
                                     <div key={p.label} className={styles.priceRow}>
                                         <span>{p.label}</span>
                                         <strong>{p.price}</strong>
@@ -171,6 +213,13 @@ export default function CateringPage() {
                             <a href="mailto:catering@hofherrmeatco.com?subject=Pig Roast Inquiry" className="btn btn-primary">Reserve a Date</a>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            {/* ── Availability Calendar ── */}
+            <section className={styles.pricingSection}>
+                <div className="container">
+                    <CateringCalendar events={cateringEvents} />
                 </div>
             </section>
 

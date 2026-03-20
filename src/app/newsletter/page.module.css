@@ -11,7 +11,7 @@
 }
 
 .headline {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: clamp(2rem, 5vw, 3.2rem);
     color: var(--fg);
     margin: 12px 0 16px;
@@ -55,7 +55,7 @@
 }
 
 .cardTitle {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.5rem;
     color: var(--fg);
     margin: 0 0 28px;
@@ -104,7 +104,7 @@
 }
 
 .formTitle {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.5rem;
     color: var(--fg);
     margin: 0 0 6px;
@@ -200,7 +200,7 @@
 }
 
 .successTitle {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 2rem;
     color: var(--fg);
     margin: 0;

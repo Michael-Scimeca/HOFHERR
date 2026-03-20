@@ -2,9 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
-import { SIGNATURE_PRODUCTS_QUERY, BBQ_MENU_QUERY, BBQ_PRICING_QUERY } from '@/sanity/queries';
+import { SIGNATURE_PRODUCTS_QUERY, BBQ_MENU_QUERY, BBQ_PRICING_QUERY, CATERING_EVENTS_QUERY, CATERING_CALENDAR_PRICING_QUERY, ROTISSERIE_STATUS_QUERY } from '@/sanity/queries';
 import NewsletterInline from '@/components/NewsletterInline';
 import VideoCallout from '@/components/specials/VideoCalloutWrapper';
+import CateringCalendar from '@/components/CateringCalendar';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
         title: "Specials | Hofherr Meat Co.",
         description: "Italian beef, rotisserie chicken, BBQ catering, and pig roasts — the best of Hofherr Meat Co.",
         url: 'https://hofherrmeatco.com/specials',
-        images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-specials.png', width: 1200, height: 630 }],
     },
 };
 
@@ -44,17 +45,18 @@ const FALLBACK_SIGNATURES: SignatureProduct[] = [
     {
         _id: 'fb-1',
         title: "The World's Greatest Italian Beef",
-        sectionLabel: 'Chicago Classic · Our Flagship',
+        sectionLabel: 'Chicago Classic · Depot Exclusive',
         emoji: '🥩',
-        image: '/italian-beef.jpg',
-        description: "In November 2022, America's Test Kitchen challenged us to make the best Italian Beef sandwich in the city. We accepted, worked in secret for a month, and in December 2022 served the greatest beef Chicagoland has ever eaten.\n\nOur experience is the subject of the season finale of their podcast, Proof on PBS — listen as we go from concept to service.\n\n🏪 Depot Location: Served Mon–Fri starting at 10:30am until sold out, inside the Winnetka Elm St. Metra Station.",
+        image: '/assets/italian-beef.jpg',
+        description: "In November 2022, America's Test Kitchen challenged us to make the best Italian Beef sandwich in the city. We accepted, worked in secret for a month, and in December 2022 served the greatest beef Chicagoland has ever tasted.\n\nOur story became the season finale of their podcast, Proof on PBS — a deep dive from concept to first service. It's what happens when a 120-year-old butcher shop refuses to play it safe.\n\nThe sandwich is served exclusively at The Depot — our counter inside the Winnetka Elm St. Metra Station — Mon–Fri from 10:30am until we sell out. There is no substitute and no pre-order.\n\n🏪 Can't make it to The Depot? Order our house-roasted Italian beef by the pound and build the perfect sandwich at home.",
         calloutTitle: 'As Featured On',
         calloutSub: "America's Test Kitchen\nPodcast: Proof\nPBS Weekends",
         calloutColor: 'var(--red)',
-        chips: [],
+        chips: ["🎙 America's Test Kitchen", '📻 Podcast: Proof', '📺 PBS Weekends'],
         links: [
             { label: '🎙 Listen to the Podcast', url: 'http://bit.ly/3QTft4F', isPrimary: false },
-            { label: 'Order Online', url: '/online-orders?store=depot', isPrimary: true },
+            { label: 'Visit The Depot', url: '/visit#depot', isPrimary: false },
+            { label: 'Order Beef by the Pound', url: '/online-orders', isPrimary: true },
         ],
         video: '/video-clips/Beef.jp4.mp4',
         layout: 'callout-left',
@@ -64,9 +66,9 @@ const FALLBACK_SIGNATURES: SignatureProduct[] = [
         title: 'Rotisserie Chicken Dinners',
         sectionLabel: 'Ready Daily · Tue–Sun',
         emoji: '🍗',
-        image: '/rotisserie-chicken.jpg',
+        image: '/assets/rotisserie-chicken.jpg',
         video: '/video-clips/chicken.mp4',
-        description: "These tasty, pasture-raised chickens come hot and ready with roasted schmaltzy potatoes. Slow-roasted on our floor-to-ceiling rotisserie — simple seasoning, perfect every time.\n\nAvailable for curbside pickup Tuesday through Sunday. Call ahead — they sell out most days.",
+        description: "These tasty, pasture-raised chickens come hot and ready with roasted schmaltzy potatoes. Slow-roasted on our floor-to-ceiling rotisserie — simple seasoning, perfect every time.\n\nAvailable for curbside pickup Tuesday through Sunday. Call ahead — they sell out most days.\n\n🏪 Depot Location: We are serving up beefs from 10:30am until sold out, Monday–Friday, inside the Winnetka Elm St. Metra Station.",
         calloutTitle: 'Hot & Ready',
         calloutSub: 'Tue–Sun\nStarting at noon\nWhile supplies last',
         calloutColor: '',
@@ -110,15 +112,27 @@ export default async function SpecialsPage() {
 
     let signatures: SignatureProduct[] = FALLBACK_SIGNATURES;
     let menuItems: MenuItem[] = [];
+    let bbqPricing: { label: string; price: string }[] = [
+        { label: '1 Meat + 1 Side', price: '$16/person' },
+        { label: 'Each Additional Meat', price: '+$4/person' },
+        { label: 'Each Additional Side', price: '+$2/person' },
+        { label: 'Add Charcuterie Platter', price: '+$4/person' },
+        { label: 'Pimento Cheese Dip + Crackers', price: '$20/tray' },
+        { label: 'Drop Off (within 5 miles)', price: '+$50' },
+    ];
 
     try {
-        const [rawSigs, rawMenu] = await Promise.all([
+        const [rawSigs, rawMenu, rawPricing] = await Promise.all([
             sanityClient.fetch(SIGNATURE_PRODUCTS_QUERY),
             sanityClient.fetch(BBQ_MENU_QUERY),
+            sanityClient.fetch(BBQ_PRICING_QUERY),
         ]);
         if (rawSigs?.length) {
+            const normalize = (s: string) => s.replace(/[\u2018\u2019\u201C\u201D]/g, (c) => 
+                c === '\u2018' || c === '\u2019' ? "'" : '"'
+            );
             signatures = rawSigs.map((sig: SignatureProduct) => {
-                const fallback = FALLBACK_SIGNATURES.find(f => f.title === sig.title);
+                const fallback = FALLBACK_SIGNATURES.find(f => normalize(f.title) === normalize(sig.title));
                 return {
                     ...sig,
                     image: sig.image || fallback?.image,
@@ -127,8 +141,39 @@ export default async function SpecialsPage() {
             });
         }
         menuItems = rawMenu?.length ? rawMenu : FALLBACK_BBQ_MENU;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const featured = rawPricing?.find((p: any) => p.isFeatured && p.priceLines?.length);
+        if (featured?.priceLines?.length) {
+            bbqPricing = featured.priceLines;
+        }
     } catch {
         menuItems = FALLBACK_BBQ_MENU;
+    }
+
+    // Catering events + calendar pricing
+    type CateringEventData = { _id: string; date: string; eventType: string; status: string };
+    type CalendarPricingRow = { label: string; price: string };
+    let cateringEvents: CateringEventData[] = [];
+    let calendarPricing: CalendarPricingRow[] = [
+        { label: 'Pig Roast (50+ guests)', price: 'From $30/pp' },
+        { label: 'BBQ Catering (20+ guests)', price: 'From $16/pp' },
+        { label: 'Ask us about custom options', price: 'Contact us' },
+    ];
+    // Rotisserie live stock status
+    type RotisserieStatus = { status: string; birdsLeft?: number | null; nextAvailable?: string | null; note?: string | null; lastUpdated?: string | null };
+    let rotisserie: RotisserieStatus | null = null;
+    try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const [rawEvents, rawCalPricing, rawRotisserie] = await Promise.all([
+            sanityClient.fetch(CATERING_EVENTS_QUERY, { today: todayStr }),
+            sanityClient.fetch(CATERING_CALENDAR_PRICING_QUERY),
+            sanityClient.fetch(ROTISSERIE_STATUS_QUERY),
+        ]);
+        cateringEvents = rawEvents ?? [];
+        if (rawCalPricing?.length) calendarPricing = rawCalPricing;
+        if (rawRotisserie?.status) rotisserie = rawRotisserie;
+    } catch {
+        // No events to show
     }
 
     const grouped = menuItems.reduce((acc, item) => {
@@ -189,6 +234,28 @@ export default async function SpecialsPage() {
                     </div>
                 );
 
+                const isChicken = product._id === 'fb-2' || product.title?.toLowerCase().includes('rotisserie');
+                const rStatus = isChicken ? rotisserie : null;
+                const stockBadgeColor =
+                    rStatus?.status === 'available' ? { bg: '#16a34a', border: '#15803d' }
+                    : rStatus?.status === 'low' ? { bg: '#d97706', border: '#b45309' }
+                    : rStatus?.status === 'sold_out' ? { bg: '#dc2626', border: '#b91c1c' }
+                    : { bg: '#475569', border: '#334155' };
+
+                const stockMessage =
+                    rStatus?.note ? rStatus.note
+                    : rStatus?.status === 'available'
+                        ? rStatus.birdsLeft ? `${rStatus.birdsLeft} bird${rStatus.birdsLeft !== 1 ? 's' : ''} left today — call to reserve!`
+                        : 'Available today — call to reserve your bird'
+                    : rStatus?.status === 'low'
+                        ? rStatus.birdsLeft ? `Only ${rStatus.birdsLeft} left — call now!`
+                        : 'Almost sold out — call now!'
+                    : rStatus?.status === 'sold_out'
+                        ? `Sold out today${rStatus.nextAvailable ? ` · ${rStatus.nextAvailable}` : ''}`
+                    : rStatus?.status === 'unavailable'
+                        ? `Not available today${rStatus.nextAvailable ? ` · ${rStatus.nextAvailable}` : ''}`
+                    : null;
+
                 const text = (
                     <div className={styles.featureText}>
                         {product.sectionLabel && <div className="section-label">{product.sectionLabel}</div>}
@@ -201,6 +268,31 @@ export default async function SpecialsPage() {
                                 {product.chips.map((chip) => (
                                     <span key={chip} className={styles.chip}>{chip}</span>
                                 ))}
+                            </div>
+                        )}
+                        {/* Live rotisserie stock badge */}
+                        {rStatus && stockMessage && (
+                            <div style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                background: stockBadgeColor.bg,
+                                border: `1px solid ${stockBadgeColor.border}`,
+                                borderRadius: '8px',
+                                padding: '10px 16px',
+                                marginTop: '4px',
+                                marginBottom: '8px',
+                                fontSize: '13.5px',
+                                fontWeight: 600,
+                                color: '#fff',
+                                lineHeight: 1.3,
+                            }}>
+                                <span style={{ fontSize: '18px' }}>
+                                    {rStatus.status === 'available' ? '🟢'
+                                    : rStatus.status === 'low' ? '🟡'
+                                    : '🔴'}
+                                </span>
+                                <span>{stockMessage}</span>
                             </div>
                         )}
                         {product.links && product.links.length > 0 && (
@@ -220,12 +312,14 @@ export default async function SpecialsPage() {
                                     ))}
                             </div>
                         )}
+
                     </div>
                 );
 
                 return (
                     <section
                         key={product._id}
+                        id={product.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}
                         className={`section-sm ${idx % 2 === 0 ? styles.mainSection : styles.altSection}`}
                     >
                         <div className="container">
@@ -239,72 +333,96 @@ export default async function SpecialsPage() {
 
             {/* ── BBQ Menu (from Sanity) ── */}
             {menuItems.length > 0 && (
-                <section className={`section-sm ${styles.altSection}`}>
-                    <div className="container">
-                        <div className={styles.menuHeader}>
-                            <div className="section-label">Catering · Min. 4 Days Notice</div>
-                            <h2 className={styles.sectionTitle}>BBQ Catering Menu</h2>
-                            <p className={styles.menuSub}>Subject to availability. Under 20 guests min. $200. Email <a href="mailto:catering@hofherrmeatco.com">catering@hofherrmeatco.com</a> for pricing.</p>
+                <section id="bbq-catering" className={styles.bbqSection}>
+                    {/* Dark hero banner */}
+                    <div className={styles.bbqHero}>
+                        <div className="container">
+                            <span className={styles.bbqEyebrow}>🔥 Catering · Min. 4 Days Notice</span>
+                            <h2 className={styles.bbqHeadline}>BBQ Catering Menu</h2>
+                            <p className={styles.bbqSub}>
+                                Subject to availability. Under 20 guests min. $200. Email{' '}
+                                <a href="mailto:catering@hofherrmeatco.com">catering@hofherrmeatco.com</a>{' '}
+                                for pricing.
+                            </p>
                         </div>
+                    </div>
 
-                        <div className={styles.menuGrid}>
+                    {/* Menu categories */}
+                    <div className="container">
+                        <div className={styles.bbqMenuGrid}>
                             {['appetizer', 'meat', 'side'].filter(c => grouped[c]?.length).map(cat => (
-                                <div key={cat} className={styles.menuCategory}>
-                                    <h3 className={styles.menuCatTitle}>{CATEGORY_META[cat]}</h3>
-                                    <ul className={styles.menuList}>
+                                <div key={cat} className={`${styles.bbqCard} ${styles[`bbqCard_${cat}`]}`}>
+                                    <div className={styles.bbqCardHeader}>
+                                        <h3 className={styles.bbqCardTitle}>{CATEGORY_META[cat]}</h3>
+                                        <span className={styles.bbqCardCount}>{grouped[cat].length} items</span>
+                                    </div>
+                                    <ul className={styles.bbqList}>
                                         {grouped[cat].map(item => <li key={item}>{item}</li>)}
                                     </ul>
                                 </div>
                             ))}
                         </div>
-                        <div className={styles.pricingBox}>
-                            <h3 className={styles.pricingTitle}>Pricing (20+ People · Pickup)</h3>
-                            <p className={styles.pricingNote}>Includes paperware, cutlery, serving utensils, buns, condiments &amp; sauce. Price does not include tax.</p>
-                            <div className={styles.pricingGrid}>
-                                <div className={styles.priceRow}><span>1 Meat + 1 Side</span><strong>$16/person</strong></div>
-                                <div className={styles.priceRow}><span>Each Additional Meat</span><strong>+$4/person</strong></div>
-                                <div className={styles.priceRow}><span>Each Additional Side</span><strong>+$2/person</strong></div>
-                                <div className={styles.priceRow}><span>Add Charcuterie Platter</span><strong>+$4/person</strong></div>
-                                <div className={styles.priceRow}><span>Pimento Cheese Dip + Crackers</span><strong>$20/tray</strong></div>
-                                <div className={styles.priceRow}><span>Drop Off (within 5 miles)</span><strong>+$50</strong></div>
+
+                        <div className={styles.sectionImageWrapper}>
+                            <img src="/assets/pig-roast-spread.jpg" alt="BBQ Catering Spread" className={styles.sectionImage} />
+                        </div>
+
+                        {/* Pricing */}
+                        <div className={styles.bbqPricing}>
+                            <div className={styles.bbqPricingHeader}>
+                                <h3 className={styles.bbqPricingTitle}>Pricing</h3>
+                                <span className={styles.bbqPricingBadge}>20+ People · Pickup</span>
                             </div>
-                            <a href="mailto:catering@hofherrmeatco.com?subject=BBQ Catering Quote" className="btn btn-primary">Get a BBQ Quote</a>
+                            <p className={styles.bbqPricingNote}>
+                                Includes paperware, cutlery, serving utensils, buns, condiments &amp; sauce. Price does not include tax.
+                            </p>
+                            <div className={styles.bbqPricingGrid}>
+                                {bbqPricing.map(p => (
+                                    <div key={p.label} className={styles.bbqPriceRow}><span>{p.label}</span><strong>{p.price}</strong></div>
+                                ))}
+                            </div>
+                            <a href="mailto:catering@hofherrmeatco.com?subject=BBQ Catering Quote" className="btn btn-primary" style={{ marginTop: '8px', alignSelf: 'center' }}>Get a BBQ Quote</a>
                         </div>
                     </div>
                 </section>
             )}
 
-            {/* ── Pig Roasts ── */}
-            <section className={`section-sm ${styles.mainSection}`}>
+            <section id="pig-roasts" className={styles.bbqSection}>
+                <div className={styles.bbqHero}>
+                    <div className="container">
+                        <span className={styles.bbqEyebrow}>🐷 Full Service · Min. 50 Guests</span>
+                        <h2 className={styles.bbqHeadline}>Hofherr Pig Roasts</h2>
+                        <p className={styles.bbqSub}>
+                            Our team of butchers and BBQ experts arrive one hour before serving with a fully roasted whole hog. Guests watch the carving demonstration and sample as it&apos;s served.
+                        </p>
+                    </div>
+                </div>
                 <div className="container">
-                    <div className={styles.menuHeader}>
-                        <div className="section-label">Full Service · Min. 50 Guests</div>
-                        <h2 className={styles.sectionTitle}>🐷 Hofherr Pig Roasts</h2>
-                        <p className={styles.menuSub}>Our team of butchers and BBQ experts arrive one hour before serving with a fully roasted whole hog. Guests watch the carving demonstration and sample as it&apos;s served.</p>
-                    </div>
 
                     <div className={styles.sectionImageWrapper}>
-                        <img src="/pig-roast-2.jpg" alt="Whole Pig Roast" className={styles.sectionImage} />
+                        <img src="/assets/pig-roast-2.jpg" alt="Whole Pig Roast" className={styles.sectionImage} />
                     </div>
 
-                    <div className={styles.sectionImageWrapper}>
-                        <img src="/pig-roast-spread.jpg" alt="Pig Roast Catering Spread" className={styles.sectionImage} />
-                    </div>
 
-                    <div className={styles.pigIncludes}>
-                        <h3 className={styles.menuCatTitle}>Menu Options</h3>
-                        <div className={styles.menuGrid}>
-                            <div className={styles.menuCategory}>
-                                <h3 className={styles.menuCatTitle}>Appetizers (+$4/pp)</h3>
-                                <ul className={styles.menuList}>
+
+                    <div style={{ marginBottom: '32px' }}>
+                        <h3 className={styles.bbqCardTitle} style={{ marginBottom: '20px' }}>Menu Options</h3>
+                        <div className={styles.bbqMenuGrid}>
+                            <div className={`${styles.bbqCard} ${styles.bbqCard_appetizer}`}>
+                                <div className={styles.bbqCardHeader}>
+                                    <h3 className={styles.bbqCardTitle}>Appetizers (+$4/pp)</h3>
+                                </div>
+                                <ul className={styles.bbqList}>
                                     <li>Butcher&apos;s Charcuterie Board</li>
                                     <li>Bacon Wrapped Chorizo Dates</li>
                                     <li>Pimento Cheese + Crackers (+$2/pp)</li>
                                 </ul>
                             </div>
-                            <div className={styles.menuCategory}>
-                                <h3 className={styles.menuCatTitle}>Add&apos;l Meats</h3>
-                                <ul className={styles.menuList}>
+                            <div className={`${styles.bbqCard} ${styles.bbqCard_meat}`}>
+                                <div className={styles.bbqCardHeader}>
+                                    <h3 className={styles.bbqCardTitle}>Add&apos;l Meats</h3>
+                                </div>
+                                <ul className={styles.bbqList}>
                                     <li>Burnt Ends Brisket</li>
                                     <li>BBQ Pulled Chicken</li>
                                     <li>Rib Tips + Hot Links Combo</li>
@@ -312,9 +430,11 @@ export default async function SpecialsPage() {
                                     <li>Any of our HMC Sausages</li>
                                 </ul>
                             </div>
-                            <div className={styles.menuCategory}>
-                                <h3 className={styles.menuCatTitle}>Side Options</h3>
-                                <ul className={styles.menuList}>
+                            <div className={`${styles.bbqCard} ${styles.bbqCard_side}`}>
+                                <div className={styles.bbqCardHeader}>
+                                    <h3 className={styles.bbqCardTitle}>Side Options</h3>
+                                </div>
+                                <ul className={styles.bbqList}>
                                     <li>Pimento Mac n Cheese</li>
                                     <li>HMCo.leSlaw</li>
                                     <li>Potato Salad</li>
@@ -329,20 +449,29 @@ export default async function SpecialsPage() {
                         </div>
                     </div>
 
-                    <div className={styles.pricingBox}>
-                        <h3 className={styles.pricingTitle}>Pig Roast Pricing (Per Person · Pickup)</h3>
-                        <p className={styles.pricingNote}>Includes paperware, cutlery, serving utensils, buns, condiments &amp; sauce. Price does not include tax.</p>
-                        <div className={styles.pricingGrid}>
-                            <div className={styles.priceRow}><span>Just the Pig</span><strong>$30/person</strong></div>
-                            <div className={styles.priceRow}><span>Pig + 1 Side</span><strong>$32/person</strong></div>
-                            <div className={styles.priceRow}><span>Pig + 2 Sides</span><strong>$34/person</strong></div>
-                            <div className={styles.priceRow}><span>Pig + 3 Sides</span><strong>$36/person</strong></div>
-                            <div className={styles.priceRow}><span>1 Add&apos;l Meat + 1 Side</span><strong>$36/person</strong></div>
-                            <div className={styles.priceRow}><span>1 Add&apos;l Meat + 2 Sides</span><strong>$38/person</strong></div>
-                            <div className={styles.priceRow}><span>1 Add&apos;l Meat + 3 Sides</span><strong>$40/person</strong></div>
+                    <div className={styles.bbqPricing}>
+                        <div className={styles.bbqPricingHeader}>
+                            <h3 className={styles.bbqPricingTitle}>Pig Roast Pricing</h3>
+                            <span className={styles.bbqPricingBadge}>Per Person · Pickup</span>
                         </div>
-                        <a href="mailto:catering@hofherrmeatco.com?subject=Pig Roast Inquiry" className="btn btn-primary">Reserve a Date</a>
+                        <p className={styles.bbqPricingNote}>Includes paperware, cutlery, serving utensils, buns, condiments &amp; sauce. Price does not include tax.</p>
+                        <div className={styles.bbqPricingGrid}>
+                            <div className={styles.bbqPriceRow}><span>Just the Pig</span><strong>$30/person</strong></div>
+                            <div className={styles.bbqPriceRow}><span>Pig + 1 Side</span><strong>$32/person</strong></div>
+                            <div className={styles.bbqPriceRow}><span>Pig + 2 Sides</span><strong>$34/person</strong></div>
+                            <div className={styles.bbqPriceRow}><span>Pig + 3 Sides</span><strong>$36/person</strong></div>
+                            <div className={styles.bbqPriceRow}><span>1 Add&apos;l Meat + 1 Side</span><strong>$36/person</strong></div>
+                            <div className={styles.bbqPriceRow}><span>1 Add&apos;l Meat + 2 Sides</span><strong>$38/person</strong></div>
+                            <div className={styles.bbqPriceRow}><span>1 Add&apos;l Meat + 3 Sides</span><strong>$40/person</strong></div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '8px' }}>
+                            <a href="mailto:catering@hofherrmeatco.com?subject=Pig Roast Inquiry" className="btn btn-primary">Reserve a Date →</a>
+                            <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
+                        </div>
                     </div>
+
+                    {/* Availability Calendar */}
+                    <CateringCalendar events={cateringEvents} defaultPricing={calendarPricing} />
                 </div>
             </section>
 

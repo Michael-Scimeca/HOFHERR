@@ -3,28 +3,28 @@ import styles from './Specials.module.css';
 
 const FEATURED = [
     {
-        emoji: '🥩',
+        image: '/assets/specials-italian-beef.png',
         title: "The World's Greatest Italian Beef",
         desc: "As featured on America's Test Kitchen (PBS). House-made and served daily at The Depot, Mon–Fri starting at 10:30am until sold out.",
-        href: '/specials',
+        href: '/specials#the-world-s-greatest-italian-beef',
     },
     {
-        emoji: '🍗',
+        image: '/assets/specials-rotisserie.png',
         title: 'Rotisserie Chicken Dinners',
         desc: 'Pasture-raised chickens, slow-roasted on our floor-to-ceiling rotisserie. Served hot with schmaltzy potatoes. Available Tue–Sun.',
-        href: '/specials',
+        href: '/specials#rotisserie-chicken-dinners',
     },
     {
-        emoji: '🔥',
+        image: '/assets/specials-bbq.png',
         title: 'BBQ Catering',
         desc: 'Competition-style BBQ for any event. Brisket, ribs, pulled pork — smoked low and slow. From 20 to 500+ guests.',
-        href: '/bbq',
+        href: '/specials#bbq-catering',
     },
     {
-        emoji: '🐷',
+        image: '/assets/specials-pig-roast.png',
         title: 'Pig Roasts',
         desc: 'Full-service pig roasts for 50–300+ guests. We source, prep, cook, serve & clean up. The full experience.',
-        href: '/catering',
+        href: '/specials#pig-roasts',
     },
 ];
 
@@ -40,10 +40,14 @@ export default function Specials() {
                 <div className={styles.grid}>
                     {FEATURED.map(item => (
                         <Link key={item.title} href={item.href} className={styles.card}>
-                            <span className={styles.emoji}>{item.emoji}</span>
-                            <h3 className={styles.cardTitle}>{item.title}</h3>
-                            <p className={styles.cardDesc}>{item.desc}</p>
-                            <span className={styles.cardLink}>Learn More</span>
+                            <div className={styles.cardImg}>
+                                <img src={item.image} alt={item.title} />
+                            </div>
+                            <div className={styles.cardBody}>
+                                <h3 className={styles.cardTitle}>{item.title}</h3>
+                                <p className={styles.cardDesc}>{item.desc}</p>
+                                <span className={styles.cardLink}>Learn More →</span>
+                            </div>
                         </Link>
                     ))}
                 </div>

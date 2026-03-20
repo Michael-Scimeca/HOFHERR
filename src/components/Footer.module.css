@@ -26,7 +26,7 @@
 }
 
 .logoMain {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.2rem;
     font-weight: 800;
     color: var(--gold);
@@ -45,6 +45,7 @@
     font-size: 13px;
     color: var(--text-3);
     line-height: 1.7;
+    max-width: 350px;
     margin-bottom: 20px;
 }
 

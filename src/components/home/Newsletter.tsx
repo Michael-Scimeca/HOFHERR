@@ -62,7 +62,7 @@ export default function Newsletter() {
             {/* ── Background video ── */}
             <video
                 className={styles.bgVideo}
-                src="/cows.mp4"
+                src="/video-clips/cows.mp4"
                 autoPlay
                 muted
                 loop

@@ -10,7 +10,7 @@
 }
 
 .headline {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: clamp(2rem, 5vw, 3.2rem);
     color: var(--fg);
     margin: 12px 0 16px;
@@ -35,14 +35,16 @@
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
     align-items: start;
+    max-width: 960px;
+    margin: 0 auto;
 }
 
 @media (max-width: 900px) {
     .grid {
-        grid-template-columns: 1fr 1fr;
+        gap: 24px;
     }
 }
 
@@ -81,7 +83,7 @@
 }
 
 .cardTitle {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.5rem;
     color: var(--fg);
     margin: 0;
@@ -169,7 +171,7 @@
 }
 
 .faqTitle {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.8rem;
     color: var(--fg);
     margin-bottom: 32px;
@@ -212,7 +214,7 @@
 }
 
 .cta h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 2rem;
     margin-bottom: 8px;
     color: #fff;

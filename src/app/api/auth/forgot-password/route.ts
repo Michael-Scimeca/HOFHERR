@@ -13,42 +13,16 @@ export async function POST(req: NextRequest) {
 
         const normalizedEmail = email.toLowerCase().trim();
 
-        // Check if user exists (excluding master admin)
-        if (normalizedEmail === 'admin@hofherrmeats.com') {
-             // Let's send a special email to the developer's email with the hardcoded credentials
-             const smtpHost = process.env.SMTP_HOST;
-             const smtpUser = process.env.SMTP_USER;
-             const smtpPass = process.env.SMTP_PASS;
-             
-             if (smtpHost && smtpUser && smtpPass) {
-                 const nodemailer = await import('nodemailer');
-                 const transporter = nodemailer.createTransport({
-                     host: smtpHost,
-                     port: Number(process.env.SMTP_PORT || 587),
-                     secure: process.env.SMTP_SECURE === 'true',
-                     auth: { user: smtpUser, pass: smtpPass },
-                 });
-                 
-                 await transporter.sendMail({
-                     from: smtpUser,
-                     to: 'mikeyscimeca@gmail.com',
-                     subject: 'Master Admin Account Access | Hofherr Meat Co.',
-                     html: `
-                         <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
-                             <h2 style="color: #800020;">Master Admin Recovery</h2>
-                             <p>A password reset was requested for the Master Admin account.</p>
-                             <p>Because this account is hardcoded into the application code (and not stored in the database), the password cannot be reset via the normal flow.</p>
-                             <p>The current Master Admin credentials are:</p>
-                             <ul>
-                                 <li><strong>Email:</strong> admin@hofherrmeats.com</li>
-                                 <li><strong>Password:</strong> PremiumCuts2026!</li>
-                             </ul>
-                         </div>
-                     `
-                 });
-                 console.log(`[Forgot Password] Sent master admin credentials to mikeyscimeca@gmail.com`);
-             }
-             return NextResponse.json({ success: true, message: 'If an account exists, a reset link has been sent.' });
+        // Admin accounts use env vars — cannot be reset via this flow
+        const adminEmails = [
+            process.env.ADMIN_EMAIL?.toLowerCase(),
+            process.env.BUTCHER_ADMIN_EMAIL?.toLowerCase(),
+            process.env.DEPOT_ADMIN_EMAIL?.toLowerCase(),
+        ].filter(Boolean);
+
+        if (adminEmails.includes(normalizedEmail)) {
+            // Don't reveal that this is an admin account, return same generic message
+            return NextResponse.json({ success: true, message: 'If an account exists, a reset link has been sent.' });
         }
 
         const user = await adminClient.fetch(

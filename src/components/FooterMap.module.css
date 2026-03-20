@@ -3,6 +3,8 @@
 .mapSection {
     border-bottom: 1px solid var(--border);
     position: relative;
+    z-index: 0;
+    isolation: isolate;
 }
 
 /* ─── Toggle Bar ─── */

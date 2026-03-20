@@ -80,7 +80,7 @@
 }
 
 .cutName {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--text);
@@ -106,7 +106,7 @@
 }
 
 .price {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1rem;
     font-weight: 700;
     color: var(--gold);

@@ -19,7 +19,7 @@
     font-size: 24px;
     font-weight: 700;
     margin: 0;
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
 }
 
 .tabs {
@@ -89,9 +89,22 @@
 /* ─── Metrics / Charts ─── */
 .metricsContainer {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     margin-bottom: 40px;
+}
+
+.chartCardWide {
+    grid-column: span 2;
+}
+
+@media (max-width: 900px) {
+    .metricsContainer {
+        grid-template-columns: 1fr;
+    }
+    .chartCardWide {
+        grid-column: span 1;
+    }
 }
 
 .chartCard {
@@ -105,7 +118,7 @@
 }
 
 .chartCard h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 22px;
     font-weight: 600;
     margin: 0 0 24px 0;
@@ -391,7 +404,7 @@
 .modalHeader h2 {
     margin: 0;
     font-size: 24px;
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
 }
 
 .modalClose {

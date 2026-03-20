@@ -14,7 +14,7 @@
     position: absolute;
     bottom: -0.15em;
     right: -0.05em;
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: clamp(18rem, 35vw, 32rem);
     font-weight: 900;
     color: var(--bg-2);
@@ -48,7 +48,7 @@
 }
 
 .headline {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: clamp(2.8rem, 7vw, 5rem);
     color: var(--fg);
     line-height: 1.1;

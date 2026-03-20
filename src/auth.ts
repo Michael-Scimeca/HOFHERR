@@ -38,32 +38,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const enteredEmail = (credentials.email as string).toLowerCase().trim();
         const enteredPassword = (credentials.password as string);
         
-        // Shop-Specific Admin Logins
-        if (enteredEmail === 'butcher@hofherrmeats.com' && enteredPassword === 'PremiumCuts2026!') {
-          return {
+        // Shop-Specific Admin Logins (credentials from environment variables)
+        const adminAccounts = [
+          {
+            email: process.env.BUTCHER_ADMIN_EMAIL?.toLowerCase(),
+            password: process.env.BUTCHER_ADMIN_PASSWORD,
             id: 'admin-butcher',
-            email: 'butcher@hofherrmeats.com',
             name: 'Butcher Shop Admin',
-            isAdmin: true,
-          };
-        }
-        if (enteredEmail === 'depot@hofherrmeats.com' && enteredPassword === 'PremiumCuts2026!') {
-          return {
+          },
+          {
+            email: process.env.DEPOT_ADMIN_EMAIL?.toLowerCase(),
+            password: process.env.DEPOT_ADMIN_PASSWORD,
             id: 'admin-depot',
-            email: 'depot@hofherrmeats.com',
             name: 'The Depot Admin',
-            isAdmin: true,
-          };
-        }
-
-        // Master Admin Login
-        if (enteredEmail === 'admin@hofherrmeats.com' && enteredPassword === 'PremiumCuts2026!') {
-          return {
+          },
+          {
+            email: process.env.ADMIN_EMAIL?.toLowerCase(),
+            password: process.env.ADMIN_PASSWORD,
             id: 'master-admin',
-            email: 'admin@hofherrmeats.com',
             name: 'Hofherr Master Admin',
-            isAdmin: true,
-          };
+          },
+        ];
+
+        for (const admin of adminAccounts) {
+          if (admin.email && admin.password && enteredEmail === admin.email && enteredPassword === admin.password) {
+            return {
+              id: admin.id,
+              email: admin.email,
+              name: admin.name,
+              isAdmin: true,
+            };
+          }
         }
 
         const user = await adminClient.fetch(

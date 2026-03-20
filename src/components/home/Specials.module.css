@@ -8,7 +8,7 @@
 }
 
 .title {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: clamp(2rem, 4vw, 2.8rem);
     color: var(--fg);
     margin: 8px 0 8px;
@@ -35,35 +35,57 @@
     background: var(--bg-2);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 28px 22px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 10px;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
 }
 
-.emoji {
-    font-size: 2rem;
+.cardImg {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.cardImg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.card:hover .cardImg img {
+    transform: scale(1.05);
+}
+
+.cardBody {
+    padding: 20px 18px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
 }
 
 .cardTitle {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.15rem;
     color: var(--fg);
     margin: 0;
+    line-height: 1.2;
 }
 
 .cardDesc {
-    font-size: 13.5px;
+    font-size: 13px;
     color: var(--fg-muted);
-    line-height: 1.65;
+    line-height: 1.6;
     margin: 0;
     flex: 1;
 }
@@ -72,7 +94,7 @@
     font-size: 13px;
     font-weight: 700;
     color: var(--red);
-    margin-top: auto;
+    margin-top: 4px;
 }
 
 /* ── Responsive ── */

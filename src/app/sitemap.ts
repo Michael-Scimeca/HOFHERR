@@ -24,10 +24,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.9,
         },
         {
+            url: `${base}/bbq`,
+            lastModified: now,
+            changeFrequency: 'monthly',
+            priority: 0.9,
+        },
+        {
             url: `${base}/catering`,
             lastModified: now,
             changeFrequency: 'monthly',
-            priority: 0.85,
+            priority: 0.88,
         },
         {
             url: `${base}/visit`,
@@ -64,6 +70,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
             lastModified: now,
             changeFrequency: 'yearly',
             priority: 0.5,
+        },
+        {
+            url: `${base}/jobs`,
+            lastModified: now,
+            changeFrequency: 'monthly',
+            priority: 0.4,
         },
     ];
 }

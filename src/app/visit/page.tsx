@@ -2,14 +2,19 @@ import type { Metadata } from 'next';
 import VisitClient from './VisitClient';
 
 export const metadata: Metadata = {
-    title: 'Visit Us | Two Locations — Northfield & Winnetka | Hofherr Meat Co.',
-    description: 'Hofherr Meat Co. has two locations: The Butcher Shop at 300 Happ Rd, Northfield, and The Depot at 754 Elm St inside the Winnetka Elm Street Metra Station. Get hours, directions, and parking info.',
+    title: 'Hours & Directions | Butcher Shop Northfield & Winnetka, IL | Hofherr Meat Co.',
+    description: 'Two locations: The Butcher Shop at 300 Happ Rd, Northfield IL (Tue–Sun) and The Depot at 754 Elm St inside the Winnetka Elm Street Metra Station (Mon–Fri). Get hours, directions, and parking info.',
     alternates: { canonical: 'https://hofherrmeatco.com/visit' },
     openGraph: {
-        title: 'Visit Hofherr Meat Co. | Two Locations in Northfield & Winnetka',
-        description: 'Open Tuesday through Sunday at The Butcher Shop. Monday through Friday at The Depot. Free parking at both locations.',
+        title: 'Visit Hofherr Meat Co. | Northfield & Winnetka, IL',
+        description: 'The Butcher Shop: 300 Happ Rd, Northfield — Tue–Sun. The Depot: 754 Elm St, Winnetka Metra Station — Mon–Fri. Free parking at both.',
         url: 'https://hofherrmeatco.com/visit',
-        images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-visit.png', width: 1200, height: 630 }],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Visit Hofherr Meat Co. | Two Locations',
+        description: 'Northfield (Tue–Sun) & Winnetka Metra Station (Mon–Fri). Premium butcher shop on Chicago\'s North Shore.',
     },
 };
 

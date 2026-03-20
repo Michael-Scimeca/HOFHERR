@@ -10,14 +10,15 @@ export async function PUT(req: Request) {
         }
 
         const body = await req.json();
-        const { name, email, phone, avatar } = body;
 
-        // Ensure we're only updating allowed fields
-        const updates: any = {};
-        if (name !== undefined) updates.name = name;
-        if (email !== undefined) updates.email = email;
-        if (phone !== undefined) updates.phone = phone;
-        if (avatar !== undefined) updates.avatar = avatar;
+        // Whitelist allowed fields to prevent privilege escalation
+        const ALLOWED_FIELDS = ['name', 'email', 'phone', 'avatar'] as const;
+        const updates: Record<string, string> = {};
+        for (const key of ALLOWED_FIELDS) {
+            if (body[key] !== undefined) {
+                updates[key] = String(body[key]).slice(0, 200);
+            }
+        }
 
         if (Object.keys(updates).length > 0) {
             await adminClient

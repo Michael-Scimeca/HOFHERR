@@ -1,12 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 
 type Animal = 'beef' | 'pork' | 'chicken' | 'lamb';
-type CutEntry = { name: string; sub: string; best: string; cook: string; tip: string };
+type CutEntry = { name: string; sub: string; best: string; cook: string; tip: string; image?: string | null };
 
-/* ── Hardcoded cut data ── */
+type SanityCut = {
+    _id: string;
+    name: string;
+    animal: string;
+    subcut: string | null;
+    bestFor: string | null;
+    cookingMethod: string | null;
+    tip: string | null;
+    image: string | null;
+};
+
+interface Props {
+    sanityCuts?: SanityCut[];
+}
+
+/* ── Hardcoded cut data (fallback) ── */
 const DEFAULT_CUTS: Record<Animal, CutEntry[]> = {
     beef: [
         { name: 'Ribeye', sub: 'Rib section', best: 'Steakhouse-quality grilling', cook: 'Grill · Cast Iron', tip: 'Pull at 125°F for medium-rare. Let it rest 5 min.' },
@@ -62,9 +77,34 @@ const COOK_COLORS: Record<string, string> = {
     'Poach': '#059669', 'Simmer': '#0891b2', 'Rotisserie': '#e8501a', 'Bake': '#7c3aed',
 };
 
-export default function CutGuideClient() {
+export default function CutGuideClient({ sanityCuts = [] }: Props) {
     const [active, setActive] = useState<Animal>('beef');
-    const cuts = DEFAULT_CUTS[active];
+
+    // Build cuts from Sanity data, falling back to hardcoded
+    const cutsByAnimal = useMemo(() => {
+        if (!sanityCuts.length) return DEFAULT_CUTS;
+
+        const grouped: Record<string, CutEntry[]> = {};
+        for (const sc of sanityCuts) {
+            const animal = sc.animal || 'beef';
+            if (!grouped[animal]) grouped[animal] = [];
+            grouped[animal].push({
+                name: sc.name,
+                sub: sc.subcut || '',
+                best: sc.bestFor || '',
+                cook: sc.cookingMethod || '',
+                tip: sc.tip || '',
+                image: sc.image,
+            });
+        }
+        // Fill any missing animals from fallback
+        for (const a of Object.keys(DEFAULT_CUTS) as Animal[]) {
+            if (!grouped[a]?.length) grouped[a] = DEFAULT_CUTS[a];
+        }
+        return grouped as Record<Animal, CutEntry[]>;
+    }, [sanityCuts]);
+
+    const cuts = cutsByAnimal[active] || [];
 
     return (
         <main>
@@ -73,7 +113,7 @@ export default function CutGuideClient() {
                 <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: 'var(--red)', marginBottom: 14 }}>
                     From the butcher&apos;s block
                 </p>
-                <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 5vw, 3.2rem)', color: 'var(--fg)', marginBottom: 16 }}>
+                <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', color: 'var(--fg)', marginBottom: 16 }}>
                     The Cut Guide
                 </h1>
                 <p style={{ fontSize: '1rem', color: 'var(--fg-muted)', lineHeight: 1.7 }}>
@@ -112,7 +152,7 @@ export default function CutGuideClient() {
                                 padding: 28, display: 'flex', flexDirection: 'column' as const, gap: 14,
                             }}>
                                 <div>
-                                    <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.25rem', color: 'var(--fg)', margin: '0 0 4px' }}>{cut.name}</h2>
+                                    <h2 style={{ fontFamily: "", fontSize: '1.25rem', color: 'var(--fg)', margin: '0 0 4px' }}>{cut.name}</h2>
                                     <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: 'var(--fg-muted)', margin: 0 }}>{cut.sub}</p>
                                 </div>
                                 <p style={{ fontSize: 14, color: 'var(--fg-muted)', lineHeight: 1.6, margin: 0 }}>
@@ -149,7 +189,7 @@ export default function CutGuideClient() {
             {/* ── CTA ── */}
             <section style={{ background: 'var(--bg-2)', borderTop: '1px solid var(--border)', padding: '72px 24px', textAlign: 'center' }}>
                 <div className="container">
-                    <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2rem', color: 'var(--fg)', marginBottom: 10 }}>Need a specific cut?</h2>
+                    <h2 style={{ fontFamily: ", serif", fontSize: '2rem', color: 'var(--fg)', marginBottom: 10 }}>Need a specific cut?</h2>
                     <p style={{ fontSize: 15, color: 'var(--fg-muted)', marginBottom: 28 }}>We cut everything fresh to order. Just ask.</p>
                     <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' as const }}>
                         <a href="tel:8474416328" className="btn btn-primary">📞 Call Us</a>

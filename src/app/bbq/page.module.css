@@ -4,7 +4,7 @@
 
 /* ── Hero ──────────────────────────────────────────────── */
 .hero {
-    background: #1a1210;
+    background: var(--bg);
     background-image:
         radial-gradient(ellipse at 20% 50%, rgba(128, 0, 32, 0.15) 0%, transparent 60%),
         radial-gradient(ellipse at 80% 30%, rgba(128, 0, 32, 0.08) 0%, transparent 50%);
@@ -31,7 +31,7 @@
 }
 
 .headline {
-    font-family: 'Playfair Display', serif;
+
     font-size: clamp(2.8rem, 6vw, 4.2rem);
     color: #fff;
     margin: 12px 0 20px;
@@ -107,7 +107,7 @@
 }
 
 .catTitle {
-    font-family: 'Playfair Display', serif;
+
     font-size: 14px;
     font-weight: 800;
     letter-spacing: 0.06em;
@@ -162,7 +162,6 @@
 }
 
 .pricingTitle {
-    font-family: 'Playfair Display', serif;
     font-size: clamp(1.8rem, 3vw, 2.4rem);
     color: var(--fg);
     margin: 8px 0 8px;
@@ -194,7 +193,7 @@
 }
 
 .pricingCardFeatured {
-    background: #1a1210;
+    background: var(--bg);
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -214,7 +213,6 @@
 }
 
 .pricingCardTitle {
-    font-family: 'Playfair Display', serif;
     font-size: 1.2rem;
     color: var(--fg);
 }
@@ -325,7 +323,6 @@
 }
 
 .serviceCard h3 {
-    font-family: 'Playfair Display', serif;
     font-size: 1.05rem;
     color: var(--fg);
     margin: 0;
@@ -341,7 +338,7 @@
 
 /* ── CTA Section ──────────────────────────────────────── */
 .cta {
-    background: #1a1210;
+    background: var(--bg);
     background-image:
         radial-gradient(ellipse at 50% 0%, rgba(128, 0, 32, 0.12) 0%, transparent 60%);
     padding: 48px 24px;
@@ -349,7 +346,7 @@
 }
 
 .ctaTitle {
-    font-family: 'Playfair Display', serif;
+
     font-size: clamp(1.8rem, 3.5vw, 2.6rem);
     color: #fff;
     margin: 0 0 12px;

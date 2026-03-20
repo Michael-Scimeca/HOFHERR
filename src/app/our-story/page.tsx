@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
+import HoverVideo from '@/components/HoverVideo';
 import Link from 'next/link';
 import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
@@ -6,14 +8,19 @@ import { TEAM_MEMBERS_QUERY, TIMELINE_QUERY, ACCOLADES_QUERY } from '@/sanity/qu
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-    title: 'Our Story | Hofherr Meat Co. — A Century of Craft Butchery in Northfield & Winnetka',
-    description: 'From a village butcher in Germany to Chicago\'s South Side to Northfield and Winnetka — the Hofherr name has meant quality meat for over a century. Meet Sean Hofherr, owner and head butcher.',
+    title: 'Our Story | Hofherr Meat Co. — 120+ Years of Craft Butchery',
+    description: 'From a village butcher in Germany to Chicago\'s South Side to Northfield and Winnetka — the Hofherr family has been perfecting the craft for over 120 years. Meet Sean Hofherr, owner, head butcher, and winner of the North Shore Chili Cookoff.',
     alternates: { canonical: 'https://hofherrmeatco.com/our-story' },
     openGraph: {
         title: 'Our Story | Hofherr Meat Co.',
-        description: 'A century of butchering heritage. From Chicago\'s South Side to Northfield, IL — quality meats, no compromise.',
+        description: 'Over 120 years of butchering heritage. Chicago South Side roots, now serving Northfield & Winnetka with the same uncompromising quality.',
         url: 'https://hofherrmeatco.com/our-story',
-        images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-our-story.png', width: 1200, height: 630 }],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Our Story | Hofherr Meat Co.',
+        description: '120+ years of craft butchery. Family heritage from Chicago\'s South Side to the North Shore.',
     },
 };
 
@@ -91,15 +98,27 @@ export default async function OurStoryPage() {
                 <div className={styles.heroInner}>
                     <p className={styles.eyebrow}>Est. 2014 · Northfield & Winnetka, IL</p>
                     <h1 className={styles.headline}>
-                        Respect for the Past.<br />
-                        <em>An Eye to the Future.</em>
+                        Respect For the Past.<br />
+                        <em>With An Eye To The Future.</em>
                     </h1>
                     <p className={styles.sub}>
-                        The Hofherr name has meant quality meat for over a century — from a village in Germany, to Chicago&apos;s South Side, to two thriving locations on the North Shore.
+                        Sean Hofherr carries on a legacy that began with a village butcher in Germany, carried across the ocean by his immigrant great-grandfather who built the original Hofherr Meat Company on Chicago's South Side. Now Sean is bringing that name — and that heritage — back to Chicago's stockyard history.
                     </p>
                 </div>
             </section>
 
+            {/* ── Heritage Gallery ── */}
+            <section className={styles.heritage}>
+                <div className="container">
+                    <div className={styles.heritageGrid}>
+                        <HoverVideo src="/video-clips/storykeeper.mp4" caption="The original Hofherr Wholesale Meats storefront" />
+
+                        <HoverVideo src="/video-clips/storykeeper.mp4" caption="The Hofherr crew — a family tradition" />
+                        <HoverVideo src="/video-clips/inside.mp4" poster="/history/shop-interior.png" caption="Inside the original shop — Chicago's South Side" />
+                        <HoverVideo src="/video-clips/truck.mp4" caption="Hofherr Meat Co. — on the road" />
+                    </div>
+                </div>
+            </section>
             {/* ── The Man ── */}
             <section className={styles.bio}>
                 <div className="container">
@@ -108,16 +127,16 @@ export default async function OurStoryPage() {
                             <span className={styles.sectionLabel}>The Butcher</span>
                             <h2>Sean Hofherr</h2>
                             <p>
-                                Sean comes from a long line of butchers — beginning with a great-great-grandfather who was a village butcher in Germany, and continuing with an immigrant great-grandfather who established a successful meat-packing company on Chicago's South Side.
-                            </p>
-                            <p>
-                                Driven by a reverence for that heritage, Sean set out to re-establish the Hofherr name in Chicago's rich stockyard history. He honed his skills at Keefer's Restaurant in River North, apprenticed under the masters at Zier's Prime Meats in Wilmette, and ran the kitchen at Stormy's Tavern in Northfield — where his food earned widespread acclaim from locals and the press.
+                                Sean honed his culinary and food preparation skills in numerous kitchens and cooking competitions over the years, winning a host of accolades for his many signature dishes. He began his career in the food industry at renowned steakhouse Keefer&apos;s Restaurant in Chicago&apos;s River North. He continued to nurture his passion at the cutting board during an apprenticeship at Zier&apos;s Prime Meats in Wilmette. Most recently, Sean served as kitchen director at Stormy&apos;s Tavern in Northfield, where his culinary creations garnered widespread acclaim from locals and the press alike.
                             </p>
                             <p>
                                 In March 2014, he opened Hofherr Meat Co. at 300 Happ Rd, Northfield. The mission is simple: <strong>Quality meats. No compromise.</strong>
                             </p>
                             <p>
                                 In 2024, Sean expanded the Hofherr footprint with <strong>The Depot</strong> — a second location inside the historic Winnetka Elm Street Metra Train Station, bringing the same premium cuts and personal service to commuters and residents across the North Shore.
+                            </p>
+                            <p>
+                                Sean is an active member of the Butcher&apos;s Guild and the Illinois Barbecue Association.
                             </p>
                             <Link href="/visit" className="btn btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}>
                                 Come Visit Us

@@ -1,9 +1,16 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { client } from '@/sanity/client';
-import { CUSTOMER_BY_EMAIL_QUERY, ORDER_HISTORY_QUERY } from '@/sanity/queries';
+import { CUSTOMER_BY_EMAIL_QUERY, ORDER_HISTORY_QUERY, SPECIALS_QUERY } from '@/sanity/queries';
 import DashboardClient from './DashboardClient';
+
+export const metadata: Metadata = {
+    title: 'My Account',
+    description: 'Manage your Hofherr Meat Co. account, view order history, and access exclusive member specials.',
+    robots: { index: false, follow: false },
+};
 
 export default async function DashboardPage() {
     const session = await auth();
@@ -30,8 +37,12 @@ export default async function DashboardPage() {
         orderHistory = await client.fetch(ORDER_HISTORY_QUERY, { customerId: customerRecord._id });
     }
 
+    // Fetch active specials
+    const specials = await client.fetch(SPECIALS_QUERY);
+
     const address = customerRecord?.address || '';
     const phone = customerRecord?.phone || '';
+    const avatar = customerRecord?.avatar || '';
 
     return (
         <DashboardClient 
@@ -40,7 +51,9 @@ export default async function DashboardPage() {
             phone={phone}
             address={address}
             initial={initial} 
-            initialOrders={orderHistory} 
+            initialOrders={orderHistory}
+            specials={specials || []}
+            avatar={avatar}
         />
     );
 }

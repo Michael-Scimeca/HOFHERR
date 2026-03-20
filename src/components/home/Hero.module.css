@@ -17,23 +17,11 @@
 }
 
 .bgImage {
-    position: absolute;
-    inset: 0;
-    background-image: url('/hero-bg.jpg');
-    background-size: cover;
-    background-position: center 40%;
-    filter: sepia(30%) brightness(0.45);
-    transform: scale(1.04);
-    transition: transform 8s ease-out;
+    display: none;
 }
 
 .bgOverlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(105deg,
-            rgba(10, 5, 3, 0.72) 0%,
-            rgba(30, 12, 8, 0.55) 60%,
-            rgba(0, 0, 0, 0.3) 100%);
+    display: none;
 }
 
 /* ─── Content ─── */
@@ -56,7 +44,7 @@
     font-weight: 700;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: rgba(255, 200, 150, 0.9);
+    color: rgba(255, 200, 130, 0.85);
     margin-bottom: 14px;
     animation: fadeInUp 0.6s var(--ease-out) both;
 }
@@ -99,10 +87,12 @@
 }
 
 .headline {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2.6rem, 5.5vw, 4.6rem);
-    font-weight: 800;
-    line-height: 1.05;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(3.2rem, 7vw, 6rem);
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
     color: #fff;
     margin-bottom: 20px;
     animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
@@ -118,7 +108,7 @@
 
 .sub {
     font-size: clamp(0.95rem, 1.8vw, 1.05rem);
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.72);
     line-height: 1.7;
     max-width: 520px;
     margin-bottom: 24px;
@@ -169,7 +159,7 @@
 }
 
 .smsResponse {
-    color: rgba(255, 255, 255, 0.38);
+    color: var(--text-3, #888);
     font-size: 11.5px;
 }
 
@@ -191,7 +181,7 @@
 }
 
 .statNum {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.5rem;
     font-weight: 800;
     color: #f4a261;
@@ -203,14 +193,14 @@
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-3, #888);
     margin-top: 4px;
 }
 
 .statDiv {
     width: 1px;
     height: 32px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 /* ─── Animations ─── */

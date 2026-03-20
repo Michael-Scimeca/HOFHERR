@@ -16,7 +16,7 @@
 }
 
 .headline {
-    font-family: 'Playfair Display', serif;
+
     font-size: clamp(2rem, 5vw, 3.2rem);
     color: var(--fg);
     margin-bottom: 16px;
@@ -107,7 +107,6 @@
 }
 
 .cutName {
-    font-family: 'Playfair Display', serif;
     font-size: 1.25rem;
     color: var(--fg);
     margin: 0 0 4px;
@@ -186,7 +185,7 @@
 }
 
 .cta h2 {
-    font-family: 'Playfair Display', serif;
+
     font-size: 2rem;
     color: var(--fg);
     margin-bottom: 10px;

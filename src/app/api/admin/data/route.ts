@@ -11,7 +11,7 @@ export async function GET() {
         }
 
         // Secure check: Must be an admin
-        if (!session.user.isAdmin && process.env.NODE_ENV !== 'development') {
+        if (!session.user.isAdmin) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
 

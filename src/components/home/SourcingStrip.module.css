@@ -4,12 +4,7 @@
 }
 
 .bg {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-        radial-gradient(ellipse at 90% 20%, rgba(74, 122, 66, 0.08) 0%, transparent 55%),
-        radial-gradient(ellipse at 5% 90%, rgba(212, 168, 71, 0.06) 0%, transparent 50%);
+    display: none;
 }
 
 .header {
@@ -94,7 +89,7 @@
 }
 
 .farmName {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1rem;
     font-weight: 700;
     color: var(--text);

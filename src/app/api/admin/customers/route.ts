@@ -10,7 +10,7 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        if (!session.user.isAdmin && process.env.NODE_ENV !== 'development') {
+        if (!session.user.isAdmin) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
 

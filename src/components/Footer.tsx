@@ -29,11 +29,11 @@ export default function Footer() {
                 <div className={styles.brand}>
                     <div className={styles.logo}>
                         <Image
-                            src="/logo.png"
+                            src="/assets/logo.png"
                             alt={s.shopName}
                             height={64}
                             width={64}
-                            style={{ objectFit: 'contain' }}
+                            style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
                         />
                     </div>
                     <p className={styles.tagline}>Premium, traceable meats. Custom cuts, rotisserie chicken, seasonal specials, and world-class catering — all from our shop in Northfield, IL.</p>
@@ -81,12 +81,15 @@ export default function Footer() {
                 <div className={styles.bottomInner}>
                     <div className={styles.contact}>
                         <span>📞 <a href={phoneHref(s.phone)}>{s.phone}</a></span>
-                        <span>✉️ <a href={`mailto:${s.email}`}>{s.email}</a></span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+                            <a href="mailto:butcher@hofherrmeatco.com">butcher@hofherrmeatco.com</a>
+                        </span>
                     </div>
                     <div className={styles.locations}>
                         <div className={styles.location}>
                             <Link href="/online-orders?store=butcher" className={styles.locationTitle}>🥩 The Butcher Shop</Link>
-                            <div className={styles.locationAddr}>📍 300 Happ Rd, Northfield, IL 60093</div>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093" target="_blank" rel="noopener noreferrer" className={styles.locationAddr}>📍 300 Happ Rd, Northfield, IL 60093</a>
                             <div className={styles.hours}>
                                 {s.butcherHours?.map((h) => (
                                     h.isClosed ? (
@@ -99,7 +102,7 @@ export default function Footer() {
                         </div>
                         <div className={styles.location}>
                             <Link href="/online-orders?store=depot" className={styles.locationTitle}>🏪 The Depot</Link>
-                            <div className={styles.locationAddr}>📍 780 Elm St, Winnetka, IL 60093</div>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=780+Elm+St,+Winnetka,+IL+60093" target="_blank" rel="noopener noreferrer" className={styles.locationAddr}>📍 780 Elm St, Winnetka, IL 60093</a>
                             <div className={styles.hours}>
                                 {s.depotHours?.map((h) => (
                                     h.isClosed ? (

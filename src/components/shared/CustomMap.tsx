@@ -11,6 +11,40 @@ interface CustomMapProps {
     zoom?: number;
     height?: string;
     className?: string;
+    iconType?: 'butcher' | 'depot';
+}
+
+/* ─── Pin SVGs per location type ─── */
+function getPinHtml(type: 'butcher' | 'depot' = 'butcher'): string {
+    if (type === 'depot') {
+        // Train / depot icon
+        return `<svg viewBox="0 0 44 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 0C9.85 0 0 9.85 0 22c0 15.4 22 38 22 38S44 37.4 44 22C44 9.85 34.15 0 22 0z" fill="#CC0E1D"/>
+            <!-- Train body -->
+            <rect x="12" y="11" width="20" height="14" rx="3" fill="#fff"/>
+            <!-- Windows -->
+            <rect x="14" y="13" width="6" height="5" rx="1" fill="#CC0E1D"/>
+            <rect x="24" y="13" width="6" height="5" rx="1" fill="#CC0E1D"/>
+            <!-- Base stripe -->
+            <rect x="12" y="25" width="20" height="2" rx="1" fill="#fff" opacity="0.7"/>
+            <!-- Wheels -->
+            <circle cx="16" cy="30" r="2.5" fill="#fff"/>
+            <circle cx="28" cy="30" r="2.5" fill="#fff"/>
+        </svg>`;
+    }
+    // Butcher shop — cleaver icon
+    return `<svg viewBox="0 0 44 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 0C9.85 0 0 9.85 0 22c0 15.4 22 38 22 38S44 37.4 44 22C44 9.85 34.15 0 22 0z" fill="#CC0E1D"/>
+        <!-- Cleaver blade -->
+        <rect x="14" y="12" width="16" height="12" rx="2" fill="#fff"/>
+        <!-- Blade bevel -->
+        <path d="M14 22 L30 22 L30 24 Z" fill="#F2F2F2" opacity="0.4"/>
+        <!-- Handle -->
+        <rect x="20" y="24" width="4" height="8" rx="1.5" fill="#fff"/>
+        <!-- Rivet dots -->
+        <circle cx="17" cy="15" r="1.2" fill="#CC0E1D"/>
+        <circle cx="17" cy="19" r="1.2" fill="#CC0E1D"/>
+    </svg>`;
 }
 
 export default function CustomMap({ 
@@ -20,7 +54,8 @@ export default function CustomMap({
     address, 
     zoom = 15,
     height = '100%',
-    className 
+    className,
+    iconType = 'butcher',
 }: CustomMapProps) {
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapRef = useRef<L.Map | null>(null);
@@ -47,32 +82,28 @@ export default function CustomMap({
                 doubleClickZoom: true,
             });
 
-            /* Warm-toned Stadia Alidade Smooth tile layer */
+            /* ── Dark tile layer matching #181818 brand background ── */
             L.tileLayer(
-                'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
+                'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
                 { maxZoom: 19 }
             ).addTo(map);
 
             /* Add zoom control */
             L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-            /* Custom SVG pin marker */
+            /* Custom SVG pin — varies by location type */
             const icon = L.divIcon({
                 className: styles.customPin,
-                html: `<svg viewBox="0 0 40 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 0C8.954 0 0 8.954 0 20c0 14 20 36 20 36s20-22 20-36C40 8.954 31.046 0 20 0z" fill="#D14836"/>
-                    <circle cx="20" cy="19" r="8" fill="#fff"/>
-                    <circle cx="20" cy="19" r="4" fill="#D14836"/>
-                </svg>`,
-                iconSize: [40, 56],
-                iconAnchor: [20, 56],
-                popupAnchor: [0, -56],
+                html: getPinHtml(iconType),
+                iconSize: [44, 60],
+                iconAnchor: [22, 60],
+                popupAnchor: [0, -60],
             });
 
             const marker = L.marker([lat, lng], { icon }).addTo(map);
             marker.bindPopup(
-                `<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:600;color:#2e2a25;padding:4px 0;">${label}</div>
-                 <div style="font-size:12px;color:#6a6055;">${address}</div>`,
+                `<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#F2F2F2;padding:4px 0;">${label}</div>
+                 <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#A8905F;text-decoration:underline;cursor:pointer;">${address}</a>`,
                 { closeButton: false, className: styles.customPopup }
             );
 
@@ -100,8 +131,8 @@ export default function CustomMap({
         map.flyTo([lat, lng], zoom, { duration: 1.2 });
         marker.setLatLng([lat, lng]);
         marker.setPopupContent(
-            `<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:600;color:#2e2a25;padding:4px 0;">${label}</div>
-             <div style="font-size:12px;color:#6a6055;">${address}</div>`
+            `<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#ffffff;padding:4px 0;">${label}</div>
+             <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:rgba(255,255,255,0.7);text-decoration:underline;cursor:pointer;">${address}</a>`
         );
     }, [lat, lng, label, address, zoom]);
 

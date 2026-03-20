@@ -17,13 +17,13 @@ export const metadata: Metadata = {
         description:
             'Shop our full menu of premium cuts, produce & pantry items online. Dry-aged beef, Berkshire pork, lamb, house sausage & more — pick up at Northfield or The Depot in Winnetka.',
         url: 'https://hofherrmeatco.com/online-orders',
-        images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Order Online — Hofherr Meat Co.' }],
+        images: [{ url: '/OG/og-image.png', width: 1200, height: 630, alt: 'Order Online — Hofherr Meat Co.' }],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Order Online | Hofherr Meat Co.',
         description: 'Dry-aged steaks, Berkshire pork, produce & pantry — order online, pick up at Northfield or The Depot in Winnetka.',
-        images: ['/og-image.png'],
+        images: ['/OG/og-image.png'],
     },
 };
 

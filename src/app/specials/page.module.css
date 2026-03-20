@@ -2,7 +2,7 @@
 .hero {
     background: var(--bg-2);
     border-bottom: 1px solid var(--border);
-    padding: 56px 24px 48px;
+    padding: 32px 24px 32px;
     text-align: center;
 }
 
@@ -11,7 +11,7 @@
 }
 
 .headline {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: clamp(2.2rem, 5vw, 3.4rem);
     color: var(--fg);
     margin: 12px 0 16px;
@@ -89,7 +89,7 @@
 
 /* ── Section Title ── */
 .sectionTitle {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: clamp(1.6rem, 3vw, 2.4rem);
     color: var(--fg);
     margin: 10px 0 16px;
@@ -126,7 +126,7 @@
 }
 
 .calloutTitle {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.4rem;
     color: var(--fg);
 }
@@ -158,7 +158,7 @@
     border-radius: 20px;
     overflow: hidden;
     margin-bottom: 40px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     aspect-ratio: 21 / 9;
 }
 
@@ -204,134 +204,306 @@
     color: var(--fg-muted);
 }
 
-/* ── Menu ── */
+/* ── Menu Header (reused by Pig Roasts) ── */
 .menuHeader {
     text-align: center;
     max-width: 640px;
     margin: 0 auto 40px;
 }
 
-.menuSub {
-    font-size: 14px;
-    color: var(--fg-muted);
-    line-height: 1.7;
+/* ── BBQ Catering Section ── */
+.bbqSection {
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+}
+
+.bbqSection::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 0%, rgba(128, 0, 32, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 100%, rgba(180, 80, 20, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.bbqHero {
+    background: transparent;
+    padding: 80px 24px 48px;
+    text-align: center;
+    position: relative;
+    border: none;
+    border-bottom: none;
+}
+
+.bbqHero::after {
+    display: none;
+}
+
+.bbqEyebrow {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #d4845a;
+    margin-bottom: 18px;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+.bbqHeadline {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+    color: #fff;
+    margin: 0 0 18px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+}
+
+.bbqSub {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.75;
+    max-width: 500px;
+    margin: 0 auto;
+    opacity: 1;
+}
+
+.bbqSub a {
+    color: #d4845a;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(212, 132, 90, 0.3);
+}
+
+.bbqSub a:hover {
+    border-color: #d4845a;
+}
+
+/* ── Category cards — glass style ── */
+.bbqMenuGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 0 0 40px;
+    position: relative;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+    background: transparent;
+}
+
+.bbqCard {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 30px 26px 34px;
+    transition: transform 0.3s var(--ease-out), border-color 0.3s, background 0.3s;
+}
+
+.bbqCard:last-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bbqCard:hover {
+    transform: translateY(-6px);
+    border-color: rgba(212, 132, 90, 0.3);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.bbqCard_appetizer,
+.bbqCard_meat,
+.bbqCard_side {
+    border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.bbqCardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bbqCardTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #fff;
     margin: 0;
 }
 
-.menuSub a {
-    color: var(--red);
-}
-
-.menuGrid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-bottom: 40px;
-}
-
-.menuCategory {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px;
-}
-
-.menuCatTitle {
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
+.bbqCardCount {
+    font-size: 10px;
+    font-weight: 700;
+    color: #d4845a;
+    background: rgba(212, 132, 90, 0.12);
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--fg);
-    margin: 0 0 14px;
 }
 
-.menuList {
+.bbqList {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
 }
 
-.menuList li {
-    font-size: 13.5px;
-    color: var(--fg-muted);
-    padding-left: 12px;
+.bbqList li {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.65);
+    padding: 10px 0 10px 20px;
     position: relative;
-    line-height: 1.5;
+    line-height: 1.4;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: color 0.15s;
 }
 
-.menuList li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: var(--red);
-    font-size: 11px;
-    top: 3px;
+.bbqList li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
-/* Pig includes */
-.pigIncludes {
-    margin-bottom: 32px;
-}
-
-/* ── Pricing ── */
-.pricingBox {
-    background: #1a1a1a;
-    border-radius: 20px;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: flex-start;
-}
-
-.pricingTitle {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    color: #fff;
-    margin: 0;
-}
-
-.pricingNote {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0;
-    line-height: 1.6;
-}
-
-.pricingGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 12px;
-    width: 100%;
-}
-
-.priceRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.07);
-    border-radius: 10px;
-    padding: 12px 16px;
-    gap: 16px;
-}
-
-.priceRow span {
-    font-size: 13.5px;
+.bbqList li:hover {
     color: rgba(255, 255, 255, 0.9);
 }
 
-.priceRow strong {
-    font-size: 14px;
+.bbqList li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #d4845a;
+    opacity: 0.6;
+    display: block;
+}
+
+/* ── Pricing ── */
+.bbqPricing {
+    background: linear-gradient(135deg, rgba(128, 0, 32, 0.2) 0%, rgba(212, 132, 90, 0.08) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    margin-top: 0;
+    margin-bottom: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bbqPricing::before {
+    display: none;
+}
+
+.bbqPricingHeader {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.bbqPricingTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.6rem;
     color: #fff;
+    margin: 0;
+}
+
+.bbqPricingBadge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #d4845a;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+}
+
+.bbqPricingNote {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0;
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+.bbqPricingGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    width: 100%;
+    margin-top: 6px;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+}
+
+.bbqPriceRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 16px 20px;
+    gap: 16px;
+    transition: all 0.2s;
+}
+
+.bbqPriceRow:nth-child(even) {
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bbqPriceRow:nth-last-child(-n+2) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bbqPriceRow:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(212, 132, 90, 0.2);
+    transform: translateY(-1px);
+}
+
+.bbqPriceRow span {
+    font-size: 13.5px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.bbqPriceRow strong {
+    font-size: 15px;
+    color: #d4845a;
     white-space: nowrap;
+    font-weight: 700;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
 }
 
 /* ── Newsletter ── */
 .newsletter {
-    background: #1a1a1a;
+    background: var(--bg);
     padding: 48px 24px;
 }
 
@@ -345,7 +517,7 @@
 }
 
 .nlTitle {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: clamp(1.6rem, 3vw, 2.2rem);
     color: #fff;
     margin: 10px 0 14px;
@@ -379,7 +551,7 @@
         max-width: 400px;
     }
 
-    .menuGrid {
+    .bbqMenuGrid {
         grid-template-columns: 1fr 1fr;
     }
 
@@ -394,11 +566,19 @@
 }
 
 @media (max-width: 600px) {
-    .menuGrid {
+    .bbqMenuGrid {
         grid-template-columns: 1fr;
     }
 
-    .pricingGrid {
+    .bbqPricingGrid {
         grid-template-columns: 1fr;
+    }
+
+    .bbqHero {
+        padding: 56px 16px 40px;
+    }
+
+    .bbqPricing {
+        padding: 28px 20px;
     }
 }

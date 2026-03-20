@@ -59,7 +59,7 @@
 }
 
 .cardTitle {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.2rem;
     color: var(--text);
     margin: 0;

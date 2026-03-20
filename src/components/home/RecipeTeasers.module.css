@@ -81,7 +81,7 @@
 }
 
 .recipeName {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
     color: var(--text);

@@ -1,27 +1,28 @@
 /**
  * JsonLd — injects Local Business structured data (JSON-LD) into <head>.
  * Google uses this to power Knowledge Panels, Maps rich results, and more.
+ * Two locations: The Butcher Shop (Northfield) + The Depot (Winnetka).
  */
 export default function JsonLd() {
     const schema = {
         '@context': 'https://schema.org',
         '@graph': [
-            // ── Local Business ────────────────────────────────────────────────
+            // ── Main Location: The Butcher Shop ───────────────────────────────
             {
                 '@type': ['LocalBusiness', 'FoodEstablishment', 'GroceryStore'],
                 '@id': 'https://hofherrmeatco.com/#business',
                 name: 'Hofherr Meat Co.',
                 alternateName: 'Hofherr Meat Company',
                 description:
-                    'Premium craft butcher shop in Northfield, IL. Family butchering heritage dating to Chicago\'s South Side. Custom cuts, rotisserie chicken, pig roasts, Chicago Italian beef (as featured on America\'s Test Kitchen), and full-service BBQ catering.',
+                    'Premium craft butcher shop in Northfield, IL. Family butchering heritage dating to Chicago\'s South Side. Custom cuts, dry-aged USDA prime beef, rotisserie chicken, pig roasts, Chicago Italian beef (as featured on America\'s Test Kitchen), and full-service BBQ catering.',
                 url: 'https://hofherrmeatco.com',
                 telephone: '+18474416328',
                 email: 'butcher@hofherrmeatco.com',
                 foundingDate: '2014',
                 priceRange: '$$',
-                servesCuisine: ['American', 'Butcher Shop'],
-                image: 'https://hofherrmeatco.com/og-image.png',
-                logo: 'https://hofherrmeatco.com/logo.png',
+                servesCuisine: ['American', 'Butcher Shop', 'BBQ', 'Italian Beef'],
+                image: 'https://hofherrmeatco.com/OG/og-image.png',
+                logo: 'https://hofherrmeatco.com/assets/logo.png',
 
                 address: {
                     '@type': 'PostalAddress',
@@ -59,10 +60,11 @@ export default function JsonLd() {
                     },
                 ],
 
+                hasMap: 'https://maps.google.com/?q=300+Happ+Rd+Northfield+IL',
+
                 sameAs: [
                     'https://www.facebook.com/HofherrMeatCo',
                     'https://www.instagram.com/hofherrmeatco',
-                    'https://twitter.com/HofherrMeatCo',
                     'https://www.yelp.com/biz/hofherr-meat-co-northfield',
                 ],
 
@@ -72,13 +74,73 @@ export default function JsonLd() {
                     itemListElement: [
                         { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Custom Cuts & Steaks' } },
                         { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Dry-Aged USDA Prime Beef' } },
-                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Rotisserie Chicken' } },
-                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Pig Roasts' } },
-                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Chicago Italian Beef (Depot Location)' } },
-                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Catering Services' } },
+                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Rotisserie Chicken Dinners' } },
+                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Whole Pig Roasts (50+ guests)' } },
+                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'BBQ Catering (20–500+ guests)' } },
+                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Gift Cards' } },
                         { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Online Ordering & Curbside Pickup' } },
                     ],
                 },
+            },
+
+            // ── Second Location: The Depot ────────────────────────────────────
+            {
+                '@type': ['LocalBusiness', 'FoodEstablishment'],
+                '@id': 'https://hofherrmeatco.com/#depot',
+                name: 'Hofherr Meat Co. — The Depot',
+                alternateName: 'Hofherr The Depot Winnetka',
+                description:
+                    'The Depot — Hofherr Meat Co.\'s grab-and-go location inside the Winnetka Elm Street Metra Station. Famous for the World\'s Greatest Italian Beef sandwich, served Mon–Fri from 10:30am until sold out.',
+                url: 'https://hofherrmeatco.com/visit',
+                telephone: '+18474416328',
+                email: 'butcher@hofherrmeatco.com',
+                image: 'https://hofherrmeatco.com/OG/og-image.png',
+                priceRange: '$$',
+                servesCuisine: ['Italian Beef', 'American', 'Grab and Go'],
+                parentOrganization: { '@id': 'https://hofherrmeatco.com/#business' },
+
+                address: {
+                    '@type': 'PostalAddress',
+                    streetAddress: '754 Elm St',
+                    addressLocality: 'Winnetka',
+                    addressRegion: 'IL',
+                    postalCode: '60093',
+                    addressCountry: 'US',
+                },
+
+                geo: {
+                    '@type': 'GeoCoordinates',
+                    latitude: 42.1081,
+                    longitude: -87.7362,
+                },
+
+                openingHoursSpecification: [
+                    {
+                        '@type': 'OpeningHoursSpecification',
+                        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                        opens: '10:30',
+                        closes: '18:00',
+                    },
+                ],
+
+                hasMap: 'https://maps.google.com/?q=754+Elm+St+Winnetka+IL',
+            },
+
+            // ── Catering Service ──────────────────────────────────────────────
+            {
+                '@type': 'Service',
+                '@id': 'https://hofherrmeatco.com/#catering',
+                name: 'Hofherr Meat Co. BBQ & Event Catering',
+                description:
+                    'Full-service catering from Hofherr Meat Co. — pig roasts, competition BBQ, rotisserie chicken packages. Serving 20 to 500+ guests across Northfield, Winnetka, and the greater Chicago North Shore.',
+                provider: { '@id': 'https://hofherrmeatco.com/#business' },
+                areaServed: {
+                    '@type': 'GeoCircle',
+                    geoMidpoint: { '@type': 'GeoCoordinates', latitude: 42.1003, longitude: -87.7732 },
+                    geoRadius: '80000',
+                },
+                serviceType: ['BBQ Catering', 'Pig Roast', 'Rotisserie Catering', 'Event Catering'],
+                url: 'https://hofherrmeatco.com/catering',
             },
 
             // ── Website ───────────────────────────────────────────────────────

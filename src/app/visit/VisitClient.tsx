@@ -21,7 +21,7 @@ const LOCATIONS = [
         email: 'butcher@hofherrmeatco.com',
         textLink: 'sms:8474416328&body=Hi%20Hofherr!%20I%20had%20a%20question%20about%20',
         directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093&travelmode=driving',
-        heroImage: '/shop-exterior.jpg',
+        heroImage: '/assets/shop-exterior.jpg',
         heroAlt: 'Hofherr Meat Co. storefront in Northfield, IL',
         hours: [
             { day: 'Tuesday – Friday', time: '10am – 6pm', open: true },
@@ -41,6 +41,7 @@ const LOCATIONS = [
             },
         ],
         orderUrl: 'https://hofherrmeatco.smartonlineorder.com',
+        iconType: 'butcher' as const,
     },
     {
         id: 'depot',
@@ -55,7 +56,7 @@ const LOCATIONS = [
         email: 'butcher@hofherrmeatco.com',
         textLink: null,
         directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=780+Elm+St,+Winnetka,+IL+60093&travelmode=driving',
-        heroImage: '/depot-exterior.png',
+        heroImage: '/assets/shop-exterior.jpg',
         heroAlt: 'The Depot at Winnetka Elm Street Metra Station',
         hours: [
             { day: 'Monday – Friday', time: '10:30am – 6pm', open: true },
@@ -74,6 +75,7 @@ const LOCATIONS = [
             },
         ],
         orderUrl: 'https://hofherrmeatcodepot.smartonlineorder.com',
+        iconType: 'depot' as const,
     },
 ];
 
@@ -134,6 +136,7 @@ export default function VisitClient() {
                                     label={loc.label}
                                     address={loc.address}
                                     height="100%"
+                                    iconType={loc.iconType}
                                 />
                             </div>
                             <a
@@ -184,19 +187,19 @@ export default function VisitClient() {
                     <p className={styles.gallerySub}>Butcher shop, charcuterie counter, sandwich shop, event space, and a floor-to-ceiling rotisserie oven — all under one roof.</p>
                     <div className={styles.galleryGrid}>
                         <div className={styles.galleryItemLarge}>
-                            <Image src="/shop-exterior.jpg" alt="Hofherr Meat Co. storefront" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 55vw" />
+                            <Image src="/assets/shop-exterior.jpg" alt="Hofherr Meat Co. storefront" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 55vw" />
                             <div className={styles.galleryCaption}>Our Northfield storefront</div>
                         </div>
                         <div className={styles.galleryItemSmallA}>
-                            <Image src="/butcher-counter.jpg" alt="The butcher display case" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 42vw" />
+                            <Image src="/assets/shop-interior.jpg" alt="The butcher display case" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 42vw" />
                             <div className={styles.galleryCaption}>Hand-selected cuts daily</div>
                         </div>
                         <div className={styles.galleryItemSmallB}>
-                            <Image src="/rotisserie-chickens.jpg" alt="Rotisserie chickens in the oven" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 42vw" />
+                            <Image src="/assets/rotisserie-chickens.jpg" alt="Rotisserie chickens in the oven" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 42vw" />
                             <div className={styles.galleryCaption}>Floor-to-ceiling rotisserie oven</div>
                         </div>
                         <div className={styles.galleryItemWide}>
-                            <Image src="/shop-interior.jpg" alt="Shop interior" fill style={{ objectFit: 'cover' }} sizes="100vw" />
+                            <Image src="/assets/shop-interior.jpg" alt="Shop interior" fill style={{ objectFit: 'cover' }} sizes="100vw" />
                             <div className={styles.galleryCaption}>A butcher shop that feels like home</div>
                         </div>
                     </div>

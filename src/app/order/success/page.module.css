@@ -85,7 +85,7 @@
 
 
 .state h1 {
-    font-family: 'Playfair Display', serif;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 2.1rem;
     color: #1a1a1a;
     margin: 0;
@@ -214,14 +214,68 @@ a.infoValue:hover {
     to { transform: rotate(360deg); }
 }
 
+/* ── Tablet: stack at 1000px ── */
+@media (max-width: 1000px) {
+    .splitLayout {
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .leftPane {
+        width: 100%;
+        flex: none;
+        padding: 48px 40px;
+        order: 1;
+    }
+
+    .contentWrapper {
+        max-width: 640px;
+        margin: 0 auto;
+    }
+
+    /* Video pane becomes a short cinematic banner on tablet */
+    .rightPane {
+        width: 100%;
+        flex: none;
+        height: 280px;
+        order: 2;
+        position: relative;
+    }
+}
+
+/* ── Mobile: tighter layout at 640px ── */
 @media (max-width: 640px) {
+    .leftPane {
+        padding: 32px 20px;
+    }
+
+    .contentWrapper {
+        max-width: 100%;
+    }
+
     .state {
-        padding: 32px 24px;
+        padding: 0;
+        gap: 16px;
     }
+
     .state h1 {
-        font-size: 2.2rem;
+        font-size: 1.8rem;
     }
+
+    .sub {
+        font-size: 14px;
+    }
+
     .infoBox {
         grid-template-columns: 1fr;
+    }
+
+    .summaryItem {
+        font-size: 13px;
+    }
+
+    /* Hide video on mobile — keep page clean */
+    .rightPane {
+        display: none;
     }
 }

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
         title: 'Gift Cards | Hofherr Meat Co.',
         description: 'Physical and eGift cards available. The perfect gift for any meat lover on your list.',
         url: 'https://hofherrmeatco.com/gift-cards',
-        images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-image.png', width: 1200, height: 630 }],
     },
 };
 
@@ -58,28 +58,6 @@ export default function GiftCardsPage() {
                             </a>
                         </div>
 
-                        {/* Giftly — The Depot */}
-                        <div className={styles.card}>
-                            <div className={styles.cardEmoji}>🎁</div>
-                            <h2 className={styles.cardTitle}>Giftly Gift Card</h2>
-                            <p className={styles.cardDesc}>
-                                Purchase a Giftly gift card for The Depot at our Winnetka location. Flexible and easy to give — delivered digitally and redeemable in-store.
-                            </p>
-                            <ul className={styles.perks}>
-                                <li>✓ Digital delivery</li>
-                                <li>✓ For The Depot — Winnetka</li>
-                                <li>✓ Any amount you choose</li>
-                                <li>✓ Powered by Giftly</li>
-                            </ul>
-                            <a
-                                href="https://www.giftly.com/gift-card/hofherr-meat-co-depot-winnetka-2"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-secondary"
-                            >
-                                Buy on Giftly ↗
-                            </a>
-                        </div>
 
                         {/* Physical Gift Card */}
                         <div className={styles.card}>

@@ -32,6 +32,16 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
         }
 
+        if (!phone || !phone.trim()) {
+            return NextResponse.json({ error: 'Phone number is required' }, { status: 400 });
+        }
+
+        // Validate phone format (at least 10 digits)
+        const digitsOnly = phone.replace(/\D/g, '');
+        if (digitsOnly.length < 10) {
+            return NextResponse.json({ error: 'Please enter a valid phone number' }, { status: 400 });
+        }
+
         // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -61,7 +71,11 @@ export async function POST(req: Request) {
         // 2. Hash password with bcrypt
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // 3. Create customer in Sanity safely
+        // 3. Assign a random default avatar
+        const avatarOptions = ['/avatars/calf.jpg', '/avatars/cow.png', '/avatars/cheese.jpg', '/avatars/deer.jpg', '/avatars/fish.jpg', '/avatars/pig.jpg', '/avatars/rooster.jpg', '/avatars/turkey.jpg'];
+        const randomAvatar = avatarOptions[Math.floor(Math.random() * avatarOptions.length)];
+
+        // 4. Create customer in Sanity safely
         const customer = await adminClient.create({
             _type: 'customer',
             email: email.toLowerCase(),
@@ -69,6 +83,7 @@ export async function POST(req: Request) {
             name: name || '',
             phone: phone || '',
             address: address || '',
+            avatar: randomAvatar,
             createdAt: new Date().toISOString(),
         });
 

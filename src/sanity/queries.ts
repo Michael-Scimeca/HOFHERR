@@ -210,7 +210,8 @@ export const CUSTOMER_BY_EMAIL_QUERY = defineQuery(`
     password,
     name,
     phone,
-    address
+    address,
+    avatar
   }
 `);
 
@@ -237,3 +238,35 @@ export const COUPON_BY_CODE_QUERY = defineQuery(`
     expiryDate
   }
 `);
+
+/** Fetch upcoming catering events (confirmed + tentative, from today onward) */
+export const CATERING_EVENTS_QUERY = defineQuery(`
+  *[_type == "cateringEvent" && status != "cancelled" && date >= $today] | order(date asc) {
+    _id,
+    date,
+    eventType,
+    status
+  }
+`);
+
+/** Fetch editable default pricing rows for the catering availability calendar */
+export const CATERING_CALENDAR_PRICING_QUERY = defineQuery(`
+  *[_type == "cateringCalendarPricing"] | order(sortOrder asc) {
+    _id,
+    label,
+    price
+  }
+`);
+
+/** Fetch the live rotisserie chicken daily stock status (singleton) */
+export const ROTISSERIE_STATUS_QUERY = defineQuery(`
+  *[_type == "rotisserieStatus"][0] {
+    status,
+    birdsLeft,
+    nextAvailable,
+    note,
+    lastUpdated
+  }
+`);
+
+

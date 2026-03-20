@@ -885,6 +885,7 @@ export default function CustomOrdersPage({
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [checkoutStep, setCheckoutStep] = useState<'choice' | 'form'>('choice');
     const [form, setForm] = useState({ name: '', phone: '', email: '', pickup: '' });
+    const [contactPref, setContactPref] = useState<'phone' | 'email'>('phone');
     const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'instore'>('stripe');
     const [stripeError, setStripeError] = useState('');
     const [isPending, startTransition] = useTransition();
@@ -949,19 +950,23 @@ export default function CustomOrdersPage({
         
         if (activeStore === 'butcher' || activeStore === 'depot') {
             let start = 10;
+            let startMin = 0; // starting minutes (0 = :00, 30 = :30)
             let end = 18; // 6pm
             if (activeStore === 'butcher') {
                 if (day === 6) end = 17; // Sat 5pm
                 if (day === 0) end = 16; // Sun 4pm
             } else {
-                // Depot is currently Mon-Fri only, so it's always 10-6pm
+                // Depot opens at 10:30am
+                startMin = 30;
                 end = 18; 
             }
             
             for (let h = start; h < end; h++) {
-                // Add :00 slot
-                const disabled00 = isToday && (h < now.getHours() || (h === now.getHours() && now.getMinutes() + 15 > 0));
-                slots.push({ label: '', value: `${h}:00`, disabled: disabled00 });
+                // Add :00 slot (skip if start is :30 and this is the first hour)
+                if (!(h === start && startMin === 30)) {
+                    const disabled00 = isToday && (h < now.getHours() || (h === now.getHours() && now.getMinutes() + 15 > 0));
+                    slots.push({ label: '', value: `${h}:00`, disabled: disabled00 });
+                }
                 // Add :30 slot
                 const disabled30 = isToday && (h < now.getHours() || (h === now.getHours() && now.getMinutes() + 15 > 30));
                 slots.push({ label: '', value: `${h}:30`, disabled: disabled30 });
@@ -1567,6 +1572,28 @@ export default function CustomOrdersPage({
         setTimeout(updateSideThumb, 50);
     }, [activeStore, updateSideThumb]);
 
+    // ── Capture mouse-wheel on the sidebar and redirect it to the inner list ──
+    useEffect(() => {
+        const el = sidebarScrollRef.current;
+        if (!el) return;
+        const handler = (e: WheelEvent) => {
+            const { scrollTop, scrollHeight, clientHeight } = el;
+            // Normalize delta across deltaMode (pixel=0, line=1, page=2)
+            let delta = e.deltaY;
+            if (e.deltaMode === 1) delta *= 24;  // line mode
+            if (e.deltaMode === 2) delta *= clientHeight; // page mode
+            const atTop = scrollTop <= 0 && delta < 0;
+            const atBottom = scrollTop + clientHeight >= scrollHeight - 1 && delta > 0;
+            if (!atTop && !atBottom) {
+                e.preventDefault();
+                el.scrollBy({ top: delta, behavior: 'instant' });
+            }
+        };
+        el.addEventListener('wheel', handler, { passive: false });
+        return () => el.removeEventListener('wheel', handler);
+    }, []);
+
+
     // ── JSON-LD structured data for Google rich results ──
     const menuJsonLd = {
         '@context': 'https://schema.org',
@@ -1651,7 +1678,7 @@ export default function CustomOrdersPage({
             {/* Location Hero Banner */}
             <div className={styles.locationHero}>
                 <img
-                    src={activeStore === 'butcher' ? '/shop-exterior.jpg' : '/depot-exterior.png'}
+                    src={activeStore === 'butcher' ? '/assets/shop-exterior.jpg' : '/assets/shop-exterior.jpg'}
                     alt={activeStore === 'butcher' ? 'The Butcher Shop — Northfield' : 'The Depot — Winnetka'}
                     className={styles.locationHeroImg}
                 />
@@ -1662,6 +1689,43 @@ export default function CustomOrdersPage({
                     <span className={styles.locationHeroSub}>
                         {activeStore === 'butcher' ? '300 Happ Rd · Northfield, IL' : '754 Elm St · Winnetka Metra Station'}
                     </span>
+                </div>
+            </div>
+
+            {/* ── Online Ordering Hours Banner ── */}
+            <div className={styles.hoursNotice}>
+                <div className={styles.hoursNoticeInner}>
+                    {activeStore === 'butcher' ? (
+                        <>
+                            <div className={styles.hoursNoticeLeft}>
+                                <span className={styles.hoursNoticeIcon}>🕙</span>
+                                <div>
+                                    <div className={styles.hoursNoticeTitle}>Today's Online Ordering Hours</div>
+                                    <div className={styles.hoursNoticeTime}>10:00am – 6:00pm</div>
+                                </div>
+                            </div>
+                            <div className={styles.hoursNoticeDivider} />
+                            <div className={styles.hoursNoticeRight}>
+                                <span className={styles.hoursNoticeBadge}>Online Ordering Currently Closed</span>
+                                <span className={styles.hoursNoticeSchedule}>You may schedule your order in advance</span>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className={styles.hoursNoticeLeft}>
+                                <span className={styles.hoursNoticeIcon}>🕙</span>
+                                <div>
+                                    <div className={styles.hoursNoticeTitle}>Depot Pickup Hours</div>
+                                    <div className={styles.hoursNoticeTime}>Pickup: 3:30pm – 6:30pm</div>
+                                </div>
+                            </div>
+                            <div className={styles.hoursNoticeDivider} />
+                            <div className={styles.hoursNoticeRight}>
+                                <span className={styles.hoursNoticeBadge}>Order by 1:30pm for same-day pickup</span>
+                                <span className={styles.hoursNoticeSchedule}>Indicate weight in item's special instructions · Final total may vary by weight</span>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
 
@@ -1797,6 +1861,32 @@ export default function CustomOrdersPage({
 
                 {/* Main */}
                 <main className={styles.main}>
+
+                    {/* ── Depot Ordering Info ── */}
+                    {activeStore === 'depot' && (
+                        <div className={styles.depotInfoNotice}>
+                            <div className={styles.depotInfoIcon}>🏪</div>
+                            <div className={styles.depotInfoBody}>
+                                <div className={styles.depotInfoTitle}>Depot Ordering Instructions</div>
+                                <p className={styles.depotInfoText}>
+                                    Order by <strong>1:30pm</strong> for pick up between <strong>3:30pm – 6:30pm</strong>. Please indicate the quantity of each item desired. If you have a specific weight you would like, please indicate the amount in the item&apos;s special instructions. The total amount given at the end of checkout may not reflect the actual total due because it does not factor in the weight of the products. Thank you!
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── Butcher Ordering Info ── */}
+                    {activeStore === 'butcher' && (
+                        <div className={styles.butcherInfoNotice}>
+                            <div className={styles.depotInfoIcon}>🥩</div>
+                            <div className={styles.depotInfoBody}>
+                                <div className={styles.butcherInfoTitle}>Ordering Instructions</div>
+                                <p className={styles.depotInfoText}>
+                                    Indicate <strong>quantity</strong>, not weight. For a specific weight, note it in the item&apos;s <strong>special instructions</strong> — checkout totals may not reflect final weight-based pricing.
+                                </p>
+                            </div>
+                        </div>
+                    )}
 
                     <div className={styles.productsWrap}>
                     {searchQuery.trim() && visibleCategories.length === 0 && (
@@ -1977,7 +2067,7 @@ export default function CustomOrdersPage({
                         </div>
                         <div className={styles.drawerHead}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <img src="/item.png" alt="" width={80} height={80} style={{ objectFit: 'contain' }} />
+                                <img src="/assets/item.png" alt="" width={80} height={80} style={{ objectFit: 'contain' }} />
                                 <div>
                                     <h3>Your Order</h3>
                                     {user && (
@@ -2318,31 +2408,51 @@ export default function CustomOrdersPage({
                                                 value={form.name} 
                                                 onChange={e => setForm(f => ({ ...f, name: e.target.value }))} 
                                             />
-                                            <input 
-                                                required 
-                                                name="tel"
-                                                id="checkout-phone"
-                                                autoComplete="tel"
-                                                className={styles.formInput} 
-                                                placeholder="Phone Number" 
-                                                type="tel" 
-                                                value={form.phone} 
-                                                onChange={e => {
-                                                    const formatted = formatPhoneNumber(e.target.value);
-                                                    setForm(f => ({ ...f, phone: formatted }));
-                                                }} 
-                                            />
-                                            <input 
-                                                required 
-                                                name="email"
-                                                id="checkout-email"
-                                                autoComplete="email"
-                                                className={styles.formInput} 
-                                                placeholder="Email Address" 
-                                                type="email" 
-                                                value={form.email} 
-                                                onChange={e => setForm(f => ({ ...f, email: e.target.value }))} 
-                                            />
+                                            {/* Contact preference toggle */}
+                                            <div className={styles.contactPrefRow}>
+                                                <span className={styles.contactPrefLabel}>How should we reach you?</span>
+                                                <div className={styles.contactPrefToggle}>
+                                                    <button
+                                                        type="button"
+                                                        className={`${styles.contactPrefBtn} ${contactPref === 'phone' ? styles.contactPrefBtnActive : ''}`}
+                                                        onClick={() => { setContactPref('phone'); setForm(f => ({ ...f, email: '' })); }}
+                                                    >📞 Call Me</button>
+                                                    <button
+                                                        type="button"
+                                                        className={`${styles.contactPrefBtn} ${contactPref === 'email' ? styles.contactPrefBtnActive : ''}`}
+                                                        onClick={() => { setContactPref('email'); setForm(f => ({ ...f, phone: '' })); }}
+                                                    >✉️ Email Me</button>
+                                                </div>
+                                            </div>
+
+                                            {contactPref === 'phone' ? (
+                                                <input
+                                                    required
+                                                    name="tel"
+                                                    id="checkout-phone"
+                                                    autoComplete="tel"
+                                                    className={styles.formInput}
+                                                    placeholder="Phone Number"
+                                                    type="tel"
+                                                    value={form.phone}
+                                                    onChange={e => {
+                                                        const formatted = formatPhoneNumber(e.target.value);
+                                                        setForm(f => ({ ...f, phone: formatted }));
+                                                    }}
+                                                />
+                                            ) : (
+                                                <input
+                                                    required
+                                                    name="email"
+                                                    id="checkout-email"
+                                                    autoComplete="email"
+                                                    className={styles.formInput}
+                                                    placeholder="Email Address"
+                                                    type="email"
+                                                    value={form.email}
+                                                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                                                />
+                                            )}
                                             
                                             <div className={styles.pickupScheduler}>
                                                 <label className={styles.pickupLabel}>Select Pickup Day & Time</label>

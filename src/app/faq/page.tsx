@@ -4,8 +4,20 @@ import { FAQS_QUERY } from '@/sanity/queries';
 import FaqClient from './FaqClient';
 
 export const metadata = {
-    title: 'FAQ — Hofherr Meat Co.',
-    description: 'Frequently asked questions about ordering, custom cuts, BBQ catering, gift cards, and more at Hofherr Meat Co. in Northfield, IL.',
+    title: 'FAQ | Hofherr Meat Co. — Ordering, Catering & Custom Cuts',
+    description: 'Frequently asked questions about ordering, custom cuts, BBQ catering, gift cards, curbside pickup, and more at Hofherr Meat Co. in Northfield & Winnetka, IL.',
+    alternates: { canonical: 'https://hofherrmeatco.com/faq' },
+    openGraph: {
+        title: 'FAQ | Hofherr Meat Co.',
+        description: 'Answers to common questions about orders, catering, custom cuts, and gift cards.',
+        url: 'https://hofherrmeatco.com/faq',
+        images: [{ url: '/OG/og-image.png', width: 1200, height: 630 }],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'FAQ | Hofherr Meat Co.',
+        description: 'Ordering, catering, custom cuts, gift cards — all your questions answered.',
+    },
 };
 
 type SanityFaq = {

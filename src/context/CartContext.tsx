@@ -39,7 +39,7 @@ function createFlyingDot(sx: number, sy: number) {
     const ty = cartRect.top + cartRect.height / 2;
 
     const dot = document.createElement('div');
-    dot.innerHTML = `<img src="/item.png" alt="" width="40" height="40" style="width:40px;height:40px;object-fit:contain;" />`;
+    dot.innerHTML = `<img src="/assets/item.png" alt="" width="40" height="40" style="width:40px;height:40px;object-fit:contain;" />`;
     dot.style.cssText = `
         position: fixed;
         left: ${sx}px; top: ${sy}px;
