@@ -224,7 +224,7 @@ export default function CateringCalendar({ events, defaultPricing }: Props) {
                         >
                             <span className={styles.dayNum}>{day.date}</span>
                             {evt && <span className={styles.cellEmoji} title={EVENT_LABELS[evt.eventType]}>{EVENT_EMOJI[evt.eventType] ?? '📅'}</span>}
-                            {tooSoon && !evt && <span className={styles.tooSoonDot}>·</span>}
+                            {tooSoon && !evt && <span className={styles.tooSoonDot}></span>}
                         </button>
                     );
                 })}

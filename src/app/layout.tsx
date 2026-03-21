@@ -14,6 +14,8 @@ import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import ScrollToTop from "@/components/ScrollToTop";
 import PageTransition from "@/components/PageTransition";
+import SmoothScroll from "@/components/SmoothScroll";
+import ChatWidgetWrapper from "@/components/ChatWidgetWrapper";
 import EmbersBackground from "@/components/EmbersBackground";
 
 const yanone = Yanone_Kaffeesatz({
@@ -128,10 +130,12 @@ export default async function RootLayout({
           <ClientProviders>
             <CartProvider>
               <JsonLd />
+              <SmoothScroll />
               <ScrollToTop />
               <PageTransition />
               <Navbar />
               {children}
+              <ChatWidgetWrapper />
               <Footer />
             </CartProvider>
           </ClientProviders>

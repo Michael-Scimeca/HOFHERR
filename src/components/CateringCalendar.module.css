@@ -1,13 +1,12 @@
-/* ── Catering Calendar ── */
 .wrapper {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: #000;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     padding: 32px 36px;
     margin-top: 40px;
     margin-bottom: 40px;
+    position: relative;
+    z-index: 10;
 }
 
 /* Header */
@@ -133,7 +132,7 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.6);
     padding: 8px 0;
 }
 
@@ -143,9 +142,9 @@
 
 .dayCell {
     aspect-ratio: 1;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.05);
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -159,8 +158,8 @@
 }
 
 .dayCell:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(212, 132, 90, 0.3);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(212, 132, 90, 0.6);
     transform: scale(1.05);
 }
 
@@ -175,29 +174,33 @@
 
 /* Too-soon (within lead-time) state */
 .tooSoon {
-    opacity: 0.4;
+    opacity: 0.55;
     cursor: not-allowed !important;
-    background: rgba(255, 255, 255, 0.01);
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .tooSoon:hover {
     transform: none !important;
-    background: rgba(255, 255, 255, 0.01) !important;
-    border-color: rgba(255, 255, 255, 0.06) !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 .tooSoonDot {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.25);
-    line-height: 1;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     position: absolute;
-    bottom: 1px;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .dayNum {
     font-size: 18px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.95);
     line-height: 1;
 }
 
@@ -213,23 +216,23 @@
 
 /* States */
 .past {
-    opacity: 0.2;
+    opacity: 0.35;
     cursor: not-allowed !important;
 }
 
 .past:hover {
     transform: none !important;
-    background: rgba(255, 255, 255, 0.02) !important;
-    border-color: rgba(255, 255, 255, 0.06) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 .today {
-    border-color: rgba(212, 132, 90, 0.5) !important;
-    background: rgba(212, 132, 90, 0.08);
+    border-color: rgba(212, 132, 90, 0.8) !important;
+    background: rgba(212, 132, 90, 0.15);
 }
 
 .today .dayNum {
-    color: #d4845a;
+    color: #ed976b;
 }
 
 .booked {

@@ -13,7 +13,7 @@ const NAV_ITEMS = [
     { label: 'Specials', href: '/specials' },
     { label: 'BBQ', href: '/bbq' },
     { label: 'Catering', href: '/catering' },
-    { label: 'Visit Us', href: '/#visit-us' },
+    { label: 'Visit Us', href: '/visit' },
     { label: 'Our Story', href: '/our-story' },
     { label: 'Gift Cards', href: '/gift-cards' },
 ];
@@ -261,23 +261,30 @@ export default function Navbar() {
                             </div>
                         )}
 
-                        <Link href="/online-orders" className={styles.cta}>Shop Online</Link>
+                        <Link href="/online-orders" className={styles.cta} onClick={() => setMobileOpen(false)}>Shop Online</Link>
 
                         <NavCartIcon />
 
                         <button
-                            className={styles.hamburger}
+                            className={`${styles.hamburger} ${mobileOpen ? styles.active : ''}`}
                             onClick={() => setMobileOpen(!mobileOpen)}
                             aria-label="Toggle menu"
                         >
-                            <span className={`${styles.bar} ${mobileOpen ? styles.bar1Open : ''}`} />
-                            <span className={`${styles.bar} ${mobileOpen ? styles.bar2Open : ''}`} />
-                            <span className={`${styles.bar} ${mobileOpen ? styles.bar3Open : ''}`} />
+                            <svg viewBox="0 0 64 48">
+                                <path d="M19,15 L45,15 C70,15 58,-2 49.0177126,7 L19,37"></path>
+                                <path d="M19,24 L45,24 C61.2371586,24 57,49 41,33 L32,24"></path>
+                                <path d="M45,33 L19,33 C-8,33 6,-2 22,14 L45,37"></path>
+                            </svg>
                         </button>
                     </div>
 
                     <div className={styles.storeStatusOuter}>
-                        {storePills}
+                        <div className={styles.marqueeTrack}>
+                            {storePills}
+                            <div className={styles.mobileOnlyClone} aria-hidden="true">{storePills}</div>
+                            <div className={styles.mobileOnlyClone} aria-hidden="true">{storePills}</div>
+                            <div className={styles.mobileOnlyClone} aria-hidden="true">{storePills}</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -334,9 +341,6 @@ export default function Navbar() {
 
                     {/* CTA + Auth */}
                     <div className={styles.mobileCTA}>
-                        <Link href="/online-orders" className={`btn btn-primary ${styles.mobileShopBtn}`} onClick={() => setMobileOpen(false)}>
-                            Shop Online
-                        </Link>
                         {!user ? (
                             <div className={styles.mobileAuthGrid}>
                                 <Link href="/online-orders?login=true" className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Sign In</Link>

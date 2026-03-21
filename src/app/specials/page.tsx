@@ -52,9 +52,9 @@ const FALLBACK_SIGNATURES: SignatureProduct[] = [
         calloutTitle: 'As Featured On',
         calloutSub: "America's Test Kitchen\nPodcast: Proof\nPBS Weekends",
         calloutColor: 'var(--red)',
-        chips: ["🎙 America's Test Kitchen", '📻 Podcast: Proof', '📺 PBS Weekends'],
+        chips: ["America's Test Kitchen", '📻 Podcast: Proof', '📺 PBS Weekends'],
         links: [
-            { label: '🎙 Listen to the Podcast', url: 'http://bit.ly/3QTft4F', isPrimary: false },
+            { label: 'Listen to the Podcast', url: 'http://bit.ly/3QTft4F', isPrimary: false },
             { label: 'Visit The Depot', url: '/visit#depot', isPrimary: false },
             { label: 'Order Beef by the Pound', url: '/online-orders', isPrimary: true },
         ],
@@ -128,7 +128,7 @@ export default async function SpecialsPage() {
             sanityClient.fetch(BBQ_PRICING_QUERY),
         ]);
         if (rawSigs?.length) {
-            const normalize = (s: string) => s.replace(/[\u2018\u2019\u201C\u201D]/g, (c) => 
+            const normalize = (s: string) => s.replace(/[\u2018\u2019\u201C\u201D]/g, (c) =>
                 c === '\u2018' || c === '\u2019' ? "'" : '"'
             );
             signatures = rawSigs.map((sig: SignatureProduct) => {
@@ -209,13 +209,15 @@ export default async function SpecialsPage() {
                 const calloutSubStyle = product.calloutColor ? { color: 'rgba(255,255,255,0.8)' } : {};
 
                 const callout = product.video && product.image ? (
-                    <VideoCallout 
-                        image={product.image} 
-                        video={product.video} 
-                        alt={product.title} 
-                        title={product.calloutTitle}
-                        sub={product.calloutSub}
-                    />
+                    <div className={styles.videoCalloutWrap}>
+                        <VideoCallout
+                            image={product.image}
+                            video={product.video}
+                            alt={product.title}
+                            title={product.calloutTitle}
+                            sub={product.calloutSub}
+                        />
+                    </div>
                 ) : product.image ? (
                     <div className={styles.imageCallout}>
                         <img src={product.image} alt={product.title} />
@@ -238,31 +240,54 @@ export default async function SpecialsPage() {
                 const rStatus = isChicken ? rotisserie : null;
                 const stockBadgeColor =
                     rStatus?.status === 'available' ? { bg: '#16a34a', border: '#15803d' }
-                    : rStatus?.status === 'low' ? { bg: '#d97706', border: '#b45309' }
-                    : rStatus?.status === 'sold_out' ? { bg: '#dc2626', border: '#b91c1c' }
-                    : { bg: '#475569', border: '#334155' };
+                        : rStatus?.status === 'low' ? { bg: '#d97706', border: '#b45309' }
+                            : rStatus?.status === 'sold_out' ? { bg: '#dc2626', border: '#b91c1c' }
+                                : { bg: '#475569', border: '#334155' };
 
                 const stockMessage =
                     rStatus?.note ? rStatus.note
-                    : rStatus?.status === 'available'
-                        ? rStatus.birdsLeft ? `${rStatus.birdsLeft} bird${rStatus.birdsLeft !== 1 ? 's' : ''} left today — call to reserve!`
-                        : 'Available today — call to reserve your bird'
-                    : rStatus?.status === 'low'
-                        ? rStatus.birdsLeft ? `Only ${rStatus.birdsLeft} left — call now!`
-                        : 'Almost sold out — call now!'
-                    : rStatus?.status === 'sold_out'
-                        ? `Sold out today${rStatus.nextAvailable ? ` · ${rStatus.nextAvailable}` : ''}`
-                    : rStatus?.status === 'unavailable'
-                        ? `Not available today${rStatus.nextAvailable ? ` · ${rStatus.nextAvailable}` : ''}`
-                    : null;
+                        : rStatus?.status === 'available'
+                            ? rStatus.birdsLeft ? `${rStatus.birdsLeft} bird${rStatus.birdsLeft !== 1 ? 's' : ''} left today — call to reserve!`
+                                : 'Available today — call to reserve your bird'
+                            : rStatus?.status === 'low'
+                                ? rStatus.birdsLeft ? `Only ${rStatus.birdsLeft} left — call now!`
+                                    : 'Almost sold out — call now!'
+                                : rStatus?.status === 'sold_out'
+                                    ? `Sold out today${rStatus.nextAvailable ? ` · ${rStatus.nextAvailable}` : ''}`
+                                    : rStatus?.status === 'unavailable'
+                                        ? `Not available today${rStatus.nextAvailable ? ` · ${rStatus.nextAvailable}` : ''}`
+                                        : null;
 
                 const text = (
                     <div className={styles.featureText}>
                         {product.sectionLabel && <div className="section-label">{product.sectionLabel}</div>}
                         <h2 className={styles.sectionTitle}>{product.title}</h2>
-                        {product.description && product.description.split('\n\n').map((para, i) => (
-                            <p key={i} className={para.startsWith('🏪') ? styles.depotNote : undefined}>{para}</p>
-                        ))}
+                        {product.description && product.description.split('\n\n').map((para, i) => {
+                            let content: React.ReactNode = para;
+
+                            // Highlight key availability phrases dynamically
+                            const targets = [
+                                'Tuesday through Sunday',
+                                'Mon–Fri from 10:30am',
+                                'Mon-Fri from 10:30am',
+                                'Mon–Fri starting at 10:30am',
+                                'Mon-Fri starting at 10:30am'
+                            ];
+
+                            for (const target of targets) {
+                                if (typeof content === 'string' && content.includes(target)) {
+                                    const textStr = content as string;
+                                    const chunks: string[] = textStr.split(target);
+                                    content = <>{chunks[0]}<strong style={{ color: '#fff' }}>{target}</strong>{chunks[1]}</>;
+                                }
+                            }
+
+                            return (
+                                <p key={i} className={para.startsWith('🏪') ? styles.depotNote : undefined}>
+                                    {content}
+                                </p>
+                            );
+                        })}
                         {product.chips && product.chips.length > 0 && (
                             <div className={styles.chipRow}>
                                 {product.chips.map((chip) => (
@@ -289,15 +314,24 @@ export default async function SpecialsPage() {
                             }}>
                                 <span style={{ fontSize: '18px' }}>
                                     {rStatus.status === 'available' ? '🟢'
-                                    : rStatus.status === 'low' ? '🟡'
-                                    : '🔴'}
+                                        : rStatus.status === 'low' ? '🟡'
+                                            : '🔴'}
                                 </span>
                                 <span>{stockMessage}</span>
                             </div>
                         )}
-                        {product.links && product.links.length > 0 && (
+                        {(product.links || []).length > 0 && (
                             <div className={styles.btnRow}>
-                                {[...product.links]
+                                {[...(product.links || []), { label: '💬 Text or Email Us', url: `#chat?subject=${encodeURIComponent(product.title)}`, isPrimary: false }]
+                                    .map(link => {
+                                        // Override CMS defaults: Order buttons should always be the prominent red CTA
+                                        // over informative links like podcasts
+                                        let primaryStatus = link.isPrimary;
+                                        const lower = link.label.toLowerCase();
+                                        if (lower.includes('podcast')) primaryStatus = false;
+                                        if (lower.includes('order')) primaryStatus = true;
+                                        return { ...link, isPrimary: primaryStatus };
+                                    })
                                     .sort((a, b) => (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0))
                                     .map((link) => (
                                         <a
@@ -307,6 +341,9 @@ export default async function SpecialsPage() {
                                             rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
                                             className={`btn ${link.isPrimary ? 'btn-primary' : 'btn-secondary'}`}
                                         >
+                                            {/* We manually restore emojis here if needed, but strip out any 
+                                                existing native text-emojis to keep icons clean */}
+                                            {link.label.toLowerCase().includes('podcast') ? ' ' : ''}
                                             {link.label.replace(/[\u2190-\u21FF]|[\u2700-\u27BF]|[\u2B00-\u2BFF]|\uFE0F/g, '').trim()}
                                         </a>
                                     ))}
@@ -331,61 +368,20 @@ export default async function SpecialsPage() {
                 );
             })}
 
-            {/* ── BBQ Menu (from Sanity) ── */}
-            {menuItems.length > 0 && (
-                <section id="bbq-catering" className={styles.bbqSection}>
-                    {/* Dark hero banner */}
-                    <div className={styles.bbqHero}>
-                        <div className="container">
-                            <span className={styles.bbqEyebrow}>🔥 Catering · Min. 4 Days Notice</span>
-                            <h2 className={styles.bbqHeadline}>BBQ Catering Menu</h2>
-                            <p className={styles.bbqSub}>
-                                Subject to availability. Under 20 guests min. $200. Email{' '}
-                                <a href="mailto:catering@hofherrmeatco.com">catering@hofherrmeatco.com</a>{' '}
-                                for pricing.
-                            </p>
-                        </div>
+            {/* ── Link to BBQ Menu ── */}
+            <section id="bbq-catering" className={styles.bbqSection}>
+                <div className="container">
+                    <div style={{ background: 'var(--bg-2)', border: '1px solid var(--border)', borderRadius: '16px', padding: '40px', textAlign: 'center' }}>
+                        <h2 className={styles.bbqHeadline} style={{ marginBottom: '16px' }}>Looking for BBQ Catering?</h2>
+                        <p className={styles.bbqSub} style={{ margin: '0 auto 24px', maxWidth: '500px' }}>
+                            Brisket, ribs, pulled pork, and full-service competition style BBQ spreads.
+                        </p>
+                        <a href="/bbq" className="btn btn-primary" style={{ display: 'inline-block' }}>
+                            View the BBQ Menu
+                        </a>
                     </div>
-
-                    {/* Menu categories */}
-                    <div className="container">
-                        <div className={styles.bbqMenuGrid}>
-                            {['appetizer', 'meat', 'side'].filter(c => grouped[c]?.length).map(cat => (
-                                <div key={cat} className={`${styles.bbqCard} ${styles[`bbqCard_${cat}`]}`}>
-                                    <div className={styles.bbqCardHeader}>
-                                        <h3 className={styles.bbqCardTitle}>{CATEGORY_META[cat]}</h3>
-                                        <span className={styles.bbqCardCount}>{grouped[cat].length} items</span>
-                                    </div>
-                                    <ul className={styles.bbqList}>
-                                        {grouped[cat].map(item => <li key={item}>{item}</li>)}
-                                    </ul>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className={styles.sectionImageWrapper}>
-                            <img src="/assets/pig-roast-spread.jpg" alt="BBQ Catering Spread" className={styles.sectionImage} />
-                        </div>
-
-                        {/* Pricing */}
-                        <div className={styles.bbqPricing}>
-                            <div className={styles.bbqPricingHeader}>
-                                <h3 className={styles.bbqPricingTitle}>Pricing</h3>
-                                <span className={styles.bbqPricingBadge}>20+ People · Pickup</span>
-                            </div>
-                            <p className={styles.bbqPricingNote}>
-                                Includes paperware, cutlery, serving utensils, buns, condiments &amp; sauce. Price does not include tax.
-                            </p>
-                            <div className={styles.bbqPricingGrid}>
-                                {bbqPricing.map(p => (
-                                    <div key={p.label} className={styles.bbqPriceRow}><span>{p.label}</span><strong>{p.price}</strong></div>
-                                ))}
-                            </div>
-                            <a href="mailto:catering@hofherrmeatco.com?subject=BBQ Catering Quote" className="btn btn-primary" style={{ marginTop: '8px', alignSelf: 'center' }}>Get a BBQ Quote</a>
-                        </div>
-                    </div>
-                </section>
-            )}
+                </div>
+            </section>
 
             <section id="pig-roasts" className={styles.bbqSection}>
                 <div className={styles.bbqHero}>

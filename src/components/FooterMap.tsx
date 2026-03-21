@@ -58,6 +58,7 @@ export default function FooterMap() {
                     lng={loc.lng} 
                     label={loc.label} 
                     address={loc.address} 
+                    hideBottomBar={true}
                 />
 
                 {/* Directions CTA */}

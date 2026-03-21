@@ -58,6 +58,38 @@ export default function ChatWidget() {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        const handleOpenChat = () => setOpen(true);
+        window.addEventListener('open-chat', handleOpenChat);
+
+        const handleHash = () => {
+            const hash = window.location.hash;
+            if (hash.startsWith('#chat')) {
+                setOpen(true);
+
+                if (hash.toLowerCase().includes('chicken')) {
+                    setMessage("Hi! I'd like to reserve a Rotisserie Chicken Dinner. Pickup date: ___, pickup time: ___, number of birds: ___.");
+                } else if (hash.includes('?subject=')) {
+                    try {
+                        const subject = decodeURIComponent(hash.split('?subject=')[1] || '');
+                        if (subject) setMessage(`Hi! I'm interested in the ${subject} special. `);
+                    } catch (e) {}
+                }
+
+                // Wipe the hash so back button doesn't get cluttered and it can be clicked twice safely
+                history.replaceState(null, '', window.location.pathname + window.location.search);
+            }
+        };
+        window.addEventListener('hashchange', handleHash);
+        // Catch initial load
+        handleHash();
+
+        return () => {
+            window.removeEventListener('open-chat', handleOpenChat);
+            window.removeEventListener('hashchange', handleHash);
+        };
+    }, []);
     const [status, setStatus] = useState<Status>('idle');
     const [fontSize, setFontSize] = useState<'normal' | 'large'>('normal');
     const [count, setCount] = useState(32);

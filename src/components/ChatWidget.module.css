@@ -3,13 +3,14 @@
     position: fixed;
     bottom: 84px;
     right: 16px;
-    background: #fff;
-    color: #1a1a1a;
-    font-size: 12px;
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-size: 13px;
     font-weight: 700;
     padding: 11px 20px;
     border-radius: 22px;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.13);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     cursor: pointer;
     white-space: nowrap;
     z-index: 997;
@@ -24,6 +25,7 @@
 
 .speechBubble:hover {
     opacity: 1;
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .bubbleClose {
@@ -31,7 +33,7 @@
     border: none;
     padding: 0;
     margin: 0;
-    color: #999;
+    color: var(--fg-muted);
     font-size: 16px;
     line-height: 1;
     cursor: pointer;
@@ -39,7 +41,7 @@
 }
 
 .bubbleClose:hover {
-    color: #D14836;
+    color: var(--red);
 }
 
 .speechBubble::after {
@@ -51,7 +53,7 @@
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-top: 10px solid #fff;
+    border-top: 10px solid #1a1a1a;
 }
 
 @keyframes bubblePop {
@@ -66,7 +68,6 @@
     }
 }
 
-/* ─── Floating Action Button ─── */
 .fab {
     position: fixed;
     bottom: 16px;
@@ -75,7 +76,7 @@
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: #800020;
+    background: var(--red);
     color: #fff;
     border: none;
     cursor: pointer;
@@ -120,8 +121,9 @@
     z-index: 998;
     width: max(332px, min(360px, calc(100vw - 32px)));
     border-radius: 18px;
-    background: #fff;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.08);
+    background: #111;
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
     overflow: hidden;
     transform: scale(0.92) translateY(16px);
     opacity: 0;
@@ -138,7 +140,8 @@
 
 /* ─── Header layout ─── */
 .header {
-    background: #800020;
+    background: #000;
+    border-bottom: 1px solid var(--border);
     padding: 16px 18px;
     display: flex;
     align-items: center;
@@ -157,7 +160,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 255, 255, 0.35);
     font-weight: 700;
     padding: 2px 4px;
     line-height: 1;
@@ -166,7 +169,7 @@
 }
 
 .fontBtn:hover {
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.65);
 }
 
 .fontBtnSm {
@@ -230,7 +233,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.15);
     color: #fff;
     font-size: 16px;
     font-weight: 800;
@@ -248,7 +251,7 @@
 
 .headerSub {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.6);
     margin-top: 2px;
     display: flex;
     align-items: center;
@@ -271,18 +274,17 @@
 
 .replyTime {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.4);
 }
 
 @keyframes breathe {
-
     0%,
     100% {
         opacity: 1;
     }
 
     50% {
-        opacity: 0.3;
+        opacity: 0.4;
     }
 }
 
@@ -295,7 +297,7 @@
     max-height: 520px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #800020 #f0f0f0;
+    scrollbar-color: var(--red) #222;
 }
 
 .body::-webkit-scrollbar {
@@ -303,12 +305,12 @@
 }
 
 .body::-webkit-scrollbar-track {
-    background: #f0f0f0;
+    background: #1a1a1a;
     border-radius: 10px;
 }
 
 .body::-webkit-scrollbar-thumb {
-    background: #800020;
+    background: var(--red);
     border-radius: 10px;
 }
 
@@ -318,12 +320,12 @@
 
 /* ─── Social proof ─── */
 .socialProof {
-    background: #fff8f0;
-    border: 1px solid #fde8d0;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
     border-radius: 10px;
     padding: 8px 12px;
     font-size: 15px;
-    color: #333;
+    color: var(--fg);
     text-align: center;
 }
 
@@ -339,7 +341,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    color: #aaa;
+    color: var(--fg-muted);
 }
 
 .chips {
@@ -349,41 +351,41 @@
 }
 
 .chip {
-    background: #f5f5f5;
-    border: 1px solid #e0e0e0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 6px 12px;
     font-size: 13px;
-    color: #333;
+    color: rgba(255, 255, 255, 0.85);
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s, color 0.15s;
     white-space: nowrap;
 }
 
 .chip:hover {
-    background: #fdecea;
-    border-color: #D14836;
-    color: #D14836;
+    background: rgba(128, 0, 32, 0.2);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
 }
 
 .chipActive {
-    background: #fdecea;
-    border-color: #D14836;
-    color: #D14836;
+    background: rgba(128, 0, 32, 0.4);
+    border-color: var(--red);
+    color: #fff;
     font-weight: 600;
 }
 
 .cateringNote {
     font-size: 11px;
-    color: #999;
+    color: var(--fg-muted);
     margin: 0;
     font-style: italic;
 }
 
 /* ─── Featured cuts ─── */
 .featuredBlock {
-    background: #fafafa;
-    border: 1px solid #ececec;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
     border-radius: 10px;
     padding: 8px 10px;
 }
@@ -393,7 +395,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.7px;
-    color: #999;
+    color: var(--fg-muted);
     margin-bottom: 6px;
 }
 
@@ -404,20 +406,20 @@
 }
 
 .cutTag {
-    background: #fff;
-    border: 1px solid #ddd;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border);
     border-radius: 6px;
     padding: 3px 8px;
     font-size: 12px;
-    color: #444;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 /* ─── Pickup note ─── */
 .pickupNote {
     font-size: 12px;
-    color: #666;
-    background: #f0f8ff;
-    border: 1px solid #d0e8f8;
+    color: rgba(255, 255, 255, 0.65);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 7px 10px;
 }
@@ -428,16 +430,16 @@
     text-align: center;
     font-size: 13px;
     font-weight: 600;
-    color: #D14836;
+    color: var(--red);
     text-decoration: none;
     padding: 8px;
-    border: 1px dashed #D14836;
+    border: 1px dashed var(--red);
     border-radius: 10px;
     transition: background 0.15s;
 }
 
 .callLink:hover {
-    background: #fdecea;
+    background: rgba(128, 0, 32, 0.15);
 }
 
 .callLinkSuccess {
@@ -445,7 +447,7 @@
     text-align: center;
     font-size: 13px;
     font-weight: 600;
-    color: #D14836;
+    color: var(--red);
     text-decoration: none;
     padding: 6px;
     margin-top: 4px;
@@ -453,21 +455,22 @@
 
 /* incoming bubble (Sean's) */
 .bubbleIn {
-    background: #f0f0f0;
+    background: #222;
     border-radius: 16px 16px 16px 4px;
     padding: 10px 14px;
     font-size: 13px;
-    color: #222;
+    color: var(--fg);
     line-height: 1.55;
     max-width: 90%;
 }
 
 /* ─── Response hours ─── */
 .hoursBlock {
-    background: #fafafa;
-    border: 1px solid #ececec;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
     border-radius: 10px;
     padding: 8px 10px;
+    margin: 4px 0;
 }
 
 .hoursTitle {
@@ -475,20 +478,20 @@
     font-weight: 700;
     letter-spacing: 0.8px;
     text-transform: uppercase;
-    color: #999;
+    color: var(--fg-muted);
     margin-bottom: 5px;
 }
 
 .locationLabel {
     font-size: 12px;
     font-weight: 700;
-    color: #333;
+    color: var(--fg);
     margin-bottom: 1px;
 }
 
 .hoursAddr {
     font-size: 11px;
-    color: #888;
+    color: rgba(255, 255, 255, 0.5);
     margin-bottom: 4px;
 }
 
@@ -497,17 +500,17 @@
     grid-template-columns: 1fr 1fr;
     gap: 2px 10px;
     font-size: 12px;
-    color: #444;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .closed {
-    color: #c62828;
+    color: var(--red);
     font-weight: 600;
 }
 
 .note {
     font-size: 12px;
-    color: #888;
+    color: rgba(255, 255, 255, 0.4);
     line-height: 1.55;
     margin: 0;
     font-style: italic;
@@ -524,44 +527,44 @@
     width: 100%;
     font-size: 15px;
     padding: 9px 12px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border);
     border-radius: 10px;
     outline: none;
-    background: #fafafa;
-    color: #222;
-    transition: border-color 0.2s;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--fg);
+    transition: border-color 0.2s, background 0.2s;
     box-sizing: border-box;
 }
 
 .input:focus {
-    border-color: #D14836;
-    background: #fff;
+    border-color: var(--red);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .textarea {
     width: 100%;
     font-size: 15px;
     padding: 8px 12px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border);
     border-radius: 10px;
     outline: none;
-    background: #fafafa;
-    color: #222;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--fg);
     resize: none;
     line-height: 1.4;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background 0.2s;
     font-family: inherit;
     box-sizing: border-box;
 }
 
 .textarea:focus {
-    border-color: #D14836;
-    background: #fff;
+    border-color: var(--red);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 /* ─── Send button ─── */
 .sendBtn {
-    background: #D14836;
+    background: var(--red);
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -586,7 +589,7 @@
 /* ─── Error ─── */
 .errorMsg {
     font-size: 12px;
-    color: #c62828;
+    color: #ef4444;
     text-align: center;
 }
 
@@ -604,8 +607,8 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: #e8f5e9;
-    color: #2e7d32;
+    background: rgba(46, 125, 50, 0.2);
+    color: #4ade80;
     font-size: 22px;
     font-weight: 700;
     display: flex;
@@ -616,12 +619,12 @@
 .successTitle {
     font-size: 15px;
     font-weight: 700;
-    color: #222;
+    color: var(--fg);
 }
 
 .successSub {
     font-size: 12.5px;
-    color: #666;
+    color: var(--fg-muted);
     line-height: 1.5;
 }
 

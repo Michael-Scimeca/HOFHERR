@@ -1,19 +1,86 @@
-.hero {
-    background: var(--bg-2);
-    border-bottom: 1px solid var(--border);
-    padding: 56px 24px 48px;
-    text-align: center;
+.wrapper {
+    min-height: 100vh;
+    background: var(--bg);
 }
 
-.heroInner {
-    max-width: 620px;
+.splitLayout {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 100vh;
+}
+
+.visualPane {
+    flex: 1 1 45%;
+    position: relative;
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    min-width: 300px;
+}
+
+.imageWrapper {
+    position: sticky;
+    top: 88px;
+    height: calc(100vh - 88px);
+    width: 100%;
+    background-image: url('/assets/specials-bbq.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+}
+
+.imageWrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(0,0,0,0.95), transparent 60%);
+}
+
+.overlayText {
+    position: relative;
+    z-index: 10;
+    padding: 64px;
+}
+
+.overlayText h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    color: #fff;
+    line-height: 0.9;
+    margin-bottom: 16px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+}
+
+.overlayText p {
+    font-family: var(--font-body);
+    color: rgba(255,255,255,0.8);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.contentPane {
+    flex: 1 1 55%;
+    background: var(--bg);
+    min-width: 320px;
+}
+
+.contentInner {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 8vw 48px;
 }
 
 .headline {
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 5vw, 4rem);
     color: var(--fg);
-    margin: 12px 0 16px;
+    margin: 16px 0 24px;
+    line-height: 1;
 }
 
 .headline em {
@@ -22,77 +89,93 @@
 }
 
 .sub {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: var(--fg-muted);
     line-height: 1.75;
-    margin: 0;
+    margin-bottom: 48px;
 }
 
-/* Options */
-.optionsSection {
-    background: var(--bg);
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
-    align-items: start;
-    max-width: 960px;
-    margin: 0 auto;
-}
-
-@media (max-width: 900px) {
-    .grid {
-        gap: 24px;
-    }
+.cardsStack {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 64px;
 }
 
 .card {
-    background: var(--bg);
+    background: var(--bg-2);
     border: 1px solid var(--border);
     border-radius: 20px;
-    padding: 36px;
+    padding: 32px;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.card:hover {
+    border-color: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.02);
 }
 
 .cardFeature {
     border-color: var(--red);
-    background: color-mix(in srgb, var(--red) 3%, var(--bg));
-    position: relative;
+    background: color-mix(in srgb, var(--red) 4%, #000);
+    box-shadow: 0 0 40px rgba(255, 0, 0, 0.05); /* very soft red glow */
 }
 
-.cardBadge {
-    position: absolute;
-    top: -13px;
-    left: 28px;
+.cardFeature:hover {
+    border-color: color-mix(in srgb, var(--red) 70%, #fff);
+    background: color-mix(in srgb, var(--red) 6%, #000);
+    box-shadow: 0 0 60px rgba(255, 0, 0, 0.1); 
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.iconCircle {
+    font-size: 2rem;
+    width: 56px;
+    height: 56px;
+    background: color-mix(in srgb, var(--bg-hover) 50%, var(--bg));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+}
+
+.cardFeature .iconCircle {
+    background: color-mix(in srgb, var(--red) 15%, var(--bg));
+    border-color: color-mix(in srgb, var(--red) 30%, transparent);
+}
+
+.badge {
     background: var(--red);
     color: #fff;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: 100px;
 }
 
-.cardEmoji {
-    font-size: 2.4rem;
-}
-
 .cardTitle {
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 2rem;
     color: var(--fg);
-    margin: 0;
+    margin: 8px 0 0;
 }
 
 .cardDesc {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--fg-muted);
-    line-height: 1.75;
+    line-height: 1.6;
     margin: 0;
 }
 
@@ -103,19 +186,26 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin-bottom: 12px;
 }
 
 .perks li {
-    font-size: 13.5px;
+    font-size: 14px;
     color: var(--fg-muted);
     font-weight: 500;
 }
 
+.btnFull {
+    width: 100%;
+    margin-top: 8px;
+}
+
 .howTo {
-    background: var(--bg-2);
+    background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 20px;
+    padding: 24px;
+    margin: 8px 0;
 }
 
 .howToTitle {
@@ -124,7 +214,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--fg-muted);
-    margin-bottom: 14px;
+    margin-bottom: 16px;
 }
 
 .steps {
@@ -133,46 +223,40 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
 }
 
 .steps li {
     display: flex;
-    gap: 12px;
-    font-size: 13.5px;
+    gap: 16px;
+    font-size: 14px;
     color: var(--fg-muted);
     line-height: 1.6;
-    align-items: flex-start;
+    align-items: center;
 }
 
-.stepNum {
-    background: var(--red);
-    color: #fff;
+.steps span {
+    background: var(--fg-muted);
+    color: #000;
     font-size: 11px;
     font-weight: 800;
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    margin-top: 1px;
 }
 
-/* FAQ */
 .faqSection {
-    background: var(--bg-2);
     border-top: 1px solid var(--border);
-}
-
-.faqInner {
-    max-width: 680px;
+    padding-top: 64px;
 }
 
 .faqTitle {
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 1.8rem;
+    font-family: var(--font-heading);
+    font-size: 2rem;
     color: var(--fg);
     margin-bottom: 32px;
 }
@@ -180,12 +264,12 @@
 .faqs {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 32px;
 }
 
 .faqItem {
     border-bottom: 1px solid var(--border);
-    padding-bottom: 20px;
+    padding-bottom: 24px;
 }
 
 .faqItem:last-child {
@@ -193,48 +277,31 @@
 }
 
 .faqQ {
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 600;
     color: var(--fg);
     margin-bottom: 8px;
 }
 
 .faqA {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--fg-muted);
-    line-height: 1.7;
+    line-height: 1.6;
 }
 
-/* CTA */
-.cta {
-    background: #1a1210;
-    padding: 48px 24px;
-    text-align: center;
-    color: #fff;
-}
-
-.cta h2 {
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 2rem;
-    margin-bottom: 8px;
-    color: #fff;
-}
-
-.cta p {
-    color: rgba(255, 255, 255, 0.65);
-    font-size: 14px;
-    margin-bottom: 28px;
-}
-
-.ctaBtns {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-@media (max-width: 680px) {
-    .grid {
-        grid-template-columns: 1fr;
+@media (max-width: 900px) {
+    .imageWrapper {
+        position: relative;
+        top: 0;
+        height: 60vh;
+        min-height: 400px;
+    }
+    
+    .overlayText {
+        padding: 40px;
+    }
+    
+    .contentInner {
+        padding: 48px 24px;
     }
 }

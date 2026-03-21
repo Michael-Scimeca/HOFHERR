@@ -24,14 +24,14 @@ const STEPS: Step[] = [
                 </a>
             </>
         ),
-        img: '/howitworks/cart.png',
+        img: '/howitworks/cart-new.png',
         alt: 'Shopping cart',
     },
     {
         num: '02',
         title: 'Pick a Pickup Time',
         desc: 'Select your preferred date and time window from available pickup slots at the shop.',
-        img: '/howitworks/calander.png',
+        img: '/howitworks/calendar-new.png',
         alt: 'Calendar',
     },
     {
@@ -46,7 +46,7 @@ const STEPS: Step[] = [
                 — or choose to pay at the store when you pick up.
             </>
         ),
-        img: '/howitworks/giftcard.png',
+        img: '/howitworks/giftcard-new.png',
         alt: 'Payment card',
     },
     {
@@ -60,7 +60,7 @@ const STEPS: Step[] = [
                 </a>
             </>
         ),
-        img: '/howitworks/pickup.jpg',
+        img: '/howitworks/pickup-new.png',
         alt: 'Curbside pickup car',
     },
 ];

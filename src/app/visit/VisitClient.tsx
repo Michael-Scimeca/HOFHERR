@@ -139,14 +139,6 @@ export default function VisitClient() {
                                     iconType={loc.iconType}
                                 />
                             </div>
-                            <a
-                                href={loc.directionsUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className={styles.directionsBtn}
-                            >
-                                📍 Open in Google Maps
-                            </a>
                         </div>
 
                         {/* Info */}

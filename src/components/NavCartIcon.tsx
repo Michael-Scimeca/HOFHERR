@@ -16,12 +16,12 @@ export default function NavCartIcon() {
                 aria-label={`Shopping Cart, ${count} items`}
             >
                 <svg 
-                    width="22" 
-                    height="22" 
+                    width="25" 
+                    height="25" 
                     viewBox="0 0 24 24" 
                     fill="none" 
                     stroke="currentColor" 
-                    strokeWidth="2" 
+                    strokeWidth="1" 
                     strokeLinecap="round" 
                     strokeLinejoin="round"
                 >

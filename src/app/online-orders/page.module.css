@@ -4,7 +4,9 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 12px;
-    padding: 8px 10px;
+    padding: 12px 14px;
+    min-height: 48px;
+    overflow: visible;
     background: var(--bg-2);
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -223,11 +225,6 @@
     padding: 0 4px;
 }
 
-.mobileHeader {
-    position: sticky;
-    top: 85px;
-}
-
 .searchRowMobile {
     display: none;
 }
@@ -236,7 +233,7 @@
     padding: 6px 14px;
     border-radius: 999px;
     border: none;
-    background: var(--color-primary, #800020);
+    background: var(--red);
     color: #fff;
     font-size: 9px;
     font-weight: 800;
@@ -563,11 +560,15 @@
 
 /* Sidebar */
 .sidebar {
-    position: relative;
-    align-self: stretch;
+    position: sticky;
+    top: 85px;
+    align-self: flex-start;
     display: flex;
     flex-direction: column;
     overflow: visible;
+    height: calc(100vh - 100px);
+    background: var(--bg);
+    z-index: 100;
 }
 
 /* Sidebar scroll wrapper — positions the custom track */
@@ -593,6 +594,7 @@
     overscroll-behavior: contain;
     /* Hide native scrollbar */
     scrollbar-width: none;
+    border: 1px solid #2b2b2b;
 }
 
 .sidebarInner::-webkit-scrollbar {
@@ -794,15 +796,12 @@
     border-bottom: 1px solid var(--border, rgba(0,0,0,0.08));
 }
 
-.sideLink:hover {
-    background: var(--bg-2);
-    color: var(--fg);
-}
 
 .sideLinkActive {
-    background: color-mix(in srgb, var(--red) 18%, transparent);
-    color: var(--red);
+    background: var(--red);
+    color: #fff;
     font-weight: 700;
+    border-radius: var(--radius) 0 0 var(--radius);
 }
 
 .sideCard {
@@ -890,20 +889,25 @@
 .itemList {
     display: flex;
     flex-direction: column;
+    gap: 12px;
 }
 
 .item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--border);
+    gap: 20px;
+    padding: 18px 24px;
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.item:last-child {
-    border-bottom: none;
+.item:nth-child(even) {
+    background: #000;
 }
+
 
 .itemOut {
     opacity: 0.85;
@@ -915,13 +919,13 @@
 }
 
 .itemName {
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 17px;
+    font-weight: 800;
     color: var(--fg);
-    margin-bottom: 3px;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
 }
 
@@ -953,9 +957,9 @@
 }
 
 .itemDesc {
-    font-size: 13px;
-    color: var(--fg-muted);
-    line-height: 1.55;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.6;
 }
 
 .itemRight {
@@ -966,8 +970,8 @@
 }
 
 .itemPrice {
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 15px;
+    font-weight: 800;
     color: var(--fg);
     white-space: nowrap;
     min-width: 90px;
@@ -1352,7 +1356,7 @@
 
 /* Modal */
 .modal {
-    background: var(--bg);
+    background: #000;
     border-radius: 16px;
     border: 2px solid var(--red);
     padding: 12px 18px;
@@ -1516,11 +1520,11 @@
     bottom: 0;
     width: 100%;
     max-width: 400px;
-    background: var(--bg);
+    background: #000000;
     box-shadow: -8px 0 40px rgba(0, 0, 0, 0.18);
     display: flex;
     flex-direction: column;
-    z-index: 201;
+    z-index: 601;
     border-radius: 20px 0 0 20px;
     border-left: 2px solid var(--border);
 }
@@ -1941,14 +1945,14 @@
     position: absolute;
     right: 0;
     width: 6px;
-    background: var(--gold);
-    border-radius: 3px;
+    background: var(--red);
+    border-radius: 12px;
     transition: background 0.15s;
     min-height: 20px;
 }
 
 .customScrollThumb:hover {
-    background: var(--gold);
+    background: var(--red);
     opacity: 0.8;
 }
 
@@ -2234,10 +2238,10 @@
         margin-right: -16px;
         display: flex;
         flex-direction: column;
-        background: var(--bg);
+        padding: 6px 16px 0;
         position: sticky;
         z-index: 100;
-        padding: 6px 16px 0;
+        background: #000;
     }
 
 
@@ -2331,12 +2335,19 @@
         scrollbar-width: none;
         padding-right: 0;
         gap: 4px;
+        border: none;
+        border-radius: 0;
     }
 
     .sideLink {
         white-space: nowrap;
         border-bottom: none;
         border-right: 1px solid var(--border, rgba(0,0,0,0.08));
+    }
+
+    .sideLink.sideLinkActive {
+        background: var(--gold);
+        color: #fff;
     }
 
     .sidebarTitle,

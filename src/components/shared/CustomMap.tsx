@@ -12,6 +12,7 @@ interface CustomMapProps {
     height?: string;
     className?: string;
     iconType?: 'butcher' | 'depot';
+    hideBottomBar?: boolean;
 }
 
 /* ─── Pin SVGs per location type ─── */
@@ -56,6 +57,7 @@ export default function CustomMap({
     height = '100%',
     className,
     iconType = 'butcher',
+    hideBottomBar = false,
 }: CustomMapProps) {
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapRef = useRef<L.Map | null>(null);
@@ -140,6 +142,19 @@ export default function CustomMap({
         <div className={`${styles.container} ${className || ''}`} style={{ height }}>
             <div ref={mapContainer} className={styles.canvas} />
             <div className={styles.overlay} />
+            {!hideBottomBar && (
+                <div className={styles.bottomBar}>
+                    <span className={styles.bottomLabel}>{label}</span>
+                    <a 
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className={styles.bottomLink}
+                    >
+                        Get Map Direction
+                    </a>
+                </div>
+            )}
         </div>
     );
 }

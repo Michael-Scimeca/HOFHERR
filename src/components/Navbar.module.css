@@ -356,6 +356,14 @@
     margin-top: 4px;
 }
 
+.marqueeTrack {
+    display: flex;
+}
+
+.mobileOnlyClone {
+    display: none;
+}
+
 .storeStatus {
     display: flex;
     align-items: center;
@@ -439,7 +447,7 @@
 /* closed = muted */
 .closed .statusLabel {
     color: var(--text-3);
-    font-weight: 50;
+    font-weight: 500;
 }
 
 .closed .statusDot {
@@ -478,7 +486,7 @@
 }
 
 .cta {
-    background: #800020;
+    background: #cc0d1d;
     color: #fff;
     padding: 9px 18px;
     border-radius: 6px;
@@ -490,7 +498,7 @@
 }
 
 .cta:hover {
-    background: #600018;
+    background: #a80a18;
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(204, 14, 29, 0.4);
 }
@@ -507,7 +515,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--fg-muted, #666);
+    color: var(--gold, #d4845a);
     padding: 6px;
     border-radius: 8px;
     transition: color 0.15s, background 0.15s;
@@ -515,14 +523,14 @@
 }
 
 .cartIcon:hover {
-    color: var(--gold);
+    color: #fff;
     background: rgba(168, 144, 95, 0.08);
 }
 
 .cartBadge {
     position: absolute;
-    top: -6px;
-    right: -10px;
+    top: -3px;
+    right: -5px;
     background: #800020;
     color: #fff;
     font-size: 9px;
@@ -535,7 +543,7 @@
     justify-content: center;
     padding: 0 4px;
     line-height: 1;
-    border: 2px solid #fff;
+    border: 1px solid #fff;
     animation: badgePop 0.2s ease;
 }
 
@@ -787,46 +795,82 @@
 
 .hamburger {
     display: none;
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
-    padding: 6px 0 6px 6px;
+    --color: var(--text, #F2F2F2);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    position: relative;
+    border: none;
     background: none;
-    border-radius: 6px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.bar {
+.hamburger svg {
+    width: 64px;
+    height: 48px;
+    top: -6px;
+    left: -14px;
+    stroke: var(--color);
+    stroke-width: 4px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
     display: block;
-    width: 22px;
-    height: 2px;
-    background: var(--text, #F2F2F2);
-    border-radius: 2px;
-    transition: transform 0.25s, opacity 0.25s;
-    transform-origin: center;
+    position: absolute;
 }
 
-.bar1Open {
-    transform: translateY(7px) rotate(45deg);
+.hamburger svg path {
+    transition: stroke-dasharray var(--duration, 0.85s) var(--easing, ease) var(--delay, 0s), stroke-dashoffset var(--duration, 0.85s) var(--easing, ease) var(--delay, 0s);
+    stroke-dasharray: var(--array-1, 26px) var(--array-2, 100px);
+    stroke-dashoffset: var(--offset, 126px);
+    transform: translateZ(0);
 }
 
-.bar2Open {
-    opacity: 0;
-    transform: scaleX(0);
+.hamburger svg path:nth-child(2) {
+    --duration: 0.7s;
+    --easing: ease-in;
+    --offset: 100px;
+    --array-2: 74px;
 }
 
-.bar3Open {
-    transform: translateY(-7px) rotate(-45deg);
+.hamburger svg path:nth-child(3) {
+    --offset: 133px;
+    --array-2: 107px;
+}
+
+.hamburger.active svg path {
+    --offset: 57px;
+}
+
+.hamburger.active svg path:nth-child(1),
+.hamburger.active svg path:nth-child(3) {
+    --delay: 0.15s;
+}
+
+.hamburger.active svg path:nth-child(2) {
+    --duration: 0.4s;
+    --offset: 148px;
 }
 
 /* ─── Mobile menu ─── */
 .mobile {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    z-index: 999;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(0, 0, 0, 0.98);
-    padding: 12px 20px 24px;
+    padding: 12px 20px 48px;
     display: flex;
     flex-direction: column;
     gap: 0;
-    max-height: calc(100dvh - 60px);
+    height: calc(100dvh - 100px);
+    min-height: calc(100dvh - 100px);
     overflow-y: auto;
     width: 100%;
     box-sizing: border-box;
@@ -979,7 +1023,27 @@
     }
 
     .storeStatusOuter {
-        display: none;
+        display: flex;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 24px;
+        background: #000;
+        z-index: 10;
+        justify-content: flex-end;
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        margin-bottom: 10px;
+    }
+
+    .storeStatusWrap {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+        gap: 20px;
+        margin: 0;
+        padding: 0 16px 0 0;
     }
 
     .right {
@@ -994,12 +1058,14 @@
     }
 
     .header {
-        min-height: 56px;
+        min-height: 100px;
         flex-direction: column;
         align-items: stretch;
+        background: #000;
+        box-shadow: none;
+        border: none;
     }
 }
-
 
 @media (max-width: 480px) {
     .inner {
@@ -1009,13 +1075,12 @@
     }
 
     .header {
-        min-height: 56px;
+        min-height: 100px;
         flex-direction: column;
         align-items: stretch;
-    }
-
-    .storeStatusWrap {
-        display: none;
+        background: #000;
+        box-shadow: none;
+        border: none;
     }
 
     .cta {

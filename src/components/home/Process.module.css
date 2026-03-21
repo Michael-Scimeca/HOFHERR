@@ -53,7 +53,8 @@
 /* ── Connector arrow ── */
 .connector {
     position: absolute;
-    top: 56px; /* aligned to center of icon circle */
+    top: 56px;
+    /* aligned to center of icon circle */
     right: -16px;
     width: 32px;
     color: var(--gold, #A8905F);
@@ -103,7 +104,7 @@
     font-weight: 800;
     letter-spacing: 0.04em;
     border: 3px solid #fff;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
     z-index: 2;
 }
 
@@ -120,8 +121,6 @@
 
 .icon {
     object-fit: contain;
-    filter: invert(1) sepia(0.35) saturate(2) hue-rotate(0deg) brightness(1.05);
-    mix-blend-mode: screen;
     max-width: 100%;
     max-height: 100%;
     width: auto !important;
