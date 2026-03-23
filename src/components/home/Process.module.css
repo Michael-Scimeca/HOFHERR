@@ -37,7 +37,7 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 0;
+    gap: 0 32px;
     position: relative;
     align-items: stretch;
 }
@@ -45,7 +45,7 @@
 /* ── Step wrapper (holds card + connector) ── */
 .step {
     position: relative;
-    padding: 0 12px;
+    padding: 0;
     display: flex;
     flex-direction: column;
 }

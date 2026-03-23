@@ -2398,61 +2398,69 @@ export default function CustomOrdersPage({
 
                                     <div className={styles.formGroup}>
                                         <div className={styles.formFields}>
-                                            <input 
-                                                required 
-                                                name="name"
-                                                id="checkout-name"
-                                                autoComplete="name"
-                                                className={styles.formInput} 
-                                                placeholder="Full Name" 
-                                                value={form.name} 
-                                                onChange={e => setForm(f => ({ ...f, name: e.target.value }))} 
-                                            />
-                                            {/* Contact preference toggle */}
-                                            <div className={styles.contactPrefRow}>
-                                                <span className={styles.contactPrefLabel}>How should we reach you?</span>
-                                                <div className={styles.contactPrefToggle}>
-                                                    <button
-                                                        type="button"
-                                                        className={`${styles.contactPrefBtn} ${contactPref === 'phone' ? styles.contactPrefBtnActive : ''}`}
-                                                        onClick={() => { setContactPref('phone'); setForm(f => ({ ...f, email: '' })); }}
-                                                    >📞 Call Me</button>
-                                                    <button
-                                                        type="button"
-                                                        className={`${styles.contactPrefBtn} ${contactPref === 'email' ? styles.contactPrefBtnActive : ''}`}
-                                                        onClick={() => { setContactPref('email'); setForm(f => ({ ...f, phone: '' })); }}
-                                                    >✉️ Email Me</button>
+                                            {/* Two-column contact layout */}
+                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', alignItems: 'start' }}>
+                                                {/* Left col: Name + phone/email input */}
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                    <input
+                                                        required
+                                                        name="name"
+                                                        id="checkout-name"
+                                                        autoComplete="name"
+                                                        className={styles.formInput}
+                                                        placeholder="John Smith"
+                                                        value={form.name}
+                                                        onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                                                        style={{ margin: 0 }}
+                                                    />
+                                                    {contactPref === 'phone' ? (
+                                                        <input
+                                                            required
+                                                            name="tel"
+                                                            id="checkout-phone"
+                                                            autoComplete="tel"
+                                                            className={styles.formInput}
+                                                            placeholder="(847) 555-0100"
+                                                            type="tel"
+                                                            value={form.phone}
+                                                            onChange={e => {
+                                                                const formatted = formatPhoneNumber(e.target.value);
+                                                                setForm(f => ({ ...f, phone: formatted }));
+                                                            }}
+                                                            style={{ margin: 0 }}
+                                                        />
+                                                    ) : (
+                                                        <input
+                                                            required
+                                                            name="email"
+                                                            id="checkout-email"
+                                                            autoComplete="email"
+                                                            className={styles.formInput}
+                                                            placeholder="Email Address"
+                                                            type="email"
+                                                            value={form.email}
+                                                            onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                                                            style={{ margin: 0 }}
+                                                        />
+                                                    )}
+                                                </div>
+                                                {/* Right col: label + toggle */}
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                    <span className={styles.contactPrefLabel}>How should we reach you?</span>
+                                                    <div className={styles.contactPrefToggle}>
+                                                        <button
+                                                            type="button"
+                                                            className={`${styles.contactPrefBtn} ${contactPref === 'phone' ? styles.contactPrefBtnActive : ''}`}
+                                                            onClick={() => { setContactPref('phone'); setForm(f => ({ ...f, email: '' })); }}
+                                                        >📞 Call Me</button>
+                                                        <button
+                                                            type="button"
+                                                            className={`${styles.contactPrefBtn} ${contactPref === 'email' ? styles.contactPrefBtnActive : ''}`}
+                                                            onClick={() => { setContactPref('email'); setForm(f => ({ ...f, phone: '' })); }}
+                                                        >✉️ Email Me</button>
+                                                    </div>
                                                 </div>
                                             </div>
-
-                                            {contactPref === 'phone' ? (
-                                                <input
-                                                    required
-                                                    name="tel"
-                                                    id="checkout-phone"
-                                                    autoComplete="tel"
-                                                    className={styles.formInput}
-                                                    placeholder="Phone Number"
-                                                    type="tel"
-                                                    value={form.phone}
-                                                    onChange={e => {
-                                                        const formatted = formatPhoneNumber(e.target.value);
-                                                        setForm(f => ({ ...f, phone: formatted }));
-                                                    }}
-                                                />
-                                            ) : (
-                                                <input
-                                                    required
-                                                    name="email"
-                                                    id="checkout-email"
-                                                    autoComplete="email"
-                                                    className={styles.formInput}
-                                                    placeholder="Email Address"
-                                                    type="email"
-                                                    value={form.email}
-                                                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                                                />
-                                            )}
                                             
                                             <div className={styles.pickupScheduler}>
                                                 <label className={styles.pickupLabel}>Select Pickup Day & Time</label>

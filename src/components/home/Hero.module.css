@@ -28,6 +28,7 @@
 .content {
     position: relative;
     z-index: 2;
+    width: 100%;
     max-width: var(--max-w, 1200px);
     padding: 70px 24px 50px;
 }
