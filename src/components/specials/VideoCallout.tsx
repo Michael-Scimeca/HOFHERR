@@ -15,12 +15,9 @@ export default function VideoCallout({ image, video, alt, title, sub }: VideoCal
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (videoRef.current) {
-                videoRef.current.pause();
-            }
-        }, 5000);
-        return () => clearTimeout(timer);
+        if (videoRef.current) {
+            videoRef.current.play().catch(e => console.error("Autoplay muted prevented:", e));
+        }
     }, []);
 
     return (
@@ -32,6 +29,7 @@ export default function VideoCallout({ image, video, alt, title, sub }: VideoCal
                 muted
                 playsInline
                 autoPlay
+                loop
                 className={styles.video}
             >
                 <img src={image} alt={alt} />
@@ -41,8 +39,8 @@ export default function VideoCallout({ image, video, alt, title, sub }: VideoCal
                     {title && <div className={styles.title}>{title}</div>}
                     {sub && (
                         <div className={styles.sub}>
-                            {sub.split('\n').map((line, i) => (
-                                <span key={i}>{line}<br /></span>
+                            {sub.split('\n').filter(Boolean).map((line, i) => (
+                                <span key={i} className={styles.subLine}>{line}</span>
                             ))}
                         </div>
                     )}

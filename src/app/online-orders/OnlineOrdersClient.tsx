@@ -1,7 +1,7 @@
 'use client';
 
-
 import { useState, useCallback, useTransition, useEffect, useRef, useMemo, Suspense } from 'react';
+import { createPortal } from 'react-dom';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useCartCount } from '@/context/CartContext';
@@ -1734,7 +1734,7 @@ export default function CustomOrdersPage({
                 {/* Sidebar */}
                 <aside className={styles.sidebar}>
                     <div ref={catSentinelRef} style={{ height: 0 }} />
-                    <div ref={mobileHeaderRef} className={`${styles.mobileHeader} ${isCatSticky ? styles.stickyHeader : ''}`} style={{ top: navbarHeight }}>
+                    <div ref={mobileHeaderRef} className={`${styles.mobileHeader} ${isCatSticky ? styles.stickyHeader : ''}`} style={{ top: navbarHeight + 10 }}>
 
 
                     <div className={styles.storeSwitch}>
@@ -2028,7 +2028,7 @@ export default function CustomOrdersPage({
             </div>
 
             {/* ── Add to Cart Modal ── */}
-            {modal && (
+            {modal && typeof document !== 'undefined' && createPortal((
                 <div className={styles.overlay} onClick={() => setModal(null)}>
                     <div className={styles.modal} onClick={e => e.stopPropagation()}>
                         <div className={styles.modalTitle}>{modal.name}</div>
@@ -2056,10 +2056,10 @@ export default function CustomOrdersPage({
                         </div>
                     </div>
                 </div>
-            )}
+            ), document.body)}
 
             {/* ── Cart Drawer ── */}
-            {drawerOpen && (
+            {drawerOpen && typeof document !== 'undefined' && createPortal((
                 <div className={styles.overlay} onClick={() => setDrawerOpen(false)}>
                     <div className={styles.drawer} onClick={e => e.stopPropagation()}>
                         <div style={{ borderTopLeftRadius: '18px', backgroundColor: 'var(--red)', color: 'white', padding: '8px 16px', textAlign: 'center', fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
@@ -2218,10 +2218,10 @@ export default function CustomOrdersPage({
                         )}
                     </div>
                 </div>
-            )}
+            ), document.body)}
 
             {/* ── Checkout Modal ── */}
-            {checkoutOpen && (
+            {checkoutOpen && typeof document !== 'undefined' && createPortal((
                 <div className={styles.overlay} onClick={() => !isPending && setCheckoutOpen(false)}>
                     <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: 480, position: 'relative' }}>
 
@@ -2634,7 +2634,7 @@ export default function CustomOrdersPage({
                         </>
                     </div>
                 </div>
-            )}
+            ), document.body)}
             <HelpOrdering />
             {/* Restock success toast */}
             <div className={`${styles.restockToast} ${restockToast ? styles.restockToastShow : ''}`}>

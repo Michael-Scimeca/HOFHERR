@@ -72,7 +72,7 @@ export default function PrivacyPolicyPage() {
             <div className={styles.contact}>
                 <h2 style={{ borderBottom: 'none', marginTop: 0 }}>Questions? We&apos;re an open book.</h2>
                 <p><strong>Hofherr Meat Co.</strong></p>
-                <p>300 Happ Rd, Northfield, IL 60093</p>
+                <p>📍 <a href="https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>300 Happ Rd, Northfield, IL 60093</a></p>
                 <p>📞 <a href="tel:8474416328">(847) 441-6328</a></p>
                 <p>✉️ <a href="mailto:info@hofherrmeatco.com">info@hofherrmeatco.com</a></p>
             </div>

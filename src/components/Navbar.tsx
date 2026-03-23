@@ -66,10 +66,10 @@ function getShopStatus(hours: StoreHourEntry[], absoluteNow: Date) {
         const today = hours.find(h => h.day.toLowerCase() === dayName?.toLowerCase());
 
         if (!today || today.isClosed || !today.open || !today.close) {
-            return { 
-                status: 'closed', 
-                label: 'CLOSED', 
-                todayHours: today && today.open ? `${today.open}–${today.close}` : '' 
+            return {
+                status: 'closed',
+                label: 'CLOSED',
+                todayHours: today && today.open ? `${today.open}–${today.close}` : ''
             };
         }
 
@@ -166,7 +166,7 @@ export default function Navbar() {
 
     const storePills = (
         <div className={styles.storeStatusWrap}>
-            <Link 
+            <Link
                 href="/online-orders?store=butcher"
                 className={`${styles.storeStatus} ${styles[butcherStatus.status]}`}
             >
@@ -180,7 +180,7 @@ export default function Navbar() {
                     </span>
                 )}
             </Link>
-            <Link 
+            <Link
                 href="/online-orders?store=depot"
                 className={`${styles.storeStatus} ${styles[depotStatus.status]}`}
             >
@@ -250,7 +250,7 @@ export default function Navbar() {
                                         <span style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>
                                             {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                                         </span>
-                                    )} 
+                                    )}
                                 </button>
                                 <div className={styles.avatarDropdown}>
                                     <Link href={user.isAdmin ? "/admin" : "/dashboard"} className={styles.avatarDropdownItem}>
@@ -261,7 +261,7 @@ export default function Navbar() {
                             </div>
                         )}
 
-                        <Link href="/online-orders" className={styles.cta} onClick={() => setMobileOpen(false)}>Shop Online</Link>
+                        <Link href="/online-orders" className={styles.cta} onClick={() => setMobileOpen(false)}>Order Online</Link>
 
                         <NavCartIcon />
 
@@ -295,8 +295,8 @@ export default function Navbar() {
                     {/* Nav links */}
                     {NAV_ITEMS.map((item) => (
                         <div key={item.label} className={styles.mobileSection}>
-                            <Link 
-                                href={item.href} 
+                            <Link
+                                href={item.href}
                                 className={`${styles.mobilePrimary} ${isActive(item.href) ? styles.mobileActive : ''}`}
                                 onClick={() => setMobileOpen(false)}
                             >

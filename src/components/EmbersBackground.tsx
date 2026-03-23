@@ -82,10 +82,10 @@ export default function EmberBackground() {
       }
     }
 
-    const particles: P[] = Array.from({ length: 60 }, (_, i) => {
+    const particles: P[] = Array.from({ length: 40 }, (_, i) => {
       const p = make(true)
       // stagger — each particle starts at a different point in its life
-      p.life = p.maxLife * (1 - i / 60) * Math.random()
+      p.life = p.maxLife * (1 - i / 40) * Math.random()
       return p
     })
 
@@ -97,7 +97,7 @@ export default function EmberBackground() {
         vy: between(0.1, 0.3), vx: between(-0.1, 0.1), life: 1,
       }
     }
-    const smokes: S[] = Array.from({ length: 22 }, makeSmoke)
+    const smokes: S[] = Array.from({ length: 12 }, makeSmoke)
 
     const draw = () => {
       ctx.fillStyle = '#000'
@@ -166,8 +166,7 @@ export default function EmberBackground() {
 
         ctx.save()
         ctx.globalAlpha = alpha
-        ctx.shadowColor = p.color
-        ctx.shadowBlur  = p.size < 0.8 ? 4 : 7
+        // ctx.shadowBlur  = p.size < 0.8 ? 4 : 7 // Temporarily disabled for performance
 
         if (p.shape === 0) {
           // streak — line from prev to current
@@ -218,20 +217,26 @@ export default function EmberBackground() {
           ctx.fill()
         }
 
-        ctx.shadowBlur = 0
+        // ctx.shadowBlur = 0
         ctx.restore()
 
         if (p.life < 1 || p.y < -30) p.dead = true
       }
     }
 
-    const interval = setInterval(draw, 16)
+    let animationId: number;
+    const loop = () => {
+      draw();
+      animationId = requestAnimationFrame(loop);
+    };
+    animationId = requestAnimationFrame(loop);
+
     const onResize = () => {
       ww = canvas.width  = window.innerWidth
       wh = canvas.height = window.innerHeight
     }
     window.addEventListener('resize', onResize)
-    return () => { clearInterval(interval); window.removeEventListener('resize', onResize) }
+    return () => { cancelAnimationFrame(animationId); window.removeEventListener('resize', onResize) }
   }, [])
 
   return (

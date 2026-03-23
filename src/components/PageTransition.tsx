@@ -1,49 +1,44 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
-export default function PageTransition() {
+export default function PageTransition({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const [visible, setVisible] = useState(false);
+    const [opacity, setOpacity] = useState(1);
+    const isFirst = useRef(true);
 
-    // Fade in on first load
     useEffect(() => {
-        setVisible(true);
-    }, []);
+        if (isFirst.current) {
+            isFirst.current = false;
+            return;
+        }
 
-    // Flash out + back in on route changes
-    useEffect(() => {
-        setVisible(false);
+        // Fade out
+        setOpacity(0);
+
         const t = setTimeout(() => {
-            setVisible(true);
-            
-            // Check for hash link jump natively since Next.js often drops cross-page hashes
+            // Fade back in
+            setOpacity(1);
+
+            // Handle hash scroll
             setTimeout(() => {
                 const rawHash = window.location.hash;
                 if (!rawHash) return;
-                
                 const id = rawHash.replace('#', '');
                 const el = document.getElementById(id);
                 if (el) {
-                    const style = window.getComputedStyle(el);
-                    const paddingTop = parseFloat(style.paddingTop) || 0;
-                    
-                    // Push down past the element's top padding but clear the 88px navbar
+                    const paddingTop = parseFloat(window.getComputedStyle(el).paddingTop) || 0;
                     const absoluteY = el.getBoundingClientRect().top + window.scrollY - 100 + paddingTop;
-                    
-                    window.scrollTo({
-                        top: absoluteY,
-                        behavior: 'smooth'
-                    });
+                    window.scrollTo({ top: absoluteY, behavior: 'smooth' });
                 }
-            }, 100); // give the new page time to paint layout properly
-            
-        }, 60);
+            }, 100);
+        }, 200);
+
         return () => clearTimeout(t);
     }, [pathname]);
 
-    // Handle standard hash links clicked mid-session on the same page
+    // Hash-change mid-session
     useEffect(() => {
         const onHashChange = () => {
             const rawHash = window.location.hash;
@@ -51,8 +46,7 @@ export default function PageTransition() {
             const id = rawHash.replace('#', '');
             const el = document.getElementById(id);
             if (el) {
-                const style = window.getComputedStyle(el);
-                const paddingTop = parseFloat(style.paddingTop) || 0;
+                const paddingTop = parseFloat(window.getComputedStyle(el).paddingTop) || 0;
                 const absoluteY = el.getBoundingClientRect().top + window.scrollY - 100 + paddingTop;
                 window.scrollTo({ top: absoluteY, behavior: 'smooth' });
             }
@@ -61,21 +55,15 @@ export default function PageTransition() {
         return () => window.removeEventListener('hashchange', onHashChange);
     }, []);
 
-    useEffect(() => {
-        const style = document.createElement('style');
-        style.id = 'page-transition-style';
-        style.textContent = `
-            body {
-                transition: opacity 0.35s ease;
-            }
-        `;
-        document.head.appendChild(style);
-        return () => style.remove();
-    }, []);
-
-    useEffect(() => {
-        document.body.style.opacity = visible ? '1' : '0';
-    }, [visible]);
-
-    return null;
+    return (
+        <div
+            style={{
+                opacity,
+                transition: 'opacity 0.25s ease',
+                willChange: 'opacity',
+            }}
+        >
+            {children}
+        </div>
+    );
 }

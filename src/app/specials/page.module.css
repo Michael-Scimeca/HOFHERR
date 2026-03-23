@@ -215,7 +215,7 @@
 .bbqSection {
     background: var(--bg);
     position: relative;
-    overflow: hidden;
+    overflow: clip;
 }
 
 .bbqSection::before {

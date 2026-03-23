@@ -117,7 +117,7 @@ export default function CutGuide() {
                     <p>Need a specific cut? We cut everything fresh to order.</p>
                     <div className={styles.ctaBtns}>
                         <a href="tel:8474416328" className="btn btn-primary">📞 Call Us</a>
-                        <Link href="/online-orders" className="btn btn-secondary">Order Online</Link>
+                        <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
                     </div>
                 </div>
             </div>

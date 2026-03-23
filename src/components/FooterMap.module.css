@@ -58,6 +58,17 @@
     padding: 10px 24px;
     background: var(--bg);
     border-bottom: 1px solid var(--border-soft);
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    cursor: pointer;
+}
+
+.addressBar:hover {
+    background: var(--bg-2);
+}
+
+.addressBar:hover .addressText {
+    color: var(--red);
 }
 
 .addressIcon {

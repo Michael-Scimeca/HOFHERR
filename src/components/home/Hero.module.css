@@ -103,7 +103,7 @@
 }
 
 .headline .accent {
-    color: #f4a261;
+    color: var(--red);
 }
 
 .sub {
@@ -184,7 +184,7 @@
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.5rem;
     font-weight: 800;
-    color: #f4a261;
+    color: var(--red);
     line-height: 1;
 }
 
@@ -232,9 +232,25 @@
         grid-template-columns: 1fr;
         gap: 24px;
     }
+}
 
+@media (max-width: 600px) {
     .heroVideo {
-        max-width: 360px;
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 20px;
+    }
+    .circleBubble {
+        width: 100px;
+        height: 100px;
+    }
+    .playIconOverlay {
+        width: 36px;
+        height: 36px;
+    }
+    .playIconOverlay svg {
+        width: 18px;
+        height: 18px;
     }
 }
 

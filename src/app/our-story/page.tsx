@@ -161,18 +161,20 @@ export default async function OurStoryPage() {
                     <div className={styles.teamGrid}>
                         {team.map((member, i) => (
                             <div key={i} className={styles.teamCard}>
-                                <div className={styles.teamCardPhotoWrap}>
+                                <div className={styles.teamImagePart}>
                                     <img
                                         src={member.photo ?? '/team/placeholder.jpg'}
                                         alt={member.name}
-                                        className={styles.teamCardPhoto}
+                                        className={styles.teamImage}
                                     />
                                 </div>
-                                <div className={styles.teamCardBody}>
-                                    <div className={styles.teamCardDivider} />
-                                    <h3 className={styles.teamCardName}>{member.name}</h3>
-                                    <span className={styles.teamCardRole}>{member.role}</span>
-                                    {member.bio && <p className={styles.teamCardBio}>{member.bio}</p>}
+                                <div className={styles.teamContentPart}>
+                                    <div className={styles.teamHeader}>
+                                        <h3 className={styles.teamName}>{member.name}</h3>
+                                        <span className={styles.teamRole}>{member.role}</span>
+                                    </div>
+                                    <div className={styles.teamDivider} />
+                                    {member.bio && <p className={styles.teamBio}>{member.bio}</p>}
                                 </div>
                             </div>
                         ))}

@@ -17,6 +17,7 @@ export default function SmoothScroll() {
         } as ConstructorParameters<typeof Lenis>[0]);
 
         lenisRef.current = lenis;
+        (window as any).lenis = lenis;
 
         function raf(time: number) {
             lenis.raf(time);

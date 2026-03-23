@@ -1,0 +1,167 @@
+.hubWrap {
+    margin-top: 48px;
+    background: #0d0d0d;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+/* Add a subtle gradient "glow" behind the whole thing */
+.hubWrap::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(220, 20, 40, 0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hubGrid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 340px;
+    gap: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Columns */
+.column {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    position: sticky;
+    top: 100px;
+}
+
+.colTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.colTitle span {
+    background: rgba(255, 255, 255, 0.1);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-family: var(--font-inter);
+    color: #fff;
+}
+
+.colTitle .activeStep {
+    background: var(--red);
+}
+
+/* Receipt Column (Sticky) */
+.receiptCol {
+    background: rgba(200, 20, 30, 0.03);
+    border: 1px solid rgba(220, 20, 40, 0.15);
+    border-radius: 16px;
+    padding: 24px;
+    align-self: flex-start;
+    position: sticky;
+    top: 100px;
+}
+
+.receiptTitle {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 800;
+    color: var(--red);
+    margin: 0 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.receiptItems {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.rItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 14px;
+    color: #fff;
+    gap: 16px;
+}
+
+.rItem span:last-child {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.rItem small {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    margin-left: 6px;
+    display: block;
+}
+
+/* Compact overrides for the nested components */
+.calendarEmbed {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+}
+
+.calculatorEmbed {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Responsiveness */
+@media (max-width: 1200px) {
+    .hubGrid {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+    }
+    .receiptCol,
+    .column {
+        position: sticky;
+        top: 80px; /* Tighter for tablet */
+    }
+}
+
+@media (max-width: 800px) {
+    .hubGrid {
+        grid-template-columns: 1fr;
+        padding-bottom: 100px; /* Clearance for chat widget */
+    }
+    .receiptCol,
+    .column {
+        position: static;
+        width: auto;
+    }
+    .receiptCol {
+        grid-column: span 1;
+    }
+    .hubWrap {
+        padding: 20px;
+    }
+}

@@ -42,7 +42,7 @@ export default function NewsletterPage() {
                             </p>
                             <div className={styles.successLinks}>
                                 <Link href="/specials" className="btn btn-primary">See This Week&apos;s Specials</Link>
-                                <Link href="/online-orders" className="btn btn-secondary">Order Online</Link>
+                                <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
                             </div>
                         </div>
                     ) : (

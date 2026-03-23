@@ -54,7 +54,7 @@ export default function GiftCardsPage() {
                                     rel="noopener noreferrer"
                                     className={`btn btn-primary ${styles.btnFull}`}
                                 >
-                                    Buy eGift Card ↗
+                                    Buy eGift Card
                                 </a>
                             </div>
 

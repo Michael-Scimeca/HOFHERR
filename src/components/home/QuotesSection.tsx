@@ -68,6 +68,13 @@ export default function QuotesSection() {
                                 <div className={styles.contactValue}>butcher@hofherrmeatco.com</div>
                             </div>
                         </a>
+                        <a href="#chat" className={styles.contactBox}>
+                            <div className={styles.contactIcon}>💬</div>
+                            <div className={styles.contactInfo}>
+                                <h4>Live Chat</h4>
+                                <div className={styles.contactValue}>Order via Chatbox</div>
+                            </div>
+                        </a>
                     </div>
                 </div>
 
@@ -113,8 +120,8 @@ export default function QuotesSection() {
                             <input type="date" className={styles.input} style={{ colorScheme: 'dark' }} />
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Guest Count (if applicable)</label>
-                            <input type="text" placeholder="e.g. 75 guests" className={styles.input} />
+                            <label className={styles.label}>Guest Count (Max 500)</label>
+                            <input type="number" min={1} max={500} placeholder="e.g. 75" className={styles.input} />
                         </div>
 
                         <div className={`${styles.formGroup} ${styles.formGroupFull}`}>

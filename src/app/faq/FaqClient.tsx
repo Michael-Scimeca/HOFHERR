@@ -103,9 +103,9 @@ export default function FaqClient({ faqs }: { faqs: FaqGroup[] }) {
                     <p>300 Happ Rd, Northfield Square · Tue–Fri 10am–6pm · Sat 10am–5pm · Sun 10am–4pm</p>
                     <div className={styles.ctaBtns}>
                         <Link href="/visit" className="btn btn-primary">
-                            Get Directions →
+                            Get Directions
                         </Link>
-                        <Link href="/online-orders" className="btn btn-secondary">
+                        <Link href="/online-orders" className="btn btn-primary">
                             Order Online
                         </Link>
                     </div>

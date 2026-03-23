@@ -2,11 +2,12 @@
     background: #000;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
-    padding: 32px 36px;
-    margin-top: 40px;
-    margin-bottom: 40px;
+    padding: 24px 28px;
+    margin: 40px auto;
+    max-width: 580px;
     position: relative;
     z-index: 10;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
 /* Header */
@@ -26,6 +27,7 @@
 .title {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: 1.8rem;
+    text-transform: uppercase;
     color: #fff;
     margin: 0 0 4px;
 }
@@ -198,7 +200,7 @@
 }
 
 .dayNum {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     line-height: 1;
@@ -290,8 +292,7 @@
 }
 
 .detailDate {
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 1.1rem;
+    font-size: 15px;
     color: #fff;
     margin-bottom: 12px;
     font-weight: 600;

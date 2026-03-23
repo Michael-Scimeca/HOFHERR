@@ -13,7 +13,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import ScrollToTop from "@/components/ScrollToTop";
-import PageTransition from "@/components/PageTransition";
 import SmoothScroll from "@/components/SmoothScroll";
 import ChatWidgetWrapper from "@/components/ChatWidgetWrapper";
 import EmbersBackground from "@/components/EmbersBackground";
@@ -70,31 +69,31 @@ export default async function RootLayout({
   const { isEnabled: isDraft } = await draftMode();
 
   let settings: SiteSettings = DEFAULT_SETTINGS;
-  
+
   try {
     const sanityClient = getClient(isDraft);
     const cms = await sanityClient.fetch(SITE_SETTINGS_QUERY, {}, { cache: 'no-store' });
-    
+
     if (cms) {
       const hasValidButcher = Array.isArray(cms.butcherHours) && cms.butcherHours.some((h: any) => h.open && h.close);
       const hasValidDepot = Array.isArray(cms.depotHours) && cms.depotHours.some((h: any) => h.open && h.close);
 
       // Build field-by-field — NO spread of cms, so null fields never overwrite defaults
       settings = {
-        shopName:            cms.shopName            || DEFAULT_SETTINGS.shopName,
-        phone:               cms.phone               || DEFAULT_SETTINGS.phone,
-        email:               cms.email               || DEFAULT_SETTINGS.email,
-        address:             cms.address             || DEFAULT_SETTINGS.address,
-        instagram:           cms.instagram           || DEFAULT_SETTINGS.instagram,
-        facebook:            cms.facebook            || DEFAULT_SETTINGS.facebook,
-        yelp:                cms.yelp                || DEFAULT_SETTINGS.yelp,
-        googleMaps:          cms.googleMaps          || DEFAULT_SETTINGS.googleMaps,
-        announcement:        cms.announcement        || DEFAULT_SETTINGS.announcement,
-        announcementActive:  cms.announcementActive  ?? DEFAULT_SETTINGS.announcementActive,
-        announcementColor:   cms.announcementColor   || DEFAULT_SETTINGS.announcementColor,
+        shopName: cms.shopName || DEFAULT_SETTINGS.shopName,
+        phone: cms.phone || DEFAULT_SETTINGS.phone,
+        email: cms.email || DEFAULT_SETTINGS.email,
+        address: cms.address || DEFAULT_SETTINGS.address,
+        instagram: cms.instagram || DEFAULT_SETTINGS.instagram,
+        facebook: cms.facebook || DEFAULT_SETTINGS.facebook,
+        yelp: cms.yelp || DEFAULT_SETTINGS.yelp,
+        googleMaps: cms.googleMaps || DEFAULT_SETTINGS.googleMaps,
+        announcement: cms.announcement || DEFAULT_SETTINGS.announcement,
+        announcementActive: cms.announcementActive ?? DEFAULT_SETTINGS.announcementActive,
+        announcementColor: cms.announcementColor || DEFAULT_SETTINGS.announcementColor,
         // Hours: only use CMS if valid, otherwise use hardcoded defaults
         butcherHours: hasValidButcher ? cms.butcherHours : DEFAULT_SETTINGS.butcherHours,
-        depotHours:   hasValidDepot   ? cms.depotHours   : DEFAULT_SETTINGS.depotHours,
+        depotHours: hasValidDepot ? cms.depotHours : DEFAULT_SETTINGS.depotHours,
       };
       console.log('[Layout] butcherHours from:', hasValidButcher ? 'CMS' : 'DEFAULTS', '| depotHours from:', hasValidDepot ? 'CMS' : 'DEFAULTS');
     }
@@ -132,7 +131,6 @@ export default async function RootLayout({
               <JsonLd />
               <SmoothScroll />
               <ScrollToTop />
-              <PageTransition />
               <Navbar />
               {children}
               <ChatWidgetWrapper />

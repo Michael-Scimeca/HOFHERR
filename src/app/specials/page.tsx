@@ -5,8 +5,33 @@ import { getClient } from '@/sanity/client';
 import { SIGNATURE_PRODUCTS_QUERY, BBQ_MENU_QUERY, BBQ_PRICING_QUERY, CATERING_EVENTS_QUERY, CATERING_CALENDAR_PRICING_QUERY, ROTISSERIE_STATUS_QUERY } from '@/sanity/queries';
 import NewsletterInline from '@/components/NewsletterInline';
 import VideoCallout from '@/components/specials/VideoCalloutWrapper';
-import CateringCalendar from '@/components/CateringCalendar';
+import CateringModule from './CateringModule';
 import styles from './page.module.css';
+import bbqStyles from '../bbq/page.module.css';
+import CursorThumbnail from '../bbq/CursorThumbnail';
+
+const getThumb = (name: string) => {
+    const safeName = (name || '').toLowerCase();
+    if (safeName.includes('brisket')) return '/images/bbq/brisket.png';
+    if (safeName.includes('pulled pork')) return '/images/bbq/pulled_pork.png';
+    if (safeName.includes('pulled chicken')) return '/images/bbq/pulled_chicken.png';
+    if (safeName.includes('tips')) return '/images/bbq/rib_tips.png';
+    if (safeName.includes('ribs') && !safeName.includes('tips')) return '/images/bbq/ribs.png';
+    if (safeName.includes('sausage')) return '/images/bbq/sausage.png';
+    if (safeName.includes('dates')) return '/images/bbq/chorizo_dates.png';
+    if (safeName.includes('charcuterie')) return '/images/bbq/charcuterie.png';
+    if (safeName.includes('pimento cheese') && !safeName.includes('mac')) return '/images/bbq/pimento_cheese.png';
+    if (safeName.includes('mac and cheese') || safeName.includes('mac & cheese') || (safeName.includes('pimento') && safeName.includes('mac')) || safeName.includes('mac n cheese')) return '/images/bbq/mac_cheese.png';
+    if (safeName.includes('slaw')) return '/images/bbq/coleslaw.png';
+    if (safeName.includes('beans')) return '/images/bbq/baked_beans.png';
+    if (safeName.includes('collard')) return '/images/bbq/collard_greens.png';
+    if (safeName.includes('portobello')) return '/images/bbq/portobellos.png';
+    if (safeName.includes('bean salad')) return '/images/bbq/bean_salad.png';
+    if (safeName.includes('pasta salad')) return '/images/bbq/pasta_salad.png';
+    if (safeName.includes('potato salad')) return '/images/bbq/potato_salad.png';
+    if (safeName.includes('corn')) return '/images/bbq/corn.png';
+    return null;
+}
 
 export const metadata: Metadata = {
     title: "Specials | Hofherr Meat Co.",
@@ -58,7 +83,7 @@ const FALLBACK_SIGNATURES: SignatureProduct[] = [
             { label: 'Visit The Depot', url: '/visit#depot', isPrimary: false },
             { label: 'Order Beef by the Pound', url: '/online-orders', isPrimary: true },
         ],
-        video: '/video-clips/Beef.jp4.mp4',
+        video: '/video-clips/beef.mp4',
         layout: 'callout-left',
     },
     {
@@ -322,14 +347,21 @@ export default async function SpecialsPage() {
                         )}
                         {(product.links || []).length > 0 && (
                             <div className={styles.btnRow}>
-                                {[...(product.links || []), { label: '💬 Text or Email Us', url: `#chat?subject=${encodeURIComponent(product.title)}`, isPrimary: false }]
+                                {[...(product.links || []), { label: '💬 Order via Chatbox', url: `#chat?subject=${encodeURIComponent(product.title)}`, isPrimary: false }]
+                                    .filter(link => {
+                                        const lower = link.label.toLowerCase().trim();
+                                        return !(lower.includes('order online') || lower.includes('order beef by the pound'));
+                                    })
+                                    .concat(product.title.toLowerCase().includes('beef') 
+                                        ? [{ label: '📞 RESERVE AT (847) 441-MEAT', url: 'tel:8474416328', isPrimary: true }] 
+                                        : [])
                                     .map(link => {
                                         // Override CMS defaults: Order buttons should always be the prominent red CTA
                                         // over informative links like podcasts
                                         let primaryStatus = link.isPrimary;
                                         const lower = link.label.toLowerCase();
                                         if (lower.includes('podcast')) primaryStatus = false;
-                                        if (lower.includes('order')) primaryStatus = true;
+                                        if (lower.includes('order') || lower.includes('reserve')) primaryStatus = true;
                                         return { ...link, isPrimary: primaryStatus };
                                     })
                                     .sort((a, b) => (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0))
@@ -396,78 +428,88 @@ export default async function SpecialsPage() {
                 <div className="container">
 
                     <div className={styles.sectionImageWrapper}>
-                        <img src="/assets/pig-roast-2.jpg" alt="Whole Pig Roast" className={styles.sectionImage} />
+                        <video src="/video-clips/PIG-GRIL.mp4" autoPlay loop muted playsInline className={styles.sectionImage} />
                     </div>
 
 
 
                     <div style={{ marginBottom: '32px' }}>
-                        <h3 className={styles.bbqCardTitle} style={{ marginBottom: '20px' }}>Menu Options</h3>
-                        <div className={styles.bbqMenuGrid}>
-                            <div className={`${styles.bbqCard} ${styles.bbqCard_appetizer}`}>
-                                <div className={styles.bbqCardHeader}>
-                                    <h3 className={styles.bbqCardTitle}>Appetizers (+$4/pp)</h3>
-                                </div>
-                                <ul className={styles.bbqList}>
-                                    <li>Butcher&apos;s Charcuterie Board</li>
-                                    <li>Bacon Wrapped Chorizo Dates</li>
-                                    <li>Pimento Cheese + Crackers (+$2/pp)</li>
+                        <div className={bbqStyles.menuBoard}>
+                            
+                            {/* Left Column: Sides */}
+                            <div className={`${bbqStyles.menuCategory} ${bbqStyles.sidesColumn}`}>
+                                <h2 className={bbqStyles.catTitle}>🥗 Side Options</h2>
+                                <p className={bbqStyles.catDesc}>Classic homemade sides designed to perfectly complement our low-and-slow BBQ.</p>
+                                <ul className={bbqStyles.menuListDual}>
+                                    {[
+                                        "Pimento Mac n Cheese",
+                                        "HMCo.leSlaw",
+                                        "Potato Salad",
+                                        "Marinated Grilled Portobellos",
+                                        "Corn",
+                                        "Three Bean Salad",
+                                        "House Pasta Salad",
+                                        "Collard Greens",
+                                        "North Shore Baked Beans"
+                                    ].map(item => {
+                                        const img = getThumb(item);
+                                        return (
+                                            <li key={item} className={img ? bbqStyles.hasThumb : ''}>
+                                                {img && <CursorThumbnail src={img} alt={item} />}
+                                                <span>{item}</span>
+                                            </li>
+                                        );
+                                    })}
                                 </ul>
                             </div>
-                            <div className={`${styles.bbqCard} ${styles.bbqCard_meat}`}>
-                                <div className={styles.bbqCardHeader}>
-                                    <h3 className={styles.bbqCardTitle}>Add&apos;l Meats</h3>
-                                </div>
-                                <ul className={styles.bbqList}>
-                                    <li>Burnt Ends Brisket</li>
-                                    <li>BBQ Pulled Chicken</li>
-                                    <li>Rib Tips + Hot Links Combo</li>
-                                    <li>Smoked Ribs</li>
-                                    <li>Any of our HMC Sausages</li>
+
+                            {/* Right Column: Meats and Appetizers */}
+                            <div className={`${bbqStyles.menuCategory} ${bbqStyles.meatCategory}`}>
+                                
+                                {/* Meats */}
+                                <h2 className={bbqStyles.catTitle}>🔥 Add'l Meats Options</h2>
+                                <p className={bbqStyles.catDesc}>All meats are slow-smoked in-house over authentic oak and cherry wood for up to 14 hours.</p>
+                                <ul className={bbqStyles.menuListDual}>
+                                    {[
+                                        "Burnt Ends Brisket",
+                                        "BBQ Pulled Chicken",
+                                        "Rib Tips + Hot Links Combo",
+                                        "Smoked Ribs",
+                                        "Any of our HMC Sausages"
+                                    ].map(item => {
+                                        const img = getThumb(item);
+                                        return (
+                                            <li key={item} className={img ? bbqStyles.hasThumb : ''}>
+                                                {img && <CursorThumbnail src={img} alt={item} />}
+                                                <span>{item}</span>
+                                            </li>
+                                        );
+                                    })}
                                 </ul>
-                            </div>
-                            <div className={`${styles.bbqCard} ${styles.bbqCard_side}`}>
-                                <div className={styles.bbqCardHeader}>
-                                    <h3 className={styles.bbqCardTitle}>Side Options</h3>
-                                </div>
-                                <ul className={styles.bbqList}>
-                                    <li>Pimento Mac n Cheese</li>
-                                    <li>HMCo.leSlaw</li>
-                                    <li>Potato Salad</li>
-                                    <li>Marinated Grilled Portobellos</li>
-                                    <li>Corn</li>
-                                    <li>Three Bean Salad</li>
-                                    <li>House Pasta Salad</li>
-                                    <li>Collard Greens</li>
-                                    <li>North Shore Baked Beans</li>
+
+                                {/* Appetizers */}
+                                <h2 className={bbqStyles.catTitle} style={{ marginTop: 48 }}>🧀 Appetizer Options</h2>
+                                <ul className={bbqStyles.menuList}>
+                                    {[
+                                        "Butcher's Charcuterie Board",
+                                        "Bacon Wrapped Chorizo Dates",
+                                        "Pimento Cheese + Crackers (+$2/pp)"
+                                    ].map(item => {
+                                        const img = getThumb(item);
+                                        return (
+                                            <li key={item} className={img ? bbqStyles.hasThumb : ''}>
+                                                {img && <CursorThumbnail src={img} alt={item} />}
+                                                <span>{item}</span>
+                                            </li>
+                                        );
+                                    })}
                                 </ul>
                             </div>
                         </div>
                     </div>
 
-                    <div className={styles.bbqPricing}>
-                        <div className={styles.bbqPricingHeader}>
-                            <h3 className={styles.bbqPricingTitle}>Pig Roast Pricing</h3>
-                            <span className={styles.bbqPricingBadge}>Per Person · Pickup</span>
-                        </div>
-                        <p className={styles.bbqPricingNote}>Includes paperware, cutlery, serving utensils, buns, condiments &amp; sauce. Price does not include tax.</p>
-                        <div className={styles.bbqPricingGrid}>
-                            <div className={styles.bbqPriceRow}><span>Just the Pig</span><strong>$30/person</strong></div>
-                            <div className={styles.bbqPriceRow}><span>Pig + 1 Side</span><strong>$32/person</strong></div>
-                            <div className={styles.bbqPriceRow}><span>Pig + 2 Sides</span><strong>$34/person</strong></div>
-                            <div className={styles.bbqPriceRow}><span>Pig + 3 Sides</span><strong>$36/person</strong></div>
-                            <div className={styles.bbqPriceRow}><span>1 Add&apos;l Meat + 1 Side</span><strong>$36/person</strong></div>
-                            <div className={styles.bbqPriceRow}><span>1 Add&apos;l Meat + 2 Sides</span><strong>$38/person</strong></div>
-                            <div className={styles.bbqPriceRow}><span>1 Add&apos;l Meat + 3 Sides</span><strong>$40/person</strong></div>
-                        </div>
-                        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '8px' }}>
-                            <a href="mailto:catering@hofherrmeatco.com?subject=Pig Roast Inquiry" className="btn btn-primary">Reserve a Date →</a>
-                            <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
-                        </div>
-                    </div>
-
-                    {/* Availability Calendar */}
-                    <CateringCalendar events={cateringEvents} defaultPricing={calendarPricing} />
+                    {/* Integrated Catering Section */}
+                    <CateringModule events={cateringEvents} calendarPricing={calendarPricing} />
                 </div>
             </section>
 

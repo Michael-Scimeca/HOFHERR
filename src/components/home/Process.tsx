@@ -1,5 +1,6 @@
 'use client';
 import type { ReactNode } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Process.module.css';
 
@@ -19,19 +20,19 @@ const STEPS: Step[] = [
         desc: (
             <>
                 Browse all cuts, prepared foods, soups, and specials. Add exactly what you want to your cart.{' '}
-                <a href="/order" style={{ color: 'var(--red-dark, #700012)', fontWeight: 600, textDecoration: 'underline' }}>
+                <a href="/online-orders" style={{ color: 'var(--gold, #A8905F)', fontWeight: 600, textDecoration: 'underline' }}>
                     Order Online
                 </a>
             </>
         ),
-        img: '/howitworks/cart-new.png',
+        img: '/howitworks/cart_sketch.png',
         alt: 'Shopping cart',
     },
     {
         num: '02',
         title: 'Pick a Pickup Time',
         desc: 'Select your preferred date and time window from available pickup slots at the shop.',
-        img: '/howitworks/calendar-new.png',
+        img: '/howitworks/calendar_sketch.png',
         alt: 'Calendar',
     },
     {
@@ -40,13 +41,13 @@ const STEPS: Step[] = [
         desc: (
             <>
                 Checkout with Visa, Apple Pay, Google Pay, PayPal, or{' '}
-                <a href="/gift-cards" style={{ color: 'var(--red-dark, #700012)', fontWeight: 600, textDecoration: 'underline' }}>
+                <a href="/gift-cards" style={{ color: 'var(--gold, #A8905F)', fontWeight: 600, textDecoration: 'underline' }}>
                     a gift card
                 </a>
                 — or choose to pay at the store when you pick up.
             </>
         ),
-        img: '/howitworks/giftcard-new.png',
+        img: '/howitworks/payment_sketch.jpg',
         alt: 'Payment card',
     },
     {
@@ -55,12 +56,12 @@ const STEPS: Step[] = [
         desc: (
             <>
                 Pull up curbside or walk in. Your order is packed and ready — no waiting around.{' '}
-                <a href="mailto:butcher@hofherrmeatco.com?subject=Pick up at the store" style={{ color: 'var(--red-dark, #700012)', fontWeight: 600, textDecoration: 'underline' }}>
+                <a href="mailto:butcher@hofherrmeatco.com?subject=Pick up at the store" style={{ color: 'var(--gold, #A8905F)', fontWeight: 600, textDecoration: 'underline' }}>
                     Questions about pick up at store
                 </a>
             </>
         ),
-        img: '/howitworks/pickup-new.png',
+        img: '/howitworks/car_sketch.png',
         alt: 'Curbside pickup car',
     },
 ];
@@ -73,6 +74,9 @@ export default function Process() {
                     <div className="section-label">PROCESS</div>
                     <h2 className={styles.title}>How It <em>Works</em></h2>
                     <p className={styles.subtitle}>Order premium cuts online in four simple steps. Ready for pickup the same day.</p>
+                    <div style={{ marginTop: '32px' }}>
+                        <Link href="/online-orders" className="btn btn-primary" style={{ display: 'inline-flex' }}>Order Online</Link>
+                    </div>
                 </div>
 
                 <div className={styles.grid}>
@@ -81,9 +85,13 @@ export default function Process() {
                             {/* Connector arrow */}
                             {i < STEPS.length - 1 && (
                                 <div className={styles.connector}>
-                                    <svg viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M0 6h34M28 1l6 5-6 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
+                                    <Image
+                                        src="/howitworks/pointing_hand.jpg"
+                                        alt="pointing hand"
+                                        width={80}
+                                        height={53}
+                                        className={styles.connectorHand}
+                                    />
                                 </div>
                             )}
 

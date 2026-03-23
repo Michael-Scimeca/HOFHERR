@@ -82,7 +82,7 @@ export default function Footer() {
                     <div className={styles.contact}>
                         <span>📞 <a href={phoneHref(s.phone)}>{s.phone}</a></span>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="4" width="20" height="16" rx="2" /><polyline points="2,4 12,13 22,4" /></svg>
                             <a href="mailto:butcher@hofherrmeatco.com">butcher@hofherrmeatco.com</a>
                         </span>
                     </div>

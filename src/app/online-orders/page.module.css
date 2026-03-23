@@ -1971,14 +1971,14 @@
     position: absolute;
     top: 0;
     height: 6px;
-    background: var(--gold);
+    background: var(--red);
     border-radius: 0;
     transition: background 0.15s;
     min-width: 30px;
 }
 
 .hScrollThumb:hover {
-    background: var(--gold);
+    background: var(--red);
     opacity: 0.8;
 }
 
@@ -2346,8 +2346,9 @@
     }
 
     .sideLink.sideLinkActive {
-        background: var(--gold);
+        background: var(--red);
         color: #fff;
+        border-radius: 0;
     }
 
     .sidebarTitle,

@@ -46,10 +46,10 @@ export default function FooterMap() {
             </div>
 
             {/* Always-visible address */}
-            <div className={styles.addressBar}>
+            <a href={loc.directionsUrl} target="_blank" rel="noreferrer" className={styles.addressBar}>
                 <span className={styles.addressIcon}>📍</span>
                 <span className={styles.addressText}>{loc.address}</span>
-            </div>
+            </a>
 
             {/* Map container */}
             <div className={styles.mapWrap}>

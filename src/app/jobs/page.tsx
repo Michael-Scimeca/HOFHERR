@@ -15,16 +15,18 @@ const POSITIONS = [
 export default function JobsPage() {
     return (
         <main className={styles.main}>
-            <section className={cx('section-md', styles.hero)}>
+            <section className={cx(styles.hero)} style={{ padding: '120px 0 100px' }}>
                 <div className="container" style={{ maxWidth: '800px', textAlign: 'center' }}>
                     <div className="section-label">Join Our Team</div>
-                    <h1 className="hero-title">Work at Hofherr Meat Co.</h1>
-                    <p className="hero-desc">
-                        We are always looking to grow our team. We offer health care plans, retirement savings accounts, and other great perks!
-                    </p>
-                    <a href="mailto:jobs@hofherrmeatco.com" className="btn btn-primary">
-                        Email Us Your Resume
-                    </a>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '40px', alignItems: 'center' }}>
+                        <h1 className="hero-title">Work at Hofherr Meat Co.</h1>
+                        <p className="hero-desc">
+                            We are always looking to grow our team. We offer health care plans, retirement savings accounts, and other great perks!
+                        </p>
+                        <a href="mailto:jobs@hofherrmeatco.com" className="btn btn-primary" style={{ padding: '22px 56px' }}>
+                            Email Us Your Resume
+                        </a>
+                    </div>
                 </div>
             </section>
 

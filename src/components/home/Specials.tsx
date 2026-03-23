@@ -1,27 +1,27 @@
 import Link from 'next/link';
 import styles from './Specials.module.css';
 
-const FEATURED = [
+const FEATURED: { video?: string; image?: string; title: string; desc: string; href: string }[] = [
     {
-        image: '/assets/specials-italian-beef.png',
+        video: '/video-clips/beef.mp4',
         title: "The World's Greatest Italian Beef",
         desc: "As featured on America's Test Kitchen (PBS). House-made and served daily at The Depot, Mon–Fri starting at 10:30am until sold out.",
         href: '/specials#the-world-s-greatest-italian-beef',
     },
     {
-        image: '/assets/specials-rotisserie.png',
+        video: '/video-clips/chicken.mp4',
         title: 'Rotisserie Chicken Dinners',
         desc: 'Pasture-raised chickens, slow-roasted on our floor-to-ceiling rotisserie. Served hot with schmaltzy potatoes. Available Tue–Sun.',
         href: '/specials#rotisserie-chicken-dinners',
     },
     {
-        image: '/assets/specials-bbq.png',
+        video: '/video-clips/cutmeat.mp4',
         title: 'BBQ Catering',
         desc: 'Competition-style BBQ for any event. Brisket, ribs, pulled pork — smoked low and slow. From 20 to 500+ guests.',
         href: '/specials#bbq-catering',
     },
     {
-        image: '/assets/specials-pig-roast.png',
+        video: '/video-clips/PIG-GRIL.mp4',
         title: 'Pig Roasts',
         desc: 'Full-service pig roasts for 50–300+ guests. We source, prep, cook, serve & clean up. The full experience.',
         href: '/specials#pig-roasts',
@@ -41,12 +41,16 @@ export default function Specials() {
                     {FEATURED.map(item => (
                         <Link key={item.title} href={item.href} className={styles.card}>
                             <div className={styles.cardImg}>
-                                <img src={item.image} alt={item.title} />
+                                {item.video ? (
+                                    <video src={item.video} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                                ) : (
+                                    <img src={item.image} alt={item.title} />
+                                )}
                             </div>
                             <div className={styles.cardBody}>
                                 <h3 className={styles.cardTitle}>{item.title}</h3>
                                 <p className={styles.cardDesc}>{item.desc}</p>
-                                <span className={styles.cardLink}>Learn More →</span>
+                                <span className={styles.cardLink}>Learn More</span>
                             </div>
                         </Link>
                     ))}

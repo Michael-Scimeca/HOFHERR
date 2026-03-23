@@ -84,9 +84,9 @@ export default function CustomMap({
                 doubleClickZoom: true,
             });
 
-            /* ── Dark tile layer matching #181818 brand background ── */
+            /* ── Stamen Toner tiles — pure B&W so CSS filter tints perfectly ── */
             L.tileLayer(
-                'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+                'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png',
                 { maxZoom: 19 }
             ).addTo(map);
 

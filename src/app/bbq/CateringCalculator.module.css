@@ -1,0 +1,359 @@
+.calculatorWrap {
+    margin-top: 48px;
+    background: #0d0d0d;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 32px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.calculatorGrid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 48px;
+}
+
+/* Controls */
+.controls {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 1.6rem;
+    color: #fff;
+    margin: 0 0 8px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: var(--fg-muted);
+    margin: 0 0 32px;
+    line-height: 1.6;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin-bottom: 12px;
+}
+
+/* Number Input (Guests) */
+.numberInputWrap {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    width: fit-content;
+}
+
+.stepperBtn {
+    background: transparent;
+    border: none;
+    color: var(--fg);
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.stepperBtn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.numberInput {
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 80px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 0;
+    height: 44px;
+}
+
+.numberInput:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.numberInput::-webkit-inner-spin-button, 
+.numberInput::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
+
+.textarea {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.textarea:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.textarea::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.rowTwo {
+    display: flex;
+    gap: 64px;
+    margin-bottom: 16px;
+}
+
+.packageList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.packageOption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--fg);
+    transition: all 0.2s;
+}
+
+.packageOption:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.packageOptionActive {
+    background: rgba(220, 20, 40, 0.08);
+    border-color: var(--red);
+}
+
+.stepperWrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stepperBtnSm {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--fg);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.stepperBtnSm:hover {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+}
+
+.stepperValue {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    min-width: 16px;
+    text-align: center;
+}
+
+.divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 8px 0 24px;
+}
+
+/* Toggles */
+.toggleGroup {
+    display: flex;
+    align-items: center;
+}
+
+.toggleLabel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+.toggleTitle {
+    display: block;
+    font-size: 15px;
+    color: var(--fg);
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.toggleSub {
+    display: block;
+    font-size: 12px;
+    color: var(--fg-muted);
+}
+
+.checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 48px;
+    height: 26px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    transition: background 0.3s;
+    flex-shrink: 0;
+}
+
+.checkbox::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 22px;
+    height: 22px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.2, 0.85, 0.32, 1.2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.checkbox:checked {
+    background: #27ae60;
+}
+
+.checkbox:checked::after {
+    transform: translateX(22px);
+}
+
+/* Receipt / Estimate panel */
+.receiptPan {
+    background: rgba(200, 20, 30, 0.03);
+    border: 1px solid rgba(220, 20, 40, 0.15);
+    border-radius: 12px;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+    position: sticky;
+    top: 90px;
+}
+
+.receiptTitle {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 800;
+    color: var(--red);
+    margin: 0 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.receiptItems {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.rItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #fff;
+}
+
+.rItem span:last-child {
+    font-weight: 600;
+}
+
+.rItem small {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+.rItemSub {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: -6px;
+    margin-bottom: 4px;
+}
+
+.receiptTotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    padding-top: 20px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    margin-bottom: 16px;
+}
+
+.totalNum {
+    font-size: 24px;
+    color: #2ecc71;
+}
+
+.receiptNote {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.5;
+    margin: 0 0 24px;
+    font-style: italic;
+}
+
+.ctaBtn {
+    width: 100%;
+}
+
+@media (max-width: 850px) {
+    .calculatorGrid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .calculatorWrap {
+        padding: 24px 20px;
+    }
+}

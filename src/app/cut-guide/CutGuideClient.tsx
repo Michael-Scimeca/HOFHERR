@@ -193,7 +193,7 @@ export default function CutGuideClient({ sanityCuts = [] }: Props) {
                     <p style={{ fontSize: 15, color: 'var(--fg-muted)', marginBottom: 28 }}>We cut everything fresh to order. Just ask.</p>
                     <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' as const }}>
                         <a href="tel:8474416328" className="btn btn-primary">📞 Call Us</a>
-                        <Link href="/online-orders" className="btn btn-secondary">Order Online</Link>
+                        <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
                     </div>
                 </div>
             </section>

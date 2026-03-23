@@ -180,7 +180,7 @@ export default async function CateringPage() {
             </section>
 
             {/* ── BBQ Pricing ── */}
-            <section className={styles.pricingSection}>
+            <section id="pricing" className={styles.pricingSection}>
                 <div className="container">
                     <div className={styles.pricingGrid}>
                         <div className={styles.pricingCard}>

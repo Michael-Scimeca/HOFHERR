@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
-import { BBQ_MENU_QUERY, BBQ_PRICING_QUERY, BBQ_SERVICES_QUERY } from '@/sanity/queries';
+import { BBQ_MENU_QUERY, BBQ_PRICING_QUERY, BBQ_SERVICES_QUERY, CATERING_EVENTS_QUERY, CATERING_CALENDAR_PRICING_QUERY } from '@/sanity/queries';
 import styles from './page.module.css';
+import BBQHub from './BBQHub';
+import CursorThumbnail from './CursorThumbnail';
 
 export const metadata: Metadata = {
     title: 'BBQ Catering Menu & Pricing | Hofherr Meat Co. — Northfield, IL',
@@ -22,17 +24,17 @@ export const metadata: Metadata = {
 };
 
 /* ── Fallback data (used if Sanity has no bbqMenuItem docs yet) ── */
-const FALLBACK_MENU: { name: string; category: string }[] = [
-    { name: "Butcher's Charcuterie Board", category: 'appetizer' },
+const FALLBACK_MENU: { name: string; category: string; image?: string }[] = [
+    { name: "Butcher's Charcuterie Board", category: 'appetizer', image: '/images/bbq/charcuterie.png' },
     { name: 'Bacon Wrapped Chorizo Dates', category: 'appetizer' },
     { name: 'Pimento Cheese + Crackers', category: 'appetizer' },
-    { name: 'Smoked Brisket', category: 'meat' },
-    { name: 'BBQ Pulled Pork', category: 'meat' },
+    { name: 'Smoked Brisket', category: 'meat', image: '/images/bbq/brisket.png' },
+    { name: 'BBQ Pulled Pork', category: 'meat', image: '/images/bbq/pulled_pork.png' },
     { name: 'BBQ Pulled Chicken', category: 'meat' },
     { name: 'Rib Tips & Hot Links Combo', category: 'meat' },
-    { name: 'Ribs', category: 'meat' },
+    { name: 'Ribs', category: 'meat', image: '/images/bbq/ribs.png' },
     { name: 'Any HMC Sausages', category: 'meat' },
-    { name: 'Pimento Mac and Cheese', category: 'side' },
+    { name: 'Pimento Mac and Cheese', category: 'side', image: '/images/bbq/mac_cheese.png' },
     { name: 'HMCo.leslaw', category: 'side' },
     { name: 'Marinated & Grilled Portobellos', category: 'side' },
     { name: 'Corn', category: 'side' },
@@ -68,7 +70,7 @@ const FALLBACK_PRICING = [
     },
 ];
 
-type MenuItem = { name: string; category: string };
+type MenuItem = { name: string; category: string; image?: string };
 type PriceLine = { label: string; price: string };
 type PricingTier = {
     tier: string;
@@ -102,15 +104,56 @@ export default async function BBQPage() {
     let pricing: PricingTier[] = [];
     let services: ServiceItem[] = FALLBACK_SERVICES;
 
+    type CateringEventData = { _id: string; date: string; eventType: string; status: string };
+    type CalendarPricingRow = { label: string; price: string };
+    let cateringEvents: CateringEventData[] = [];
+    let calendarPricing: CalendarPricingRow[] = [
+        { label: 'Pig Roast (50+ guests)', price: 'From $30/pp' },
+        { label: 'BBQ Catering (20+ guests)', price: 'From $16/pp' },
+        { label: 'Ask us about custom options', price: 'Contact us' },
+    ];
+
     try {
-        const [rawMenu, rawPricing, rawServices] = await Promise.all([
+        const todayStr = new Date().toISOString().split('T')[0];
+        const [rawMenu, rawPricing, rawServices, rawEvents, rawCalPricing] = await Promise.all([
             sanityClient.fetch(BBQ_MENU_QUERY),
             sanityClient.fetch(BBQ_PRICING_QUERY),
             sanityClient.fetch(BBQ_SERVICES_QUERY),
+            sanityClient.fetch(CATERING_EVENTS_QUERY, { today: todayStr }),
+            sanityClient.fetch(CATERING_CALENDAR_PRICING_QUERY),
         ]);
-        menuItems = rawMenu?.length ? rawMenu : FALLBACK_MENU;
+        menuItems = rawMenu?.length ? rawMenu.map((m: MenuItem) => {
+            const safeName = (m.name || '').toLowerCase();
+            let matchedImage;
+            
+            if (safeName.includes('brisket')) matchedImage = '/images/bbq/brisket.png';
+            else if (safeName.includes('pulled pork')) matchedImage = '/images/bbq/pulled_pork.png';
+            else if (safeName.includes('pulled chicken')) matchedImage = '/images/bbq/pulled_chicken.png';
+            else if (safeName.includes('rib tips')) matchedImage = '/images/bbq/rib_tips.png';
+            else if (safeName.includes('ribs') && !safeName.includes('tips')) matchedImage = '/images/bbq/ribs.png';
+            else if (safeName.includes('sausage')) matchedImage = '/images/bbq/sausage.png';
+            else if (safeName.includes('dates')) matchedImage = '/images/bbq/chorizo_dates.png';
+            else if (safeName.includes('charcuterie')) matchedImage = '/images/bbq/charcuterie.png';
+            else if (safeName.includes('pimento cheese') && !safeName.includes('mac')) matchedImage = '/images/bbq/pimento_cheese.png';
+            else if (safeName.includes('mac and cheese') || safeName.includes('mac & cheese') || (safeName.includes('pimento') && safeName.includes('mac'))) matchedImage = '/images/bbq/mac_cheese.png';
+            else if (safeName.includes('slaw')) matchedImage = '/images/bbq/coleslaw.png';
+            else if (safeName.includes('beans')) matchedImage = '/images/bbq/baked_beans.png';
+            else if (safeName.includes('collard')) matchedImage = '/images/bbq/collard_greens.png';
+            else if (safeName.includes('portobello')) matchedImage = '/images/bbq/portobellos.png';
+            else if (safeName.includes('bean salad')) matchedImage = '/images/bbq/bean_salad.png';
+            else if (safeName.includes('pasta salad')) matchedImage = '/images/bbq/pasta_salad.png';
+            else if (safeName.includes('potato salad')) matchedImage = '/images/bbq/potato_salad.png';
+            else if (safeName.includes('corn')) matchedImage = '/images/bbq/corn.png';
+
+            if (matchedImage) {
+                return { ...m, image: matchedImage };
+            }
+            return m;
+        }) : FALLBACK_MENU;
         pricing = rawPricing?.length ? rawPricing : FALLBACK_PRICING;
         if (rawServices?.length) services = rawServices;
+        cateringEvents = rawEvents ?? [];
+        if (rawCalPricing?.length) calendarPricing = rawCalPricing;
     } catch {
         menuItems = FALLBACK_MENU;
         pricing = FALLBACK_PRICING;
@@ -121,10 +164,10 @@ export default async function BBQPage() {
         (acc, item) => {
             const cat = item.category ?? 'meat';
             if (!acc[cat]) acc[cat] = [];
-            acc[cat].push(item.name);
+            acc[cat].push(item);
             return acc;
         },
-        {} as Record<string, string[]>,
+        {} as Record<string, MenuItem[]>,
     );
 
     const categories = ['appetizer', 'meat', 'side'].filter((c) => grouped[c]?.length);
@@ -151,27 +194,62 @@ export default async function BBQPage() {
             {/* ── Menu ── */}
             <section className={`section ${styles.menuSection}`}>
                 <div className="container">
+                    <div className={styles.menuBoard}>
+                        
+                        {/* Left Column: Meats */}
+                        {(grouped['meat']?.length > 0) && (
+                            <div className={`${styles.menuCategory} ${styles.meatCategory}`}>
+                                <h2 className={styles.catTitle}>{CATEGORY_META['meat'].emoji} {CATEGORY_META['meat'].label}</h2>
+                                <p className={styles.catDesc}>All meats are slow-smoked in-house over authentic oak and cherry wood for up to 14 hours.</p>
+                                <ul className={styles.menuListDual}>
+                                    {grouped['meat'].map((item) => (
+                                        <li key={item.name} className={item.image ? styles.hasThumb : ''}>
+                                            {item.image && <CursorThumbnail src={item.image} alt={item.name} />}
+                                            <span>{item.name}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
 
-                    <div className={styles.menuGrid}>
-                        {categories.map((cat) => {
-                            const meta = CATEGORY_META[cat];
-                            return (
-                                <div key={cat} className={styles.menuCategory}>
-                                    <h2 className={styles.catTitle}>{meta.emoji} {meta.label}</h2>
+                        {/* Right Column: Stacked Apps & Sides */}
+                        <div className={styles.stackedCategories}>
+                            {(grouped['appetizer']?.length > 0) && (
+                                <div className={styles.menuCategory}>
+                                    <h2 className={styles.catTitle}>{CATEGORY_META['appetizer'].emoji} {CATEGORY_META['appetizer'].label}</h2>
                                     <ul className={styles.menuList}>
-                                        {grouped[cat].map((item) => (
-                                            <li key={item}>{item}</li>
+                                        {grouped['appetizer'].map((item) => (
+                                            <li key={item.name} className={item.image ? styles.hasThumb : ''}>
+                                                {item.image && <CursorThumbnail src={item.image} alt={item.name} />}
+                                                <span>{item.name}</span>
+                                            </li>
                                         ))}
                                     </ul>
                                 </div>
-                            );
-                        })}
+                            )}
+
+                            {(grouped['side']?.length > 0) && (
+                                <div className={styles.menuCategory}>
+                                    <h2 className={styles.catTitle}>{CATEGORY_META['side'].emoji} {CATEGORY_META['side'].label}</h2>
+                                    <p className={styles.catDesc}>Classic homemade sides designed to perfectly complement our low-and-slow BBQ.</p>
+                                    <ul className={styles.menuListDual}>
+                                        {grouped['side'].map((item) => (
+                                            <li key={item.name} className={item.image ? styles.hasThumb : ''}>
+                                                {item.image && <CursorThumbnail src={item.image} alt={item.name} />}
+                                                <span>{item.name}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+
                     </div>
                 </div>
             </section>
 
             {/* ── Pricing ── */}
-            <section className={`section ${styles.pricingSection}`}>
+            <section id="quote" className={`section ${styles.pricingSection}`}>
                 <div className="container">
                     <div className={styles.pricingHeader}>
                         <div className="section-label">Transparent Pricing</div>
@@ -212,6 +290,12 @@ export default async function BBQPage() {
                             </div>
                         ))}
                     </div>
+                    
+                    {/* Unified BBQ Hub (Calculator + Calendar) */}
+                    <div id="bbq-hub" style={{ marginTop: '32px' }}>
+                        <BBQHub events={cateringEvents} calendarPricing={calendarPricing} />
+                    </div>
+
                 </div>
             </section>
 

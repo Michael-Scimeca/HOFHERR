@@ -493,6 +493,7 @@
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 1.5px;
+    text-transform: uppercase;
     transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
     white-space: nowrap;
 }
@@ -816,7 +817,7 @@
     top: -6px;
     left: -14px;
     stroke: var(--color);
-    stroke-width: 4px;
+    stroke-width: 2px;
     stroke-linecap: round;
     stroke-linejoin: round;
     fill: none;
@@ -850,11 +851,17 @@
 .hamburger.active svg path:nth-child(1),
 .hamburger.active svg path:nth-child(3) {
     --delay: 0.15s;
+    --easing: cubic-bezier(.2, .4, .2, 1.1);
 }
 
 .hamburger.active svg path:nth-child(2) {
     --duration: 0.4s;
-    --offset: 148px;
+    --offset: 2px;
+    --array-1: 1px;
+}
+
+.hamburger.active svg path:nth-child(3) {
+    --offset: 58px;
 }
 
 /* ─── Mobile menu ─── */

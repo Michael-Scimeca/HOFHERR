@@ -14,7 +14,7 @@ export default function NotFound() {
                 </p>
                 <div className={styles.btns}>
                     <Link href="/" className="btn btn-primary">← Back to Home</Link>
-                    <Link href="/online-orders" className="btn btn-secondary">Order Online</Link>
+                    <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
                     <Link href="/specials" className="btn btn-secondary">See Specials</Link>
                 </div>
                 <div className={styles.hours}>
