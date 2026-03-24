@@ -16,12 +16,67 @@
     z-index: 0;
 }
 
-.bgImage {
-    display: none;
+/* ─── Right-column video ─── */
+.heroVideoCol {
+    position: relative;
 }
 
-.bgOverlay {
-    display: none;
+.heroVideoPlayer {
+    object-fit: cover;
+}
+
+/* Mobile: hero video becomes background */
+@media (max-width: 1200px) {
+    .heroVideoCol {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+    }
+    .heroVideoCol::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.9) 0%,
+            rgba(0, 0, 0, 0.85) 50%,
+            rgba(0, 0, 0, 0.92) 100%
+        );
+        z-index: 1;
+    }
+    .heroVideoPlayer {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        aspect-ratio: auto;
+    }
+}
+
+/* Desktop: hero video in right column */
+@media (min-width: 1201px) {
+    .heroVideoCol {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        width: 45%;
+        z-index: 1;
+        overflow: hidden;
+    }
+    .heroVideoCol::after {
+        display: none;
+    }
+    .heroVideoPlayer {
+        width: 100%;
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        aspect-ratio: 16 / 9;
+    }
 }
 
 /* ─── Content ─── */
@@ -132,6 +187,7 @@
 
 .ctas {
     display: flex;
+    align-items: center;
     gap: 12px;
     flex-wrap: wrap;
     margin-bottom: 14px;
@@ -236,22 +292,12 @@
 }
 
 @media (max-width: 600px) {
-    .heroVideo {
-        width: 100px;
-        height: 100px;
-        margin: 0 auto 20px;
+    .ctas {
+        flex-direction: column;
+        align-items: stretch;
     }
-    .circleBubble {
-        width: 100px;
-        height: 100px;
-    }
-    .playIconOverlay {
-        width: 36px;
-        height: 36px;
-    }
-    .playIconOverlay svg {
-        width: 18px;
-        height: 18px;
+    .ctas .btn {
+        text-align: center;
     }
 }
 

@@ -10,7 +10,7 @@ import CustomMap from '@/components/shared/CustomMap';
 const LOCATIONS = [
     {
         id: 'butcher',
-        label: '🥩 The Butcher Shop',
+        label: 'The Butcher Shop',
         name: 'The Butcher Shop',
         address: '300 Happ Rd, Northfield, IL 60093',
         lat: 42.1042,
@@ -45,7 +45,7 @@ const LOCATIONS = [
     },
     {
         id: 'depot',
-        label: '🏪 The Depot',
+        label: 'The Depot',
         name: 'The Depot',
         address: '780 Elm St, Winnetka, IL 60093',
         lat: 42.1081,
@@ -131,6 +131,7 @@ export default function VisitClient() {
                         <div className={styles.mapCol}>
                             <div className={styles.mapWrap}>
                                 <CustomMap
+                                    key={loc.id}
                                     lat={loc.lat}
                                     lng={loc.lng}
                                     label={loc.label}

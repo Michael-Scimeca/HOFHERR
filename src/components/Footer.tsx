@@ -29,7 +29,7 @@ export default function Footer() {
                 <div className={styles.brand}>
                     <div className={styles.logo}>
                         <Image
-                            src="/assets/logo.png"
+                            src="/assets/logo.svg"
                             alt={s.shopName}
                             height={64}
                             width={64}
@@ -88,7 +88,7 @@ export default function Footer() {
                     </div>
                     <div className={styles.locations}>
                         <div className={styles.location}>
-                            <Link href="/online-orders?store=butcher" className={styles.locationTitle}>🥩 The Butcher Shop</Link>
+                            <Link href="/online-orders?store=butcher" className={styles.locationTitle}>The Butcher Shop</Link>
                             <a href="https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093" target="_blank" rel="noopener noreferrer" className={styles.locationAddr}>📍 300 Happ Rd, Northfield, IL 60093</a>
                             <div className={styles.hours}>
                                 {s.butcherHours?.map((h) => (
@@ -101,7 +101,7 @@ export default function Footer() {
                             </div>
                         </div>
                         <div className={styles.location}>
-                            <Link href="/online-orders?store=depot" className={styles.locationTitle}>🏪 The Depot</Link>
+                            <Link href="/online-orders?store=depot" className={styles.locationTitle}>The Depot</Link>
                             <a href="https://www.google.com/maps/dir/?api=1&destination=780+Elm+St,+Winnetka,+IL+60093" target="_blank" rel="noopener noreferrer" className={styles.locationAddr}>📍 780 Elm St, Winnetka, IL 60093</a>
                             <div className={styles.hours}>
                                 {s.depotHours?.map((h) => (

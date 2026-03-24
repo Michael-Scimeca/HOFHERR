@@ -268,5 +268,5 @@
 
 .directionsBtn:hover {
     background: #b53d2e;
-    transform: translateX(-50%) scale(1.03);
+    transform: translateX(-50%);
 }

@@ -40,13 +40,26 @@
 }
 
 .customPin:hover {
-    transform: scale(1.12);
+    filter: drop-shadow(0 5px 12px rgba(209, 72, 54, 0.6));
 }
 
 .customPin svg {
     width: 40px;
     height: 56px;
     animation: pinDrop 0.5s var(--ease-out) both;
+}
+
+.butcherPin {
+    background: none !important;
+    border: none !important;
+    border-radius: 50%;
+    filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.6));
+    transition: transform 0.3s var(--ease-out);
+    animation: pinDrop 0.5s var(--ease-out) both;
+}
+
+.butcherPin:hover {
+    filter: drop-shadow(0 5px 12px rgba(209, 72, 54, 0.7));
 }
 
 @keyframes pinDrop {

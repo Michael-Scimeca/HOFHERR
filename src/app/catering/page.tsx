@@ -4,6 +4,7 @@ import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
 import { BBQ_PRICING_QUERY, CATERING_EVENTS_QUERY } from '@/sanity/queries';
 import CateringCalendar from '@/components/CateringCalendar';
+import CateringHub from './CateringHub';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -179,47 +180,14 @@ export default async function CateringPage() {
                 </div>
             </section>
 
-            {/* ── BBQ Pricing ── */}
-            <section id="pricing" className={styles.pricingSection}>
-                <div className="container">
-                    <div className={styles.pricingGrid}>
-                        <div className={styles.pricingCard}>
-                            <h3 className={styles.pricingTitle}>BBQ Catering</h3>
-                            <p className={styles.pricingNote}>20+ People · Pickup · Tax not included</p>
-                            <p className={styles.pricingIncludes}>Includes paperware, cutlery, serving utensils, buns, condiments &amp; sauce.</p>
-                            <div className={styles.priceRows}>
-                                {bbqPricing.map(p => (
-                                    <div key={p.label} className={styles.priceRow}>
-                                        <span>{p.label}</span>
-                                        <strong>{p.price}</strong>
-                                    </div>
-                                ))}
-                            </div>
-                            <a href="mailto:catering@hofherrmeatco.com?subject=BBQ Catering Quote" className="btn btn-primary">Get a BBQ Quote</a>
-                        </div>
-                        <div className={`${styles.pricingCard} ${styles.pricingFeatured}`}>
-                            <div className={styles.pricingBadge}>⭐ Full Service</div>
-                            <h3 className={styles.pricingTitle}>Pig Roasts</h3>
-                            <p className={styles.pricingNote}>50+ Guests · Per Person · Tax not included</p>
-                            <p className={styles.pricingIncludes}>Includes fully cooked pig, buffet setup, chafing dishes, paper goods, condiments, event staff &amp; cleanup.</p>
-                            <div className={styles.priceRows}>
-                                {PIG_PRICING.map(p => (
-                                    <div key={p.label} className={styles.priceRow}>
-                                        <span>{p.label}</span>
-                                        <strong>{p.price}</strong>
-                                    </div>
-                                ))}
-                            </div>
-                            <a href="mailto:catering@hofherrmeatco.com?subject=Pig Roast Inquiry" className="btn btn-primary">Reserve a Date</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── Availability Calendar ── */}
+            {/* ── Interactive Catering Calculator ── */}
             <section className={styles.pricingSection}>
                 <div className="container">
-                    <CateringCalendar events={cateringEvents} />
+                    <div className={styles.sectionHeader}>
+                        <h2 className={styles.sectionTitle}>Build Your Package</h2>
+                        <p className={styles.sectionSub}>Choose BBQ catering or a full pig roast, customize your options, and get an instant estimate.</p>
+                    </div>
+                    <CateringHub events={cateringEvents} calendarPricing={[]} />
                 </div>
             </section>
 

@@ -24,9 +24,18 @@ export default function Hero() {
     const responseText = open ? '· Responds within the hour' : '· Leave a message — we\'ll reply soon';
     return (
         <section className={styles.hero}>
-            <div className={styles.bg}>
-                <div className={styles.bgImage} />
-                <div className={styles.bgOverlay} />
+            <div className={styles.bg} />
+
+            {/* Hero background/column video */}
+            <div className={styles.heroVideoCol}>
+                <video
+                    src="/video-clips/hero.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className={styles.heroVideoPlayer}
+                />
             </div>
 
             <div className={`container ${styles.content}`}>
@@ -61,6 +70,7 @@ export default function Hero() {
                         <div className={styles.ctas}>
                             <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
                             <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
+                            <HeroVideo />
                         </div>
 
                         {/* SMS strip */}
@@ -73,9 +83,6 @@ export default function Hero() {
                             <span className={styles.smsResponse}>{responseText}</span>
                         </a>
                     </div>
-
-                    {/* Video */}
-                    <HeroVideo />
                 </div>
 
                 {/* Stats */}

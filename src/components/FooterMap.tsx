@@ -8,7 +8,7 @@ import CustomMap from './shared/CustomMap';
 const LOCATIONS = [
     {
         id: 'butcher',
-        label: '🥩 The Butcher Shop',
+        label: 'The Butcher Shop',
         short: 'Butcher Shop',
         address: '300 Happ Rd, Northfield, IL 60093',
         lat: 42.1042,
@@ -17,7 +17,7 @@ const LOCATIONS = [
     },
     {
         id: 'depot',
-        label: '🏪 The Depot',
+        label: 'The Depot',
         short: 'The Depot',
         address: '780 Elm St, Winnetka, IL 60093',
         lat: 42.1081,
@@ -54,10 +54,12 @@ export default function FooterMap() {
             {/* Map container */}
             <div className={styles.mapWrap}>
                 <CustomMap 
+                    key={loc.id}
                     lat={loc.lat} 
                     lng={loc.lng} 
                     label={loc.label} 
                     address={loc.address} 
+                    iconType={loc.id as 'butcher' | 'depot'}
                     hideBottomBar={true}
                 />
 

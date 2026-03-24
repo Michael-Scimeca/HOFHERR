@@ -106,7 +106,7 @@
 }
 
 .fab:hover {
-    transform: scale(1.08);
+    background: #aa0018;
 }
 
 .fabOpen {

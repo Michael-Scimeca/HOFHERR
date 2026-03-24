@@ -10,6 +10,7 @@
     align-items: center;
     background: linear-gradient(135deg, var(--light-creme) 0%, #EFEBE0 100%);
     border-bottom: 1px solid var(--border-color);
+    animation: fadeInUp 0.6s var(--ease-out) both;
 }
 
 .positionsSection {

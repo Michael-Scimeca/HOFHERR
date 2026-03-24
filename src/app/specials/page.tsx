@@ -12,24 +12,24 @@ import CursorThumbnail from '../bbq/CursorThumbnail';
 
 const getThumb = (name: string) => {
     const safeName = (name || '').toLowerCase();
-    if (safeName.includes('brisket')) return '/images/bbq/brisket.png';
-    if (safeName.includes('pulled pork')) return '/images/bbq/pulled_pork.png';
-    if (safeName.includes('pulled chicken')) return '/images/bbq/pulled_chicken.png';
-    if (safeName.includes('tips')) return '/images/bbq/rib_tips.png';
-    if (safeName.includes('ribs') && !safeName.includes('tips')) return '/images/bbq/ribs.png';
-    if (safeName.includes('sausage')) return '/images/bbq/sausage.png';
-    if (safeName.includes('dates')) return '/images/bbq/chorizo_dates.png';
-    if (safeName.includes('charcuterie')) return '/images/bbq/charcuterie.png';
-    if (safeName.includes('pimento cheese') && !safeName.includes('mac')) return '/images/bbq/pimento_cheese.png';
-    if (safeName.includes('mac and cheese') || safeName.includes('mac & cheese') || (safeName.includes('pimento') && safeName.includes('mac')) || safeName.includes('mac n cheese')) return '/images/bbq/mac_cheese.png';
-    if (safeName.includes('slaw')) return '/images/bbq/coleslaw.png';
-    if (safeName.includes('beans')) return '/images/bbq/baked_beans.png';
-    if (safeName.includes('collard')) return '/images/bbq/collard_greens.png';
-    if (safeName.includes('portobello')) return '/images/bbq/portobellos.png';
-    if (safeName.includes('bean salad')) return '/images/bbq/bean_salad.png';
-    if (safeName.includes('pasta salad')) return '/images/bbq/pasta_salad.png';
-    if (safeName.includes('potato salad')) return '/images/bbq/potato_salad.png';
-    if (safeName.includes('corn')) return '/images/bbq/corn.png';
+    if (safeName.includes('brisket')) return '/images/bbq/brisket.jpg';
+    if (safeName.includes('pulled pork')) return '/images/bbq/pulled_pork.jpg';
+    if (safeName.includes('pulled chicken')) return '/images/bbq/pulled_chicken.jpg';
+    if (safeName.includes('tips')) return '/images/bbq/rib_tips.jpg';
+    if (safeName.includes('ribs') && !safeName.includes('tips')) return '/images/bbq/ribs.jpg';
+    if (safeName.includes('sausage')) return '/images/bbq/sausage.jpg';
+    if (safeName.includes('dates')) return '/images/bbq/chorizo_dates.jpg';
+    if (safeName.includes('charcuterie')) return '/images/bbq/charcuterie.jpg';
+    if (safeName.includes('pimento cheese') && !safeName.includes('mac')) return '/images/bbq/pimento_cheese.jpg';
+    if (safeName.includes('mac and cheese') || safeName.includes('mac & cheese') || (safeName.includes('pimento') && safeName.includes('mac')) || safeName.includes('mac n cheese')) return '/images/bbq/mac_cheese.jpg';
+    if (safeName.includes('slaw')) return '/images/bbq/coleslaw.jpg';
+    if (safeName.includes('beans')) return '/images/bbq/baked_beans.jpg';
+    if (safeName.includes('collard')) return '/images/bbq/collard_greens.jpg';
+    if (safeName.includes('portobello')) return '/images/bbq/portobellos.jpg';
+    if (safeName.includes('bean salad')) return '/images/bbq/bean_salad.jpg';
+    if (safeName.includes('pasta salad')) return '/images/bbq/pasta_salad.jpg';
+    if (safeName.includes('potato salad')) return '/images/bbq/potato_salad.jpg';
+    if (safeName.includes('corn')) return '/images/bbq/corn.jpg';
     return null;
 }
 

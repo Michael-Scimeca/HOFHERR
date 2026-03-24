@@ -6,26 +6,36 @@
     border-bottom: 1px solid var(--border);
     padding: 96px 0;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
 }
 
 /* ─── Video background ─── */
 .bgVideo {
     position: absolute;
-    inset: 0;
-    width: 100%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(960px, 90%);
     height: 100%;
     object-fit: cover;
     object-position: center;
     z-index: 0;
     pointer-events: none;
+    border-radius: 16px;
 }
 
 .videoOverlay {
     position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.95);
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(960px, 90%);
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
     z-index: 1;
     pointer-events: none;
+    border-radius: 16px;
 }
 
 .overlay {

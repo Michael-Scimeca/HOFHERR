@@ -1325,7 +1325,6 @@
 }
 
 .cartFloat:hover {
-    transform: scale(1.04);
     box-shadow: 0 12px 36px rgba(209, 72, 54, 0.5);
 }
 

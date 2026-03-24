@@ -59,18 +59,6 @@ export default function Newsletter() {
 
     return (
         <section className={styles.section}>
-            {/* ── Background video ── */}
-            <video
-                className={styles.bgVideo}
-                src="/video-clips/cows.mp4"
-                autoPlay
-                muted
-                loop
-                playsInline
-                aria-hidden="true"
-            />
-            <div className={styles.videoOverlay} />
-            <div className={styles.overlay} />
             <div className={`container ${styles.inner}`}>
 
                 {/* ── Left copy ── */}

@@ -15,39 +15,6 @@ interface CustomMapProps {
     hideBottomBar?: boolean;
 }
 
-/* ─── Pin SVGs per location type ─── */
-function getPinHtml(type: 'butcher' | 'depot' = 'butcher'): string {
-    if (type === 'depot') {
-        // Train / depot icon
-        return `<svg viewBox="0 0 44 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22 0C9.85 0 0 9.85 0 22c0 15.4 22 38 22 38S44 37.4 44 22C44 9.85 34.15 0 22 0z" fill="#CC0E1D"/>
-            <!-- Train body -->
-            <rect x="12" y="11" width="20" height="14" rx="3" fill="#fff"/>
-            <!-- Windows -->
-            <rect x="14" y="13" width="6" height="5" rx="1" fill="#CC0E1D"/>
-            <rect x="24" y="13" width="6" height="5" rx="1" fill="#CC0E1D"/>
-            <!-- Base stripe -->
-            <rect x="12" y="25" width="20" height="2" rx="1" fill="#fff" opacity="0.7"/>
-            <!-- Wheels -->
-            <circle cx="16" cy="30" r="2.5" fill="#fff"/>
-            <circle cx="28" cy="30" r="2.5" fill="#fff"/>
-        </svg>`;
-    }
-    // Butcher shop — cleaver icon
-    return `<svg viewBox="0 0 44 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22 0C9.85 0 0 9.85 0 22c0 15.4 22 38 22 38S44 37.4 44 22C44 9.85 34.15 0 22 0z" fill="#CC0E1D"/>
-        <!-- Cleaver blade -->
-        <rect x="14" y="12" width="16" height="12" rx="2" fill="#fff"/>
-        <!-- Blade bevel -->
-        <path d="M14 22 L30 22 L30 24 Z" fill="#F2F2F2" opacity="0.4"/>
-        <!-- Handle -->
-        <rect x="20" y="24" width="4" height="8" rx="1.5" fill="#fff"/>
-        <!-- Rivet dots -->
-        <circle cx="17" cy="15" r="1.2" fill="#CC0E1D"/>
-        <circle cx="17" cy="19" r="1.2" fill="#CC0E1D"/>
-    </svg>`;
-}
-
 export default function CustomMap({ 
     lat, 
     lng, 
@@ -62,6 +29,9 @@ export default function CustomMap({
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapRef = useRef<L.Map | null>(null);
     const markerRef = useRef<L.Marker | null>(null);
+    // Always holds the LATEST iconType, even if map isn't loaded yet
+    const iconTypeRef = useRef(iconType);
+    iconTypeRef.current = iconType;
 
     useEffect(() => {
         if (!mapContainer.current || mapRef.current) return;
@@ -76,7 +46,7 @@ export default function CustomMap({
 
             const map = L.map(mapContainer.current, {
                 center: [lat, lng],
-                zoom: zoom,
+                zoom,
                 zoomControl: false,
                 attributionControl: false,
                 scrollWheelZoom: false,
@@ -84,25 +54,28 @@ export default function CustomMap({
                 doubleClickZoom: true,
             });
 
-            /* ── Stamen Toner tiles — pure B&W so CSS filter tints perfectly ── */
             L.tileLayer(
                 'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png',
                 { maxZoom: 19 }
             ).addTo(map);
 
-            /* Add zoom control */
             L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-            /* Custom SVG pin — varies by location type */
-            const icon = L.divIcon({
-                className: styles.customPin,
-                html: getPinHtml(iconType),
-                iconSize: [44, 60],
-                iconAnchor: [22, 60],
-                popupAnchor: [0, -60],
-            });
+            // Use iconTypeRef.current so we get whatever the user has selected NOW
+            // (they may have clicked a tab while leaflet was still loading)
+            const makeIcon = (type: string) => {
+                const url = type === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png';
+                const sz = type === 'depot' ? 72 : 56;
+                return L.divIcon({
+                    className: '',
+                    html: `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:url('${url}') center/cover no-repeat;box-shadow:0 3px 10px rgba(0,0,0,0.5);border:3px solid #CC0E1D;"></div>`,
+                    iconSize: [sz, sz],
+                    iconAnchor: [sz / 2, sz],
+                    popupAnchor: [0, -sz],
+                });
+            };
 
-            const marker = L.marker([lat, lng], { icon }).addTo(map);
+            const marker = L.marker([lat, lng], { icon: makeIcon(iconTypeRef.current) }).addTo(map);
             marker.bindPopup(
                 `<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#F2F2F2;padding:4px 0;">${label}</div>
                  <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#A8905F;text-decoration:underline;cursor:pointer;">${address}</a>`,
@@ -120,23 +93,37 @@ export default function CustomMap({
             if (mapRef.current) {
                 mapRef.current.remove();
                 mapRef.current = null;
+                markerRef.current = null;
             }
         };
     }, []);
 
-    /* Update on coordinate change */
+    // Fires when user switches tabs — updates icon, position, popup
     useEffect(() => {
         const map = mapRef.current;
         const marker = markerRef.current;
-        if (!map || !marker) return;
+        if (!map || !marker) return; // map not ready yet; init effect will use iconTypeRef.current
 
-        map.flyTo([lat, lng], zoom, { duration: 1.2 });
-        marker.setLatLng([lat, lng]);
-        marker.setPopupContent(
-            `<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#ffffff;padding:4px 0;">${label}</div>
-             <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:rgba(255,255,255,0.7);text-decoration:underline;cursor:pointer;">${address}</a>`
-        );
-    }, [lat, lng, label, address, zoom]);
+        (async () => {
+            const L = (await import('leaflet')).default;
+            const type = iconTypeRef.current;
+            const url = type === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png';
+            const sz = type === 'depot' ? 72 : 56;
+            marker.setIcon(L.divIcon({
+                className: '',
+                html: `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:url('${url}') center/cover no-repeat;box-shadow:0 3px 10px rgba(0,0,0,0.5);border:3px solid #CC0E1D;"></div>`,
+                iconSize: [sz, sz],
+                iconAnchor: [sz / 2, sz],
+                popupAnchor: [0, -sz],
+            }));
+            map.flyTo([lat, lng], zoom, { duration: 1.2 });
+            marker.setLatLng([lat, lng]);
+            marker.setPopupContent(
+                `<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#fff;padding:4px 0;">${label}</div>
+                 <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:rgba(255,255,255,0.7);text-decoration:underline;cursor:pointer;">${address}</a>`
+            );
+        })();
+    }, [lat, lng, label, address, zoom, iconType]);
 
     return (
         <div className={`${styles.container} ${className || ''}`} style={{ height }}>

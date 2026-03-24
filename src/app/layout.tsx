@@ -16,6 +16,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import SmoothScroll from "@/components/SmoothScroll";
 import ChatWidgetWrapper from "@/components/ChatWidgetWrapper";
 import EmbersBackground from "@/components/EmbersBackground";
+import PageTransition from "@/components/PageTransition";
 
 const yanone = Yanone_Kaffeesatz({
   subsets: ["latin"],
@@ -132,7 +133,7 @@ export default async function RootLayout({
               <SmoothScroll />
               <ScrollToTop />
               <Navbar />
-              {children}
+              <PageTransition>{children}</PageTransition>
               <ChatWidgetWrapper />
               <Footer />
             </CartProvider>

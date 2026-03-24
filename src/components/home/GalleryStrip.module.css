@@ -44,7 +44,6 @@
 }
 
 .tile:hover {
-    transform: scale(1.02);
     box-shadow: var(--shadow-md);
     border-color: var(--border);
     z-index: 1;

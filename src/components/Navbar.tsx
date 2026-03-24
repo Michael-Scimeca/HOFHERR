@@ -203,11 +203,11 @@ export default function Navbar() {
                 {/* Logo */}
                 <Link href="/" className={styles.logo} onClick={() => setMobileOpen(false)}>
                     <Image
-                        src="/assets/logo.png"
+                        src="/assets/logo.svg"
                         alt="Hofherr Meat Co."
-                        height={48}
-                        width={48}
-                        style={{ objectFit: 'contain', width: 'auto', height: '48px', filter: 'brightness(0) invert(1)' }}
+                        height={56}
+                        width={180}
+                        style={{ objectFit: 'contain', width: 'auto', height: '56px' }}
                         priority
                     />
                 </Link>

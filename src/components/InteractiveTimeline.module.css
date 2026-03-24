@@ -1,0 +1,213 @@
+.root {
+    padding: 80px 0 100px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ── Header ── */
+.header {
+    text-align: center;
+    margin-bottom: 72px;
+    position: relative;
+    z-index: 1;
+}
+
+.eyebrow {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--red, #cc0e1d);
+    margin-bottom: 16px;
+}
+
+.eyebrow span {
+    opacity: 0.5;
+    margin: 0 8px;
+}
+
+.title {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(2.6rem, 5vw, 4.2rem);
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+}
+
+/* ── Canvas: relative container that holds the SVG + absolute cards ── */
+.canvas {
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Ambient glow blobs */
+.glowRed {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: rgba(180, 20, 20, 0.12);
+    filter: blur(120px);
+    top: 5%;
+    left: -10%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glowGold {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: rgba(197, 162, 85, 0.08);
+    filter: blur(120px);
+    bottom: 5%;
+    right: -10%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── SVG: covers the full canvas ── */
+.svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: visible;
+}
+
+/* ── Row: absolutely positioned at each node's y% ── */
+.row {
+    position: absolute;
+    left: 0;
+    right: 0;
+    transform: translateY(-28px); /* node circle sits at the TOP corner of the card */
+    display: grid;
+    grid-template-columns: 1fr 90px 1fr;
+    align-items: center;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* ── Slots ── */
+.slotLeft {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 28px;
+    pointer-events: all;
+}
+
+.slotRight {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 28px;
+    pointer-events: all;
+}
+
+/* ── Node center HTML overlay ── */
+.nodeCenter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Circular video overlay on a node */
+.nodeVideo {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+
+/* ── Node icon (HTML overlay on SVG circle) ── */
+.nodeIcon {
+    font-size: 22px;
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* ── Cards ── */
+.card {
+    background: #000000cc;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px 28px;
+    width: 100%;
+    max-width: 360px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    border-color: rgba(204, 14, 29, 0.4);
+    box-shadow: 0 0 32px rgba(204, 14, 29, 0.12);
+}
+
+.cardLeft {
+    text-align: right;
+}
+
+.cardRight {
+    text-align: left;
+    background: linear-gradient(308deg, #000000 50%, rgb(0 0 0 / 43%) 100%);
+}
+
+.cardEra {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--red, #cc0e1d);
+    margin-bottom: 8px;
+}
+
+.cardTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+    line-height: 1.1;
+}
+
+.cardBody {
+    font-size: 13.5px;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.75;
+    margin: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+    .canvas {
+        padding: 0 16px;
+    }
+
+    .row {
+        grid-template-columns: 48px 1fr;
+        grid-template-areas: "center card";
+    }
+
+    .slotLeft,
+    .slotRight {
+        grid-area: card;
+        padding: 0 0 0 12px;
+        justify-content: flex-start;
+    }
+
+    .nodeCenter {
+        grid-area: center;
+    }
+
+    .cardLeft,
+    .cardRight {
+        text-align: left;
+        max-width: 100%;
+    }
+}

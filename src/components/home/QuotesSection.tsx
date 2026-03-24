@@ -81,26 +81,28 @@ export default function QuotesSection() {
                 {/* ── Right Side (Form) ── */}
                 <div className={styles.formBox}>
                     <form onSubmit={handleSubmit} className={styles.formGrid}>
-                        <div className={styles.formGroup}>
+                        <div className={`${styles.formGroup} ${styles.formGroupFull}`}>
                             <label className={styles.label}>Your Name</label>
                             <input type="text" placeholder="John Smith" required className={styles.input} />
                         </div>
-                        <div className={styles.formGroup}>
+                        <div className={`${styles.formGroup} ${styles.formGroupFull}`}>
                             <label className={styles.label}>How should we reach you?</label>
-                            <div className={styles.contactToggle}>
-                                <button type="button"
-                                    className={`${styles.contactToggleBtn} ${contactPref === 'phone' ? styles.contactToggleBtnActive : ''}`}
-                                    onClick={() => setContactPref('phone')}
-                                >📞 Call Me</button>
-                                <button type="button"
-                                    className={`${styles.contactToggleBtn} ${contactPref === 'email' ? styles.contactToggleBtnActive : ''}`}
-                                    onClick={() => setContactPref('email')}
-                                >✉️ Email Me</button>
+                            <div className={styles.contactRow}>
+                                <div className={styles.contactToggle}>
+                                    <button type="button"
+                                        className={`${styles.contactToggleBtn} ${contactPref === 'phone' ? styles.contactToggleBtnActive : ''}`}
+                                        onClick={() => setContactPref('phone')}
+                                    >📞 Call Me</button>
+                                    <button type="button"
+                                        className={`${styles.contactToggleBtn} ${contactPref === 'email' ? styles.contactToggleBtnActive : ''}`}
+                                        onClick={() => setContactPref('email')}
+                                    >✉️ Email Me</button>
+                                </div>
+                                {contactPref === 'phone'
+                                    ? <input type="tel" placeholder="(847) 555-0100" required className={styles.input} />
+                                    : <input type="email" placeholder="your@email.com" required className={styles.input} />
+                                }
                             </div>
-                            {contactPref === 'phone'
-                                ? <input type="tel" placeholder="(847) 555-0100" required className={styles.input} />
-                                : <input type="email" placeholder="your@email.com" required className={styles.input} />
-                            }
                         </div>
                         
                         <div className={`${styles.formGroup} ${styles.formGroupFull}`}>

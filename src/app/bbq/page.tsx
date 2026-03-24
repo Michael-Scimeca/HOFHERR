@@ -25,23 +25,25 @@ export const metadata: Metadata = {
 
 /* ── Fallback data (used if Sanity has no bbqMenuItem docs yet) ── */
 const FALLBACK_MENU: { name: string; category: string; image?: string }[] = [
-    { name: "Butcher's Charcuterie Board", category: 'appetizer', image: '/images/bbq/charcuterie.png' },
-    { name: 'Bacon Wrapped Chorizo Dates', category: 'appetizer' },
-    { name: 'Pimento Cheese + Crackers', category: 'appetizer' },
-    { name: 'Smoked Brisket', category: 'meat', image: '/images/bbq/brisket.png' },
-    { name: 'BBQ Pulled Pork', category: 'meat', image: '/images/bbq/pulled_pork.png' },
-    { name: 'BBQ Pulled Chicken', category: 'meat' },
-    { name: 'Rib Tips & Hot Links Combo', category: 'meat' },
-    { name: 'Ribs', category: 'meat', image: '/images/bbq/ribs.png' },
-    { name: 'Any HMC Sausages', category: 'meat' },
-    { name: 'Pimento Mac and Cheese', category: 'side', image: '/images/bbq/mac_cheese.png' },
-    { name: 'HMCo.leslaw', category: 'side' },
-    { name: 'Marinated & Grilled Portobellos', category: 'side' },
-    { name: 'Corn', category: 'side' },
-    { name: 'Collard Greens', category: 'side' },
-    { name: 'Three-Bean Salad', category: 'side' },
-    { name: 'House Pasta Salad', category: 'side' },
-    { name: 'North Shore Baked Beans', category: 'side' },
+    { name: "Butcher's Charcuterie Board", category: 'appetizer', image: '/images/bbq/charcuterie.jpg' },
+    { name: 'Bacon Wrapped Chorizo Dates', category: 'appetizer', image: '/images/bbq/chorizo_dates.jpg' },
+    { name: 'Pimento Cheese + Crackers', category: 'appetizer', image: '/images/bbq/pimento_cheese.jpg' },
+    { name: 'Smoked Brisket', category: 'meat', image: '/images/bbq/brisket.jpg' },
+    { name: 'BBQ Pulled Pork', category: 'meat', image: '/images/bbq/pulled_pork.jpg' },
+    { name: 'BBQ Pulled Chicken', category: 'meat', image: '/images/bbq/pulled_chicken.jpg' },
+    { name: 'Rib Tips & Hot Links Combo', category: 'meat', image: '/images/bbq/rib_tips.jpg' },
+    { name: 'Ribs', category: 'meat', image: '/images/bbq/ribs.jpg' },
+    { name: 'Smoked Ribs', category: 'meat', image: '/images/bbq/ribs.jpg' },
+    { name: 'Any of our HMC Sausages', category: 'meat', image: '/images/bbq/sausage.jpg' },
+    { name: 'Pimento Mac n Cheese', category: 'side', image: '/images/bbq/mac_cheese.jpg' },
+    { name: 'HMCo.leslaw', category: 'side', image: '/images/bbq/coleslaw.jpg' },
+    { name: 'Marinated Grilled Portobellos', category: 'side', image: '/images/bbq/portobellos.jpg' },
+    { name: 'Corn', category: 'side', image: '/images/bbq/corn.jpg' },
+    { name: 'Collard Greens', category: 'side', image: '/images/bbq/collard_greens.jpg' },
+    { name: 'Three Bean Salad', category: 'side', image: '/images/bbq/bean_salad.jpg' },
+    { name: 'House Pasta Salad', category: 'side', image: '/images/bbq/pasta_salad.jpg' },
+    { name: 'Potato Salad', category: 'side', image: '/images/bbq/potato_salad.jpg' },
+    { name: 'North Shore Baked Beans', category: 'side', image: '/images/bbq/baked_beans.jpg' },
 ];
 
 const FALLBACK_PRICING = [
@@ -126,29 +128,29 @@ export default async function BBQPage() {
             const safeName = (m.name || '').toLowerCase();
             let matchedImage;
             
-            if (safeName.includes('brisket')) matchedImage = '/images/bbq/brisket.png';
-            else if (safeName.includes('pulled pork')) matchedImage = '/images/bbq/pulled_pork.png';
-            else if (safeName.includes('pulled chicken')) matchedImage = '/images/bbq/pulled_chicken.png';
-            else if (safeName.includes('rib tips')) matchedImage = '/images/bbq/rib_tips.png';
-            else if (safeName.includes('ribs') && !safeName.includes('tips')) matchedImage = '/images/bbq/ribs.png';
-            else if (safeName.includes('sausage')) matchedImage = '/images/bbq/sausage.png';
-            else if (safeName.includes('dates')) matchedImage = '/images/bbq/chorizo_dates.png';
-            else if (safeName.includes('charcuterie')) matchedImage = '/images/bbq/charcuterie.png';
-            else if (safeName.includes('pimento cheese') && !safeName.includes('mac')) matchedImage = '/images/bbq/pimento_cheese.png';
-            else if (safeName.includes('mac and cheese') || safeName.includes('mac & cheese') || (safeName.includes('pimento') && safeName.includes('mac'))) matchedImage = '/images/bbq/mac_cheese.png';
-            else if (safeName.includes('slaw')) matchedImage = '/images/bbq/coleslaw.png';
-            else if (safeName.includes('beans')) matchedImage = '/images/bbq/baked_beans.png';
-            else if (safeName.includes('collard')) matchedImage = '/images/bbq/collard_greens.png';
-            else if (safeName.includes('portobello')) matchedImage = '/images/bbq/portobellos.png';
-            else if (safeName.includes('bean salad')) matchedImage = '/images/bbq/bean_salad.png';
-            else if (safeName.includes('pasta salad')) matchedImage = '/images/bbq/pasta_salad.png';
-            else if (safeName.includes('potato salad')) matchedImage = '/images/bbq/potato_salad.png';
-            else if (safeName.includes('corn')) matchedImage = '/images/bbq/corn.png';
+            if (safeName.includes('brisket')) matchedImage = '/images/bbq/brisket.jpg';
+            else if (safeName.includes('pulled pork')) matchedImage = '/images/bbq/pulled_pork.jpg';
+            else if (safeName.includes('pulled chicken')) matchedImage = '/images/bbq/pulled_chicken.jpg';
+            else if (safeName.includes('rib tips')) matchedImage = '/images/bbq/rib_tips.jpg';
+            else if (safeName.includes('ribs') && !safeName.includes('tips')) matchedImage = '/images/bbq/ribs.jpg';
+            else if (safeName.includes('sausage')) matchedImage = '/images/bbq/sausage.jpg';
+            else if (safeName.includes('dates')) matchedImage = '/images/bbq/chorizo_dates.jpg';
+            else if (safeName.includes('charcuterie')) matchedImage = '/images/bbq/charcuterie.jpg';
+            else if (safeName.includes('pimento cheese') && !safeName.includes('mac')) matchedImage = '/images/bbq/pimento_cheese.jpg';
+            else if (safeName.includes('mac and cheese') || safeName.includes('mac & cheese') || (safeName.includes('pimento') && safeName.includes('mac'))) matchedImage = '/images/bbq/mac_cheese.jpg';
+            else if (safeName.includes('slaw')) matchedImage = '/images/bbq/coleslaw.jpg';
+            else if (safeName.includes('beans')) matchedImage = '/images/bbq/baked_beans.jpg';
+            else if (safeName.includes('collard')) matchedImage = '/images/bbq/collard_greens.jpg';
+            else if (safeName.includes('portobello')) matchedImage = '/images/bbq/portobellos.jpg';
+            else if (safeName.includes('bean salad')) matchedImage = '/images/bbq/bean_salad.jpg';
+            else if (safeName.includes('pasta salad')) matchedImage = '/images/bbq/pasta_salad.jpg';
+            else if (safeName.includes('potato salad')) matchedImage = '/images/bbq/potato_salad.jpg';
+            else if (safeName.includes('corn')) matchedImage = '/images/bbq/corn.jpg';
 
             if (matchedImage) {
                 return { ...m, image: matchedImage };
             }
-            return m;
+            return { ...m, image: undefined };
         }) : FALLBACK_MENU;
         pricing = rawPricing?.length ? rawPricing : FALLBACK_PRICING;
         if (rawServices?.length) services = rawServices;

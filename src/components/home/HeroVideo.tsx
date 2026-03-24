@@ -151,14 +151,17 @@ export default function HeroVideo() {
             >
                 {!hasStarted && (
                     <div className={styles.bubbleInner}>
-                        <img 
-                            src="/images/poochie-pang-thumb.jpg" 
-                            alt="Poochie & Pang" 
+                        <video 
+                            src="/video-clips/beef.mp4" 
+                            muted 
+                            playsInline 
+                            autoPlay 
+                            loop
                             className={styles.poster} 
                             draggable={false}
                         />
                         <div className={styles.playIconOverlay}>
-                            <svg viewBox="0 0 24 24" fill="#fff" width="40" height="40">
+                            <svg viewBox="0 0 24 24" fill="#fff" width="22" height="22">
                                 <path d="M8 5v14l11-7z" />
                             </svg>
                         </div>

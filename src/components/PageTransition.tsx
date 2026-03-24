@@ -1,39 +1,52 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
 export default function PageTransition({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const [opacity, setOpacity] = useState(1);
+    const wrapRef = useRef<HTMLDivElement>(null);
     const isFirst = useRef(true);
 
     useEffect(() => {
+        const el = wrapRef.current;
+        if (!el) return;
+
         if (isFirst.current) {
+            // First load — just fade in gently
             isFirst.current = false;
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(12px)';
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }));
             return;
         }
 
-        // Fade out
-        setOpacity(0);
+        // Subsequent navigations — fade out then in
+        el.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(8px)';
 
         const t = setTimeout(() => {
-            // Fade back in
-            setOpacity(1);
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            el.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
 
             // Handle hash scroll
             setTimeout(() => {
-                const rawHash = window.location.hash;
-                if (!rawHash) return;
-                const id = rawHash.replace('#', '');
-                const el = document.getElementById(id);
-                if (el) {
-                    const paddingTop = parseFloat(window.getComputedStyle(el).paddingTop) || 0;
-                    const absoluteY = el.getBoundingClientRect().top + window.scrollY - 100 + paddingTop;
-                    window.scrollTo({ top: absoluteY, behavior: 'smooth' });
+                const hash = window.location.hash;
+                if (!hash) return;
+                const target = document.getElementById(hash.replace('#', ''));
+                if (target) {
+                    const y = target.getBoundingClientRect().top + window.scrollY - 100;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
                 }
             }, 100);
-        }, 200);
+        }, 220);
 
         return () => clearTimeout(t);
     }, [pathname]);
@@ -41,14 +54,12 @@ export default function PageTransition({ children }: { children: React.ReactNode
     // Hash-change mid-session
     useEffect(() => {
         const onHashChange = () => {
-            const rawHash = window.location.hash;
-            if (!rawHash) return;
-            const id = rawHash.replace('#', '');
-            const el = document.getElementById(id);
-            if (el) {
-                const paddingTop = parseFloat(window.getComputedStyle(el).paddingTop) || 0;
-                const absoluteY = el.getBoundingClientRect().top + window.scrollY - 100 + paddingTop;
-                window.scrollTo({ top: absoluteY, behavior: 'smooth' });
+            const hash = window.location.hash;
+            if (!hash) return;
+            const target = document.getElementById(hash.replace('#', ''));
+            if (target) {
+                const y = target.getBoundingClientRect().top + window.scrollY - 100;
+                window.scrollTo({ top: y, behavior: 'smooth' });
             }
         };
         window.addEventListener('hashchange', onHashChange);
@@ -56,13 +67,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
     }, []);
 
     return (
-        <div
-            style={{
-                opacity,
-                transition: 'opacity 0.25s ease',
-                willChange: 'opacity',
-            }}
-        >
+        <div ref={wrapRef} style={{ willChange: 'opacity, transform' }}>
             {children}
         </div>
     );

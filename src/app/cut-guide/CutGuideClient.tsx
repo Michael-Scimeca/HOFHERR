@@ -110,13 +110,13 @@ export default function CutGuideClient({ sanityCuts = [] }: Props) {
         <main>
             {/* ── Hero ── */}
             <section style={{ background: 'var(--bg-2)', borderBottom: '1px solid var(--border)', padding: '80px 40px 64px', textAlign: 'center' }}>
-                <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: 'var(--red)', marginBottom: 14 }}>
+                <p className="animate-fade-up" style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: 'var(--red)', marginBottom: 14 }}>
                     From the butcher&apos;s block
                 </p>
-                <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', color: 'var(--fg)', marginBottom: 16 }}>
+                <h1 className="animate-fade-up" style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', color: 'var(--fg)', marginBottom: 16, animationDelay: '0.1s' }}>
                     The Cut Guide
                 </h1>
-                <p style={{ fontSize: '1rem', color: 'var(--fg-muted)', lineHeight: 1.7 }}>
+                <p className="animate-fade-up" style={{ fontSize: '1rem', color: 'var(--fg-muted)', lineHeight: 1.7, animationDelay: '0.2s' }}>
                     Every cut. What it&apos;s best for. How to cook it. Straight from Sean.
                 </p>
             </section>
