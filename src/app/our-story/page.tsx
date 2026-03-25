@@ -6,22 +6,26 @@ import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
 import { TEAM_MEMBERS_QUERY, TIMELINE_QUERY, ACCOLADES_QUERY } from '@/sanity/queries';
 import InteractiveTimeline from '@/components/InteractiveTimeline';
+import AccoladesVariants from '@/components/AccoladesVariants';
+import TeamBentoGrid from '@/components/TeamBentoGrid';
+
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-    title: 'Our Story | Hofherr Meat Co. — 120+ Years of Craft Butchery',
-    description: 'From a village butcher in Germany to Chicago\'s South Side to Northfield and Winnetka — the Hofherr family has been perfecting the craft for over 120 years. Meet Sean Hofherr, owner, head butcher, and winner of the North Shore Chili Cookoff.',
+    title: 'Our Story & Team | Hofherr Meat Co. — 120+ Years of Craft Butchery',
+    description: 'Meet the team behind Hofherr Meat Co.: Sean Hofherr (owner, head chef, 2009 North Shore Chili Cookoff winner), and a crew of dedicated butchers and chefs carrying 120+ years of family heritage. From a village butcher in Germany to Chicago\'s South Side to Northfield & Winnetka, IL.',
+    keywords: ['Sean Hofherr', 'Hofherr Meat Co our story', 'craft butcher Northfield IL', 'North Shore butcher heritage', 'Hofherr family history', 'meet the team butcher shop', 'Northfield IL butcher'],
     alternates: { canonical: 'https://hofherrmeatco.com/our-story' },
     openGraph: {
-        title: 'Our Story | Hofherr Meat Co.',
-        description: 'Over 120 years of butchering heritage. Chicago South Side roots, now serving Northfield & Winnetka with the same uncompromising quality.',
+        title: 'Our Story & Team | Hofherr Meat Co.',
+        description: '120+ years of butchering heritage. Meet Sean Hofherr and the full HMC crew — butchers, chefs, and managers. Chicago South Side roots, now in Northfield & Winnetka, IL.',
         url: 'https://hofherrmeatco.com/our-story',
         images: [{ url: '/OG/og-our-story.png', width: 1200, height: 630 }],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Our Story | Hofherr Meat Co.',
-        description: '120+ years of craft butchery. Family heritage from Chicago\'s South Side to the North Shore.',
+        title: 'Our Story & Team | Hofherr Meat Co.',
+        description: '120+ years of craft butchery heritage. Meet Sean Hofherr & the HMC team in Northfield & Winnetka, IL.',
     },
 };
 
@@ -127,14 +131,23 @@ export default async function OurStoryPage() {
 
             {/* ── Hero ── */}
             <section className={styles.hero}>
+                <video
+                    src="/video-clips/meat-truck.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className={styles.heroBgVideo}
+                />
+                <div className={styles.heroOverlay} />
                 <div className={styles.heroInner}>
-                    <p className={styles.eyebrow}>Est. 2014 · Northfield & Winnetka, IL</p>
+                    <p className={styles.eyebrow}>Est. 2014 · Northfield &amp; Winnetka, IL</p>
                     <h1 className={styles.headline}>
                         Respect For the Past.<br />
                         <em>With An Eye To The Future.</em>
                     </h1>
                     <p className={styles.sub}>
-                        Sean Hofherr carries on a legacy that began with a village butcher in Germany, carried across the ocean by his immigrant great-grandfather who built the original Hofherr Meat Company on Chicago's South Side. Now Sean is bringing that name — and that heritage — back to Chicago's stockyard history.
+                        Sean Hofherr carries on a legacy that began with a village butcher in Germany, carried across the ocean by his immigrant great-grandfather who built the original Hofherr Meat Company on Chicago&apos;s South Side. Now Sean is bringing that name — and that heritage — back to Chicago&apos;s stockyard history.
                     </p>
                 </div>
             </section>
@@ -144,13 +157,22 @@ export default async function OurStoryPage() {
                 <div className="container">
                     <div className={styles.heritageGrid}>
                         <HoverVideo src="/video-clips/storykeeper.mp4" caption="The original Hofherr Wholesale Meats storefront" />
-
-                        <HoverVideo src="/video-clips/storykeeper.mp4" caption="The Hofherr crew — a family tradition" />
-                        <HoverVideo src="/video-clips/inside.mp4" poster="/history/shop-interior.png" caption="Inside the original shop — Chicago's South Side" />
+                        <HoverVideo src="/video-clips/Photo_To_Video_Conversion.mp4" poster="/history/Photo_To_Video_Conversion.mp4.jpg" caption="The Hofherr family — brought to life" />
+                        <HoverVideo src="/video-clips/inside.mp4" poster="/history/shop-interior.png" caption="Inside the original shop — Chicago&apos;s South Side" />
                         <HoverVideo src="/video-clips/truck.mp4" caption="Hofherr Meat Co. — on the road" />
+                        <HoverVideo src="/video-clips/meat-truck.mp4" caption="The Hofherr Meat Co. truck — delivering quality across the North Shore" />
+                        <HoverVideo src="/video-clips/more.mp4" caption="More from the Hofherr archives" />
                     </div>
                 </div>
             </section>
+
+            {/* ── Section header: founder ── */}
+            <div className={styles.founderHeader}>
+                <span className={styles.sectionLabelCentered}><span>—</span> Our Founder <span>—</span></span>
+                <h2 className={styles.founderTitle}>Meet Sean Hofherr</h2>
+                <p className={styles.founderSub}>Owner, head chef, and the driving force behind Hofherr Meat Co.</p>
+            </div>
+
             {/* ── The Man ── */}
             <section className={styles.bio}>
                 <div className={styles.seanCard}>
@@ -159,6 +181,7 @@ export default async function OurStoryPage() {
                             src="/team/sean.jpg"
                             alt="Sean Hofherr"
                             className={styles.avatarImg}
+                            data-parallax="inset"
                         />
                     </div>
                     <div className={styles.seanContentPart}>
@@ -174,7 +197,7 @@ export default async function OurStoryPage() {
                         <p className={styles.teamBio} style={{ marginTop: '16px' }}>
                             In 2024, Sean expanded the Hofherr footprint with <strong>The Depot</strong> — a second location inside the historic Winnetka Elm Street Metra Train Station.
                         </p>
-                        <Link href="/visit" className="btn btn-primary" style={{ marginTop: '2rem', display: 'inline-block' }}>
+                        <Link href="/visit" className="btn btn-primary" style={{ marginTop: '2rem', alignSelf: 'flex-start' }}>
                             Come Visit Us
                         </Link>
                     </div>
@@ -191,46 +214,16 @@ export default async function OurStoryPage() {
                             Every great butcher shop is built by its people. Here&apos;s the crew that makes HMC run.
                         </p>
                     </div>
-                </div>
-                <div className={styles.teamGrid}>
-                    {team.map((member, i) => (
-                        <div key={i} className={styles.teamCard}>
-                            <div className={styles.teamImagePart}>
-                                <img
-                                    src={member.photo ?? '/team/placeholder.jpg'}
-                                    alt={member.name}
-                                    className={styles.teamImage}
-                                />
-                            </div>
-                            <div className={styles.teamContentPart}>
-                                <div className={styles.teamHeader}>
-                                    <span className={styles.teamRole}>{member.role}</span>
-                                    <h3 className={styles.teamName}>{member.name}</h3>
-                                </div>
-                                {member.bio && <p className={styles.teamBio}>{member.bio}</p>}
-                            </div>
-                        </div>
-                    ))}
+                    <TeamBentoGrid team={team} />
                 </div>
             </section>
 
             {/* ── Timeline ── */}
             <InteractiveTimeline events={timeline} />
 
-            {/* ── Accolades ── */}
-            <section className={styles.accolades}>
-                <div className="container">
-                    <div className={styles.accoladesHeader}>
-                        <span className={styles.sectionLabelCentered}><span>—</span> Recognition <span>—</span></span>
-                        <h2 className={styles.accoladesTitle}>Awards &amp; Affiliations</h2>
-                    </div>
-                    <ul className={styles.accoladeList}>
-                        {accolades.map((a, i) => (
-                            <li key={i}>{a}</li>
-                        ))}
-                    </ul>
-                </div>
-            </section>
+            {/* ── Accolades — current version ── */}
+            <AccoladesVariants accolades={accolades} />
+
 
             {/* ── CTA ── */}
             <section className={styles.cta}>

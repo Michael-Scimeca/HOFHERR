@@ -42,7 +42,7 @@ export default function SourcingStrip() {
                             Every animal we sell is traceable to a named farm. We visit our partners,
                             vet their practices, and only carry what we'd serve our own families.
                         </p>
-                        <Link href="/sourcing" className="btn btn-secondary" style={{ marginTop: '24px' }}>
+                        <Link href="/our-story" className="btn btn-secondary" style={{ marginTop: '24px' }}>
                             Meet Our Farm Partners
                         </Link>
                     </div>

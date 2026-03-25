@@ -21,9 +21,9 @@
 @media (min-width: 1201px) {
     .heroVideo {
         position: absolute;
-        right: 60px;
-        top: 45%;
-        transform: translateY(calc(-50% - 150px));
+        right: -170px;
+        top: 50%;
+        transform: translateY(-50%);
         z-index: 3;
     }
     .idle { height: 140px !important; width: 140px !important; }
@@ -55,7 +55,7 @@
     max-width: 900px !important;
     aspect-ratio: 16 / 9;
     border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid #181818;
     box-shadow: var(--shadow-lg);
     z-index: 101;
 }

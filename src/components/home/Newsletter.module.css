@@ -142,7 +142,7 @@
 
 .input {
     background: var(--bg-3);
-    border: 1px solid var(--border-soft);
+    border: 1px solid #181818;
     border-radius: var(--radius-sm);
     padding: 14px 16px;
     color: var(--text);
@@ -164,7 +164,7 @@
     display: flex;
     align-items: center;
     background: var(--bg-3);
-    border: 1px solid var(--border-soft);
+    border: 1px solid #181818;
     border-radius: var(--radius-sm);
     overflow: hidden;
     transition: border-color 0.2s;

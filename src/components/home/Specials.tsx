@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styles from './Specials.module.css';
+import ParallaxMedia from '@/components/ParallaxMedia';
 
 const FEATURED: { video?: string; image?: string; title: string; desc: string; href: string }[] = [
     {
@@ -41,11 +42,12 @@ export default function Specials() {
                     {FEATURED.map(item => (
                         <Link key={item.title} href={item.href} className={styles.card}>
                             <div className={styles.cardImg}>
-                                {item.video ? (
-                                    <video src={item.video} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                                ) : (
-                                    <img src={item.image} alt={item.title} />
-                                )}
+                                <ParallaxMedia
+                                    src={item.video ?? item.image ?? ''}
+                                    type={item.video ? 'video' : 'image'}
+                                    alt={item.title}
+                                    className={styles.cardMedia}
+                                />
                             </div>
                             <div className={styles.cardBody}>
                                 <h3 className={styles.cardTitle}>{item.title}</h3>

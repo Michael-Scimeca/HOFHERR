@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
             {
                 userAgent: '*',
                 allow: '/',
-                disallow: ['/admin', '/studio', '/dashboard', '/api/', '/reset-password'],
+                disallow: ['/admin', '/studio', '/dashboard', '/api/', '/reset-password', '/checkout', '/order/'],
             },
         ],
         sitemap: 'https://hofherrmeatco.com/sitemap.xml',

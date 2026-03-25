@@ -3,6 +3,7 @@ import { adminClient } from '@/sanity/adminClient';
 import { auth } from '@/auth';
 import { client } from '@/sanity/client';
 import { CUSTOMER_BY_EMAIL_QUERY } from '@/sanity/queries';
+import { syncMailchimpSubscription } from '@/lib/mailchimp';
 
 export async function PATCH(request: Request) {
     try {
@@ -22,16 +23,26 @@ export async function PATCH(request: Request) {
         }
 
         // Whitelist allowed fields to prevent privilege escalation
-        const ALLOWED_FIELDS = ['name', 'phone', 'address', 'avatar'] as const;
-        const patch: Record<string, string> = {};
-        for (const key of ALLOWED_FIELDS) {
+        const ALLOWED_STRING_FIELDS = ['name', 'phone', 'address', 'avatar', 'birthday', 'preferredPickupTime'] as const;
+        const patch: Record<string, any> = {};
+        for (const key of ALLOWED_STRING_FIELDS) {
             if (body[key] !== undefined) {
                 patch[key] = String(body[key]).slice(0, 200);
             }
         }
+        // Boolean field
+        if (body.newsletter !== undefined) {
+            patch.newsletter = Boolean(body.newsletter);
+        }
 
         // Update customer in Sanity
         await adminClient.patch(customer._id).set(patch).commit();
+
+        // Sync newsletter preference to Mailchimp (fire-and-forget — won't break profile save)
+        if (patch.newsletter !== undefined) {
+            syncMailchimpSubscription(session.user.email, patch.newsletter as boolean)
+                .catch(err => console.error('[Mailchimp] Unexpected error:', err));
+        }
 
         return NextResponse.json({ success: true, updated: patch });
 

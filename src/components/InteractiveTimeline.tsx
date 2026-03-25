@@ -24,7 +24,7 @@ export default function InteractiveTimeline({ events }: Props) {
     const iconRefs    = useRef<(HTMLDivElement | null)[]>([]);
     const videoRefs   = useRef<(HTMLVideoElement | null)[]>([]);
 
-    const totalH = events.length * STEP_H + 180; // extra room for last card
+    const totalH = events.length * STEP_H + 60;
 
     /* ── Node positions ── */
     const nodes = events.map((_, i) => ({
@@ -56,15 +56,9 @@ export default function InteractiveTimeline({ events }: Props) {
                 const pathEl    = pathRef.current!;
                 const totalLen  = pathEl.getTotalLength();
 
-                /* ── 1. Draw the path synced to nodes passing viewport center ── */
-                // Measure where the canvas div actually sits inside the section
-                const canvasTop  = canvasRef.current?.offsetTop ?? 0;
-                // SVG node y coords === CSS px (canvas height == totalH)
+                /* ── 1. Draw the path — canvas as trigger (immune to page layout shifts) ── */
                 const firstNodeY = nodes[0].y;
                 const lastNodeY  = nodes[nodes.length - 1].y;
-                // Section-relative px offset for each node
-                const firstPx = canvasTop + firstNodeY;
-                const lastPx  = canvasTop + lastNodeY;
 
                 gsap.fromTo(
                     pathEl,
@@ -73,9 +67,9 @@ export default function InteractiveTimeline({ events }: Props) {
                         strokeDashoffset: 0,
                         ease: 'none',
                         scrollTrigger: {
-                            trigger: sectionRef.current,
-                            start: `top+=${firstPx}px center`,   // 0%  when first node hits viewport center
-                            end:   `top+=${lastPx}px center`,    // 100% when last node hits viewport center
+                            trigger: canvasRef.current,
+                            start: `top+=${firstNodeY}px 95%`,
+                            end:   `top+=${lastNodeY}px 95%`,
                             scrub: 0.3,
                         },
                     }
@@ -87,11 +81,9 @@ export default function InteractiveTimeline({ events }: Props) {
                     const nodeG  = nodeRefs.current[i];
                     const iconEl = iconRefs.current[i];
 
-                    // stConfig: fires exactly when the path drawing reaches this node
-                    // (same 'center' anchor as the path draw ScrollTrigger)
                     const stConfig: any = {
-                        trigger: sectionRef.current,
-                        start: `top+=${canvasTop + node.y}px center`,
+                        trigger: canvasRef.current,
+                        start: `top+=${node.y}px 95%`,
                         toggleActions: 'play none none reverse',
                     };
 
@@ -120,21 +112,30 @@ export default function InteractiveTimeline({ events }: Props) {
                         );
                     }
 
-                    // Play video when node is reached
+                    // Play video + fire sound when node is reached
                     const videoEl = videoRefs.current[i];
                     if (videoEl) {
+                        const fireAudio = new Audio('/sounds/fire-lit.mp3');
+                        fireAudio.volume = 0.1;
                         gsap.fromTo(videoEl,
                             { opacity: 0, scale: 0.4 },
                             {
                                 opacity: 1, scale: 1, duration: 0.6, delay: 0.2, ease: 'back.out(1.7)',
                                 scrollTrigger: stConfig,
-                                onStart: () => { videoEl.play().catch(() => {}); },
+                                onStart: () => {
+                                    videoEl.play().catch(() => {});
+                                    fireAudio.currentTime = 0;
+                                    fireAudio.play().catch(() => {});
+                                },
                             }
                         );
                     }
                 });
 
             }, sectionRef);
+
+            // Force recalculate after sticky-positioned elements above settle
+            ScrollTrigger.refresh();
         })();
 
         return () => ctx?.revert();

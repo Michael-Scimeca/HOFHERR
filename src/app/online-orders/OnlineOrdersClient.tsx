@@ -736,9 +736,10 @@ const CATEGORIES = [...MAIN_CATEGORIES, ...DEPOT_CATEGORIES];
 const totalItems = (cart: CartItem[]) => cart.reduce((s, i) => s + i.qty, 0);
 
 // ── Price helpers ──────────────────────────────────────────────────────────────
-function parseItemPrice(price: string): number {
-    const m = price.match(/\$([\d.]+)/);
-    return m ? parseFloat(m[1]) : 0;
+function parseItemPrice(price: string | number): number {
+    if (typeof price === 'number') return price;
+    const m = String(price).match(/\$([\d.]+)/);
+    return m ? parseFloat(m[1]) : parseFloat(String(price)) || 0;
 }
 function fmtTotal(n: number): string {
     return '$' + n.toFixed(2);
@@ -1674,7 +1675,6 @@ export default function CustomOrdersPage({
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(menuJsonLd) }}
             />
 
-
             {/* Location Hero Banner */}
             <div className={styles.locationHero}>
                 <img
@@ -2095,7 +2095,8 @@ export default function CustomOrdersPage({
                                         <div className={styles.drawerSectionLabel} style={{ marginTop: '12px' }}>Your Basket</div>
                                         {cart.map(item => {
                                             const unit = parseItemPrice(item.price);
-                                            const isPerLb = item.price.includes('/lb');
+                                            const priceStr = String(item.price ?? '');
+                                            const isPerLb = priceStr.includes('/lb');
                                             const lineEst = unit * item.qty;
                                             return (
                                                 <div key={item.name} className={styles.cartItem}>
@@ -2181,7 +2182,7 @@ export default function CustomOrdersPage({
                                 <div className={styles.drawerFoot}>
                                     <div className={styles.drawerStats}>
                                         <span>🥩 {cart.reduce((s, i) => s + i.qty, 0)} item{cart.reduce((s, i) => s + i.qty, 0) !== 1 ? 's' : ''}</span>
-                                        <span>⚖️ ~{cart.filter(i => i.price.includes('/lb')).reduce((s, i) => s + i.qty, 0)} lbs est.</span>
+                                        <span>⚖️ ~{cart.filter(i => String(i.price ?? '').includes('/lb')).reduce((s, i) => s + i.qty, 0)} lbs est.</span>
                                     </div>
                                     <div className={styles.drawerTotalRow}>
                                         <span>Estimated Subtotal</span>
@@ -2200,16 +2201,11 @@ export default function CustomOrdersPage({
                                         Prices are estimates. Final adjustment may occur based on actual weight.
                                     </p>
                                     <p className={styles.drawerNote}>Secure checkout · Visa, Apple Pay, Google Pay, PayPal</p>
-                                    <button className={styles.checkoutBtn} onClick={() => { 
-                                        setDrawerOpen(false); 
-                                        if (user) {
-                                            setCheckoutStep('form');
-                                        } else {
-                                            setAuthMode('login'); 
-                                            setAuthIntent('checkout'); 
-                                            setCheckoutStep('choice');
-                                        }
-                                        setCheckoutOpen(true); 
+                                    <button className={styles.checkoutBtn} onClick={() => {
+                                        // Save active store so /checkout page can read it
+                                        try { localStorage.setItem('hofherr_active_store', activeStore); } catch { }
+                                        setDrawerOpen(false);
+                                        window.location.href = '/checkout';
                                     }}>
                                         Proceed to Checkout
                                     </button>
@@ -2475,18 +2471,35 @@ export default function CustomOrdersPage({
                                                             />
                                                         )}
                                                     </div>
-                                                    <div className={styles.dateSelector} ref={dateScrollRef} onScroll={updateDateThumb}>
-                                                        {availableDates.map((date, idx) => (
-                                                            <button
-                                                                key={idx}
-                                                                type="button"
-                                                                className={`${styles.dateBtn} ${selectedDateIdx === idx ? styles.dateBtnActive : ''}`}
-                                                                onClick={() => setSelectedDateIdx(idx)}
-                                                            >
-                                                                <span className={styles.dateDay}>{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
-                                                                <span className={styles.dateNum}>{date.toLocaleDateString('en-US', { day: 'numeric' })}</span>
-                                                            </button>
-                                                        ))}
+                                                    {/* Scroll container — inlined to bypass CSS cache */}
+                                                    <div
+                                                        ref={dateScrollRef}
+                                                        onScroll={updateDateThumb}
+                                                        style={{
+                                                            overflowX: 'auto',
+                                                            overflowY: 'visible',
+                                                            WebkitOverflowScrolling: 'touch' as any,
+                                                            touchAction: 'pan-x',
+                                                            paddingBottom: '8px',
+                                                            msOverflowStyle: 'none',
+                                                            scrollbarWidth: 'none' as any,
+                                                            minWidth: 0,
+                                                            width: '100%',
+                                                        }}
+                                                    >
+                                                        <div style={{ display: 'flex', gap: '8px', width: 'max-content' }}>
+                                                            {availableDates.map((date, idx) => (
+                                                                <button
+                                                                    key={idx}
+                                                                    type="button"
+                                                                    className={`${styles.dateBtn} ${selectedDateIdx === idx ? styles.dateBtnActive : ''}`}
+                                                                    onClick={() => setSelectedDateIdx(idx)}
+                                                                >
+                                                                    <span className={styles.dateDay}>{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+                                                                    <span className={styles.dateNum}>{date.toLocaleDateString('en-US', { day: 'numeric' })}</span>
+                                                                </button>
+                                                            ))}
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div className={styles.timeSelector}>
@@ -2565,7 +2578,7 @@ export default function CustomOrdersPage({
                                                         {cart.reduce((s, i) => s + i.qty, 0)} item{cart.reduce((s, i) => s + i.qty, 0) !== 1 ? 's' : ''}
                                                     </span>
                                                     <span>
-                                                        ~{cart.filter(i => i.price.includes('/lb')).reduce((s, i) => s + i.qty, 0)} lbs
+                                                        ~{cart.filter(i => String(i.price ?? '').includes('/lb')).reduce((s, i) => s + i.qty, 0)} lbs
                                                     </span>
                                                 </div>
 

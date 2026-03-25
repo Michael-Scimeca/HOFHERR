@@ -4,7 +4,7 @@
     border-top: 1px solid rgba(74, 122, 66, 0.3);
     border-bottom: 1px solid rgba(74, 122, 66, 0.3);
     overflow: hidden;
-    padding: 64px 0;
+    padding: 96px 0;
 }
 
 .overlay {
@@ -113,4 +113,9 @@
     color: rgba(255, 255, 255, 0.4);
     font-weight: 600;
     letter-spacing: 1px;
+}
+@media (max-width: 768px) {
+    .banner {
+        padding: 64px 0;
+    }
 }

@@ -38,7 +38,6 @@ export default async function FaqPage() {
         faqs = [];
     }
 
-    // Group FAQs by category
     const categoryLabels: Record<string, string> = {
         ordering: 'Shopping & Orders',
         products: 'Product & Quality',
@@ -65,5 +64,29 @@ export default async function FaqPage() {
         items,
     }));
 
-    return <FaqClient faqs={faqData} />;
+    // ── FAQPage schema → powers Google "People Also Ask" rich results ─────────
+    const faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(faq => ({
+            '@type': 'Question',
+            name: faq.question,
+            acceptedAnswer: {
+                '@type': 'Answer',
+                text: faq.answer
+                    ?.map(block => block.children?.map(c => c.text).join(''))
+                    .join(' ') ?? '',
+            },
+        })),
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
+            <FaqClient faqs={faqData} />
+        </>
+    );
 }

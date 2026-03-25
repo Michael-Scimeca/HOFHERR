@@ -57,6 +57,14 @@ const SERVICES = [
         href: '/online-orders',
         cta: 'Shop Cuts',
     },
+    {
+        emoji: '🕯️',
+        title: 'Private Meat Sessions',
+        desc: 'After-hours, bespoke multi-course dining experiences hosted at the shop for groups of 8–10. A curated journey through our finest cuts — wine, fire, and no menu.',
+        detail: '8–10 guests · By invitation',
+        href: 'mailto:sean@hofherrmeatco.com?subject=Private Meat Session',
+        cta: 'Inquire',
+    },
 ];
 
 const FALLBACK_PRICING = [

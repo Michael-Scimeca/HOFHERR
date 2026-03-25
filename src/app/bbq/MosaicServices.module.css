@@ -1,0 +1,190 @@
+/* ── Mosaic Wrapper ── */
+.mosaic {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* ── Top grid: hero (2fr left) + 2 stacked (1fr right) ── */
+.topGrid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 260px 260px;
+    gap: 4px;
+}
+
+.heroCard {
+    grid-row: 1 / 3; /* spans both rows */
+}
+
+/* ── Bottom grid: 3 equal columns ── */
+.bottomGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 220px;
+    gap: 4px;
+}
+
+/* ── Individual card ── */
+.card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 6px;
+    text-decoration: none;
+    background: #111;
+    cursor: pointer;
+}
+
+.card:first-child {
+    border-radius: 8px;
+}
+
+/* Photo container — overflow mask for parallax */
+.photoWrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+.card:hover .photoWrap {
+    transform: scale(1.04);
+}
+
+.photo {
+    position: absolute;
+    top: -15%;
+    left: 0;
+    width: 100%;
+    height: 130%;
+    object-fit: cover;
+    will-change: transform;
+    /* NO transition — parallax JS updates must be instant */
+}
+
+/* Gradient overlay */
+.overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+    background:
+        linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 40%),
+        linear-gradient(to top,    rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 55%);
+    transition: background 0.3s;
+}
+
+.card:hover .overlay {
+    background:
+        linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 40%),
+        linear-gradient(to top,    rgba(0,0,0,0.92) 0%, rgba(0,0,0,0) 60%);
+}
+
+/* Red tag — top left */
+.tag {
+    display: inline-block;
+    background: var(--red, #cc0e1d);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 3px;
+    width: fit-content;
+    align-self: flex-start;
+}
+
+/* Bottom content */
+.cardBottom {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cardEmoji {
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.cardTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(1.3rem, 2.5vw, 2rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #fff;
+    line-height: 1.05;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+
+/* Hero card gets bigger title */
+.heroCard .cardTitle {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+}
+
+.cardCta {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0);
+    transition: color 0.25s;
+    white-space: nowrap;
+}
+
+.card:hover .cardCta {
+    color: rgba(255,255,255,0.75);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .topGrid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 220px 200px;
+    }
+
+    .heroCard {
+        grid-row: 1 / 2;
+        grid-column: 1 / 3;
+    }
+
+    .bottomGrid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(2, 180px);
+    }
+
+    .bottomCard:last-child {
+        grid-column: 1 / 3;
+    }
+}
+
+@media (max-width: 600px) {
+    .topGrid {
+        grid-template-columns: 1fr;
+        grid-template-rows: 240px 180px 180px;
+    }
+
+    .heroCard {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .smallCard {
+        grid-column: 1;
+    }
+
+    .bottomGrid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, 180px);
+    }
+
+    .bottomCard:last-child {
+        grid-column: 1;
+    }
+}

@@ -8,7 +8,7 @@
     background-image:
         radial-gradient(ellipse at 20% 50%, rgba(128, 0, 32, 0.15) 0%, transparent 60%),
         radial-gradient(ellipse at 80% 30%, rgba(128, 0, 32, 0.08) 0%, transparent 50%);
-    padding: 110px 24px 80px;
+    padding: 56px 24px 48px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -81,126 +81,316 @@
     z-index: 10;
 }
 
-.menuBoard {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 64px;
-    align-items: start;
-    padding: 24px 0 48px;
+.menuHeader {
+    text-align: center;
+    margin-bottom: 40px;
 }
 
-.stackedCategories {
+.menuTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 8px 0 8px;
+    line-height: 1.05;
+}
+
+.menuSub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    margin: 0;
+}
+
+/* ── Bento Grid Layout ── */
+.menuBoard {
     display: flex;
     flex-direction: column;
-    gap: 48px;
+    gap: 40px;
+    margin-bottom: 48px;
 }
 
 .menuCategory {
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    padding: 0;
-    transition: none;
-}
-
-.meatCategory {
-    position: relative;
-}
-
-@media (min-width: 901px) {
-    .meatCategory::after {
-        content: '';
-        position: absolute;
-        right: -32px;
-        top: 0;
-        bottom: 0;
-        width: 1px;
-        background: rgba(255, 255, 255, 0.08);
-    }
-}
-
-.catTitle {
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #fff;
-    margin: 0 0 16px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--red);
-    display: block;
-    width: 100%;
-}
-
-.catDesc {
-    font-size: 13.5px;
-    color: var(--fg-muted);
-    line-height: 1.6;
-    margin: 0 0 24px;
-    max-width: 440px;
-}
-
-.menuList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #181818;
 }
 
-.menuListDual {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 24px;
-}
+.meatCategory { border-bottom: 1px solid #181818; }
+.stackedCategories { display: contents; }
 
-.menuList li, .menuListDual li {
-    font-size: 14px;
-    color: var(--fg-muted);
-    padding-left: 16px;
-    position: relative;
-    line-height: 1.5;
+/* ── Category Header ── */
+.catTitle {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 10px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    padding: 20px 24px 16px;
+    background: transparent;
+    border-bottom: none;
+    margin: 0;
+    flex-shrink: 0;
 }
 
-.menuList li::before, .menuListDual li::before {
+.catTitle::before {
     content: '';
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: var(--red);
+    flex-shrink: 0;
+}
+
+.catTitle::after {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: var(--red);
+    flex-shrink: 0;
+}
+
+.catDesc { display: none; }
+
+/* ── Meat Bento Grid (hero 2×2 + surrounding) ── */
+.menuList {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-auto-rows: 210px;
+    gap: 3px;
+    background: #0d0d0d;
+    list-style: none;
+    padding: 3px;
+    margin: 0;
+}
+
+/* First item = hero spanning 2 rows */
+.menuList li:first-child {
+    grid-row: span 2;
+}
+
+/* ── Appetizer / Side even grid ── */
+.menuListDual {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 190px;
+    gap: 3px;
+    background: #0d0d0d;
+    list-style: none;
+    padding: 3px;
+    margin: 0;
+}
+
+/* ── All Bento Cards ── */
+.menuList li,
+.menuListDual li {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background: #111;
+    border-radius: 4px;
+}
+
+.menuList li::before,
+.menuListDual li::before { display: none; }
+
+.menuList li.hasThumb,
+.menuListDual li.hasThumb { padding: 0; }
+
+/* Photo fills the card — 130% tall for parallax travel room */
+.listThumb {
     position: absolute;
     left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 2px;
-    background: var(--red);
-    border-radius: 1px;
-}
-
-.menuList li.hasThumb, .menuListDual li.hasThumb {
-    padding-left: 0;
-}
-
-.menuList li.hasThumb::before, .menuListDual li.hasThumb::before {
-    display: none;
-}
-
-.listThumb {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
+    top: -15%;
+    width: 100%;
+    height: 130%;
     object-fit: cover;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: #111;
-    flex-shrink: 0;
+    border-radius: 0;
+    border: none;
     cursor: crosshair;
+    will-change: transform;
+    filter: brightness(0.75);
+    /* Only transition filter — JS owns transform */
+    transition: filter 0.4s;
 }
+
+.menuList li:hover .listThumb,
+.menuListDual li:hover .listThumb {
+    filter: brightness(0.95);
+}
+
+/* Dark gradient overlay */
+.menuList li::after,
+.menuListDual li::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.88) 0%,
+        rgba(0,0,0,0.3) 45%,
+        transparent 100%
+    );
+    pointer-events: none;
+    border-radius: 4px;
+}
+
+/* Item name — overlaid bottom */
+.menuList li span:last-child,
+.menuListDual li span:last-child {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 14px;
+    z-index: 2;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(0.95rem, 1.6vw, 1.25rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #fff;
+    line-height: 1.1;
+    transition: color 0.2s;
+}
+
+/* Hero card — larger name */
+.menuList li:first-child span:last-child {
+    font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+    padding: 20px 22px;
+}
+
+/* Category badge — top left */
+.menuList li span:first-child:not(span:last-child),
+.menuListDual li span:first-child:not(span:last-child) {
+    display: none; /* handled by catTitle above */
+}
+
+.menuList li:hover span:last-child,
+.menuListDual li:hover span:last-child {
+    color: #fff;
+}
+
+/* ── Build Your Plate Card ── */
+.buildYourPlate {
+    grid-column: span 2;
+    grid-row: span 2;
+    background: #0c0c0c;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+    padding: 24px 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: default;
+    transition: background 0.2s;
+    position: relative;
+}
+
+.buildYourPlate:hover {
+    background: #111;
+}
+
+/* Nullify the ::after gradient overlay for this card */
+.buildYourPlate::after {
+    display: none !important;
+}
+
+.buildHeader {
+    margin-bottom: 18px;
+}
+
+.buildTag {
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.buildTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(1.4rem, 2vw, 1.9rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0;
+    line-height: 1;
+    letter-spacing: 0.04em;
+}
+
+.buildSteps {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    flex: 1;
+}
+
+.buildStep {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding-bottom: 11px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.buildStep:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.buildStepNum {
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--red);
+    min-width: 18px;
+    padding-top: 2px;
+    flex-shrink: 0;
+}
+
+.buildStepTitle {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.3;
+}
+
+.buildStepDesc {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 2px;
+    line-height: 1.4;
+}
+
+.buildCta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 18px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red);
+    text-decoration: none;
+    transition: color 0.2s, gap 0.2s;
+}
+
+.buildCta:hover {
+    color: #fff;
+    gap: 10px;
+}
+
 
 /* ── Cursor Follow Hover ── */
 .cursorThumbWrap {
@@ -237,7 +427,7 @@
 /* ── Pricing Section ──────────────────────────────────── */
 .pricingSection {
     background: var(--bg-2);
-    padding: 56px 0;
+    padding: 96px 0;
     position: relative;
     animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
 }
@@ -357,72 +547,99 @@
 /* ── Beyond BBQ Services ──────────────────────────────── */
 .servicesSection {
     background: var(--bg);
-    padding: 56px 0;
+    padding: 96px 0;
     animation: fadeInUp 0.6s 0.15s var(--ease-out) both;
 }
 
-.servicesGrid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 32px;
-    justify-content: center;
+.beyondBbqHeader {
+    margin-bottom: 48px;
 }
 
-.serviceCard {
-    flex: 0 1 calc(33.333% - 11px);
-    min-width: 260px;
-    background: #000;
-    border-radius: 14px;
-    padding: 28px 22px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid transparent;
+.beyondBbqTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(2.6rem, 5vw, 4rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0 0 8px;
+    line-height: 1;
 }
 
-.serviceCard::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--red), transparent);
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-
-.serviceCard:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-    border-color: var(--border);
-}
-
-.serviceCard:hover::before {
-    opacity: 1;
-}
-
-.serviceEmoji {
-    font-size: 1.8rem;
-    margin-bottom: 2px;
-}
-
-.serviceCard h3 {
-    font-size: 1.05rem;
-    color: var(--fg);
+.beyondBbqSub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.45);
     margin: 0;
 }
 
-.serviceCard p {
-    font-size: 13.5px;
-    color: var(--fg-muted);
-    line-height: 1.65;
-    margin: 0;
+.brutalistList {
+    border-top: 1px solid #181818;
+}
+
+.brutalistRow {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 24px 16px;
+    border-bottom: 1px solid #181818;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease, padding-left 0.3s ease;
+}
+
+.brutalistRow:hover {
+    background: rgba(204, 14, 29, 0.06);
+    padding-left: 28px;
+    border-bottom-color: rgba(204, 14, 29, 0.25);
+}
+
+.brutalistNum {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: rgba(204, 14, 29, 0.3);
+    line-height: 1;
+    min-width: 72px;
+    transition: color 0.2s;
+}
+
+.brutalistRow:hover .brutalistNum {
+    color: var(--red, #cc0e1d);
+}
+
+.brutalistContent {
     flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.brutalistEmoji {
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.brutalistTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.brutalistCta {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+.brutalistRow:hover .brutalistCta {
+    color: var(--red, #cc0e1d);
 }
 
 /* ── CTA Section ──────────────────────────────────────── */
@@ -463,19 +680,36 @@
     margin: 0;
 }
 
-/* ── Responsive ───────────────────────────────────────── */
+/* ── Responsive ────────────────────────────────────── */
 @media (max-width: 900px) {
-    .menuBoard {
-        grid-template-columns: 1fr;
+    .menuList {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 180px;
     }
-
+    .menuList li:first-child { grid-row: span 2; }
     .menuListDual {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 160px;
     }
+    .pricingCols { grid-template-columns: 1fr; }
+}
 
-    .pricingCols {
-        grid-template-columns: 1fr;
+@media (max-width: 600px) {
+    .menuList {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 150px;
     }
+    .menuListDual {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 130px;
+    }
+    .menuList li:first-child {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+    .menuList li span:last-child,
+    .menuListDual li span:last-child { font-size: 0.9rem; padding: 8px 10px; }
+    .menuList li:first-child span:last-child { font-size: 1.1rem; }
 }
 
 @media (max-width: 600px) {
@@ -488,11 +722,11 @@
     }
 
     .pricingSection {
-        padding: 44px 0;
+        padding: 64px 0;
     }
 
     .servicesSection {
-        padding: 44px 0;
+        padding: 64px 0;
     }
 
     .servicesGrid {

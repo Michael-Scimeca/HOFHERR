@@ -72,7 +72,7 @@ export async function POST(req: Request) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // 3. Assign a random default avatar
-        const avatarOptions = ['/avatars/calf.jpg', '/avatars/cow.png', '/avatars/cheese.jpg', '/avatars/deer.jpg', '/avatars/fish.jpg', '/avatars/pig.jpg', '/avatars/rooster.jpg', '/avatars/turkey.jpg'];
+        const avatarOptions = ['/avatars/avator-chickin.png', '/avatars/avator-cow.png', '/avatars/avator-pig.png', '/avatars/avator-sheep.png'];
         const randomAvatar = avatarOptions[Math.floor(Math.random() * avatarOptions.length)];
 
         // 4. Create customer in Sanity safely

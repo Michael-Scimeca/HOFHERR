@@ -1,5 +1,5 @@
 .root {
-    padding: 80px 0 100px;
+    padding: 96px 0;
     overflow: hidden;
     position: relative;
 }
@@ -121,6 +121,7 @@
 .nodeVideo {
     width: 80px;
     height: 80px;
+    border-radius: 50%;
     object-fit: cover;
 }
 
@@ -134,7 +135,7 @@
 
 /* ── Cards ── */
 .card {
-    background: #000000cc;
+    background: linear-gradient(308deg, #000 50%, #0000006e 100%);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     padding: 24px 28px;
@@ -154,7 +155,7 @@
 
 .cardRight {
     text-align: left;
-    background: linear-gradient(308deg, #000000 50%, rgb(0 0 0 / 43%) 100%);
+    background: linear-gradient(20deg, #000 50%, #0000006e 100%);
 }
 
 .cardEra {
@@ -184,6 +185,12 @@
 }
 
 /* ── Responsive ── */
+@media (max-width: 768px) {
+    .root {
+        padding: 64px 0;
+    }
+}
+
 @media (max-width: 700px) {
     .canvas {
         padding: 0 16px;

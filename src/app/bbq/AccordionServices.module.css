@@ -1,0 +1,224 @@
+/* ── Accordion Services ── */
+
+.list {
+    border-top: 1px solid #1e1e1e;
+}
+
+/* ── Row container ── */
+.row {
+    border-bottom: 1px solid #1e1e1e;
+    overflow: hidden;
+    transition: border-bottom-color 0.3s;
+    display: grid;
+    grid-template-rows: auto 0fr;
+    transition: grid-template-rows 0.45s cubic-bezier(0.4, 0, 0.2, 1), border-bottom-color 0.3s;
+}
+
+.row.active {
+    grid-template-rows: auto 1fr;
+    border-bottom-color: rgba(204, 14, 29, 0.25);
+}
+
+.row:not(.active):hover {
+    border-bottom-color: #2a2a2a;
+}
+
+/* ── Header (always visible) ── */
+.header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 24px 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    color: #fff;
+    transition: background 0.2s;
+}
+
+.row:not(.active) .header:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.row.active .header {
+    background: rgba(204, 14, 29, 0.04);
+}
+
+/* Number */
+.num {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    font-weight: 700;
+    color: rgba(204, 14, 29, 0.3);
+    line-height: 1;
+    min-width: 68px;
+    text-align: left;
+    transition: color 0.25s;
+}
+
+.row.active .num,
+.header:hover .num {
+    color: var(--red, #cc0e1d);
+}
+
+/* Title row */
+.titleRow {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.emoji {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.title {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    color: #fff;
+}
+
+/* +/− caret */
+.caret {
+    color: rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+    transition: color 0.25s;
+}
+
+.row.active .caret {
+    color: var(--red, #cc0e1d);
+}
+
+.caretV {
+    transition: opacity 0.25s;
+}
+
+.caretVHide {
+    opacity: 0;
+}
+
+/* ── Expandable body — CSS grid 0fr→1fr trick ── */
+.body {
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* bodyInner holds the actual content; must have min-height: 0 to allow 0fr collapse */
+.bodyInner {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 0;
+    padding: 4px 20px 36px;
+    align-items: center;
+    overflow: hidden;
+}
+
+.bodyText {
+    padding-right: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.desc {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.8;
+    margin: 0;
+    max-width: 520px;
+}
+
+.cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--red, #cc0e1d);
+    color: #fff;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 13px 26px;
+    border-radius: 4px;
+    width: fit-content;
+    transition: background 0.2s ease, gap 0.2s ease;
+}
+
+.cta:hover {
+    background: #a80b17;
+    gap: 16px;
+}
+
+.ctaArrow {
+    flex-shrink: 0;
+    transition: transform 0.2s;
+}
+
+.cta:hover .ctaArrow {
+    transform: translateX(4px);
+}
+
+/* Right photo */
+.imgWrap {
+    position: relative;
+    height: 260px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.row.active .img {
+    transform: scale(1.04);
+}
+
+.imgOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(204, 14, 29, 0.08) 0%,
+        transparent 60%
+    );
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .bodyInner {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .bodyText { padding-right: 0; }
+
+    .imgWrap { height: 200px; width: 100%; }
+}
+
+@media (max-width: 600px) {
+    .header { gap: 16px; padding: 20px 12px; }
+    .num { min-width: 48px; font-size: 1.8rem; }
+    .title { font-size: 1.3rem; }
+    .bodyInner { padding: 4px 12px 28px; }
+}

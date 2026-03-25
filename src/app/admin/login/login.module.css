@@ -1,56 +1,117 @@
+/* ── Split-panel admin login ─────────────────────────────────────────────── */
 .loginContainer {
     min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: #0B1120;
+}
+
+/* Left panel — full bleed illustration */
+.illustrationPanel {
+    position: relative;
+    overflow: hidden;
+    background: #111;
+}
+
+.illustrationPanel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.85;
+    filter: brightness(0.75) contrast(1.05);
+    transition: transform 8s ease;
+}
+
+.illustrationPanel:hover img {
+    transform: scale(1.03);
+}
+
+/* dark gradient from right so the card reads clearly */
+.illustrationPanel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(11, 17, 32, 0) 60%, rgba(11, 17, 32, 0.95) 100%);
+    pointer-events: none;
+}
+
+.illustrationBadge {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    z-index: 2;
+    color: #fff;
+}
+
+.illustrationBadge h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    margin: 0 0 4px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.illustrationBadge p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin: 0;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+/* Right panel — login form */
+.formPanel {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 40px 48px;
+    background: #0B1120;
+    border-left: 1px solid rgba(255,255,255,0.06);
 }
 
 .loginCard {
     width: 100%;
-    max-width: 400px;
-    background: rgba(19, 28, 49, 0.4);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    max-width: 360px;
     animation: fadeIn 0.6s ease-out;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 .header {
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 36px;
 }
 
-.logo {
-    font-size: 28px;
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 8px;
+/* Wordmark */
+.wordmark {
+    display: inline-block;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
 }
 
 .subtitle {
-    font-size: 14px;
-    color: #94a3b8;
+    font-size: 12px;
+    color: #475569;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.16em;
 }
 
+.divider {
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(to right, #ef4444, #b91c1c);
+    border-radius: 2px;
+    margin: 20px auto 0;
+}
+
+/* Form */
 .form {
     display: flex;
     flex-direction: column;
@@ -60,94 +121,124 @@
 .inputGroup {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
 }
 
 .label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
 .input {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 12px 16px;
-    color: #fff;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 10px;
+    padding: 13px 16px;
+    color: #f8fafc;
     font-size: 15px;
     transition: all 0.2s;
+    outline: none;
 }
+
+.input::placeholder { color: #334155; }
 
 .input:focus {
-    outline: none;
     border-color: #ef4444;
-    background: rgba(15, 23, 42, 0.8);
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+    background: rgba(239, 68, 68, 0.06);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
 }
 
+.forgotRow {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -10px;
+}
+
+.forgotLink {
+    color: #475569;
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.2s;
+}
+
+.forgotLink:hover { color: #cbd5e1; }
+
 .button {
-    background: #ef4444;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
     color: #fff;
     border: none;
-    border-radius: 12px;
-    padding: 14px;
-    font-size: 16px;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 15px;
     font-weight: 700;
     cursor: pointer;
+    letter-spacing: 0.04em;
     transition: all 0.2s;
-    margin-top: 10px;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+    margin-top: 4px;
 }
 
 .button:hover {
-    background: #dc2626;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
 }
 
-.button:active {
-    transform: translateY(0);
-}
+.button:active { transform: translateY(0); }
 
 .button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
+    box-shadow: none;
 }
 
 .error {
     background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    color: #f87171;
-    padding: 12px;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #fca5a5;
+    padding: 11px 14px;
     border-radius: 8px;
     font-size: 13px;
     text-align: center;
 }
 
 .footer {
-    margin-top: 32px;
+    margin-top: 36px;
     text-align: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .backLink {
-    color: #64748b;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.2s;
-}
-
-.backLink:hover {
-    color: #fff;
-}
-
-.forgotLink {
-    color: #94a3b8;
+    color: #475569;
     text-decoration: none;
     font-size: 13px;
     transition: color 0.2s;
 }
 
-.forgotLink:hover {
-    color: #fff;
+.backLink:hover { color: #94a3b8; }
+
+/* Responsive: stack on mobile */
+@media (max-width: 860px) {
+    .loginContainer {
+        grid-template-columns: 1fr;
+    }
+    .illustrationPanel {
+        height: 220px;
+    }
+    .illustrationPanel::after {
+        background: linear-gradient(to bottom, rgba(11,17,32,0) 40%, rgba(11,17,32,0.95) 100%);
+    }
+    .illustrationBadge {
+        bottom: 20px;
+        left: 20px;
+    }
+    .formPanel {
+        padding: 40px 24px;
+        border-left: none;
+        border-top: 1px solid rgba(255,255,255,0.06);
+    }
 }

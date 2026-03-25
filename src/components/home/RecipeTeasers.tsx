@@ -52,7 +52,7 @@ export default function RecipeTeasers() {
                             Sean's tested recipes — built around what we stock every week.
                         </p>
                     </div>
-                    <Link href="/recipes" className="btn btn-primary" style={{ alignSelf: 'flex-end', flexShrink: 0 }}>
+                    <Link href="/specials" className="btn btn-primary" style={{ alignSelf: 'flex-end', flexShrink: 0 }}>
                         Browse All Recipes
                     </Link>
                 </div>

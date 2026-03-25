@@ -1,6 +1,7 @@
 /* ── Hero ── */
 .hero {
     background: var(--bg-2);
+    background-image: radial-gradient(at 20%, #80002026 0%, #0000 60%), radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
     border-bottom: 1px solid var(--border);
     padding: 56px 24px 48px;
     text-align: center;
@@ -44,7 +45,7 @@
 
 /* ── Services ── */
 .servicesSection {
-    padding: 56px 0;
+    padding: 96px 0;
 }
 
 .sectionHeader {
@@ -130,7 +131,7 @@
     background: var(--bg-2);
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
-    padding: 56px 0;
+    padding: 96px 0;
 }
 
 .steps {
@@ -174,7 +175,7 @@
 
 /* ── Pricing ── */
 .pricingSection {
-    padding: 56px 0;
+    padding: 96px 0;
 }
 
 .pricingGrid {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import styles from './VideoCallout.module.css';
 
 interface VideoCalloutProps {
@@ -12,16 +12,40 @@ interface VideoCalloutProps {
 }
 
 export default function VideoCallout({ image, video, alt, title, sub }: VideoCalloutProps) {
-    const videoRef = useRef<HTMLVideoElement>(null);
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const videoRef   = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        if (videoRef.current) {
-            videoRef.current.play().catch(e => console.error("Autoplay muted prevented:", e));
-        }
+        const vid  = videoRef.current;
+        const wrap = wrapperRef.current;
+        if (!vid || !wrap) return;
+
+        // Autoplay
+        vid.play().catch(e => console.error('Autoplay muted prevented:', e));
+
+        // Parallax scroll
+        let rafId: number;
+        const update = () => {
+            const rect     = wrap.getBoundingClientRect();
+            const vh       = window.innerHeight;
+            const raw      = 1 - rect.bottom / (vh + rect.height);
+            const progress = Math.max(0, Math.min(1, raw));
+            const shift    = (progress - 0.5) * 30; // ±15%
+            vid.style.transform = `translateY(${shift}%)`;
+        };
+
+        const onScroll = () => { cancelAnimationFrame(rafId); rafId = requestAnimationFrame(update); };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        update();
+
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+            cancelAnimationFrame(rafId);
+        };
     }, []);
 
     return (
-        <div className={styles.wrapper}>
+        <div ref={wrapperRef} className={styles.wrapper}>
             <video
                 ref={videoRef}
                 src={video}

@@ -211,7 +211,10 @@ export const CUSTOMER_BY_EMAIL_QUERY = defineQuery(`
     name,
     phone,
     address,
-    avatar
+    avatar,
+    birthday,
+    newsletter,
+    preferredPickupTime
   }
 `);
 

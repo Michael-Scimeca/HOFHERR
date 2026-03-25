@@ -120,7 +120,7 @@
 
 /* ── Location Sections ── */
 .locationSection {
-    padding: 56px 0;
+    padding: 96px 0;
 }
 
 .locationSection+.locationSection {
@@ -279,7 +279,7 @@
     background: var(--bg-2);
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
-    padding: 56px 0;
+    padding: 96px 0;
 }
 
 .sectionTitle {
@@ -351,7 +351,7 @@
 
 /* ── Gallery ── */
 .gallery {
-    padding: 72px 0;
+    padding: 96px 0;
     background: var(--bg);
 }
 

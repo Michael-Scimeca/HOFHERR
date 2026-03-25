@@ -54,7 +54,6 @@ export default function FooterMap() {
             {/* Map container */}
             <div className={styles.mapWrap}>
                 <CustomMap 
-                    key={loc.id}
                     lat={loc.lat} 
                     lng={loc.lng} 
                     label={loc.label} 

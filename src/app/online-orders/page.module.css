@@ -140,7 +140,7 @@
 /* ── Online Ordering Hours Notice ── */
 .hoursNotice {
     background: #1a1210;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid #181818;
     padding: 10px max(16px, calc(50% - 576px + 220px));
 }
 
@@ -801,7 +801,7 @@
     background: var(--red);
     color: #fff;
     font-weight: 700;
-    border-radius: var(--radius) 0 0 var(--radius);
+    border-radius: 0;
 }
 
 .sideCard {
@@ -1347,9 +1347,10 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 1100;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 24px;
+    overflow-y: auto;
     backdrop-filter: blur(2px);
 }
 
@@ -1361,13 +1362,12 @@
     padding: 12px 18px;
     width: 100%;
     max-width: 460px;
-    max-height: 92vh;
+    margin: auto;
     box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0,0,0,0.04);
     display: flex;
     flex-direction: column;
     gap: 2px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible;
     animation: modalSlideUp 0.25s ease-out;
 }
 
@@ -2614,15 +2614,17 @@
 
 .authInput {
     width: 100%;
-    height: 36px; /* Slightly more compact */
+    height: 36px;
     padding: 0 10px;
     border: 1px solid #ddd;
     border-radius: var(--radius-sm);
     font-size: 14px;
     background: #fff;
-    color: var(--fg);
+    color: #1a1a1a;
     transition: border-color 0.2s;
 }
+.authInput::placeholder { color: #aaa; }
+.authInput:focus { outline: none; border-color: var(--red); }
 
 .socialProviders {
     display: flex;
@@ -2822,20 +2824,28 @@
 .dateSelectorContainer {
     position: relative;
     width: 100%;
+    overflow: hidden;
     margin-bottom: 12px;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    min-width: 0;
+}
+
+.dateSelectorContainer > * {
+    min-width: 0;
 }
 
 .dateSelector {
-    display: flex;
-    gap: 8px;
+    display: block;
     overflow-x: auto;
+    overflow-y: visible;
     padding-bottom: 8px;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
+    touch-action: pan-x;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    min-width: 0;
 }
 
 .dateSelector::-webkit-scrollbar {
@@ -2919,11 +2929,11 @@
 .timeSlotBtn {
     padding: 12px 10px;
     background: #fff;
-    border: 1.5px solid var(--border);
+    border: 1px solid #181818;
     border-radius: 12px;
     font-size: 13px;
     font-weight: 700;
-    color: var(--fg);
+    color: #1a1a1a;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: inherit;
@@ -2932,7 +2942,8 @@
 
 .timeSlotBtn:hover {
     border-color: var(--red);
-    background: rgba(128, 0, 32, 0.03);
+    background: #fff;
+    color: #1a1a1a;
 }
 
 .timeSlotBtnActive {
@@ -2943,12 +2954,17 @@
 }
 
 .timeSlotBtnDisabled {
-    opacity: 0.5;
-    background: var(--bg-muted);
-    border-color: var(--border);
-    color: var(--fg-muted);
+    opacity: 0.7;
+    background: #1c1c1c;
+    border: 1px solid #282828;
+    color: #666;
     cursor: not-allowed;
     pointer-events: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 10px;
+    border-radius: 12px;
+    text-align: center;
 }
 
 .timeSelect {

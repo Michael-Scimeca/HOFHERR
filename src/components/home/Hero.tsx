@@ -54,11 +54,14 @@ export default function Hero() {
                 {/* Two-column: text left, video right */}
                 <div className={styles.heroGrid}>
                     <div className={styles.heroText}>
-                        {/* Headline */}
-                        <h1 className={styles.headline}>
-                            <span>Quality Meats.</span>
-                            <span className={styles.accent}>No Compromise.</span>
-                        </h1>
+                        {/* Headline + video bubble anchored to it */}
+                        <div className={styles.headlineWrap}>
+                            <h1 className={styles.headline}>
+                                <span>Quality Meats.</span>
+                                <span className={styles.accent}>No Compromise.</span>
+                            </h1>
+                            <HeroVideo />
+                        </div>
 
                         <p className={styles.sub}>
                             Custom cuts, whole hog pig roasts, rotisserie chicken, and seasonal specials —
@@ -70,7 +73,6 @@ export default function Hero() {
                         <div className={styles.ctas}>
                             <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
                             <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
-                            <HeroVideo />
                         </div>
 
                         {/* SMS strip */}

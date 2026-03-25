@@ -5,10 +5,11 @@ import { getClient } from '@/sanity/client';
 import { SIGNATURE_PRODUCTS_QUERY, BBQ_MENU_QUERY, BBQ_PRICING_QUERY, CATERING_EVENTS_QUERY, CATERING_CALENDAR_PRICING_QUERY, ROTISSERIE_STATUS_QUERY } from '@/sanity/queries';
 import NewsletterInline from '@/components/NewsletterInline';
 import VideoCallout from '@/components/specials/VideoCalloutWrapper';
+import ParallaxMedia from '@/components/ParallaxMedia';
+import ParallaxImg from '@/app/bbq/ParallaxImg';
 import CateringModule from './CateringModule';
 import styles from './page.module.css';
 import bbqStyles from '../bbq/page.module.css';
-import CursorThumbnail from '../bbq/CursorThumbnail';
 
 const getThumb = (name: string) => {
     const safeName = (name || '').toLowerCase();
@@ -34,14 +35,20 @@ const getThumb = (name: string) => {
 }
 
 export const metadata: Metadata = {
-    title: "Specials | Hofherr Meat Co.",
-    description: "What we offer at Hofherr Meat Co.: world-famous Italian beef (as featured on America's Test Kitchen), daily rotisserie chicken dinners, BBQ catering, and whole-hog pig roasts. Northfield, IL.",
+    title: "Italian Beef, Rotisserie Chicken, BBQ & Pig Roasts | Hofherr Meat Co. Specials",
+    description: "Hofherr Meat Co.'s signature offerings: world-famous Italian beef (featured on America's Test Kitchen & PBS Proof), daily pasture-raised rotisserie chicken dinners, award-winning BBQ catering, and whole-hog pig roasts. Northfield & Winnetka, IL.",
+    keywords: ['Italian beef Northfield IL', 'rotisserie chicken Northfield', 'BBQ catering North Shore', 'pig roast Chicago', "America's Test Kitchen Italian beef", 'PBS Proof Hofherr', 'Hofherr Meat Co specials'],
     alternates: { canonical: 'https://hofherrmeatco.com/specials' },
     openGraph: {
-        title: "Specials | Hofherr Meat Co.",
-        description: "Italian beef, rotisserie chicken, BBQ catering, and pig roasts — the best of Hofherr Meat Co.",
+        title: "Italian Beef, Rotisserie Chicken, BBQ & Pig Roasts | Hofherr Meat Co.",
+        description: "Italian beef (as featured on America's Test Kitchen), daily rotisserie chicken dinners, BBQ catering, and whole-hog pig roasts — the best of Hofherr Meat Co. North Shore, IL.",
         url: 'https://hofherrmeatco.com/specials',
         images: [{ url: '/OG/og-specials.png', width: 1200, height: 630 }],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: "Hofherr Meat Co. Specials — Italian Beef, Chicken, BBQ & Pig Roasts",
+        description: "Featured on America's Test Kitchen. Italian beef, rotisserie chicken, BBQ catering & whole-hog roasts. Northfield & Winnetka, IL.",
     },
 };
 
@@ -245,7 +252,12 @@ export default async function SpecialsPage() {
                     </div>
                 ) : product.image ? (
                     <div className={styles.imageCallout}>
-                        <img src={product.image} alt={product.title} />
+                        <ParallaxMedia
+                            src={product.image}
+                            type="image"
+                            alt={product.title}
+                            className={styles.imageCalloutImg}
+                        />
                     </div>
                 ) : (
                     <div className={styles.featureCallout} style={calloutStyle}>
@@ -400,21 +412,6 @@ export default async function SpecialsPage() {
                 );
             })}
 
-            {/* ── Link to BBQ Menu ── */}
-            <section id="bbq-catering" className={styles.bbqSection}>
-                <div className="container">
-                    <div style={{ background: 'var(--bg-2)', border: '1px solid var(--border)', borderRadius: '16px', padding: '40px', textAlign: 'center' }}>
-                        <h2 className={styles.bbqHeadline} style={{ marginBottom: '16px' }}>Looking for BBQ Catering?</h2>
-                        <p className={styles.bbqSub} style={{ margin: '0 auto 24px', maxWidth: '500px' }}>
-                            Brisket, ribs, pulled pork, and full-service competition style BBQ spreads.
-                        </p>
-                        <a href="/bbq" className="btn btn-primary" style={{ display: 'inline-block' }}>
-                            View the BBQ Menu
-                        </a>
-                    </div>
-                </div>
-            </section>
-
             <section id="pig-roasts" className={styles.bbqSection}>
                 <div className={styles.bbqHero}>
                     <div className="container">
@@ -428,7 +425,11 @@ export default async function SpecialsPage() {
                 <div className="container">
 
                     <div className={styles.sectionImageWrapper}>
-                        <video src="/video-clips/PIG-GRIL.mp4" autoPlay loop muted playsInline className={styles.sectionImage} />
+                        <ParallaxMedia
+                            src="/video-clips/PIG-GRIL.mp4"
+                            type="video"
+                            className={styles.sectionImage}
+                        />
                     </div>
 
 
@@ -455,7 +456,7 @@ export default async function SpecialsPage() {
                                         const img = getThumb(item);
                                         return (
                                             <li key={item} className={img ? bbqStyles.hasThumb : ''}>
-                                                {img && <CursorThumbnail src={img} alt={item} />}
+                                                {img && <ParallaxImg src={img} alt={item} className={bbqStyles.listThumb} />}
                                                 <span>{item}</span>
                                             </li>
                                         );
@@ -480,7 +481,7 @@ export default async function SpecialsPage() {
                                         const img = getThumb(item);
                                         return (
                                             <li key={item} className={img ? bbqStyles.hasThumb : ''}>
-                                                {img && <CursorThumbnail src={img} alt={item} />}
+                                                {img && <ParallaxImg src={img} alt={item} className={bbqStyles.listThumb} />}
                                                 <span>{item}</span>
                                             </li>
                                         );
@@ -498,7 +499,7 @@ export default async function SpecialsPage() {
                                         const img = getThumb(item);
                                         return (
                                             <li key={item} className={img ? bbqStyles.hasThumb : ''}>
-                                                {img && <CursorThumbnail src={img} alt={item} />}
+                                                {img && <ParallaxImg src={img} alt={item} className={bbqStyles.listThumb} />}
                                                 <span>{item}</span>
                                             </li>
                                         );

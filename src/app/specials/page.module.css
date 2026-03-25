@@ -1,8 +1,9 @@
 /* ── Hero ── */
 .hero {
     background: var(--bg-2);
+    background-image: radial-gradient(at 20%, #80002026 0%, #0000 60%), radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
     border-bottom: 1px solid var(--border);
-    padding: 32px 24px 32px;
+    padding: 56px 24px 48px;
     text-align: center;
 }
 
@@ -150,11 +151,15 @@
     background: var(--bg-2);
 }
 
-.imageCallout img {
+.imageCalloutImg {
+    position: absolute;
+    top: -15%;
+    left: 0;
     width: 100%;
-    height: 100%;
+    height: 130%;
     object-fit: cover;
     display: block;
+    will-change: transform;
 }
 
 .sectionImageWrapper {
@@ -164,13 +169,18 @@
     margin-bottom: 40px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     aspect-ratio: 21 / 9;
+    position: relative;
 }
 
 .sectionImage {
+    position: absolute;
+    top: -15%;
+    left: 0;
     width: 100%;
-    height: 100%;
+    height: 130%;
     object-fit: cover;
     display: block;
+    will-change: transform;
 }
 
 .depotNote {
@@ -229,6 +239,110 @@
     background: radial-gradient(ellipse at 30% 0%, rgba(128, 0, 32, 0.15) 0%, transparent 60%),
         radial-gradient(ellipse at 70% 100%, rgba(180, 80, 20, 0.1) 0%, transparent 50%);
     pointer-events: none;
+}
+
+/* ── Beyond BBQ — Brutalist numbered list ── */
+.beyondBbq {
+    padding: 80px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.beyondBbqHeader {
+    margin-bottom: 48px;
+}
+
+.beyondBbqTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(2.6rem, 5vw, 4rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0 0 8px;
+    line-height: 1;
+}
+
+.beyondBbqSub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.45);
+    margin: 0;
+}
+
+.brutalistList {
+    border-top: 1px solid #181818;
+}
+
+.brutalistRow {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 24px 16px;
+    border-bottom: 1px solid #181818;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease, padding-left 0.3s ease;
+}
+
+.brutalistRow:hover {
+    background: rgba(204, 14, 29, 0.06);
+    padding-left: 28px;
+    border-bottom-color: rgba(204, 14, 29, 0.25);
+}
+
+.brutalistNum {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: rgba(204, 14, 29, 0.3);
+    line-height: 1;
+    min-width: 72px;
+    transition: color 0.2s;
+}
+
+.brutalistRow:hover .brutalistNum {
+    color: var(--red, #cc0e1d);
+}
+
+.brutalistContent {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.brutalistEmoji {
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.brutalistTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.brutalistCta {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+.brutalistRow:hover .brutalistCta {
+    color: var(--red, #cc0e1d);
+}
+
+@media (max-width: 600px) {
+    .brutalistRow { gap: 16px; padding: 20px 8px; }
+    .brutalistNum { font-size: 2rem; min-width: 48px; }
+    .brutalistCta { display: none; }
 }
 
 .bbqHero {

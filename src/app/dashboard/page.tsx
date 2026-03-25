@@ -43,6 +43,9 @@ export default async function DashboardPage() {
     const address = customerRecord?.address || '';
     const phone = customerRecord?.phone || '';
     const avatar = customerRecord?.avatar || '';
+    const birthday = customerRecord?.birthday || '';
+    const newsletter = customerRecord?.newsletter || false;
+    const preferredPickupTime = customerRecord?.preferredPickupTime || '';
 
     return (
         <DashboardClient 
@@ -54,6 +57,9 @@ export default async function DashboardPage() {
             initialOrders={orderHistory}
             specials={specials || []}
             avatar={avatar}
+            birthday={birthday}
+            newsletter={newsletter}
+            preferredPickupTime={preferredPickupTime}
         />
     );
 }

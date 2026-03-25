@@ -17,6 +17,9 @@ import SmoothScroll from "@/components/SmoothScroll";
 import ChatWidgetWrapper from "@/components/ChatWidgetWrapper";
 import EmbersBackground from "@/components/EmbersBackground";
 import PageTransition from "@/components/PageTransition";
+import DevNav from "@/components/DevNav";
+import { auth } from "@/auth";
+import ParallaxImages from "@/components/ParallaxImages";
 
 const yanone = Yanone_Kaffeesatz({
   subsets: ["latin"],
@@ -68,6 +71,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const { isEnabled: isDraft } = await draftMode();
+  const session = await auth();
 
   let settings: SiteSettings = DEFAULT_SETTINGS;
 
@@ -127,15 +131,21 @@ export default async function RootLayout({
 
         <EmbersBackground />
         <SiteSettingsProvider settings={settings}>
-          <ClientProviders>
+          <ClientProviders session={session}>
             <CartProvider>
               <JsonLd />
               <SmoothScroll />
               <ScrollToTop />
               <Navbar />
-              <PageTransition>{children}</PageTransition>
+              <PageTransition>
+                <div style={{ minHeight: '100vh' }}>
+                  {children}
+                </div>
+                <Footer />
+              </PageTransition>
               <ChatWidgetWrapper />
-              <Footer />
+              <DevNav />
+              <ParallaxImages />
             </CartProvider>
           </ClientProviders>
         </SiteSettingsProvider>

@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 
-type Animal = 'beef' | 'pork' | 'chicken' | 'lamb';
+type Animal = 'beef' | 'pork' | 'chicken' | 'lamb' | 'game';
 type CutEntry = { name: string; sub: string; best: string; cook: string; tip: string; image?: string | null };
 
 type SanityCut = {
@@ -60,6 +60,17 @@ const DEFAULT_CUTS: Record<Animal, CutEntry[]> = {
         { name: 'Lamb Shoulder', sub: 'Chuck equivalent', best: 'Low-and-slow, kleftiko, pulled lamb', cook: 'Braise · Slow Roast', tip: 'Cook at 300°F for 4–5 hrs until it falls apart.' },
         { name: 'Ground Lamb', sub: 'Mixed trimmings', best: 'Burgers, kofta, Bolognese', cook: 'Grill · Pan', tip: 'Mix with garlic, cumin & fresh mint for kebabs.' },
     ],
+    game: [
+        { name: 'Venison Loin', sub: 'Deer — backstrap', best: 'The finest wild game steak', cook: 'Pan Sear · Grill', tip: 'Cook to 130°F max — venison dries out fast. Rest 5 min and slice thin.' },
+        { name: 'Venison Shoulder', sub: 'Deer — chuck equivalent', best: 'Slow-cooked roasts, stews, chili', cook: 'Braise · Slow Roast', tip: 'Game shoulders are lean — add fat (bacon, lard) when braising.' },
+        { name: 'Wild Boar Shoulder', sub: 'Feral pig — boston butt', best: 'Pulled "pork", ragu, slow BBQ', cook: 'Smoke · Braise · Slow Roast', tip: 'Richer and gamier than pork — pairs beautifully with juniper and rosemary.' },
+        { name: 'Bison Ribeye', sub: 'American buffalo — rib', best: 'Leaner, more flavorful alternative to beef ribeye', cook: 'Grill · Cast Iron', tip: 'Cook one temperature lower than beef — bison runs hot faster.' },
+        { name: 'Elk Roast', sub: 'Elk — round or loin', best: 'Holiday centerpiece, medallions', cook: 'Roast · Pan Sear', tip: 'Mild and sweet compared to deer. Marinate only if you want extra depth.' },
+        { name: 'Duck Breast', sub: 'Mallard / Muscovy', best: 'Pan-seared showstopper — rich and medium-rare', cook: 'Pan Sear · Roast', tip: 'Score the fat cap in a crosshatch. Start skin-side down in a cold pan — render low and slow, then blast heat at the end.' },
+        { name: 'Pheasant (Whole)', sub: 'Upland bird', best: 'Roasting, braising, stuffed preparations', cook: 'Roast · Braise', tip: 'Lean birds dry out quickly — bard with bacon or baste constantly.' },
+        { name: 'Rabbit (Whole)', sub: 'Domestic or wild', best: 'Braises, stews, French-style fricassee', cook: 'Braise · Roast · Grill', tip: "Treat the saddle like a tenderloin — quick cook. The legs and shoulders need low-and-slow." },
+        { name: 'Quail (Whole)', sub: 'Bobwhite / Coturnix', best: 'Elegant appetizer or plated entrée', cook: 'Grill · Roast · Pan Sear', tip: 'Spatchcock for even cooking. Stuff with herbs and wrap in prosciutto for a dinner party centerpiece.' },
+    ],
 };
 
 const TABS: { id: Animal; label: string; emoji: string }[] = [
@@ -67,6 +78,7 @@ const TABS: { id: Animal; label: string; emoji: string }[] = [
     { id: 'pork', label: 'Pork', emoji: '🐷' },
     { id: 'chicken', label: 'Chicken', emoji: '🐓' },
     { id: 'lamb', label: 'Lamb', emoji: '🐑' },
+    { id: 'game', label: 'Game & Exotic', emoji: '🦌' },
 ];
 
 const COOK_COLORS: Record<string, string> = {

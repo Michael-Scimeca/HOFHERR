@@ -9,6 +9,24 @@ import { useSiteSettings, type StoreHourEntry } from '@/context/SiteSettingsCont
 import styles from './Navbar.module.css';
 import NavCartIcon from './NavCartIcon';
 
+// ── Avatar with broken-image fallback ─────────────────────────────────────
+function AvatarImage({ src, name }: { src: string; name: string }) {
+    const [broken, setBroken] = useState(false);
+    const [lastSrc, setLastSrc] = useState(src);
+    if (src !== lastSrc) { setLastSrc(src); setBroken(false); }
+    if (broken || !src) {
+        return (
+            <span style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>
+                {name ? name.charAt(0).toUpperCase() : 'U'}
+            </span>
+        );
+    }
+    return (
+        <img src={src} alt="Avatar" width={40} height={40}
+            className={styles.avatarImg} onError={() => setBroken(true)} />
+    );
+}
+
 const NAV_ITEMS = [
     { label: 'Specials', href: '/specials' },
     { label: 'BBQ', href: '/bbq' },
@@ -98,6 +116,7 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [avatarOverride, setAvatarOverride] = useState<string | null>(null);
 
     const navRef = useRef<HTMLElement>(null);
     const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
@@ -107,6 +126,16 @@ export default function Navbar() {
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 60000);
         return () => clearInterval(timer);
+    }, []);
+
+    // Listen for avatar changes from the dashboard (real-time update)
+    useEffect(() => {
+        const handler = (e: Event) => {
+            const detail = (e as CustomEvent).detail;
+            if (detail?.avatar !== undefined) setAvatarOverride(detail.avatar);
+        };
+        window.addEventListener('avatar-updated', handler);
+        return () => window.removeEventListener('avatar-updated', handler);
     }, []);
 
     // Handle scroll state
@@ -244,13 +273,10 @@ export default function Navbar() {
                         ) : (
                             <div className={styles.avatarDropdownWrap}>
                                 <button className={styles.avatar} aria-label="My Dashboard">
-                                    {user.image ? (
-                                        <Image src={user.image} alt="Avatar" width={40} height={40} className={styles.avatarImg} />
-                                    ) : (
-                                        <span style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>
-                                            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                                        </span>
-                                    )}
+                                    <AvatarImage
+                                        src={avatarOverride ?? (user as any).avatar ?? user.image ?? ''}
+                                        name={user.name ?? ''}
+                                    />
                                 </button>
                                 <div className={styles.avatarDropdown}>
                                     <Link href={user.isAdmin ? "/admin" : "/dashboard"} className={styles.avatarDropdownItem}>

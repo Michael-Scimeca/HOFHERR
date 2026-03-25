@@ -4,22 +4,24 @@ import { getClient } from '@/sanity/client';
 import { BBQ_MENU_QUERY, BBQ_PRICING_QUERY, BBQ_SERVICES_QUERY, CATERING_EVENTS_QUERY, CATERING_CALENDAR_PRICING_QUERY } from '@/sanity/queries';
 import styles from './page.module.css';
 import BBQHub from './BBQHub';
-import CursorThumbnail from './CursorThumbnail';
+import ParallaxImg from './ParallaxImg';
+import MosaicServices from './MosaicServices';
 
 export const metadata: Metadata = {
-    title: 'BBQ Catering Menu & Pricing | Hofherr Meat Co. — Northfield, IL',
-    description: 'Chicago North Shore BBQ catering from Hofherr Meat Co. Smoked brisket, ribs, pulled pork, sausages & sides. 20–500+ guests. Pickup or drop-off. Northfield & Winnetka, IL.',
+    title: 'BBQ Catering, Pig Roasts & Event Services | Hofherr Meat Co. — Northfield, IL',
+    description: 'Chicago North Shore BBQ catering, whole-pig roasts, Ravinia picnic baskets, game day & tailgate spreads, corporate buffets, and wild game processing. Smoked brisket, ribs, pulled pork & sides for 20–500+ guests. Hofherr Meat Co., Northfield, IL.',
+    keywords: ['BBQ catering Northfield IL', 'pig roast Chicago', 'whole hog roast North Shore', 'Ravinia picnic baskets', 'corporate catering Northfield', 'tailgate catering Chicago', 'wild game processing Illinois', 'smoked brisket catering', 'BBQ catering Winnetka'],
     alternates: { canonical: 'https://hofherrmeatco.com/bbq' },
     openGraph: {
-        title: 'BBQ Catering Menu & Pricing | Hofherr Meat Co.',
-        description: 'Authentic low-and-slow BBQ catering for any event. Brisket, pulled pork, ribs, and full sides. 20 to 500+ guests. Northfield, IL.',
+        title: 'BBQ Catering, Pig Roasts & Event Services | Hofherr Meat Co.',
+        description: 'Authentic low-and-slow BBQ catering plus whole-pig roasts, Ravinia picnic baskets, tailgate spreads, corporate buffets & wild game processing. Brisket, ribs, pulled pork & full sides. Chicago North Shore.',
         url: 'https://hofherrmeatco.com/bbq',
         images: [{ url: '/OG/og-bbq.png', width: 1200, height: 630 }],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'BBQ Catering | Hofherr Meat Co.',
-        description: 'Smoked brisket, ribs, pulled pork & sides. 20–500+ guests. Chicago North Shore.',
+        title: 'BBQ Catering & Event Services | Hofherr Meat Co.',
+        description: 'Smoked brisket, ribs, pulled pork, pig roasts, picnic baskets & more. 20–500+ guests. Chicago North Shore.',
     },
 };
 
@@ -90,6 +92,7 @@ const FALLBACK_SERVICES: ServiceItem[] = [
     { title: 'Game Day & Tailgate', emoji: '🏈', description: 'Specialized spreads for football Sundays, tailgates, and watch parties. Brisket, wings, sausages — everything your crew needs.', linkLabel: 'Plan Your Spread', linkUrl: 'mailto:catering@hofherrmeatco.com?subject=Game Day Catering' },
     { title: 'Business Buffets', emoji: '💼', description: 'Professional catering for meetings, offsites, and corporate events. Customized menus, reliable service, and food that impresses.', linkLabel: 'Get Started', linkUrl: 'mailto:catering@hofherrmeatco.com?subject=Corporate Catering' },
     { title: 'Wild Game Processing', emoji: '🦌', description: 'Bring us your harvest — we offer custom processing for hunters. Deer, elk, boar, and more. Must be properly field-dressed.', linkLabel: 'Call to Arrange', linkUrl: 'tel:8474416328' },
+    { title: 'Private Meat Sessions', emoji: '🕯️', description: 'After-hours, bespoke multi-course dining experiences hosted at the shop for groups of 8–10. A curated journey through our finest cuts.', linkLabel: 'Inquire', linkUrl: 'mailto:sean@hofherrmeatco.com?subject=Private Meat Session' },
 ];
 
 const CATEGORY_META: Record<string, { emoji: string; label: string }> = {
@@ -196,17 +199,76 @@ export default async function BBQPage() {
             {/* ── Menu ── */}
             <section className={`section ${styles.menuSection}`}>
                 <div className="container">
+
+                    <div className={styles.menuHeader}>
+                        <div className="section-label">Catering · Min. 4 Days Notice</div>
+                        <h2 className={styles.menuTitle}>What&apos;s On The Menu</h2>
+                        <p className={styles.menuSub}>All smoked low-and-slow in-house. Choose your meats, sides, and add-ons — we handle the rest.</p>
+                    </div>
+
                     <div className={styles.menuBoard}>
-                        
-                        {/* Left Column: Meats */}
+
+                        {/* Meats */}
                         {(grouped['meat']?.length > 0) && (
                             <div className={`${styles.menuCategory} ${styles.meatCategory}`}>
                                 <h2 className={styles.catTitle}>{CATEGORY_META['meat'].emoji} {CATEGORY_META['meat'].label}</h2>
-                                <p className={styles.catDesc}>All meats are slow-smoked in-house over authentic oak and cherry wood for up to 14 hours.</p>
-                                <ul className={styles.menuListDual}>
+                                <ul className={styles.menuList}>
                                     {grouped['meat'].map((item) => (
                                         <li key={item.name} className={item.image ? styles.hasThumb : ''}>
-                                            {item.image && <CursorThumbnail src={item.image} alt={item.name} />}
+                                            {item.image && <ParallaxImg src={item.image} alt={item.name} className={styles.listThumb} />}
+                                            <span>{item.name}</span>
+                                        </li>
+                                    ))}
+                                    {/* Build Your Plate — fills empty bottom-right cells */}
+                                    <li className={styles.buildYourPlate}>
+                                        <div className={styles.buildHeader}>
+                                            <span className={styles.buildTag}>— How It Works —</span>
+                                            <h3 className={styles.buildTitle}>Build Your Plate</h3>
+                                        </div>
+                                        <div className={styles.buildSteps}>
+                                            <div className={styles.buildStep}>
+                                                <span className={styles.buildStepNum}>01</span>
+                                                <div>
+                                                    <div className={styles.buildStepTitle}>Choose Your Meat</div>
+                                                    <div className={styles.buildStepDesc}>1 meat + 1 side — from $16/person</div>
+                                                </div>
+                                            </div>
+                                            <div className={styles.buildStep}>
+                                                <span className={styles.buildStepNum}>+</span>
+                                                <div>
+                                                    <div className={styles.buildStepTitle}>Add More Proteins</div>
+                                                    <div className={styles.buildStepDesc}>+$4/person per extra meat</div>
+                                                </div>
+                                            </div>
+                                            <div className={styles.buildStep}>
+                                                <span className={styles.buildStepNum}>+</span>
+                                                <div>
+                                                    <div className={styles.buildStepTitle}>Stack Your Sides</div>
+                                                    <div className={styles.buildStepDesc}>+$2/person per additional side</div>
+                                                </div>
+                                            </div>
+                                            <div className={styles.buildStep}>
+                                                <span className={styles.buildStepNum}>+</span>
+                                                <div>
+                                                    <div className={styles.buildStepTitle}>Add Appetizers</div>
+                                                    <div className={styles.buildStepDesc}>Charcuterie board +$4/person</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a href="#quote" className={styles.buildCta}>See Full Pricing →</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+
+                        {/* Appetizers */}
+                        {(grouped['appetizer']?.length > 0) && (
+                            <div className={styles.menuCategory}>
+                                <h2 className={styles.catTitle}>{CATEGORY_META['appetizer'].emoji} {CATEGORY_META['appetizer'].label}</h2>
+                                <ul className={styles.menuListDual}>
+                                    {grouped['appetizer'].map((item) => (
+                                        <li key={item.name} className={item.image ? styles.hasThumb : ''}>
+                                            {item.image && <ParallaxImg src={item.image} alt={item.name} className={styles.listThumb} />}
                                             <span>{item.name}</span>
                                         </li>
                                     ))}
@@ -214,41 +276,25 @@ export default async function BBQPage() {
                             </div>
                         )}
 
-                        {/* Right Column: Stacked Apps & Sides */}
-                        <div className={styles.stackedCategories}>
-                            {(grouped['appetizer']?.length > 0) && (
-                                <div className={styles.menuCategory}>
-                                    <h2 className={styles.catTitle}>{CATEGORY_META['appetizer'].emoji} {CATEGORY_META['appetizer'].label}</h2>
-                                    <ul className={styles.menuList}>
-                                        {grouped['appetizer'].map((item) => (
-                                            <li key={item.name} className={item.image ? styles.hasThumb : ''}>
-                                                {item.image && <CursorThumbnail src={item.image} alt={item.name} />}
-                                                <span>{item.name}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-
-                            {(grouped['side']?.length > 0) && (
-                                <div className={styles.menuCategory}>
-                                    <h2 className={styles.catTitle}>{CATEGORY_META['side'].emoji} {CATEGORY_META['side'].label}</h2>
-                                    <p className={styles.catDesc}>Classic homemade sides designed to perfectly complement our low-and-slow BBQ.</p>
-                                    <ul className={styles.menuListDual}>
-                                        {grouped['side'].map((item) => (
-                                            <li key={item.name} className={item.image ? styles.hasThumb : ''}>
-                                                {item.image && <CursorThumbnail src={item.image} alt={item.name} />}
-                                                <span>{item.name}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
+                        {/* Sides */}
+                        {(grouped['side']?.length > 0) && (
+                            <div className={styles.menuCategory}>
+                                <h2 className={styles.catTitle}>{CATEGORY_META['side'].emoji} {CATEGORY_META['side'].label}</h2>
+                                <ul className={styles.menuListDual}>
+                                    {grouped['side'].map((item) => (
+                                        <li key={item.name} className={item.image ? styles.hasThumb : ''}>
+                                            {item.image && <ParallaxImg src={item.image} alt={item.name} className={styles.listThumb} />}
+                                            <span>{item.name}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
 
                     </div>
                 </div>
             </section>
+
 
             {/* ── Pricing ── */}
             <section id="quote" className={`section ${styles.pricingSection}`}>
@@ -304,24 +350,12 @@ export default async function BBQPage() {
             {/* ── Beyond BBQ ── */}
             <section className={`section ${styles.servicesSection}`}>
                 <div className="container">
-                    <div className="section-label">More Than Catering</div>
-                    <h2 className={styles.pricingTitle}>Beyond BBQ</h2>
-                    <p className={styles.pricingNote}>We do more than just BBQ catering — from backyard pig roasts to concert picnic baskets.</p>
-
-                    <div className={styles.servicesGrid}>
-                        {services.map((svc, i) => (
-                            <div key={i} className={styles.serviceCard}>
-                                {svc.emoji && <div className={styles.serviceEmoji}>{svc.emoji}</div>}
-                                <h3>{svc.title}</h3>
-                                {svc.description && <p>{svc.description}</p>}
-                                {svc.linkUrl && svc.linkLabel && (
-                                    <a href={svc.linkUrl} className="btn btn-secondary">
-                                        {svc.linkLabel.replace(/[\u2190-\u21FF]|[\u2700-\u27BF]|[\u2B00-\u2BFF]|\uFE0F/g, '').trim()}
-                                    </a>
-                                )}
-                            </div>
-                        ))}
+                    <div className={styles.beyondBbqHeader}>
+                        <div className="section-label">— Beyond BBQ —</div>
+                        <h2 className={styles.beyondBbqTitle}>What Else We Do</h2>
+                        <p className={styles.beyondBbqSub}>From backyard pig roasts to corporate buffets — we handle it all.</p>
                     </div>
+                    <MosaicServices services={services} />
                 </div>
             </section>
 

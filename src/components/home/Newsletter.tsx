@@ -10,7 +10,8 @@ export default function Newsletter() {
     // ── Email state ──────────────────────────────────────────────
     const [emailName, setEmailName] = useState('');
     const [email, setEmail] = useState('');
-    const [emailSent, setEmailSent] = useState(false);
+    const [emailStatus, setEmailStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+    const [emailError, setEmailError] = useState('');
 
     // ── SMS state ────────────────────────────────────────────────
     const [smsName, setSmsName] = useState('');
@@ -19,9 +20,28 @@ export default function Newsletter() {
     const [smsError, setSmsError] = useState('');
 
     // ── Handlers ─────────────────────────────────────────────────
-    const handleEmail = (e: React.FormEvent) => {
+    const handleEmail = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (email) setEmailSent(true);
+        if (!email) return;
+        setEmailStatus('loading');
+        setEmailError('');
+        try {
+            const res = await fetch('/api/newsletter-signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, name: emailName }),
+            });
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                setEmailError(data.error || 'Something went wrong.');
+                setEmailStatus('error');
+            } else {
+                setEmailStatus('success');
+            }
+        } catch {
+            setEmailError('Network error — please try again.');
+            setEmailStatus('error');
+        }
     };
 
     const handleSms = async (e: React.FormEvent) => {
@@ -168,14 +188,14 @@ export default function Newsletter() {
                     {/* ── Email form ── */}
                     {tab === 'email' && (
                         <>
-                            {emailSent ? (
+                            {emailStatus === 'success' ? (
                                 <div className={styles.success}>
                                     <div className={styles.successIcon}>✅</div>
                                     <h3>You&apos;re in!</h3>
                                     <p>Check your inbox for a welcome email from Sean. First picks go out this Friday.</p>
                                 </div>
                             ) : (
-                                <form onSubmit={handleEmail} className={styles.form}>
+                                    <form onSubmit={handleEmail} className={styles.form}>
                                     <div className={styles.formLabel}>Join 1,200+ Northshore meat lovers</div>
                                     <input
                                         type="text"
@@ -194,8 +214,11 @@ export default function Newsletter() {
                                         className={styles.input}
                                         autoComplete="email"
                                     />
-                                    <button type="submit" className={`btn btn-primary ${styles.submit}`}>
-                                        Get Weekly Specials
+                                    {emailStatus === 'error' && (
+                                        <div className={styles.errorMsg}>⚠️ {emailError}</div>
+                                    )}
+                                    <button type="submit" className={`btn btn-primary ${styles.submit}`} disabled={emailStatus === 'loading'}>
+                                        {emailStatus === 'loading' ? 'Subscribing…' : 'Get Weekly Specials'}
                                     </button>
                                     <p className={styles.privacy}>No spam. Unsubscribe anytime. Sent every Friday.</p>
                                 </form>

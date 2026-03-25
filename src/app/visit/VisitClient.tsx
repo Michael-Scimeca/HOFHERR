@@ -180,19 +180,19 @@ export default function VisitClient() {
                     <p className={styles.gallerySub}>Butcher shop, charcuterie counter, sandwich shop, event space, and a floor-to-ceiling rotisserie oven — all under one roof.</p>
                     <div className={styles.galleryGrid}>
                         <div className={styles.galleryItemLarge}>
-                            <Image src="/assets/shop-exterior.jpg" alt="Hofherr Meat Co. storefront" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 55vw" />
+                            <Image src="/assets/shop-exterior.jpg" alt="Hofherr Meat Co. storefront" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 55vw" data-parallax="inset" />
                             <div className={styles.galleryCaption}>Our Northfield storefront</div>
                         </div>
                         <div className={styles.galleryItemSmallA}>
-                            <Image src="/assets/shop-interior.jpg" alt="The butcher display case" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 42vw" />
+                            <Image src="/assets/shop-interior.jpg" alt="The butcher display case" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 42vw" data-parallax="inset" />
                             <div className={styles.galleryCaption}>Hand-selected cuts daily</div>
                         </div>
                         <div className={styles.galleryItemSmallB}>
-                            <Image src="/assets/rotisserie-chickens.jpg" alt="Rotisserie chickens in the oven" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 42vw" />
+                            <Image src="/assets/rotisserie-chickens.jpg" alt="Rotisserie chickens in the oven" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 42vw" data-parallax="inset" />
                             <div className={styles.galleryCaption}>Floor-to-ceiling rotisserie oven</div>
                         </div>
                         <div className={styles.galleryItemWide}>
-                            <Image src="/assets/shop-interior.jpg" alt="Shop interior" fill style={{ objectFit: 'cover' }} sizes="100vw" />
+                            <Image src="/assets/shop-interior.jpg" alt="Shop interior" fill style={{ objectFit: 'cover' }} sizes="100vw" data-parallax="inset" />
                             <div className={styles.galleryCaption}>A butcher shop that feels like home</div>
                         </div>
                     </div>

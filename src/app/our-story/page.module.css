@@ -1,12 +1,33 @@
 /* ── Hero ── */
 .hero {
+    position: relative;
+    overflow: hidden;
     background: var(--bg-2);
     border-bottom: 1px solid var(--border);
-    padding: 56px 24px 48px;
+    padding: 120px 24px 100px;
     text-align: center;
 }
 
+.heroBgVideo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+.heroOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.75) 100%);
+    pointer-events: none;
+}
+
 .heroInner {
+    position: relative;
+    z-index: 1;
     max-width: 720px;
     margin: 0 auto;
 }
@@ -55,6 +76,10 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
     animation: fadeInUp 0.6s 0.15s var(--ease-out) both;
+}
+
+.heritageFullWidth {
+    grid-column: 1 / -1;
 }
 
 .heritageImg {
@@ -135,139 +160,71 @@
     display: block;
 }
 
-/* ── Timeline ── */
-.timeline {
-    background: var(--bg);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 80px 0;
-}
 
-.timelineHeader {
-    text-align: center;
-    margin-bottom: 72px;
-}
-
-/* The vertical spine */
-.timelineTrack {
+/* ── Featured heritage video ── */
+.featuredVideo {
+    margin: 48px 0 0;
     position: relative;
-    max-width: 900px;
-    margin: 0 auto;
+    background: #000;
 }
 
-.timelineLine {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(to bottom, transparent, var(--red) 5%, var(--red) 95%, transparent);
-    transform: translateX(-50%);
-    z-index: 0;
+.featuredVideoEl {
+    display: block;
+    width: 100%;
+    max-height: 600px;
+    object-fit: cover;
 }
 
-/* Each entry row */
-.timelineEntry {
-    display: grid;
-    grid-template-columns: 1fr 40px 1fr;
-    align-items: center;
-    margin-bottom: 48px;
-    position: relative;
-    z-index: 1;
+.featuredVideoCaption {
+    padding: 20px 32px 28px;
+    background: #0a0a0a;
+    border-top: 1px solid #1a1a1a;
 }
 
-/* Card on the LEFT side */
-.timelineLeft .timelineCard {
-    grid-column: 1;
-    text-align: right;
-    padding-right: 32px;
-}
-
-.timelineLeft .timelineNode {
-    grid-column: 2;
-}
-
-.timelineLeft .timelineCard ~ * {
-    grid-column: 3;
-}
-
-/* Card on the RIGHT side */
-.timelineRight {
-    direction: rtl;
-}
-
-.timelineRight > * {
-    direction: ltr;
-}
-
-.timelineRight .timelineCard {
-    text-align: left;
-    padding-left: 32px;
-    padding-right: 0;
-}
-
-/* The dot node */
-.timelineNode {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    grid-column: 2;
-}
-
-.timelineDot {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--red);
-    border: 3px solid var(--bg);
-    box-shadow: 0 0 0 2px var(--red), 0 0 12px rgba(204, 14, 29, 0.5);
-    flex-shrink: 0;
-}
-
-/* The card itself */
-.timelineCard {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 28px 32px;
-    position: relative;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.timelineCard:hover {
-    border-color: rgba(204, 14, 29, 0.4);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-}
-
-.timelineEra {
-    font-size: 11px;
+.featuredVideoCaption span {
+    display: block;
+    font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 8px;
+    color: var(--red, #cc0e1d);
+    margin-bottom: 6px;
 }
 
-.timelineCardTitle {
+.featuredVideoCaption p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    margin: 0;
+    font-style: italic;
+}
+
+/* ── Founder header ── */
+.founderHeader {
+    text-align: center;
+    padding: 96px 24px 64px;
+}
+
+.founderTitle {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+    font-size: clamp(2.4rem, 5vw, 4rem);
     font-weight: 700;
     color: var(--fg);
     text-transform: uppercase;
-    margin: 0 0 12px;
-    line-height: 1.1;
+    margin: 8px 0;
+    line-height: 1;
 }
 
-.timelineCardBody {
+.founderSub {
+    font-size: 1rem;
     color: var(--fg-muted);
-    font-size: 14.5px;
-    line-height: 1.75;
+    line-height: 1.7;
     margin: 0;
 }
 
 /* ── Team ── */
 .team {
-    padding: 72px 0 0;
+    padding: 96px 0 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .teamHeader {
@@ -311,9 +268,7 @@
 }
 
 .teamGrid {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    display: block;
     margin-top: 48px;
 }
 
@@ -322,9 +277,11 @@
     grid-template-columns: 1fr 1fr;
     background: #111;
     overflow: hidden;
+    height: 100vh;
     min-height: 500px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
-    position: relative;
+    position: sticky;
+    top: 0;
 }
 
 .teamCard::after {
@@ -350,9 +307,6 @@
 
 
 
-.teamCard:hover .teamImage {
-    transform: none;
-}
 
 .teamImagePart {
     width: 100%;
@@ -367,7 +321,6 @@
     height: 100%;
     object-fit: cover;
     object-position: center top;
-    transition: transform 0.8s ease;
     position: absolute;
     inset: 0;
 }
@@ -378,10 +331,12 @@
     flex-direction: column;
     justify-content: center;
     background: #111;
+    text-align: left;
 }
 
-.teamHeader {
+.teamContentPart .teamHeader {
     margin-bottom: 28px;
+    text-align: left;
 }
 
 .teamRole {
@@ -418,7 +373,7 @@
 
 /* ── Accolades ── */
 .accolades {
-    padding: 72px 0;
+    padding: 96px 0;
 }
 
 .accoladesHeader {
@@ -483,45 +438,35 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 1100px) {
-    /* Timeline: collapse to single column on tablet */
-    .timelineEntry,
-    .timelineRight {
-        grid-template-columns: 40px 1fr;
-        direction: ltr;
-    }
-    .timelineLeft .timelineCard,
-    .timelineRight .timelineCard {
-        grid-column: 2;
-        text-align: left;
-        padding-left: 24px;
-        padding-right: 0;
-    }
-    .timelineNode {
-        grid-column: 1;
-    }
-    .timelineLine {
-        left: 20px;
-    }
-    .timelineTrack {
-        max-width: 100%;
-    }
-}
 
 @media (max-width: 768px) {
     .seanCard {
         grid-template-columns: 1fr;
     }
     .seanCard::after {
-        display: none;
+        left: 0;
+        top: auto;
+        bottom: 0;
+        height: 5px;
+        width: 100%;
+        transform: none;
     }
     .seanImagePart {
-        min-height: 360px;
-        height: 360px;
+        min-height: 300px;
+        height: 300px;
         position: relative;
     }
     .accoladeList {
         grid-template-columns: 1fr;
+    }
+    .team {
+        padding: 64px 0 0;
+    }
+    .accolades {
+        padding: 64px 0;
+    }
+    .timelineHeader {
+        margin-bottom: 40px;
     }
 }
 
@@ -530,19 +475,35 @@
     .teamCard:nth-child(even) {
         grid-template-columns: 1fr;
         direction: ltr;
+        /* Disable sticky / 100vh — let height be content-driven on mobile */
+        height: auto;
+        min-height: 0;
+        position: relative;
+    }
+
+    /* Flip vertical divider to horizontal bottom stripe */
+    .teamCard::after {
+        left: 0;
+        top: auto;
+        bottom: 0;
+        height: 5px;
+        width: 100%;
+        transform: none;
     }
     
     .teamImagePart {
         width: 100%;
-        height: 320px;
+        height: 280px;
         min-height: auto;
     }
     
     .teamContentPart {
-        padding: 40px 24px;
+        padding: 28px 20px 32px;
+        justify-content: flex-start;
     }
 
     .seanContentPart {
-        padding: 40px 24px;
+        padding: 28px 20px 32px;
+        justify-content: flex-start;
     }
 }
