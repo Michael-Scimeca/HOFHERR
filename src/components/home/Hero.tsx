@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import styles from './Hero.module.css';
 import HeroVideo from './HeroVideo';
+import HeroParallaxAssets from './HeroParallaxAssets';
 
 const SCHEDULE: Record<number, [number, number] | null> = {
     0: [600, 960],   // Sun 10am–4pm
@@ -25,6 +26,7 @@ export default function Hero() {
     return (
         <section className={styles.hero}>
             <div className={styles.bg} />
+            <HeroParallaxAssets />
 
             {/* Hero background/column video */}
             <div className={styles.heroVideoCol}>
@@ -54,7 +56,7 @@ export default function Hero() {
                 {/* Two-column: text left, video right */}
                 <div className={styles.heroGrid}>
                     <div className={styles.heroText}>
-                        {/* Headline + video bubble anchored to it */}
+                        {/* Headline + bubble */}
                         <div className={styles.headlineWrap}>
                             <h1 className={styles.headline}>
                                 <span>Quality Meats.</span>

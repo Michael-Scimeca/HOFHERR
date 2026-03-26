@@ -56,7 +56,7 @@ const LOCATIONS = [
         email: 'butcher@hofherrmeatco.com',
         textLink: null,
         directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=780+Elm+St,+Winnetka,+IL+60093&travelmode=driving',
-        heroImage: '/assets/shop-exterior.jpg',
+        heroImage: '/assets/store-depot.jpg',
         heroAlt: 'The Depot at Winnetka Elm Street Metra Station',
         hours: [
             { day: 'Monday – Friday', time: '10:30am – 6pm', open: true },

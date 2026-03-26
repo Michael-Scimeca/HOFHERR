@@ -20,7 +20,7 @@ const SERVICES = [
         desc: 'We source, prep, cook & serve. The full experience — from farm to fire to your table. Perfect for backyard parties, anniversaries, and graduation blowouts.',
         detail: 'Serves 30–300+ guests',
         href: '/pig-roasts',
-        cta: 'Learn More',
+        cta: 'View Details',
     },
     {
         emoji: '🔥',
@@ -39,12 +39,12 @@ const SERVICES = [
         cta: 'View Packages',
     },
     {
-        emoji: '📋',
-        title: 'Get a Quote',
-        desc: 'Not sure what you need? Tell us about your event and Sean will put together a custom package — usually same day.',
-        detail: 'Free · No obligation',
+        emoji: '🥩',
+        title: 'Custom Meat Platters',
+        desc: 'Curated charcuterie boards, premium steak flights, and custom cut packages for dinner parties, holidays, and corporate entertaining.',
+        detail: 'Any size group',
         href: '#',
-        cta: 'Request a Quote',
+        cta: 'Shop Cuts',
         openChat: true,
     },
 ];
@@ -55,58 +55,54 @@ function openQuoteChat() {
 
 export default function CateringCTA({ packages }: { packages?: CateringPackage[] }) {
     const s = useSiteSettings();
-    const phoneHref = 'tel:' + s.phone.replace(/[^\d]/g, '');
 
     return (
         <section className={styles.section}>
             <div className="container">
-                <div className={styles.header}>
-                    <div className="section-label">Events &amp; Catering</div>
-                    <h2 className={styles.title}>Feeding a <em>Crowd?</em></h2>
-                    <p className={styles.sub}>
-                        From backyard pig roasts to corporate BBQ spreads — Hofherr handles it all.
-                        Custom menus, full-service setup, and food people actually talk about.
-                    </p>
-                </div>
-
-                {/* CMS packages from Sanity (if any exist) */}
-                {packages && packages.length > 0 && (
-                    <div className={styles.grid}>
-                        {packages.map(pkg => (
-                            <div key={pkg.name} className={`${styles.card} ${pkg.isPopular ? styles.cardPopular : ''}`}>
-                                {pkg.isPopular && <div className={styles.cardBadge}>⭐ Most Popular</div>}
-                                <h3 className={styles.cardTitle}>{pkg.name}</h3>
-                                {pkg.description && <p className={styles.cardDesc}>{pkg.description}</p>}
-                                {pkg.servings && <div className={styles.cardDetail}>{pkg.servings}</div>}
-                                <div className={styles.cardPrice}>{pkg.price}</div>
-                                {pkg.items && pkg.items.length > 0 && (
-                                    <ul className={styles.cardItems}>
-                                        {pkg.items.map((item, i) => <li key={i}>{item}</li>)}
-                                    </ul>
-                                )}
-                            </div>
-                        ))}
+                <div className={styles.spread}>
+                    {/* ── Left: Title + Hero Image ── */}
+                    <div className={styles.leftCol}>
+                        <div className={styles.label}>Events &amp; Catering</div>
+                        <h2 className={styles.title}>
+                            What We<br /><em>Offer</em>
+                        </h2>
+                        <p className={styles.sub}>
+                            Full-service catering for events of every size — from intimate
+                            dinners to 500+ guest blowouts. Hofherr handles it all.
+                        </p>
+                        <video
+                            src="/video-clips/cutmeat.mp4"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            className={styles.heroImage}
+                        />
                     </div>
-                )}
 
-                {/* Fallback: hardcoded service cards */}
-                {(!packages || packages.length === 0) && (
-                    <div className={styles.grid}>
+                    {/* ── Right: Stacked Services ── */}
+                    <div className={styles.rightCol}>
                         {SERVICES.map(svc => (
-                            <div key={svc.title} className={styles.card}>
-                                <div className={styles.cardEmoji}>{svc.emoji}</div>
-                                <h3 className={styles.cardTitle}>{svc.title}</h3>
-                                <p className={styles.cardDesc}>{svc.desc}</p>
-                                <div className={styles.cardDetail}>{svc.detail}</div>
-                                {svc.openChat ? (
-                                    <button onClick={openQuoteChat} className={styles.cardLink}>{svc.cta}</button>
-                                ) : (
-                                    <Link href={svc.href} className={styles.cardLink}>{svc.cta}</Link>
-                                )}
+                            <div key={svc.title} className={styles.serviceItem}>
+                                <div className={styles.serviceEmoji}>{svc.emoji}</div>
+                                <div className={styles.serviceContent}>
+                                    <h3 className={styles.serviceTitle}>{svc.title}</h3>
+                                    <p className={styles.serviceDesc}>{svc.desc}</p>
+                                    <div className={styles.serviceDetail}>{svc.detail}</div>
+                                    {svc.openChat ? (
+                                        <button onClick={openQuoteChat} className={styles.serviceLink}>
+                                            {svc.cta}
+                                        </button>
+                                    ) : (
+                                        <Link href={svc.href} className={styles.serviceLink}>
+                                            {svc.cta}
+                                        </Link>
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>
-                )}
+                </div>
 
                 <div className={styles.footer}>
                     <button onClick={openQuoteChat} className="btn btn-primary">Get a Free Quote</button>

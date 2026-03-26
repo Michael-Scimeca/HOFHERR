@@ -112,7 +112,7 @@ function SuccessContent() {
                 <div className={styles.contentWrapper}>
                     <div className={styles.state}>
                         <div className={styles.successImgWrapper}>
-                            <Image src="/assets/success-roast.png" alt="Success Roast" width={140} height={90} className={styles.successImg} />
+                            <Image src="/assets/success-roast.jpg" alt="Success Roast" width={140} height={90} className={styles.successImg} />
                         </div>
                         <h1>Order Received!</h1>
                         <p className={styles.sub}>

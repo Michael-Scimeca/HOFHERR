@@ -68,6 +68,14 @@
         z-index: 1;
         overflow: hidden;
     }
+    .heroVideoCol::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to right, #000 0%, rgba(0,0,0,0.6) 30%, transparent 70%);
+        z-index: 2;
+        pointer-events: none;
+    }
     .heroVideoCol::after {
         display: none;
     }
@@ -82,7 +90,7 @@
 /* ─── Content ─── */
 .content {
     position: relative;
-    z-index: 2;
+    z-index: 5;
     width: 100%;
     max-width: var(--max-w, 1200px);
     padding: 70px 24px 50px;

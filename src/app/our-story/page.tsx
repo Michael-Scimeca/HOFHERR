@@ -158,10 +158,11 @@ export default async function OurStoryPage() {
                     <div className={styles.heritageGrid}>
                         <HoverVideo src="/video-clips/storykeeper.mp4" caption="The original Hofherr Wholesale Meats storefront" />
                         <HoverVideo src="/video-clips/Photo_To_Video_Conversion.mp4" poster="/history/Photo_To_Video_Conversion.mp4.jpg" caption="The Hofherr family — brought to life" />
-                        <HoverVideo src="/video-clips/inside.mp4" poster="/history/shop-interior.png" caption="Inside the original shop — Chicago&apos;s South Side" />
+                        <HoverVideo src="/video-clips/inside.mp4" poster="/history/shop-interior.jpg" caption="Inside the original shop — Chicago&apos;s South Side" />
                         <HoverVideo src="/video-clips/truck.mp4" caption="Hofherr Meat Co. — on the road" />
-                        <HoverVideo src="/video-clips/meat-truck.mp4" caption="The Hofherr Meat Co. truck — delivering quality across the North Shore" />
-                        <HoverVideo src="/video-clips/more.mp4" caption="More from the Hofherr archives" />
+                        <div className={styles.heritageFullWidth}>
+                            <HoverVideo src="/video-clips/more.mp4" caption="More from the Hofherr archives" />
+                        </div>
                     </div>
                 </div>
             </section>

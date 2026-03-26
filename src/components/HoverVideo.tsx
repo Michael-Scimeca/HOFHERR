@@ -28,6 +28,10 @@ export default function HoverVideo({ src, caption, poster }: { src: string; capt
                 src={src}
                 poster={poster}
                 onEnded={() => setEnded(true)}
+                onLoadedMetadata={() => {
+                    if (ref.current) ref.current.currentTime = 0.001;
+                }}
+                style={{ objectPosition: 'top' }}
             />
             <p className={styles.heritageCaption}>{caption}</p>
         </div>

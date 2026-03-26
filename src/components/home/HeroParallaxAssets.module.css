@@ -1,0 +1,109 @@
+/* ── Parallax root ── */
+.root {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 6;
+}
+
+.asset {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    will-change: transform;
+}
+
+/* ── Locked positions from layout mode ── */
+
+.a1 {
+    width: 100px;
+    top: 14.6%;
+    left: 1.1%;
+    rotate: -20deg;
+    opacity: 0.92;
+    z-index: 0;
+}
+
+.a2 {
+    width: 95px;
+    top: 11.7%;
+    left: 14.8%;
+    rotate: 14deg;
+    opacity: 0.90;
+    z-index: 0;
+}
+
+.a3 {
+    width: 85px;
+    top: 14.7%;
+    left: 23.3%;
+    rotate: 5deg;
+    opacity: 0.50;
+    filter: blur(4px);
+    z-index: 0;
+}
+
+.a4 {
+    width: 42px;
+    top: 25.6%;
+    left: 29.8%;
+    rotate: 48deg;
+    transform: scale(3.3);
+    opacity: 0.85;
+    z-index: 6;
+}
+
+.a5 {
+    width: 85px;
+    top: 10.1%;
+    left: 1.5%;
+    rotate: 5deg;
+    opacity: 0.88;
+    z-index: 0;
+}
+
+.a6 {
+    width: 60px;
+    top: 48.4%;
+    left: 2%;
+    rotate: -8deg;
+    opacity: 0.80;
+    z-index: 0;
+}
+
+.a7 {
+    width: 35px;
+    top: 42.5%;
+    left: 36.6%;
+    rotate: 20deg;
+    opacity: 0.75;
+    z-index: -1;
+}
+
+.a8 {
+    width: 75px;
+    top: 33.6%;
+    left: 36.7%;
+    rotate: 8deg;
+    opacity: 0.70;
+    z-index: 0;
+}
+
+.a9 {
+    width: 38px;
+    top: 7.8%;
+    left: 33.6%;
+    rotate: -5deg;
+    opacity: 0.75;
+    z-index: 0;
+}
+
+/* Hide on mobile */
+@media (max-width: 768px) {
+    .root { display: none; }
+}

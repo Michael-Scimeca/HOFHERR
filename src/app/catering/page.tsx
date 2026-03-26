@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
-import { BBQ_PRICING_QUERY, CATERING_EVENTS_QUERY } from '@/sanity/queries';
+import { BBQ_PRICING_QUERY, CATERING_EVENTS_QUERY, CATERING_QUERY } from '@/sanity/queries';
 import CateringCalendar from '@/components/CateringCalendar';
 import CateringHub from './CateringHub';
 import styles from './page.module.css';
@@ -24,48 +24,7 @@ export const metadata: Metadata = {
     },
 };
 
-const SERVICES = [
-    {
-        emoji: '🐷',
-        title: 'Pig Roasts',
-        desc: 'We source, prep, cook & serve. The full experience — from farm to fire to your table. Perfect for backyard parties, anniversaries, and graduation blowouts.',
-        detail: 'Serves 30–300+ guests',
-        href: '/specials#pig-roasts',
-        cta: 'View Details',
-    },
-    {
-        emoji: '🔥',
-        title: 'BBQ Catering',
-        desc: 'Competition-style BBQ for any event. Brisket, ribs, pulled pork, sausages — smoked low and slow, served hot. From 20 to 500+ guests.',
-        detail: 'Custom menus available',
-        href: '/bbq',
-        cta: 'See the Menu',
-    },
-    {
-        emoji: '🍗',
-        title: 'Rotisserie Packages',
-        desc: 'Whole birds, roasted to order on our floor-to-ceiling rotisserie. Bulk packages for events, corporate lunches, and weekend parties.',
-        detail: 'Minimum 6 birds',
-        href: '/specials',
-        cta: 'View Packages',
-    },
-    {
-        emoji: '🥩',
-        title: 'Custom Meat Platters',
-        desc: 'Curated charcuterie boards, premium steak flights, and custom cut packages for dinner parties, holidays, and corporate entertaining.',
-        detail: 'Any size group',
-        href: '/online-orders',
-        cta: 'Shop Cuts',
-    },
-    {
-        emoji: '🕯️',
-        title: 'Private Meat Sessions',
-        desc: 'After-hours, bespoke multi-course dining experiences hosted at the shop for groups of 8–10. A curated journey through our finest cuts — wine, fire, and no menu.',
-        detail: '8–10 guests · By invitation',
-        href: 'mailto:sean@hofherrmeatco.com?subject=Private Meat Session',
-        cta: 'Inquire',
-    },
-];
+
 
 const FALLBACK_PRICING = [
     { label: '1 Meat + 1 Side', price: '$16/person' },
@@ -96,11 +55,53 @@ type SanityPricing = {
     isFeatured: boolean;
 };
 
+type CateringPackage = {
+    _id: string;
+    name: string;
+    description?: string;
+    servings?: string;
+    price: string;
+    items?: string[];
+    image?: string;
+    isPopular?: boolean;
+};
+
+const FALLBACK_PACKAGES: CateringPackage[] = [
+    {
+        _id: 'fb-1',
+        name: 'Backyard BBQ',
+        description: 'Our most popular package — everything you need for a killer backyard cookout.',
+        servings: 'Serves 20–40',
+        price: 'Starting at $16/person',
+        items: ['Choice of 1 smoked meat', 'Choice of 1 side', 'Buns, sauces & napkins', 'Drop-off or pickup'],
+        isPopular: false,
+    },
+    {
+        _id: 'fb-2',
+        name: 'BBQ Feast',
+        description: 'More meat, more sides — the full spread for a serious gathering.',
+        servings: 'Serves 40–100',
+        price: 'Starting at $22/person',
+        items: ['Choice of 2 smoked meats', 'Choice of 2 sides', 'Charcuterie platter', 'Full setup & serving'],
+        isPopular: true,
+    },
+    {
+        _id: 'fb-3',
+        name: 'Whole Pig Roast',
+        description: 'The showstopper. A whole hog roasted on-site — unforgettable for any event.',
+        servings: 'Serves 50–150',
+        price: 'Starting at $30/person',
+        items: ['Whole hog roasted on-site', 'Choice of 2 sides', 'Carving & serving station', 'Full cleanup'],
+        isPopular: false,
+    },
+];
+
 export default async function CateringPage() {
     const { isEnabled: preview } = await draftMode();
     const sanityClient = getClient(preview);
 
     let bbqPricing = FALLBACK_PRICING;
+    let packages: CateringPackage[] = FALLBACK_PACKAGES;
     try {
         const pricingData: SanityPricing[] = await sanityClient.fetch(BBQ_PRICING_QUERY);
         const featured = pricingData?.find(p => p.isFeatured && p.priceLines?.length);
@@ -109,6 +110,13 @@ export default async function CateringPage() {
         }
     } catch {
         // Use fallback
+    }
+
+    try {
+        const rawPackages: CateringPackage[] = await sanityClient.fetch(CATERING_QUERY);
+        if (rawPackages?.length) packages = rawPackages;
+    } catch {
+        // Use fallback packages
     }
 
     // Catering events
@@ -141,26 +149,6 @@ export default async function CateringPage() {
                 </div>
             </section>
 
-            {/* ── Services Grid ── */}
-            <section className={styles.servicesSection}>
-                <div className="container">
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>What We Offer</h2>
-                        <p className={styles.sectionSub}>Full-service catering for events of every size — from intimate dinners to 500+ guest blowouts.</p>
-                    </div>
-                    <div className={styles.grid}>
-                        {SERVICES.map(svc => (
-                            <div key={svc.title} className={styles.card}>
-                                <div className={styles.cardEmoji}>{svc.emoji}</div>
-                                <h3 className={styles.cardTitle}>{svc.title}</h3>
-                                <p className={styles.cardDesc}>{svc.desc}</p>
-                                <div className={styles.cardDetail}>{svc.detail}</div>
-                                <Link href={svc.href} className={styles.cardLink}>{svc.cta}</Link>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
 
             {/* ── How It Works ── */}
             <section className={styles.processSection}>
@@ -188,6 +176,113 @@ export default async function CateringPage() {
                 </div>
             </section>
 
+            {/* ── Catering Packages (Sanity) ── */}
+            <section className={styles.packagesSection}>
+                <div className="container">
+                    <div className={styles.sectionHeader}>
+                        <h2 className={styles.sectionTitle}>Our Packages</h2>
+                        <p className={styles.sectionSub}>Pre-built packages for every event size. All customizable — just ask.</p>
+                    </div>
+                    <div className={styles.packagesGrid}>
+                        {packages.map(pkg => (
+                            <div key={pkg._id} className={`${styles.packageCard} ${pkg.isPopular ? styles.packagePopular : ''}`}>
+                                {pkg.isPopular && <span className={styles.popularBadge}>Most Popular</span>}
+                                {pkg.image && (
+                                    <div className={styles.packageImgWrap}>
+                                        <img src={pkg.image} alt={pkg.name} className={styles.packageImg} />
+                                    </div>
+                                )}
+                                <div className={styles.packageBody}>
+                                    {pkg.servings && <p className={styles.packageServings}>{pkg.servings}</p>}
+                                    <h3 className={styles.packageName}>{pkg.name}</h3>
+                                    <p className={styles.packagePrice}>{pkg.price}</p>
+                                    {pkg.description && <p className={styles.packageDesc}>{pkg.description}</p>}
+                                    {pkg.items && pkg.items.length > 0 && (
+                                        <ul className={styles.packageItems}>
+                                            {pkg.items.map((item, i) => (
+                                                <li key={i}>{item}</li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                    <a
+                                        href={`mailto:catering@hofherrmeatco.com?subject=Package Inquiry: ${pkg.name}`}
+                                        className={styles.packageCta}
+                                    >
+                                        Book This Package
+                                    </a>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Private Meat Sessions */}
+                        <div className={styles.packageCard}>
+                            <div className={styles.packageBody}>
+                                <p className={styles.packageServings}>8–10 Guests</p>
+                                <h3 className={styles.packageName}>🕯️ Private Meat Sessions</h3>
+                                <p className={styles.packagePrice}>By Invitation</p>
+                                <p className={styles.packageDesc}>After-hours, bespoke multi-course dining experiences hosted at the shop for groups of 8–10. A curated journey through our finest cuts — wine, fire, and no menu.</p>
+                                <ul className={styles.packageItems}>
+                                    <li>Multi-course tasting menu</li>
+                                    <li>Premium & rare cuts</li>
+                                    <li>Wine pairings</li>
+                                    <li>Intimate shop setting</li>
+                                </ul>
+                                <a
+                                    href="mailto:sean@hofherrmeatco.com?subject=Private Meat Session Inquiry"
+                                    className={styles.packageCta}
+                                >
+                                    Inquire
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Rotisserie Packages */}
+                        <div className={styles.packageCard}>
+                            <div className={styles.packageBody}>
+                                <p className={styles.packageServings}>Minimum 6 Birds</p>
+                                <h3 className={styles.packageName}>🍗 Rotisserie Packages</h3>
+                                <p className={styles.packagePrice}>Custom Pricing</p>
+                                <p className={styles.packageDesc}>Whole birds, roasted to order on our floor-to-ceiling rotisserie. Bulk packages for events, corporate lunches, and weekend parties.</p>
+                                <ul className={styles.packageItems}>
+                                    <li>Whole rotisserie chickens</li>
+                                    <li>Bulk event pricing</li>
+                                    <li>Corporate lunch packages</li>
+                                    <li>Drop-off or full service</li>
+                                </ul>
+                                <a
+                                    href="mailto:catering@hofherrmeatco.com?subject=Rotisserie Package Inquiry"
+                                    className={styles.packageCta}
+                                >
+                                    View Packages
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Custom Meat Platters */}
+                        <div className={styles.packageCard}>
+                            <div className={styles.packageBody}>
+                                <p className={styles.packageServings}>Any Size Group</p>
+                                <h3 className={styles.packageName}>🥩 Custom Meat Platters</h3>
+                                <p className={styles.packagePrice}>Custom Pricing</p>
+                                <p className={styles.packageDesc}>Curated charcuterie boards, premium steak flights, and custom cut packages for dinner parties, holidays, and corporate entertaining.</p>
+                                <ul className={styles.packageItems}>
+                                    <li>Charcuterie boards</li>
+                                    <li>Premium steak flights</li>
+                                    <li>Custom cut packages</li>
+                                    <li>Holiday & corporate platters</li>
+                                </ul>
+                                <a
+                                    href="mailto:catering@hofherrmeatco.com?subject=Custom Platter Inquiry"
+                                    className={styles.packageCta}
+                                >
+                                    Shop Cuts
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* ── Interactive Catering Calculator ── */}
             <section className={styles.pricingSection}>
                 <div className="container">
@@ -198,6 +293,38 @@ export default async function CateringPage() {
                     <CateringHub events={cateringEvents} calendarPricing={[]} />
                 </div>
             </section>
+
+            {/* ── Bottom Marquee Ticker ── */}
+            <div className={styles.marqueeWrap}>
+                <div className={`${styles.marqueeTrack} ${styles.marqueeRow1}`}>
+                    {[0, 1].map(i => (
+                        <span key={i} className={styles.marqueeText}>
+                            Pig Roasts <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> BBQ Catering <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> Rotisserie <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> Custom Platters <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} />&nbsp;
+                        </span>
+                    ))}
+                </div>
+                <div className={`${styles.marqueeTrack} ${styles.marqueeRow2}`}>
+                    {[0, 1].map(i => (
+                        <span key={i} className={styles.marqueeText}>
+                            Private Events <img src="/crowd-ticker/steak.png" alt="" className={styles.marqueeBullet} /> Corporate Dinners <img src="/crowd-ticker/steak.png" alt="" className={styles.marqueeBullet} /> Weddings <img src="/crowd-ticker/steak.png" alt="" className={styles.marqueeBullet} /> Backyard Parties <img src="/crowd-ticker/steak.png" alt="" className={styles.marqueeBullet} />&nbsp;
+                        </span>
+                    ))}
+                </div>
+                <div className={`${styles.marqueeTrack} ${styles.marqueeRow3}`}>
+                    {[0, 1].map(i => (
+                        <span key={i} className={styles.marqueeText}>
+                            Smoked Brisket <img src="/crowd-ticker/chickeninticker.png" alt="" className={styles.marqueeBullet} /> Pulled Pork <img src="/crowd-ticker/chickeninticker.png" alt="" className={styles.marqueeBullet} /> Whole Hog <img src="/crowd-ticker/chickeninticker.png" alt="" className={styles.marqueeBullet} /> Charcuterie <img src="/crowd-ticker/chickeninticker.png" alt="" className={styles.marqueeBullet} />&nbsp;
+                        </span>
+                    ))}
+                </div>
+                <div className={`${styles.marqueeTrack} ${styles.marqueeRow4}`}>
+                    {[0, 1].map(i => (
+                        <span key={i} className={styles.marqueeText}>
+                            Competition BBQ <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> Farm to Fire <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> Full Service <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> Custom Menus <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} />&nbsp;
+                        </span>
+                    ))}
+                </div>
+            </div>
 
             {/* ── CTA ── */}
             <section className={styles.cta}>
