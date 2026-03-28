@@ -5,7 +5,7 @@ import Specials from '@/components/home/Specials';
 import Process from '@/components/home/Process';
 import QuotesSection from '@/components/home/QuotesSection';
 import Newsletter from '@/components/home/Newsletter';
-
+import AwardsSection from '@/components/home/AwardsSection';
 export const metadata: Metadata = {
   title: 'Hofherr Meat Co. | Premium Butcher Shop — Northfield, IL',
   description:
@@ -33,6 +33,10 @@ export default function HomePage() {
       <SeasonalBanner />
       <Specials />
       <Process />
+
+      {/* Strict List - Numbered Index Concept */}
+      <AwardsSection />
+
       <QuotesSection />
       <Newsletter />
     </>

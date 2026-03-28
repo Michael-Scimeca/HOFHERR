@@ -6,6 +6,9 @@ import { BBQ_PRICING_QUERY, CATERING_EVENTS_QUERY, CATERING_QUERY } from '@/sani
 import CateringCalendar from '@/components/CateringCalendar';
 import CateringHub from './CateringHub';
 import styles from './page.module.css';
+import { getMailtoLink } from '@/app/api/email/template';
+
+// Email body generation moved to '@/app/api/email/template' module
 
 export const metadata: Metadata = {
     title: 'Catering | Pig Roasts, BBQ & Events | Hofherr Meat Co. — Northfield, IL',
@@ -118,7 +121,10 @@ export default async function CateringPage() {
     } catch {
         // Use fallback packages
     }
-
+    // DEBUG: output the mailto link for the first package so we can verify the email body
+    if (packages.length > 0) {
+      console.log('DEBUG mailto link for first package:', getMailtoLink(packages[0]));
+    }
     // Catering events
     type CateringEventData = { _id: string; date: string; eventType: string; status: string };
     let cateringEvents: CateringEventData[] = [];
@@ -143,7 +149,7 @@ export default async function CateringPage() {
                         Custom menus, full-service setup, and food people actually talk about.
                     </p>
                     <div className={styles.heroBtns}>
-                        <a href="mailto:catering@hofherrmeatco.com?subject=Catering Quote Request" className="btn btn-primary">Get a Free Quote</a>
+                        <a href="mailto:catering@hofherrmeatco.com?subject=Catering%20Quote%20Request&body=Name:%20%0AEmail:%20%0APhone:%20%0AAddress:%20%0ADate%20%26%20Time:%20[Enter%20date%20and%20time]" className="btn btn-primary">Get a Free Quote</a>
                         <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
                     </div>
                 </div>
@@ -205,7 +211,7 @@ export default async function CateringPage() {
                                         </ul>
                                     )}
                                     <a
-                                        href={`mailto:catering@hofherrmeatco.com?subject=Package Inquiry: ${pkg.name}`}
+                                        href={getMailtoLink(pkg)}
                                         className={styles.packageCta}
                                     >
                                         Book This Package
@@ -228,11 +234,22 @@ export default async function CateringPage() {
                                     <li>Intimate shop setting</li>
                                 </ul>
                                 <a
-                                    href="mailto:sean@hofherrmeatco.com?subject=Private Meat Session Inquiry"
-                                    className={styles.packageCta}
-                                >
-                                    Inquire
-                                </a>
+                                      href={getMailtoLink({
+                                        name: 'Private Meat Session',
+                                        price: 'By Invitation',
+                                        servings: '8–10 Guests',
+                                        description: 'After-hours, bespoke multi-course dining experiences hosted at the shop for groups of 8–10. A curated journey through our finest cuts — wine, fire, and no menu.',
+                                        items: [
+                                          'Multi-course tasting menu',
+                                          'Premium & rare cuts',
+                                          'Wine pairings',
+                                          'Intimate shop setting',
+                                        ],
+                                      })}
+                                      className={styles.packageCta}
+                                  >
+                                      Inquire
+                                  </a>
                             </div>
                         </div>
 
@@ -250,7 +267,18 @@ export default async function CateringPage() {
                                     <li>Drop-off or full service</li>
                                 </ul>
                                 <a
-                                    href="mailto:catering@hofherrmeatco.com?subject=Rotisserie Package Inquiry"
+                                    href={getMailtoLink({
+                                      name: 'Rotisserie Package',
+                                      price: 'Custom Pricing',
+                                      servings: 'Varies',
+                                      description: 'Whole birds, roasted to order on our floor-to-ceiling rotisserie. Bulk packages for events, corporate lunches, and weekend parties.',
+                                      items: [
+                                        'Whole rotisserie chickens',
+                                        'Bulk event pricing',
+                                        'Corporate lunch packages',
+                                        'Drop-off or full service',
+                                      ],
+                                    })}
                                     className={styles.packageCta}
                                 >
                                     View Packages
@@ -272,11 +300,22 @@ export default async function CateringPage() {
                                     <li>Holiday & corporate platters</li>
                                 </ul>
                                 <a
-                                    href="mailto:catering@hofherrmeatco.com?subject=Custom Platter Inquiry"
-                                    className={styles.packageCta}
-                                >
-                                    Shop Cuts
-                                </a>
+                                      href={getMailtoLink({
+                                        name: 'Custom Meat Platter',
+                                        price: 'Custom Pricing',
+                                        servings: 'Any Size Group',
+                                        description: 'Curated charcuterie boards, premium steak flights, and custom cut packages for dinner parties, holidays, and corporate entertaining.',
+                                        items: [
+                                          'Charcuterie boards',
+                                          'Premium steak flights',
+                                          'Custom cut packages',
+                                          'Holiday & corporate platters',
+                                        ],
+                                      })}
+                                      className={styles.packageCta}
+                                  >
+                                      Shop Cuts
+                                  </a>
                             </div>
                         </div>
                     </div>

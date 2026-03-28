@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useCallback, useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './HeroVideo.module.css';
 
 /* ── Config ── */
@@ -16,6 +17,9 @@ declare global {
 }
 
 export default function HeroVideo() {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+
     const containerRef = useRef<HTMLDivElement>(null);
     const wrapRef = useRef<HTMLDivElement>(null);
     const playerRef = useRef<YT.Player | null>(null);
@@ -95,7 +99,7 @@ export default function HeroVideo() {
             dragData.current.currentX = e.clientX - dragData.current.startX;
             dragData.current.currentY = e.clientY - dragData.current.startY;
             
-            if (Math.abs(dragData.current.currentX) > 5 || Math.abs(dragData.current.currentY) > 5) {
+            if (Math.abs(dragData.current.currentX) > 10 || Math.abs(dragData.current.currentY) > 10) {
                 dragData.current.moved = true;
             }
         };
@@ -138,43 +142,53 @@ export default function HeroVideo() {
     };
 
     return (
-        <div className={`${styles.heroVideo} ${hasStarted ? styles.playing : styles.idle}`}>
+        <div className={`${styles.heroVideo} ${styles.idle}`}>
             <div
                 ref={wrapRef}
-                className={`${styles.videoWrap} ${hasStarted ? styles.normalRect : styles.circleBubble}`}
+                className={`${styles.videoWrap} ${styles.circleBubble}`}
                 onMouseDown={handleMouseDown}
                 onClick={handlePlayAction}
                 style={{ 
                     cursor: hasStarted ? 'default' : (uiIsDragging ? 'grabbing' : 'grab'),
-                    touchAction: 'none' // Critical for touch-dragging
+                    touchAction: 'none'
                 }}
             >
-                {!hasStarted && (
-                    <div className={styles.bubbleInner}>
-                        <video 
-                            src="/video-clips/beef.mp4" 
-                            muted 
-                            playsInline 
-                            autoPlay 
-                            loop
-                            className={styles.poster} 
-                            draggable={false}
-                        />
-                        <div className={styles.playIconOverlay}>
-                            <svg viewBox="0 0 24 24" fill="#fff" width="22" height="22">
-                                <path d="M8 5v14l11-7z" />
-                            </svg>
-                        </div>
-                    </div>
-                ) }
-
-                <div className={`${styles.playerWrapper} ${hasStarted ? styles.visible : styles.hidden}`}>
-                    <div ref={containerRef} className={styles.player} />
-                    {hasStarted && (
-                        <button className={styles.closeBtn} onClick={handleClose}>✕</button>
-                    )}
+                <div className={styles.bubbleInner}>
+                    <video 
+                        src="/video-clips/beef.mp4" 
+                        muted 
+                        playsInline 
+                        autoPlay 
+                        loop
+                        className={styles.poster} 
+                        draggable={false}
+                    />
+                </div>
+                
+                {/* Elevated completely outside of the bubble mask so it doesn't get clipped */}
+                <div className={styles.playIconOverlay}>
+                    <svg viewBox="0 0 24 24" fill="#fff" width="22" height="22" style={{ transform: 'translateX(1.5px)' }}>
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
                 </div>
             </div>
+
+            {/* Safe portal escape hatch for the full-screen fixed player */}
+            {mounted && hasStarted && createPortal(
+                <div className={styles.playing} onClick={handleClose}>
+                    {/* Inner wrapper simulating the scaled-up box */}
+                    <div 
+                        className={`${styles.videoWrap} ${styles.normalRect}`} 
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className={`${styles.playerWrapper} ${styles.visible}`}>
+                            <div ref={containerRef} className={styles.player} />
+                            <button className={styles.closeBtn} onClick={handleClose}>✕</button>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
         </div>
     );
 }

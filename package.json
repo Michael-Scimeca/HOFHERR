@@ -8,9 +8,12 @@
     "start": "next start",
     "lint": "eslint",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "compress:images": "ts-node scripts/compress-images.ts"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
     "@sanity/color-input": "^6.0.4",
     "@sanity/image-url": "^2.0.3",
     "@sanity/table": "^2.0.1",
@@ -41,6 +44,7 @@
     "sharp": "^0.34.5",
     "stripe": "^20.4.1",
     "styled-components": "^6.3.11",
+    "three": "^0.183.2",
     "twilio": "^5.12.2"
   },
   "devDependencies": {
@@ -56,6 +60,11 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tsx": "^4.21.0",
-    "typescript": "^5"
-  }
+    "typescript": "^5",
+    "ts-node": "^10.9.2",
+    "imagemin": "^9.0.0",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^9.0.2",
+    "imagemin-webp": "^7.0.0",
+    "imagemin-avif": "^0.1.6"  }
 }

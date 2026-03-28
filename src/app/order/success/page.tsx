@@ -77,9 +77,7 @@ function SuccessContent() {
                 <div className={styles.spinner} />
             </div>
             <div className={styles.rightPane}>
-                <video autoPlay muted loop className={styles.videoBg}>
-                    <source src="/video-clips/A_herd_of_real_cows_grazing_on_short_green.mp4" type="video/mp4" />
-                </video>
+                                <Image src="/assets/success-image.jpg" alt="Success background" fill className={styles.videoBg} style={{ objectFit: 'cover' }} />
                 <div className={styles.overlay} />
             </div>
         </div>
@@ -96,9 +94,7 @@ function SuccessContent() {
                 </div>
             </div>
             <div className={styles.rightPane}>
-                <video autoPlay muted loop className={styles.videoBg}>
-                    <source src="/video-clips/A_herd_of_real_cows_grazing_on_short_green.mp4" type="video/mp4" />
-                </video>
+                                <Image src="/assets/success-image.jpg" alt="Success background" fill className={styles.videoBg} style={{ objectFit: 'cover' }} />
                 <div className={styles.overlay} />
             </div>
         </div>
@@ -186,9 +182,7 @@ function SuccessContent() {
                 </div>
             </div>
             <div className={styles.rightPane}>
-                <video autoPlay muted loop className={styles.videoBg}>
-                    <source src="/video-clips/A_herd_of_real_cows_grazing_on_short_green.mp4" type="video/mp4" />
-                </video>
+                                <Image src="/assets/success-image.jpg" alt="Success background" fill className={styles.videoBg} style={{ objectFit: 'cover' }} />
                 <div className={styles.overlay} />
             </div>
         </div>
@@ -197,10 +191,11 @@ function SuccessContent() {
 
 export default function OrderSuccessPage() {
     return (
-        <main className={styles.page}>
-            <Suspense fallback={<div className={styles.state}><div className={styles.spinner} /></div>}>
-                <SuccessContent />
-            </Suspense>
+                <main className={styles.page}>
+          <div className={styles.hiringBanner}>We are hiring</div>
+          <Suspense fallback={<div className={styles.state}><div className={styles.spinner} /></div>}>
+            <SuccessContent />
+          </Suspense>
         </main>
     );
 }

@@ -20,6 +20,7 @@ import PageTransition from "@/components/PageTransition";
 import DevNav from "@/components/DevNav";
 import { auth } from "@/auth";
 import ParallaxImages from "@/components/ParallaxImages";
+import FloatingAssetEditor from "@/components/home/HeroAssetEditor";
 
 const yanone = Yanone_Kaffeesatz({
   subsets: ["latin"],
@@ -146,6 +147,7 @@ export default async function RootLayout({
               <ChatWidgetWrapper />
               <DevNav />
               <ParallaxImages />
+              <FloatingAssetEditor />
             </CartProvider>
           </ClientProviders>
         </SiteSettingsProvider>

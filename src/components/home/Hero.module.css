@@ -33,18 +33,18 @@
         z-index: 0;
         overflow: hidden;
     }
+
     .heroVideoCol::after {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0.9) 0%,
-            rgba(0, 0, 0, 0.85) 50%,
-            rgba(0, 0, 0, 0.92) 100%
-        );
+        background: linear-gradient(to bottom,
+                rgba(0, 0, 0, 0.9) 0%,
+                rgba(0, 0, 0, 0.85) 50%,
+                rgba(0, 0, 0, 0.92) 100%);
         z-index: 1;
     }
+
     .heroVideoPlayer {
         position: absolute;
         inset: 0;
@@ -61,24 +61,29 @@
 @media (min-width: 1201px) {
     .heroVideoCol {
         position: absolute;
-        top: 50%;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        height: fit-content;
         right: 0;
-        transform: translateY(-50%);
         width: 45%;
         z-index: 1;
         overflow: hidden;
     }
+
     .heroVideoCol::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(to right, #000 0%, rgba(0,0,0,0.6) 30%, transparent 70%);
+        background: linear-gradient(to right, #000 0%, rgba(0, 0, 0, 0.6) 30%, transparent 70%);
         z-index: 2;
         pointer-events: none;
     }
+
     .heroVideoCol::after {
         display: none;
     }
+
     .heroVideoPlayer {
         width: 100%;
         border-radius: 16px;
@@ -99,6 +104,54 @@
 /* ─── Headline + bubble wrapper ─── */
 .headlineWrap {
     position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.floatingMedia {
+    display: inline-flex;  /* Shrink-wrappings the container width to fit the HeroVideo precisely */
+    align-items: center;
+    gap: 16px;
+    margin-top: 0;
+    margin-bottom: 24px;
+    position: relative; 
+    z-index: 10;
+}
+
+@media (min-width: 1201px) {
+    .floatingMedia {
+        position: absolute;
+        right: 60px;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        height: fit-content;
+        z-index: 5;
+    }
+}
+
+.heroTrophy {
+    width: 140px !important;  
+    height: 140px !important; 
+    position: relative; /* Use native flexbox flow instead of floating math */
+    margin-left: -45px; /* Micro-tuned tighter */
+    transform: translateY(-70px); /* Exactly dialed in vertically */
+    z-index: 5;
+    flex-shrink: 0;
+    pointer-events: none;
+}
+
+@media (min-width: 1201px) {
+    .heroTrophy {
+        width: 260px !important; /* Huge boundary on desktop to prevent clipping */
+        height: 260px !important;
+        /* Desktop overrides: floats heavily left and upwards away from center */
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        margin-left: -24px;
+        transform: translate(-60px, calc(-50% - 100px));
+    }
 }
 
 .inner {
@@ -286,6 +339,7 @@
         flex-direction: column;
         align-items: stretch;
     }
+
     .ctas .btn {
         text-align: center;
     }

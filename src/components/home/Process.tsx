@@ -25,14 +25,14 @@ const STEPS: Step[] = [
                 </a>
             </>
         ),
-        img: '/howitworks/cart_sketch.png',
+        img: '/howitworks/cart_sketch.jpg',
         alt: 'Shopping cart',
     },
     {
         num: '02',
         title: 'Pick a Pickup Time',
         desc: 'Select your preferred date and time window from available pickup slots at the shop.',
-        img: '/howitworks/calendar_sketch.png',
+        img: '/howitworks/calendar_sketch.jpg',
         alt: 'Calendar',
     },
     {
@@ -61,7 +61,7 @@ const STEPS: Step[] = [
                 </a>
             </>
         ),
-        img: '/howitworks/car_sketch.png',
+        img: '/howitworks/car_sketch.jpg',
         alt: 'Curbside pickup car',
     },
 ];

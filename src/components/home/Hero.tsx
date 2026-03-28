@@ -2,6 +2,7 @@ import Link from 'next/link';
 import styles from './Hero.module.css';
 import HeroVideo from './HeroVideo';
 import HeroParallaxAssets from './HeroParallaxAssets';
+import TrophyCanvas from '@/components/TrophyModel';
 
 const SCHEDULE: Record<number, [number, number] | null> = {
     0: [600, 960],   // Sun 10am–4pm
@@ -24,9 +25,9 @@ export default function Hero() {
     const open = isOpen();
     const responseText = open ? '· Responds within the hour' : '· Leave a message — we\'ll reply soon';
     return (
-        <section className={styles.hero}>
+        <section className={styles.hero} data-asset-editor-root="true">
             <div className={styles.bg} />
-            <HeroParallaxAssets />
+
 
             {/* Hero background/column video */}
             <div className={styles.heroVideoCol}>
@@ -41,6 +42,7 @@ export default function Hero() {
             </div>
 
             <div className={`container ${styles.content}`}>
+                <HeroParallaxAssets />
 
                 {/* Eyebrow */}
                 <div className={styles.eyebrow}>
@@ -62,7 +64,11 @@ export default function Hero() {
                                 <span>Quality Meats.</span>
                                 <span className={styles.accent}>No Compromise.</span>
                             </h1>
-                            <HeroVideo />
+                            <div className={styles.floatingMedia}>
+                                <HeroVideo />
+
+                                <TrophyCanvas className={styles.heroTrophy} />
+                            </div>
                         </div>
 
                         <p className={styles.sub}>
