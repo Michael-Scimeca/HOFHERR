@@ -2,7 +2,7 @@
     min-height: calc(100vh - var(--page-stem));
     background: #0B1120; /* Slightly darker/richer background */
     color: #f8fafc;
-    padding: 40px 32px; /* Synced with site margins */
+    padding: 40px 32px 140px 32px; /* Added heavy bottom padding to clear Dev/Chat widgets completely */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     display: flex;
     flex-direction: column;
@@ -204,6 +204,10 @@
     color: #94a3b8;
     text-transform: uppercase;
     border-bottom: 1px solid #ffffff1a;
+    position: sticky;
+    top: 0;
+    background: #0f1624;
+    z-index: 10;
 }
 
 .table td {

@@ -10,7 +10,7 @@ import Pagination from '@/components/shared/Pagination';
 interface Order {
     _id: string;
     orderNumber: string;
-    customer: { name: string; email: string };
+    customer: { name: string; email: string; phone?: string };
     total: number;
     status: string;
     createdAt: string;
@@ -21,6 +21,7 @@ interface Order {
         store_id?: string;
         customer_name?: string;
         customer_email?: string;
+        customer_phone?: string;
         order_note?: string;
     };
 }
@@ -42,7 +43,8 @@ export default function AdminDashboard() {
     const [users, setUsers] = useState<User[]>([]);
     const [products, setProducts] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
-    const [activeTab, setActiveTab] = useState<'orders' | 'users'>('orders');
+    const [restocks, setRestocks] = useState<any[]>([]);
+    const [activeTab, setActiveTab] = useState<'orders' | 'users' | 'restocks'>('orders');
     const [orderFilter, setOrderFilter] = useState<string>('all');
     const [storeFilter, setStoreFilter] = useState<'all' | 'butcher' | 'depot'>('all');
     const { data: session } = useSession();
@@ -86,6 +88,7 @@ export default function AdminDashboard() {
                 setRawOrders(data.orders || []);
                 setProducts(data.products || []);
                 setCategories(data.categories || []);
+                setRestocks(data.restocks || []);
             } catch (err) {
                 console.error('Admin init error:', err);
                 router.push('/admin/login');
@@ -132,8 +135,39 @@ export default function AdminDashboard() {
         }
     };
 
+    const handleDeleteRestock = async (id: string) => {
+        if (!confirm('Mark this restock request as resolved and remove it from the list?')) return;
+        try {
+            const res = await fetch(`/api/restock-request?id=${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                setRestocks(prev => prev.filter((r: any) => r._id !== id));
+            } else {
+                alert('Failed to delete restock request');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error deleting restock request');
+        }
+    };
+
     const totalRevenue = orders.reduce((acc, o) => acc + (o.total || 0), 0) / 100;
     const aov = orders.length > 0 ? totalRevenue / orders.length : 0;
+
+    // Calculate 'This Month' metrics
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    let ordersThisMonth = 0;
+    let revenueThisMonth = 0;
+    
+    orders.forEach(o => {
+        const d = new Date(o.createdAt);
+        if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+            ordersThisMonth++;
+            revenueThisMonth += (o.total || 0) / 100;
+        }
+    });
 
     // Process data for Pie Chart (Order Status)
     const statusCounts = orders.reduce((acc, order) => {
@@ -499,6 +533,7 @@ export default function AdminDashboard() {
             <div className={styles.header}>
                 <h1>Hofherr Meat Co. | Admin Console</h1>
                 <div style={{ display: 'flex', gap: '12px' }}>
+                    <button onClick={() => router.push('/featured')} className={styles.tab} style={{ border: '1px solid rgba(199, 132, 58, 0.4)', background: 'rgba(199, 132, 58, 0.1)', borderRadius: '8px', padding: '10px 16px', color: 'var(--gold, #c7843a)', fontWeight: 700 }}>Features &amp; Docs</button>
                     <button onClick={() => router.push('/')} className={styles.tab} style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '10px 16px' }}>View Store</button>
                     <button onClick={() => signOut({ callbackUrl: '/admin/login' })} className={styles.tab} style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px', padding: '10px 16px' }}>Logout</button>
                 </div>
@@ -515,12 +550,13 @@ export default function AdminDashboard() {
             <div className={styles.tabs}>
                 <button className={`${styles.tab} ${activeTab === 'orders' ? styles.activeTab : ''}`} onClick={() => setActiveTab('orders')}>Orders</button>
                 <button className={`${styles.tab} ${activeTab === 'users' ? styles.activeTab : ''}`} onClick={() => setActiveTab('users')}>Customers</button>
+                <button className={`${styles.tab} ${activeTab === 'restocks' ? styles.activeTab : ''}`} onClick={() => setActiveTab('restocks')}>Restock Requests <span style={{ background: 'var(--red)', color: '#fff', borderRadius: '50%', padding: '2px 6px', fontSize: '10px', marginLeft: '4px' }}>{restocks.filter(r => r.status === 'pending').length}</span></button>
             </div>
 
             <div className={styles.statsGrid}>
-                <StatCard label="Total Orders" value={orders.length} />
-                <StatCard label="Total Revenue" value={`$${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} />
-                <StatCard label="Avg Order Value" value={`$${aov.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} />
+                <StatCard label="Orders (This Month)" value={ordersThisMonth} />
+                <StatCard label="Revenue (This Month)" value={`$${revenueThisMonth.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} />
+                <StatCard label="Total Orders (All Time)" value={orders.length} />
                 <StatCard label="Active Prep Load" value={`${pendingPrep} Orders`} />
             </div>
 
@@ -539,7 +575,7 @@ export default function AdminDashboard() {
                                 ))}
                             </div>
                         </div>
-                        <div id="orderTableScrollArea" style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 400px)', minHeight: '300px' }}>
+                        <div id="orderTableScrollArea" style={{ overflow: 'visible', width: '100%', minHeight: '300px' }}>
                             <table className={styles.table}>
                                 <thead>
                                     <tr>
@@ -552,7 +588,13 @@ export default function AdminDashboard() {
                                     {paginatedOrders.map(order => (
                                         <tr key={order._id} className={styles.rowClickable} onClick={() => handleOrderRowClick(order)}>
                                             <td><strong>#{order.orderNumber}</strong></td>
-                                            <td>{order.customer?.name || order.metadata?.customer_name || 'Guest'}<br/><a href={`mailto:${order.customer?.email || order.metadata?.customer_email}`} className={styles.tableLink} style={{fontSize: '11px'}}>{order.customer?.email || order.metadata?.customer_email}</a></td>
+                                            <td>
+                                                {order.customer?.name || order.metadata?.customer_name || 'Guest'}<br/>
+                                                <a href={`mailto:${order.customer?.email || order.metadata?.customer_email}`} className={styles.tableLink} style={{fontSize: '11px'}}>{order.customer?.email || order.metadata?.customer_email}</a>
+                                                {(order.customer?.phone || order.metadata?.customer_phone) && (
+                                                    <><br/><a href={`tel:${(order.customer?.phone || order.metadata?.customer_phone)?.replace(/\D/g, '')}`} className={styles.tableLink} style={{fontSize: '11px', color: '#94a3b8'}}>📞 {order.customer?.phone || order.metadata?.customer_phone}</a></>
+                                                )}
+                                            </td>
                                             <td>
                                                 <div style={{fontWeight: 600, fontSize: '13px'}}>{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
                                                 <div style={{fontSize: '11px', color: '#64748b', marginTop: '2px'}}>{new Date(order.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</div>
@@ -576,12 +618,12 @@ export default function AdminDashboard() {
                         </div>
                         <Pagination currentPage={orderPage} totalPages={totalOrderPages} onPageChange={setOrderPage} />
                     </>
-                ) : (
+                ) : activeTab === 'users' ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px' }}>
                         <div className={styles.filterContainer}>
                             <input type="text" placeholder="Search customers by name, email, or phone..." value={customerSearchQuery} onChange={(e) => { setCustomerSearchQuery(e.target.value); setCustomerSearchPage(1); }} className={styles.searchInput} style={{ width: '100%', maxWidth: '400px' }} />
                         </div>
-                        <div id="customerTableScrollArea" style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 400px)', minHeight: '300px' }}>
+                        <div id="customerTableScrollArea" style={{ overflow: 'visible', width: '100%', minHeight: '300px' }}>
                             <table className={styles.table}>
                                 <thead>
                                     <tr>
@@ -637,6 +679,52 @@ export default function AdminDashboard() {
                             </table>
                         </div>
                         <Pagination currentPage={customerSearchPage} totalPages={totalPages} onPageChange={setCustomerSearchPage} />
+                    </div>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px' }}>
+                        <div id="restockTableScrollArea" style={{ overflow: 'visible', width: '100%', minHeight: '300px' }}>
+                            <table className={styles.table}>
+                                <thead>
+                                    <tr>
+                                        <th>Date Submitted</th>
+                                        <th>Requested Item</th>
+                                        <th>Qty</th>
+                                        <th>Store</th>
+                                        <th>Customer Contact</th>
+                                        <th style={{ textAlign: 'right' }}>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {restocks.length > 0 ? restocks.map((r: any) => (
+                                        <tr key={r._id}>
+                                            <td style={{ fontSize: '12px' }}>{new Date(r.createdAt).toLocaleString()}</td>
+                                            <td><strong>{r.item}</strong></td>
+                                            <td>{r.qty}</td>
+                                            <td>
+                                                <span style={{ fontSize: '10px', textTransform: 'uppercase', background: r.store === 'depot' ? '#1e3a8a' : '#7f1d1d', padding: '4px 8px', borderRadius: '4px' }}>
+                                                    {r.store}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div style={{ fontWeight: 600 }}>{r.customerName}</div>
+                                                <div style={{ fontSize: '12px', color: 'var(--fg-muted)' }}>{r.contactType}: {r.contactValue || 'N/A'}</div>
+                                            </td>
+                                            <td style={{ textAlign: 'right' }}>
+                                                <button 
+                                                    onClick={() => handleDeleteRestock(r._id)}
+                                                    style={{ background: 'transparent', border: '1px solid #334155', borderRadius: '4px', color: '#f8fafc', cursor: 'pointer', fontSize: '12px', padding: '4px 8px' }}
+                                                    title="Mark as Resolved"
+                                                >
+                                                    ✕ Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    )) : (
+                                        <tr><td colSpan={5} style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>No restock requests yet.</td></tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 )}
             </div>

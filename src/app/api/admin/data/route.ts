@@ -15,11 +15,11 @@ export async function GET() {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
 
-        const [orders, categories, products] = await Promise.all([
+        const [orders, categories, products, restocks] = await Promise.all([
             adminClient.fetch(`*[_type == "order"] | order(createdAt desc) {
                 _id,
                 orderNumber,
-                customer->{name, email},
+                customer->{name, email, phone},
                 items,
                 total,
                 status,
@@ -29,10 +29,11 @@ export async function GET() {
                 metadata
             }`),
             adminClient.fetch(`*[_type == "category"]`),
-            adminClient.fetch(`*[_type == "product"] { _id, name, category->{name} }`)
+            adminClient.fetch(`*[_type == "product"] { _id, name, category->{name} }`),
+            adminClient.fetch(`*[_type == "restockRequest"] | order(createdAt desc)`)
         ]);
 
-        return NextResponse.json({ orders, categories, products });
+        return NextResponse.json({ orders, categories, products, restocks });
 
     } catch (error: any) {
         console.error('Admin data fetch error:', error);

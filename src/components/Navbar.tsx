@@ -121,6 +121,18 @@ export default function Navbar() {
     const navRef = useRef<HTMLElement>(null);
     const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
     const [indicator, setIndicator] = useState<{ left: number; width: number } | null>(null);
+    const [showOwnerPortal, setShowOwnerPortal] = useState(false);
+
+    // Listen for Shift + H to toggle Owner Portal
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.shiftKey && (e.key === 'H' || e.key === 'h')) {
+                setShowOwnerPortal(prev => !prev);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     // Sync time every minute
     useEffect(() => {
@@ -259,6 +271,11 @@ export default function Navbar() {
                             {item.label}
                         </Link>
                     ))}
+                    {showOwnerPortal && (
+                        <Link href="/admin" className={`${styles.navLink} ${isActive('/admin') ? styles.navActive : ''}`} style={{ color: 'var(--red)', fontWeight: 'bold' }}>
+                            Owner Portal
+                        </Link>
+                    )}
                 </nav>
 
                 {/* Right side group */}
@@ -331,6 +348,13 @@ export default function Navbar() {
                                 </Link>
                             </div>
                         ))}
+                        {showOwnerPortal && (
+                            <div className={styles.mobileSection}>
+                                <Link href="/admin" className={styles.mobilePrimary} onClick={() => setMobileOpen(false)} style={{ color: 'var(--red)' }}>
+                                    Owner Portal
+                                </Link>
+                            </div>
+                        )}
                     </div>
 
                     {/* Bottom Group: Store Status + CTA */}

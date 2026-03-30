@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { adminClient } from '@/sanity/adminClient';
 
 // ─── Restock Request API ─────────────────────────────────────────────────────
 // Accepts { name, item, qty, store } and sends an email notification.
@@ -48,6 +49,24 @@ export async function POST(req: NextRequest) {
             ``,
             `— Sent automatically from hofherrmeat.com`,
         ].join('\n');
+
+        // Save to Sanity
+        try {
+            await adminClient.create({
+                _type: 'restockRequest',
+                customerName: name.trim(),
+                contactType,
+                contactValue: contact || '',
+                item,
+                qty,
+                store,
+                status: 'pending',
+                createdAt: new Date().toISOString(),
+            });
+            console.log(`[Restock] Saved request for ${item} to Sanity.`);
+        } catch (sanityErr) {
+            console.error('[Restock Error] Failed to save to Sanity:', sanityErr);
+        }
 
         const html = `
             <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
@@ -106,5 +125,23 @@ export async function POST(req: NextRequest) {
             { error: 'Something went wrong. Please try again.' },
             { status: 500 }
         );
+    }
+}
+
+export async function DELETE(req: NextRequest) {
+    try {
+        const url = new URL(req.url);
+        const id = url.searchParams.get('id');
+
+        if (!id) {
+            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+        }
+
+        await adminClient.delete(id);
+        
+        return NextResponse.json({ success: true });
+    } catch (err) {
+        console.error('[Restock Delete Error]', err);
+        return NextResponse.json({ error: 'Failed to delete restock request' }, { status: 500 });
     }
 }

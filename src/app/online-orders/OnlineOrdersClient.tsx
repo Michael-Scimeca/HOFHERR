@@ -1941,6 +1941,7 @@ export default function CustomOrdersPage({
                                                         <div className={styles.restockForm}>
                                                             <button className={styles.restockClose} onClick={() => setRestockOpen(null)} aria-label="Close">×</button>
                                                             <div className={styles.restockItemName}>{item.name}</div>
+                                                            <p className={styles.restockDesc}>We will {restockContactType === 'phone' ? 'text' : 'email'} you as soon as we have restocked this item.</p>
                                                             <input
                                                                 type="text"
                                                                 placeholder="Your name"

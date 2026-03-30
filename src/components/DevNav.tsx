@@ -31,6 +31,7 @@ const SECTIONS = [
         links: [
             { href: '/dashboard', icon: '👤', label: 'Dashboard' },
             { href: '/auth/signin', icon: '🔑', label: 'Sign In' },
+            { href: '/reset-password', icon: '🔐', label: 'Reset Password' },
         ],
     },
     {
@@ -40,13 +41,23 @@ const SECTIONS = [
             { href: '/catering', icon: '🍖', label: 'Catering' },
             { href: '/bbq', icon: '🌡️', label: 'BBQ' },
             { href: '/cut-guide', icon: '🥩', label: 'Cut Guide' },
+            { href: '/newsletter', icon: '✉️', label: 'Newsletter' },
         ],
     },
     {
         label: 'Admin',
         links: [
-            { href: '/admin', icon: '📊', label: 'Admin' },
+            { href: '/admin', icon: '📊', label: 'Admin (Dashboard)' },
+            { href: '/admin/login', icon: '🔒', label: 'Admin Login' },
             { href: '/studio', icon: '🎨', label: 'Studio' },
+            { href: '/debug-email', icon: '🐛', label: 'Debug Emails' },
+        ],
+    },
+    {
+        label: 'Legal',
+        links: [
+            { href: '/privacy', icon: '📄', label: 'Privacy' },
+            { href: '/terms', icon: '⚖️', label: 'Terms' },
         ],
     },
 ];

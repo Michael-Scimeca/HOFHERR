@@ -20,6 +20,7 @@ import { cateringEventType } from './cateringEvent';
 import { cateringCalendarPricingType } from './cateringCalendarPricing';
 import { cateringLeadType } from './cateringLead';
 import { rotisserieStatusType } from './rotisserieStatus';
+import restockRequest from './restockRequest';
 
 export const schemaTypes = [
     // Site-wide
@@ -54,4 +55,6 @@ export const schemaTypes = [
     cateringLeadType,
     // Daily Inventory
     rotisserieStatusType,
+    // Restock
+    restockRequest,
 ];
