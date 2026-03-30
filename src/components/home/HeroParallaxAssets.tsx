@@ -20,15 +20,15 @@ const SPEEDS = [0.02, 0.025, 0.018, 0.022, 0.02, 0.023, 0.019, 0.021, 0.024];
 const ROT_SPEEDS = [0.005, -0.004, 0.003, -0.005, 0.004, -0.003, 0.005, -0.004, 0.003]; // degrees per pixel of scroll (very gentle)
 
 export const ASSET_DEFAULTS = [
-    { top: 30, left: 50, rotate: 0, scale: 1.0, opacity: 1.00, width: 120, zIndex: 0 },
-    { top: 35, left: 50, rotate: 0,  scale: 1.0, opacity: 0.90, width: 110,  zIndex: 0 },
-    { top: 40, left: 50, rotate: 0,   scale: 1.0, opacity: 0.70, width: 100,  zIndex: 0 },
-    { top: 40.9, left: 31.4, rotate: 48,  scale: 3.3, opacity: 1.00, width: 42,  zIndex: 0 },
-    { top: 27.3, left: 34.3, rotate: 5,   scale: 1.0, opacity: 0.88, width: 85,  zIndex: 0 },
-    { top: 45.6, left: 38.5, rotate: -8,  scale: 1.0, opacity: 0.80, width: 60,  zIndex: 0 },
-    { top: 32.7, left: 19.5, rotate: -34.8, scale: 1.0, opacity: 0.75, width: 35,  zIndex: 0 },
-    { top: 35.8, left: 40.2, rotate: 8,   scale: 1.0, opacity: 0.70, width: 75,  zIndex: 0 },
-    { top: 46.6, left: 42.3, rotate: -5,  scale: 1.0, opacity: 0.75, width: 38,  zIndex: 0 },
+    { top: 30, left: 50, rotate: 0, scale: 1.0, opacity: 1.00, width: 120, zIndex: 0, scrollSpeed: 0.02, scrollRotation: 0.005 },
+    { top: 35, left: 50, rotate: 0,  scale: 1.0, opacity: 0.90, width: 110,  zIndex: 0, scrollSpeed: 0.025, scrollRotation: -0.004 },
+    { top: 40, left: 50, rotate: 0,   scale: 1.0, opacity: 0.70, width: 100,  zIndex: 0, scrollSpeed: 0.018, scrollRotation: 0.003 },
+    { top: 40.9, left: 31.4, rotate: 48,  scale: 3.3, opacity: 1.00, width: 42,  zIndex: 0, scrollSpeed: 0.022, scrollRotation: -0.005 },
+    { top: 27.3, left: 34.3, rotate: 5,   scale: 1.0, opacity: 0.88, width: 85,  zIndex: 0, scrollSpeed: 0.02, scrollRotation: 0.004 },
+    { top: 45.6, left: 38.5, rotate: -8,  scale: 1.0, opacity: 0.80, width: 60,  zIndex: 0, scrollSpeed: 0.023, scrollRotation: -0.003 },
+    { top: 32.7, left: 19.5, rotate: -34.8, scale: 1.0, opacity: 0.75, width: 35,  zIndex: 0, scrollSpeed: 0.019, scrollRotation: 0.005 },
+    { top: 35.8, left: 40.2, rotate: 8,   scale: 1.0, opacity: 0.70, width: 75,  zIndex: 0, scrollSpeed: 0.021, scrollRotation: -0.004 },
+    { top: 46.6, left: 42.3, rotate: -5,  scale: 1.0, opacity: 0.75, width: 38,  zIndex: 0, scrollSpeed: 0.024, scrollRotation: 0.003 },
 ];
 
 export type Asset = typeof ASSET_DEFAULTS[0];
@@ -63,8 +63,8 @@ export default function HeroParallaxAssets() {
                 scrollRefs.current.forEach((el, i) => {
                     if (!el) return;
                     const a = assets[i];
-                    const extraRotate = y * ROT_SPEEDS[i];
-                    el.style.transform = `rotate(${a.rotate + extraRotate}deg) scale(${a.scale}) translateY(${y * SPEEDS[i]}px)`;
+                    const extraRotate = y * (a.scrollRotation ?? 0);
+                    el.style.transform = `rotate(${a.rotate + extraRotate}deg) scale(${a.scale}) translateY(${y * (a.scrollSpeed ?? 0.02)}px)`;
                 });
             });
         };

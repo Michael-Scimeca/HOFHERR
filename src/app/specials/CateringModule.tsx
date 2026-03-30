@@ -11,13 +11,13 @@ interface Props {
 }
 
 const PACKAGES = [
-    { id: 'pig_0', label: 'Just the Pig', price: 30 },
-    { id: 'pig_1s', label: 'Pig + 1 Side', price: 32 },
-    { id: 'pig_2s', label: 'Pig + 2 Sides', price: 34 },
-    { id: 'pig_3s', label: 'Pig + 3 Sides', price: 36 },
-    { id: 'pig_1m_1s', label: "1 Add'l Meat + 1 Side", price: 36 },
-    { id: 'pig_1m_2s', label: "1 Add'l Meat + 2 Sides", price: 38 },
-    { id: 'pig_1m_3s', label: "1 Add'l Meat + 3 Sides", price: 40 }
+    { id: 'pig_0', label: 'Just the Pig', price: 30, sides: 0, meats: 0 },
+    { id: 'pig_1s', label: 'Pig + 1 Side', price: 32, sides: 1, meats: 0 },
+    { id: 'pig_2s', label: 'Pig + 2 Sides', price: 34, sides: 2, meats: 0 },
+    { id: 'pig_3s', label: 'Pig + 3 Sides', price: 36, sides: 3, meats: 0 },
+    { id: 'pig_1m_1s', label: "1 Add'l Meat + 1 Side", price: 36, sides: 1, meats: 1 },
+    { id: 'pig_1m_2s', label: "1 Add'l Meat + 2 Sides", price: 38, sides: 2, meats: 1 },
+    { id: 'pig_1m_3s', label: "1 Add'l Meat + 3 Sides", price: 40, sides: 3, meats: 1 }
 ];
 
 export default function CateringModule({ events, calendarPricing }: Props) {
@@ -25,6 +25,8 @@ export default function CateringModule({ events, calendarPricing }: Props) {
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [guests, setGuests] = useState(50);
     const [pkgId, setPkgId] = useState('pig_0');
+    const [selectedMeats, setSelectedMeats] = useState<string[]>([]);
+    const [selectedSides, setSelectedSides] = useState<string[]>([]);
     const [charcuterie, setCharcuterie] = useState(false);
     const [pimento, setPimento] = useState(0);
     const [delivery, setDelivery] = useState(false);
@@ -70,17 +72,32 @@ export default function CateringModule({ events, calendarPricing }: Props) {
         ? new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
         : 'Select on calendar';
 
+    // Validation: if package requires meats/sides, they must be fully selected
+    const needsMeats = activePkg.meats > 0;
+    const needsSides = activePkg.sides > 0;
+    const meatsValid = !needsMeats || selectedMeats.length === activePkg.meats;
+    const sidesValid = !needsSides || selectedSides.length === activePkg.sides;
+    const selectionsValid = meatsValid && sidesValid;
+
     const handleInquiry = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+
+        const meatsForEmail = selectedMeats.length > 0 
+            ? ['Whole Hog', ...selectedMeats] 
+            : ['Whole Hog'];
+        
+        const sidesForEmail = selectedSides.length > 0 
+            ? selectedSides 
+            : ['No sides selected'];
 
         const cateringData = {
             date: dateLabel,
             guests: safeGuests,
             packageName: `Pig Roast: ${activePkg.label}`,
             total: finalEstimate,
-            meats: [activePkg.label.includes('Meat') ? 'Pig + Added Meat' : 'Pig Only'],
-            sides: [activePkg.label.includes('Side') ? 'Added Sides Included' : 'No Sides'],
+            meats: meatsForEmail,
+            sides: sidesForEmail,
         };
 
         try {
@@ -117,8 +134,8 @@ export default function CateringModule({ events, calendarPricing }: Props) {
                     <PigRoastCalculator 
                         className={styles.calculatorEmbed}
                         showReceipt={false}
-                        state={{ guests, pkgId, charcuterie, pimento, delivery, notes }}
-                        setState={{ setGuests, setPkgId, setCharcuterie, setPimento, setDelivery, setNotes }}
+                        state={{ guests, pkgId, selectedMeats, selectedSides, charcuterie, pimento, delivery, notes }}
+                        setState={{ setGuests, setPkgId, setSelectedMeats, setSelectedSides, setCharcuterie, setPimento, setDelivery, setNotes }}
                     />
                 </div>
 
@@ -166,6 +183,62 @@ export default function CateringModule({ events, calendarPricing }: Props) {
                                         <span>${packageCost}</span>
                                     </div>
 
+                                    {/* Show selected meats */}
+                                    {selectedMeats.length > 0 && (
+                                        <div style={{ 
+                                            background: 'rgba(255,255,255,0.03)', 
+                                            borderRadius: '8px', 
+                                            padding: '10px 12px',
+                                            border: '1px solid rgba(255,255,255,0.06)',
+                                        }}>
+                                            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>
+                                                🔥 Add&apos;l Meat
+                                            </div>
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                                                {selectedMeats.map(m => (
+                                                    <span key={m} style={{
+                                                        fontSize: '11px',
+                                                        background: 'rgba(204, 13, 29, 0.12)',
+                                                        color: 'rgba(255,255,255,0.85)',
+                                                        padding: '3px 8px',
+                                                        borderRadius: '4px',
+                                                        fontWeight: 600,
+                                                    }}>
+                                                        {m}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Show selected sides */}
+                                    {selectedSides.length > 0 && (
+                                        <div style={{ 
+                                            background: 'rgba(255,255,255,0.03)', 
+                                            borderRadius: '8px', 
+                                            padding: '10px 12px',
+                                            border: '1px solid rgba(255,255,255,0.06)',
+                                        }}>
+                                            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>
+                                                🥗 Sides
+                                            </div>
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                                                {selectedSides.map(s => (
+                                                    <span key={s} style={{
+                                                        fontSize: '11px',
+                                                        background: 'rgba(46, 204, 113, 0.12)',
+                                                        color: 'rgba(255,255,255,0.85)',
+                                                        padding: '3px 8px',
+                                                        borderRadius: '4px',
+                                                        fontWeight: 600,
+                                                    }}>
+                                                        {s}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {charcuterie && (
                                         <div className={styles.rItem}>
                                             <span>Charcuterie Platter</span>
@@ -193,6 +266,22 @@ export default function CateringModule({ events, calendarPricing }: Props) {
                                     <span style={{ fontSize: '24px', color: '#2ecc71' }}>${finalEstimate.toLocaleString()}</span>
                                 </div>
 
+                                {/* Validation warning */}
+                                {!selectionsValid && (needsMeats || needsSides) && (
+                                    <div style={{
+                                        background: 'rgba(217, 119, 6, 0.1)',
+                                        border: '1px solid rgba(217, 119, 6, 0.25)',
+                                        borderRadius: '8px',
+                                        padding: '10px 14px',
+                                        marginBottom: '12px',
+                                        fontSize: '12px',
+                                        color: '#f59e0b',
+                                        fontWeight: 500,
+                                    }}>
+                                        ⚠ Please select {!meatsValid ? `${activePkg.meats} meat${activePkg.meats > 1 ? 's' : ''}` : ''}{!meatsValid && !sidesValid ? ' and ' : ''}{!sidesValid ? `${activePkg.sides} side${activePkg.sides > 1 ? 's' : ''}` : ''} for your {activePkg.label} package.
+                                    </div>
+                                )}
+
                                 {showForm ? (
                                     <form onSubmit={handleInquiry} style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', marginBottom: '16px' }}>
                                         <div style={{ marginBottom: '12px' }}>
@@ -207,14 +296,19 @@ export default function CateringModule({ events, calendarPricing }: Props) {
                                             <label style={{ display: 'block', fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>Phone</label>
                                             <input value={phone} onChange={e => setPhone(e.target.value)} style={{ width: '100%', background: '#000', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '8px', borderRadius: '6px' }} />
                                         </div>
-                                        <button className={`btn btn-primary`} type="submit" disabled={isSubmitting} style={{ width: '100%' }}>
+                                        <button className={`btn btn-primary`} type="submit" disabled={isSubmitting || !selectionsValid} style={{ width: '100%' }}>
                                             {isSubmitting ? 'Sending...' : 'Confirm Inquiry'}
                                         </button>
                                         <button type="button" onClick={() => setShowForm(false)} style={{ width: '100%', background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: '12px', marginTop: '10px', cursor: 'pointer' }}>Cancel</button>
                                     </form>
                                 ) : (
-                                    <button onClick={() => setShowForm(true)} className={`btn btn-primary`} style={{ width: '100%' }}>
-                                        Request This Quote
+                                    <button 
+                                        onClick={() => setShowForm(true)} 
+                                        className={`btn btn-primary`} 
+                                        style={{ width: '100%' }}
+                                        disabled={!selectionsValid && (needsMeats || needsSides)}
+                                    >
+                                        Send Inquiry
                                     </button>
                                 )}
                             </>

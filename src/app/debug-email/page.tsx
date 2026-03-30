@@ -4,12 +4,14 @@ import { getClient } from '@/sanity/client';
 import { CATERING_QUERY } from '@/sanity/queries';
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Debug Email Body',
 };
 
-export default async function DebugEmailPage({ searchParams }: { searchParams: { id?: string } }) {
-  const { id } = searchParams;
+export default async function DebugEmailPage({ searchParams }: { searchParams: Promise<{ id?: string; package_id?: string }> }) {
+  const params = await searchParams;
+  const id = params.id ?? params.package_id;
   if (!id) return <p>No package id supplied.</p>;
 
   const client = getClient(false);

@@ -35,66 +35,54 @@ export default function ParallaxImages() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const entries: ParallaxEntry[] = [];
+    let entries: ParallaxEntry[] = [];
     let rafId: number | null = null;
     let ticking = false;
 
-    // ── 1. Find all parallax targets ──────────────────────────────────────
-    const targets = document.querySelectorAll<HTMLElement>('[data-parallax]');
+    // ── 1. Function to find and initialize new targets ────────────────────────
+    function initTargets() {
+      const targets = document.querySelectorAll<HTMLElement>('[data-parallax]:not([data-parallax-init])');
+      
+      targets.forEach((el) => {
+        const mode = el.getAttribute('data-parallax');
+        el.setAttribute('data-parallax-init', 'true'); // Mark as initialized
 
-    targets.forEach((el) => {
-      const mode = el.getAttribute('data-parallax');
-
-      if (mode === 'wrap') {
-        // Create overflow-hidden mask wrapper
-        const mask = document.createElement('div');
-        mask.className = 'parallax-mask';
-
-        // Copy over display context from parent so layout is unaffected
-        const parent = el.parentElement!;
-        parent.insertBefore(mask, el);
-        mask.appendChild(el);
-
-        // Style the image for parallax
-        el.classList.add('parallax-img');
-
-        entries.push({ mask, img: el });
-
-      } else if (mode === 'inset') {
-        // Parent already clips; just animate the image.
-        // Stretch image to 130% tall so it has room to travel without showing
-        // background: top starts at -15%, leaving 15% headroom in each direction.
-        const mask = el.parentElement!;
-        el.style.top = '-15%';
-        el.style.bottom = 'unset';
-        el.style.height = '130%';
-        el.style.willChange = 'transform';
-        entries.push({ mask, img: el });
-      }
-    });
-
-    if (entries.length === 0) return;
+        if (mode === 'wrap') {
+          const mask = document.createElement('div');
+          mask.className = 'parallax-mask';
+          const parent = el.parentElement!;
+          parent.insertBefore(mask, el);
+          mask.appendChild(el);
+          el.classList.add('parallax-img');
+          entries.push({ mask, img: el });
+        } else if (mode === 'inset') {
+          const mask = el.parentElement!;
+          el.style.top = '-15%';
+          el.style.bottom = 'unset';
+          el.style.height = '130%';
+          el.style.willChange = 'transform';
+          entries.push({ mask, img: el });
+        }
+      });
+    }
 
     // ── 2. Tick: calculate & apply transforms ──────────────────────────────
     function tick() {
       ticking = false;
       const vh = window.innerHeight;
 
+      // Filter out entries whose elements have been removed from DOM
+      entries = entries.filter(e => document.body.contains(e.mask));
+
       entries.forEach(({ mask, img }) => {
         const rect = mask.getBoundingClientRect();
-
-        // progress: 0 when container bottom reaches top of screen,
-        //            1 when container top reaches bottom of screen
         const progress = 1 - (rect.bottom / (rect.height + vh));
         const clampedProgress = Math.max(0, Math.min(1, progress));
-
-        // translateY range: -PARALLAX_SPEED*h … +PARALLAX_SPEED*h
         const shift = (clampedProgress - 0.5) * 2 * PARALLAX_SPEED * rect.height;
         (img as HTMLElement).style.transform = `translateY(${shift.toFixed(2)}px)`;
       });
     }
 
-    // ── 3. Passive scroll listener ─────────────────────────────────────────
     function onScroll() {
       if (!ticking) {
         ticking = true;
@@ -102,8 +90,21 @@ export default function ParallaxImages() {
       }
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+    // ── 3. Mutation Observer to catch dynamic remounts ──────────────────────
+    const observer = new MutationObserver(() => {
+      initTargets();
+    });
 
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    // Initial run
+    initTargets();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    
     // Also hook into Lenis if available (fires on virtual scroll)
     type LenisInstance = { on: (event: string, cb: () => void) => void; off: (event: string, cb: () => void) => void };
     const lenis = (window as unknown as { lenis?: LenisInstance }).lenis;
@@ -111,7 +112,6 @@ export default function ParallaxImages() {
       lenis.on('scroll', onScroll);
     }
 
-    // Run once on mount so images are positioned correctly before any scroll
     tick();
 
     // ── 4. Cleanup ─────────────────────────────────────────────────────────
@@ -138,7 +138,9 @@ export default function ParallaxImages() {
           img.style.bottom = '';
           img.style.height = '';
         }
+        img.removeAttribute('data-parallax-init');
       });
+      observer.disconnect();
     };
   }, [pathname]); // Re-run whenever the page changes (Next.js SPA navigation)
 

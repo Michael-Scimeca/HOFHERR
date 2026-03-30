@@ -119,7 +119,7 @@
 }
 
 .card:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: #ffffff1a;
 }
 
 .cardFeature {
@@ -129,7 +129,7 @@
 }
 
 .cardFeature:hover {
-    border-color: color-mix(in srgb, var(--red) 70%, #fff);
+    border-color: #ffffff1a;
     background: color-mix(in srgb, var(--red) 6%, #000);
     box-shadow: 0 0 60px rgba(255, 0, 0, 0.1); 
 }

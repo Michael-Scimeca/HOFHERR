@@ -137,7 +137,7 @@ export default function FloatingAssetEditor() {
     const copyCSS = () => {
         const out = assets.map((a, i) => {
             const blur = i === 2 ? '\n    filter: blur(4px);' : '';
-            return `.a${i+1} {\n    width: ${Math.round(a.width)}px;\n    top: ${a.top.toFixed(1)}%;\n    left: ${a.left.toFixed(1)}%;\n    rotate: ${a.rotate.toFixed(1)}deg;\n    transform: scale(${a.scale.toFixed(3)});\n    opacity: ${a.opacity.toFixed(2)};${blur}\n    z-index: ${a.zIndex};\n}`;
+            return `.a${i+1} {\n    width: ${Math.round(a.width)}px;\n    top: ${a.top.toFixed(1)}%;\n    left: ${a.left.toFixed(1)}%;\n    rotate: ${a.rotate.toFixed(1)}deg;\n    transform: scale(${a.scale.toFixed(3)});\n    opacity: ${a.opacity.toFixed(2)};${blur}\n    z-index: ${a.zIndex};\n    /* scroll: speed=${(a.scrollSpeed ?? 0.02).toFixed(4)} rotation=${(a.scrollRotation ?? 0).toFixed(4)} */\n}`;
         }).join('\n\n');
         navigator.clipboard.writeText(out).then(() => { setCopied(true); setTimeout(()=>setCopied(false), 3000); });
     };
@@ -149,6 +149,7 @@ export default function FloatingAssetEditor() {
         position:'fixed', bottom:20, left:20, zIndex:2147483647,
         background:'rgba(8,8,8,0.97)', border:'1px solid rgba(255,255,255,0.12)',
         borderRadius:14, padding:16, width:272,
+        maxHeight:'calc(100vh - 40px)', overflowY:'auto',
         boxShadow:'0 12px 48px rgba(0,0,0,0.9)',
         fontFamily:'monospace', fontSize:12, color:'#ccc',
         backdropFilter:'blur(24px)',
@@ -220,12 +221,14 @@ export default function FloatingAssetEditor() {
                             </div>
 
                             {/* Live position readout */}
-                            <div style={{...row, marginBottom:10, background:'rgba(255,255,255,0.03)', borderRadius:6, padding:'5px 8px', gap:8}}>
+                            <div style={{...row, marginBottom:10, background:'rgba(255,255,255,0.03)', borderRadius:6, padding:'5px 8px', gap:8, flexWrap:'wrap'}}>
                                 <span>X <b style={val}>{s.left.toFixed(1)}%</b></span>
                                 <span>Y <b style={val}>{s.top.toFixed(1)}%</b></span>
                                 <span>R <b style={val}>{s.rotate.toFixed(0)}°</b></span>
                                 <span>S <b style={val}>{s.scale.toFixed(2)}</b></span>
                                 <span>Z <b style={val}>{s.zIndex}</b></span>
+                                <span>⬇ <b style={val}>{(s.scrollSpeed ?? 0.02).toFixed(3)}</b></span>
+                                <span>🔄 <b style={val}>{(s.scrollRotation ?? 0).toFixed(3)}</b></span>
                             </div>
 
                             {/* X (left) */}
@@ -262,6 +265,20 @@ export default function FloatingAssetEditor() {
                             <div style={lbl}>Opacity <b style={val}>{s.opacity.toFixed(2)}</b></div>
                             <input type="range" min={0} max={1} step={0.01} style={sl} value={s.opacity}
                                 onChange={e=>setAsset(selected,'opacity',+e.target.value)}/>
+
+                            {/* ── Scroll Behavior ── */}
+                            <div style={{height:1,background:'rgba(255,255,255,0.07)',margin:'8px 0'}}/>
+                            <div style={{fontSize:10,color:'#cc0e1d',fontWeight:700,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:6}}>⬇ Scroll Parallax</div>
+
+                            {/* Scroll Speed */}
+                            <div style={lbl}>Scroll Speed <b style={val}>{(s.scrollSpeed ?? 0.02).toFixed(4)}</b></div>
+                            <input type="range" min={-0.1} max={0.1} step={0.001} style={{...sl, accentColor:'#4488ff'}} value={s.scrollSpeed ?? 0.02}
+                                onChange={e=>setAsset(selected,'scrollSpeed',+e.target.value)}/>
+
+                            {/* Scroll Rotation */}
+                            <div style={lbl}>Scroll Twist <b style={val}>{(s.scrollRotation ?? 0).toFixed(4)}°/px</b></div>
+                            <input type="range" min={-0.02} max={0.02} step={0.0005} style={{...sl, accentColor:'#ff8800'}} value={s.scrollRotation ?? 0}
+                                onChange={e=>setAsset(selected,'scrollRotation',+e.target.value)}/>
                         </div>
                     )}
 

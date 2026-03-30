@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
-import { BBQ_MENU_QUERY, BBQ_PRICING_QUERY, BBQ_SERVICES_QUERY, CATERING_EVENTS_QUERY, CATERING_CALENDAR_PRICING_QUERY } from '@/sanity/queries';
+import { BBQ_MENU_QUERY, BBQ_SERVICES_QUERY, CATERING_EVENTS_QUERY, CATERING_CALENDAR_PRICING_QUERY } from '@/sanity/queries';
 import styles from './page.module.css';
 import BBQHub from './BBQHub';
 import ParallaxImg from './ParallaxImg';
@@ -48,42 +48,10 @@ const FALLBACK_MENU: { name: string; category: string; image?: string }[] = [
     { name: 'North Shore Baked Beans', category: 'side', image: '/images/bbq/baked_beans.jpg' },
 ];
 
-const FALLBACK_PRICING = [
-    {
-        tier: 'under20',
-        title: 'Under 20 Guests',
-        subtitle: 'Minimum order $200',
-        description: 'Includes buns, condiments, and sauce. Pricing is custom — email us with your headcount and menu selections.',
-        isFeatured: false,
-        priceLines: null,
-    },
-    {
-        tier: 'over20',
-        title: '20+ Guests — Pickup',
-        subtitle: 'Includes paperware, cutlery, serving utensils, buns, condiments & sauce',
-        description: null,
-        isFeatured: true,
-        priceLines: [
-            { label: '1 Meat + 1 Side', price: '$16/person' },
-            { label: 'Each Additional Meat', price: '+$4/person' },
-            { label: 'Each Additional Side', price: '+$2/person' },
-            { label: 'Add Charcuterie Platter', price: '+$4/person' },
-            { label: 'Pimento Cheese Dip + Crackers', price: '$20/tray' },
-            { label: 'Drop-Off Delivery (within 5 miles)', price: '+$50' },
-        ],
-    },
-];
+
 
 type MenuItem = { name: string; category: string; image?: string };
-type PriceLine = { label: string; price: string };
-type PricingTier = {
-    tier: string;
-    title: string;
-    subtitle?: string | null;
-    description?: string | null;
-    isFeatured?: boolean;
-    priceLines?: PriceLine[] | null;
-};
+
 type ServiceItem = { title: string; emoji?: string | null; description?: string | null; linkLabel?: string | null; linkUrl?: string | null };
 
 const FALLBACK_SERVICES: ServiceItem[] = [
@@ -106,7 +74,7 @@ export default async function BBQPage() {
     const sanityClient = getClient(preview);
 
     let menuItems: MenuItem[] = [];
-    let pricing: PricingTier[] = [];
+
     let services: ServiceItem[] = FALLBACK_SERVICES;
 
     type CateringEventData = { _id: string; date: string; eventType: string; status: string };
@@ -120,9 +88,8 @@ export default async function BBQPage() {
 
     try {
         const todayStr = new Date().toISOString().split('T')[0];
-        const [rawMenu, rawPricing, rawServices, rawEvents, rawCalPricing] = await Promise.all([
+        const [rawMenu, rawServices, rawEvents, rawCalPricing] = await Promise.all([
             sanityClient.fetch(BBQ_MENU_QUERY),
-            sanityClient.fetch(BBQ_PRICING_QUERY),
             sanityClient.fetch(BBQ_SERVICES_QUERY),
             sanityClient.fetch(CATERING_EVENTS_QUERY, { today: todayStr }),
             sanityClient.fetch(CATERING_CALENDAR_PRICING_QUERY),
@@ -155,13 +122,12 @@ export default async function BBQPage() {
             }
             return { ...m, image: undefined };
         }) : FALLBACK_MENU;
-        pricing = rawPricing?.length ? rawPricing : FALLBACK_PRICING;
+
         if (rawServices?.length) services = rawServices;
         cateringEvents = rawEvents ?? [];
         if (rawCalPricing?.length) calendarPricing = rawCalPricing;
     } catch {
         menuItems = FALLBACK_MENU;
-        pricing = FALLBACK_PRICING;
     }
 
     // Group by category
@@ -296,54 +262,12 @@ export default async function BBQPage() {
             </section>
 
 
-            {/* ── Pricing ── */}
+            {/* ── BBQ Calculator + Calendar ── */}
             <section id="quote" className={`section ${styles.pricingSection}`}>
                 <div className="container">
-                    <div className={styles.pricingHeader}>
-                        <div className="section-label">Transparent Pricing</div>
-                        <h2 className={styles.pricingTitle}>What&apos;s It Cost?</h2>
-                        <p className={styles.pricingNote}>All prices exclude tax. Includes buns, condiments, and sauce.</p>
-                    </div>
-
-                    <div className={styles.pricingCols}>
-                        {pricing.map((tier) => (
-                            <div
-                                key={tier.tier}
-                                className={`${styles.pricingCard} ${tier.isFeatured ? styles.pricingCardFeatured : ''}`}
-                            >
-                                {tier.isFeatured && <div className={styles.pricingCardBadge}>Most Popular</div>}
-                                <div className={styles.pricingCardTitle}>{tier.title}</div>
-                                {tier.subtitle && <div className={styles.pricingCardSub}>{tier.subtitle}</div>}
-                                {tier.description && (
-                                    <p className={styles.pricingCardDesc}>{tier.description}</p>
-                                )}
-                                {!tier.isFeatured && tier.tier === 'under20' && (
-                                    <a href="mailto:catering@hofherrmeatco.com?subject=BBQ Catering Under 20" className="btn btn-secondary">
-                                        ✉️ Email for Pricing
-                                    </a>
-                                )}
-                                {tier.priceLines && tier.priceLines.length > 0 && (
-                                    <div className={styles.priceRows}>
-                                        {tier.priceLines.map((line, i) => (
-                                            <div
-                                                key={i}
-                                                className={styles.priceRow}
-                                                style={i === tier.priceLines!.length - 1 ? { borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px', marginTop: '4px' } : undefined}
-                                            >
-                                                <span>{line.label}</span><strong>{line.price}</strong>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                    
-                    {/* Unified BBQ Hub (Calculator + Calendar) */}
-                    <div id="bbq-hub" style={{ marginTop: '32px' }}>
+                    <div id="bbq-hub">
                         <BBQHub events={cateringEvents} calendarPricing={calendarPricing} />
                     </div>
-
                 </div>
             </section>
 

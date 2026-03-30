@@ -176,14 +176,14 @@
 .hiringBtn {
     background: #fff;
     color: var(--red, #cc0e1d);
-    border-color: #fff;
+    border-color: #ffffff1a;
     padding: 10px 24px;
 }
 
 .hiringBtn:hover {
     background: transparent;
     color: #fff;
-    border-color: #fff;
+    border-color: #ffffff1a;
 }
 
 /* ── Responsive ── */

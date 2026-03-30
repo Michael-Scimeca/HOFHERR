@@ -1,7 +1,7 @@
 :root {
     --dash-bg: var(--bg);
     --card-bg: var(--bg-2);
-    --card-border: #181818;
+    --card-border: 1px solid #ffffff1a;
     --accent-red: var(--red);
     --accent-gold: var(--red-light);
     --text-primary: var(--text);
@@ -454,7 +454,7 @@
 }
 
 .giftCardCard:hover {
-    border-color: #fff;
+    border-color: #ffffff1a;
     box-shadow: 0 12px 40px rgba(209, 72, 54, 0.5);
     transform: translateY(-3px);
 }

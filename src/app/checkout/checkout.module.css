@@ -230,7 +230,7 @@
     flex: 1;
     padding: 10px 6px;
     background: #111;
-    border: 1px solid #181818;
+    border: 1px solid #ffffff1a;
     border-radius: 8px;
     color: #888;
     font-size: 13px;
@@ -278,7 +278,7 @@
     align-items: center;
     padding: 12px 8px;
     background: #fff;
-    border: 1px solid #181818;
+    border: 1px solid #ffffff1a;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s;
@@ -306,7 +306,7 @@
 .timeSlotBtn {
     padding: 12px 8px;
     background: #fff;
-    border: 1px solid #181818;
+    border: 1px solid #ffffff1a;
     border-radius: 10px;
     font-size: 12px;
     font-weight: 700;
@@ -391,7 +391,7 @@
     flex: 1;
     padding: 12px;
     background: #111;
-    border: 1px solid #181818;
+    border: 1px solid #ffffff1a;
     border-radius: 10px;
     color: #888;
     font-size: 13px;
@@ -440,7 +440,7 @@
 /* ── Summary card ─────────────────────────────────────────────────────── */
 .summaryCard {
     background: #111;
-    border: 1px solid #181818;
+    border: 1px solid #ffffff1a;
     border-radius: 16px;
     padding: 24px;
     position: sticky;

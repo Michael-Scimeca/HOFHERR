@@ -2,12 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
-import { SIGNATURE_PRODUCTS_QUERY, BBQ_MENU_QUERY, BBQ_PRICING_QUERY, CATERING_EVENTS_QUERY, CATERING_CALENDAR_PRICING_QUERY, ROTISSERIE_STATUS_QUERY } from '@/sanity/queries';
+import { SIGNATURE_PRODUCTS_QUERY, BBQ_MENU_QUERY, BBQ_PRICING_QUERY, ROTISSERIE_STATUS_QUERY } from '@/sanity/queries';
 import NewsletterInline from '@/components/NewsletterInline';
 import VideoCallout from '@/components/specials/VideoCalloutWrapper';
 import ParallaxMedia from '@/components/ParallaxMedia';
 import ParallaxImg from '@/app/bbq/ParallaxImg';
-import CateringModule from './CateringModule';
+
 import styles from './page.module.css';
 import bbqStyles from '../bbq/page.module.css';
 
@@ -182,30 +182,14 @@ export default async function SpecialsPage() {
         menuItems = FALLBACK_BBQ_MENU;
     }
 
-    // Catering events + calendar pricing
-    type CateringEventData = { _id: string; date: string; eventType: string; status: string };
-    type CalendarPricingRow = { label: string; price: string };
-    let cateringEvents: CateringEventData[] = [];
-    let calendarPricing: CalendarPricingRow[] = [
-        { label: 'Pig Roast (50+ guests)', price: 'From $30/pp' },
-        { label: 'BBQ Catering (20+ guests)', price: 'From $16/pp' },
-        { label: 'Ask us about custom options', price: 'Contact us' },
-    ];
     // Rotisserie live stock status
     type RotisserieStatus = { status: string; birdsLeft?: number | null; nextAvailable?: string | null; note?: string | null; lastUpdated?: string | null };
     let rotisserie: RotisserieStatus | null = null;
     try {
-        const todayStr = new Date().toISOString().split('T')[0];
-        const [rawEvents, rawCalPricing, rawRotisserie] = await Promise.all([
-            sanityClient.fetch(CATERING_EVENTS_QUERY, { today: todayStr }),
-            sanityClient.fetch(CATERING_CALENDAR_PRICING_QUERY),
-            sanityClient.fetch(ROTISSERIE_STATUS_QUERY),
-        ]);
-        cateringEvents = rawEvents ?? [];
-        if (rawCalPricing?.length) calendarPricing = rawCalPricing;
+        const rawRotisserie = await sanityClient.fetch(ROTISSERIE_STATUS_QUERY);
         if (rawRotisserie?.status) rotisserie = rawRotisserie;
     } catch {
-        // No events to show
+        // No status to show
     }
 
     const grouped = menuItems.reduce((acc, item) => {
@@ -509,8 +493,15 @@ export default async function SpecialsPage() {
                         </div>
                     </div>
 
-                    {/* Integrated Catering Section */}
-                    <CateringModule events={cateringEvents} calendarPricing={calendarPricing} />
+                    {/* Link to full catering calculator */}
+                    <div style={{ textAlign: 'center', margin: '40px 0 20px' }}>
+                        <Link href="/catering#build-your-package" className="btn btn-primary" style={{ fontSize: '16px', padding: '16px 32px' }}>
+                            Build Your Pig Roast Package →
+                        </Link>
+                        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', marginTop: '12px' }}>
+                            Use our interactive calculator to customize your package, pick a date, and send an inquiry.
+                        </p>
+                    </div>
                 </div>
             </section>
 

@@ -318,63 +318,66 @@ export default function Navbar() {
             {/* Mobile Menu */}
             {mobileOpen && (
                 <div className={styles.mobile}>
-                    {/* Nav links */}
-                    {NAV_ITEMS.map((item) => (
-                        <div key={item.label} className={styles.mobileSection}>
-                            <Link
-                                href={item.href}
-                                className={`${styles.mobilePrimary} ${isActive(item.href) ? styles.mobileActive : ''}`}
-                                onClick={() => setMobileOpen(false)}
-                            >
-                                {item.label}
-                            </Link>
-                        </div>
-                    ))}
-
-                    {/* Store status in mobile menu */}
-                    <div className={styles.mobileStoreStatus}>
-                        <Link
-                            href="/online-orders?store=butcher"
-                            className={`${styles.storeStatus} ${styles[butcherStatus.status]}`}
-                            onClick={() => setMobileOpen(false)}
-                        >
-                            <div className={styles.statusDot} />
-                            <span className={styles.statusStore}>Shop</span>
-                            <span className={styles.statusLabel}>{butcherStatus.label}</span>
-                            {butcherStatus.todayHours && (
-                                <span className={styles.statusHours}>
-                                    <span className={styles.statusDivider}>|</span>
-                                    {butcherStatus.todayHours.replace(/:00/g, '').replace(/ /g, '').replace('–', '-')}
-                                </span>
-                            )}
-                        </Link>
-                        <Link
-                            href="/online-orders?store=depot"
-                            className={`${styles.storeStatus} ${styles[depotStatus.status]}`}
-                            onClick={() => setMobileOpen(false)}
-                        >
-                            <div className={styles.statusDot} />
-                            <span className={styles.statusStore}>Depot</span>
-                            <span className={styles.statusLabel}>{depotStatus.label}</span>
-                            {depotStatus.todayHours && (
-                                <span className={styles.statusHours}>
-                                    <span className={styles.statusDivider}>|</span>
-                                    {depotStatus.todayHours.replace(/:00/g, '').replace(/ /g, '').replace('–', '-')}
-                                </span>
-                            )}
-                        </Link>
+                    {/* Top Group: Primary Links */}
+                    <div className={styles.mobileTopGroup}>
+                        {NAV_ITEMS.map((item) => (
+                            <div key={item.label} className={styles.mobileSection}>
+                                <Link
+                                    href={item.href}
+                                    className={`${styles.mobilePrimary} ${isActive(item.href) ? styles.mobileActive : ''}`}
+                                    onClick={() => setMobileOpen(false)}
+                                >
+                                    {item.label}
+                                </Link>
+                            </div>
+                        ))}
                     </div>
 
-                    {/* CTA + Auth */}
-                    <div className={styles.mobileCTA}>
-                        {!user ? (
-                            <div className={styles.mobileAuthGrid}>
-                                <Link href="/online-orders?login=true" className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Sign In</Link>
-                                <Link href="/online-orders?signup=true" className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Sign Up</Link>
-                            </div>
-                        ) : (
-                            <Link href="/dashboard" className="btn btn-secondary" onClick={() => setMobileOpen(false)}>Dashboard</Link>
-                        )}
+                    {/* Bottom Group: Store Status + CTA */}
+                    <div className={styles.mobileBottomGroup}>
+                        <div className={styles.mobileStoreStatus}>
+                            <Link
+                                href="/online-orders?store=butcher"
+                                className={`${styles.storeStatus} ${styles[butcherStatus.status]}`}
+                                onClick={() => setMobileOpen(false)}
+                            >
+                                <div className={styles.statusDot} />
+                                <span className={styles.statusStore}>Shop</span>
+                                <span className={styles.statusLabel}>{butcherStatus.label}</span>
+                                {butcherStatus.todayHours && (
+                                    <span className={styles.statusHours}>
+                                        <span className={styles.statusDivider}>|</span>
+                                        {butcherStatus.todayHours.replace(/:00/g, '').replace(/ /g, '').replace('–', '-')}
+                                    </span>
+                                )}
+                            </Link>
+                            <Link
+                                href="/online-orders?store=depot"
+                                className={`${styles.storeStatus} ${styles[depotStatus.status]}`}
+                                onClick={() => setMobileOpen(false)}
+                            >
+                                <div className={styles.statusDot} />
+                                <span className={styles.statusStore}>Depot</span>
+                                <span className={styles.statusLabel}>{depotStatus.label}</span>
+                                {depotStatus.todayHours && (
+                                    <span className={styles.statusHours}>
+                                        <span className={styles.statusDivider}>|</span>
+                                        {depotStatus.todayHours.replace(/:00/g, '').replace(/ /g, '').replace('–', '-')}
+                                    </span>
+                                )}
+                            </Link>
+                        </div>
+
+                        <div className={styles.mobileCTA}>
+                            {!user ? (
+                                <div className={styles.mobileAuthGrid}>
+                                    <Link href="/online-orders?login=true" className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Sign In</Link>
+                                    <Link href="/online-orders?signup=true" className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Sign Up</Link>
+                                </div>
+                            ) : (
+                                <Link href="/dashboard" className="btn btn-secondary" onClick={() => setMobileOpen(false)}>Dashboard</Link>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

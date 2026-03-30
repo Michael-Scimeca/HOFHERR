@@ -160,7 +160,7 @@
 
 .card {
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid #ffffff1a;
     border-radius: 14px;
     padding: 28px 22px;
     display: flex;
@@ -233,7 +233,7 @@
 .packageCard {
     position: relative;
     background: #111;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid #ffffff1a;
     border-radius: 10px;
     overflow: hidden;
     display: flex;
@@ -242,7 +242,7 @@
 }
 
 .packageCard:hover {
-    border-color: rgba(255,255,255,0.18);
+    border-color: #ffffff1a;
     transform: translateY(-3px);
 }
 
@@ -344,7 +344,7 @@
     margin-top: auto;
     padding: 11px 20px;
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid #ffffff1a;
     border-radius: 6px;
     color: var(--fg);
     font-size: 12px;
@@ -447,7 +447,7 @@
 
 .pricingFeatured {
     background: #000;
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: #ffffff1a;
     position: relative;
 }
 

@@ -224,19 +224,31 @@ export default function EmberBackground() {
       }
     }
 
+
     let animationId: number;
-    const loop = () => {
-      draw();
+    let lastFrameTime = 0;
+    const FRAME_INTERVAL = 1000 / 30; // Cap at 30fps — visually identical, 50% less CPU
+    let paused = false;
+
+    const loop = (now: number) => {
       animationId = requestAnimationFrame(loop);
+      if (paused) return;
+      if (now - lastFrameTime < FRAME_INTERVAL) return;
+      lastFrameTime = now;
+      draw();
     };
     animationId = requestAnimationFrame(loop);
+
+    // Pause when tab is hidden
+    const onVisibility = () => { paused = document.hidden; };
+    document.addEventListener('visibilitychange', onVisibility);
 
     const onResize = () => {
       ww = canvas.width  = window.innerWidth
       wh = canvas.height = window.innerHeight
     }
     window.addEventListener('resize', onResize)
-    return () => { cancelAnimationFrame(animationId); window.removeEventListener('resize', onResize) }
+    return () => { cancelAnimationFrame(animationId); window.removeEventListener('resize', onResize); document.removeEventListener('visibilitychange', onVisibility); }
   }, [])
 
   return (

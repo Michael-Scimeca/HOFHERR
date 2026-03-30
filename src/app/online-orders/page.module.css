@@ -140,7 +140,7 @@
 /* ── Online Ordering Hours Notice ── */
 .hoursNotice {
     background: #1a1210;
-    border-bottom: 1px solid #181818;
+    border-bottom: 1px solid #ffffff1a;
     padding: 10px max(16px, calc(50% - 576px + 220px));
 }
 
@@ -2050,7 +2050,7 @@
     justify-content: space-between;
     margin-top: 4px;
     padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid #ffffff1a;
 }
 
 /* Payment badges */
@@ -2091,7 +2091,7 @@
 }
 
 .payToggleBtn:hover {
-    border-color: #bbb;
+    border-color: #ffffff1a;
 }
 
 .payToggleBtnActive {
@@ -2616,7 +2616,7 @@
     width: 100%;
     height: 36px;
     padding: 0 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #ffffff1a;
     border-radius: var(--radius-sm);
     font-size: 14px;
     background: #fff;
@@ -2929,7 +2929,7 @@
 .timeSlotBtn {
     padding: 12px 10px;
     background: #fff;
-    border: 1px solid #181818;
+    border: 1px solid #ffffff1a;
     border-radius: 12px;
     font-size: 13px;
     font-weight: 700;

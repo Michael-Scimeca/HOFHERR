@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Yanone_Kaffeesatz, Inter, Outfit } from "next/font/google";
 import { draftMode } from "next/headers";
 import Script from "next/script";
+import dynamic from "next/dynamic";
 import "./globals.css";
 
 import { CartProvider } from "@/context/CartContext";
@@ -14,13 +15,14 @@ import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import ScrollToTop from "@/components/ScrollToTop";
 import SmoothScroll from "@/components/SmoothScroll";
-import ChatWidgetWrapper from "@/components/ChatWidgetWrapper";
-import EmbersBackground from "@/components/EmbersBackground";
 import PageTransition from "@/components/PageTransition";
-import DevNav from "@/components/DevNav";
 import { auth } from "@/auth";
 import ParallaxImages from "@/components/ParallaxImages";
-import FloatingAssetEditor from "@/components/home/HeroAssetEditor";
+
+// ── Lazy-loaded heavy components (code-split from initial JS bundle) ──
+const EmbersBackground = dynamic(() => import("@/components/EmbersBackground"));
+const ChatWidgetWrapper = dynamic(() => import("@/components/ChatWidgetWrapper"));
+const DevNav = dynamic(() => import("@/components/DevNav"));
 
 const yanone = Yanone_Kaffeesatz({
   subsets: ["latin"],
@@ -78,7 +80,7 @@ export default async function RootLayout({
 
   try {
     const sanityClient = getClient(isDraft);
-    const cms = await sanityClient.fetch(SITE_SETTINGS_QUERY, {}, { cache: 'no-store' });
+    const cms = await sanityClient.fetch(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } });
 
     if (cms) {
       const hasValidButcher = Array.isArray(cms.butcherHours) && cms.butcherHours.some((h: any) => h.open && h.close);
@@ -145,9 +147,9 @@ export default async function RootLayout({
                 <Footer />
               </PageTransition>
               <ChatWidgetWrapper />
-              <DevNav />
+              {process.env.NODE_ENV === 'development' && <DevNav />}
               <ParallaxImages />
-              <FloatingAssetEditor />
+
             </CartProvider>
           </ClientProviders>
         </SiteSettingsProvider>

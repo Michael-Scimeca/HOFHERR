@@ -161,5 +161,5 @@ export default function TrophyCanvas({ className, style }: { className?: string,
     );
 }
 
-// Preload the model so it doesn't pop in weirdly
-useGLTF.preload('/assets/trophy.glb');
+// REMOVED: useGLTF.preload('/assets/trophy.glb')
+// This was forcing a 22MB download on every page load

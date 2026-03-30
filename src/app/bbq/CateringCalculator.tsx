@@ -2,6 +2,27 @@
 
 import styles from './CateringCalculator.module.css';
 
+const MEAT_OPTIONS = [
+    'Smoked Brisket',
+    'BBQ Pulled Pork',
+    'BBQ Pulled Chicken',
+    'Rib Tips & Hot Links',
+    'Smoked Ribs',
+    'HMC Sausages',
+];
+
+const SIDE_OPTIONS = [
+    'Pimento Mac n Cheese',
+    'HMCo.leSlaw',
+    'Potato Salad',
+    'Grilled Portobellos',
+    'Corn',
+    'Three Bean Salad',
+    'House Pasta Salad',
+    'Collard Greens',
+    'North Shore Baked Beans',
+];
+
 interface Props {
     className?: string;
     showReceipt?: boolean;
@@ -9,6 +30,8 @@ interface Props {
         guests: number;
         meats: number;
         sides: number;
+        selectedMeats: string[];
+        selectedSides: string[];
         charcuterie: boolean;
         pimento: number;
         delivery: boolean;
@@ -18,6 +41,8 @@ interface Props {
         setGuests: (v: number) => void;
         setMeats: (v: number) => void;
         setSides: (v: number) => void;
+        setSelectedMeats: (v: string[] | ((prev: string[]) => string[])) => void;
+        setSelectedSides: (v: string[] | ((prev: string[]) => string[])) => void;
         setCharcuterie: (v: boolean) => void;
         setPimento: (v: ((prev: number) => number) | number) => void;
         setDelivery: (v: boolean) => void;
@@ -32,8 +57,8 @@ export default function CateringCalculator({
     setState 
 }: Props) {
     // State (either from props or local if needed)
-    const { guests, meats, sides, charcuterie, pimento, delivery, notes } = state || {
-        guests: 25, meats: 2, sides: 2, charcuterie: false, pimento: 0, delivery: false, notes: ''
+    const { guests, selectedMeats = [], selectedSides = [], charcuterie, pimento, delivery, notes } = state || {
+        guests: 25, selectedMeats: ['Smoked Brisket', 'BBQ Pulled Pork'], selectedSides: ['Pimento Mac n Cheese', 'North Shore Baked Beans'], charcuterie: false, pimento: 0, delivery: false, notes: ''
     };
 
     const MIN_GUESTS = 20;
@@ -45,6 +70,22 @@ export default function CateringCalculator({
     const handleGuestBlur = () => {
         if (guests < MIN_GUESTS) setState?.setGuests(MIN_GUESTS);
         if (guests > 500) setState?.setGuests(500);
+    };
+
+    const toggleMeat = (item: string) => {
+        setState?.setSelectedMeats((prev: string[]) =>
+            prev.includes(item)
+                ? prev.filter((m: string) => m !== item)
+                : prev.length < 5 ? [...prev, item] : prev
+        );
+    };
+
+    const toggleSide = (item: string) => {
+        setState?.setSelectedSides((prev: string[]) =>
+            prev.includes(item)
+                ? prev.filter((s: string) => s !== item)
+                : prev.length < 6 ? [...prev, item] : prev
+        );
     };
 
     const controls = (
@@ -77,22 +118,113 @@ export default function CateringCalculator({
                 </div>
             </div>
 
-            <div className={styles.rowTwo} style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
-                <div className={styles.inputGroup} style={{ flex: 1 }}>
-                    <label className={styles.label}>Meats Selected</label>
-                    <div className={styles.stepperWrap}>
-                        <button className={styles.stepperBtnSm} onClick={() => setState?.setMeats(Math.max(1, meats - 1))}>−</button>
-                        <span className={styles.stepperValue}>{meats}</span>
-                        <button className={styles.stepperBtnSm} onClick={() => setState?.setMeats(Math.min(5, meats + 1))}>+</button>
-                    </div>
+            {/* Meat Picker */}
+            <div className={styles.inputGroup} style={{ marginTop: '20px' }}>
+                <label className={styles.label}>
+                    Pick Your Meats
+                    <span style={{ fontSize: 11, color: selectedMeats.length >= 1 ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                        {selectedMeats.length} selected
+                    </span>
+                    <span style={{ fontSize: 10, color: 'var(--fg-muted)', fontWeight: 400, marginLeft: 6, letterSpacing: 0, textTransform: 'none' }}>
+                        (1 included · +$4/pp each extra)
+                    </span>
+                </label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {MEAT_OPTIONS.map(item => {
+                        const isSelected = selectedMeats.includes(item);
+                        return (
+                            <button
+                                key={item}
+                                onClick={() => toggleMeat(item)}
+                                style={{
+                                    padding: '10px 16px',
+                                    borderRadius: '8px',
+                                    border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.12)',
+                                    background: isSelected ? 'rgba(204, 13, 29, 0.15)' : 'rgba(255,255,255,0.04)',
+                                    color: isSelected ? '#fff' : 'rgba(255,255,255,0.6)',
+                                    cursor: 'pointer',
+                                    fontSize: '13px',
+                                    fontWeight: isSelected ? 700 : 500,
+                                    transition: 'all 0.2s',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                }}
+                            >
+                                <span style={{
+                                    width: '18px',
+                                    height: '18px',
+                                    borderRadius: '4px',
+                                    border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.25)',
+                                    background: isSelected ? 'var(--red)' : 'transparent',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '11px',
+                                    flexShrink: 0,
+                                    transition: 'all 0.2s',
+                                }}>
+                                    {isSelected && '✓'}
+                                </span>
+                                {item}
+                            </button>
+                        );
+                    })}
                 </div>
-                <div className={styles.inputGroup} style={{ flex: 1 }}>
-                    <label className={styles.label}>Sides Selected</label>
-                    <div className={styles.stepperWrap}>
-                        <button className={styles.stepperBtnSm} onClick={() => setState?.setSides(Math.max(1, sides - 1))}>−</button>
-                        <span className={styles.stepperValue}>{sides}</span>
-                        <button className={styles.stepperBtnSm} onClick={() => setState?.setSides(Math.min(6, sides + 1))}>+</button>
-                    </div>
+            </div>
+
+            {/* Side Picker */}
+            <div className={styles.inputGroup} style={{ marginTop: '8px' }}>
+                <label className={styles.label}>
+                    Pick Your Sides
+                    <span style={{ fontSize: 11, color: selectedSides.length >= 1 ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                        {selectedSides.length} selected
+                    </span>
+                    <span style={{ fontSize: 10, color: 'var(--fg-muted)', fontWeight: 400, marginLeft: 6, letterSpacing: 0, textTransform: 'none' }}>
+                        (1 included · +$2/pp each extra)
+                    </span>
+                </label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {SIDE_OPTIONS.map(item => {
+                        const isSelected = selectedSides.includes(item);
+                        return (
+                            <button
+                                key={item}
+                                onClick={() => toggleSide(item)}
+                                style={{
+                                    padding: '10px 16px',
+                                    borderRadius: '8px',
+                                    border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.12)',
+                                    background: isSelected ? 'rgba(204, 13, 29, 0.15)' : 'rgba(255,255,255,0.04)',
+                                    color: isSelected ? '#fff' : 'rgba(255,255,255,0.6)',
+                                    cursor: 'pointer',
+                                    fontSize: '13px',
+                                    fontWeight: isSelected ? 700 : 500,
+                                    transition: 'all 0.2s',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                }}
+                            >
+                                <span style={{
+                                    width: '18px',
+                                    height: '18px',
+                                    borderRadius: '4px',
+                                    border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.25)',
+                                    background: isSelected ? 'var(--red)' : 'transparent',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '11px',
+                                    flexShrink: 0,
+                                    transition: 'all 0.2s',
+                                }}>
+                                    {isSelected && '✓'}
+                                </span>
+                                {item}
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 

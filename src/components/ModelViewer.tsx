@@ -1,5 +1,5 @@
 "use client";
-import { useRef, Suspense, useEffect, useMemo, useState } from 'react';
+import { useRef, Suspense, useEffect, useMemo, useState, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, Float } from '@react-three/drei';
 import * as THREE from 'three';
@@ -21,7 +21,6 @@ function Model({ modelPath, onLoaded }: { modelPath: string; onLoaded: () => voi
 
   useFrame((state, delta) => {
     if (!groupRef.current) return;
-    // Entrance animation
     if (progress.current < 1) {
       progress.current += delta * 0.9;
       if (progress.current >= 1) {
@@ -31,11 +30,9 @@ function Model({ modelPath, onLoaded }: { modelPath: string; onLoaded: () => voi
       const p = progress.current;
       const c4 = (2 * Math.PI) / 3;
       const elasticScale = p === 0 ? 0 : p === 1 ? 1 : Math.pow(2, -10 * p) * Math.sin((p * 10 - 0.75) * c4) + 1;
-      const expRot = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
       groupRef.current.scale.setScalar(Math.max(0, elasticScale));
       groupRef.current.rotation.y = 0;
     } else {
-      // Recurring spin every 20s
       if (state.clock.elapsedTime - lastSpinTime.current > 20) {
         lastSpinTime.current = state.clock.elapsedTime;
         spinProgress.current = 0;
@@ -43,8 +40,6 @@ function Model({ modelPath, onLoaded }: { modelPath: string; onLoaded: () => voi
       if (spinProgress.current < 1) {
         spinProgress.current += delta * 1.5;
         if (spinProgress.current > 1) spinProgress.current = 1;
-        const p = spinProgress.current;
-        const cubicEase = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
         groupRef.current.rotation.y = 0;
       } else {
         groupRef.current.rotation.y = 0;
@@ -68,14 +63,31 @@ function Model({ modelPath, onLoaded }: { modelPath: string; onLoaded: () => voi
 
 export default function ModelViewer({ modelPath, className, style }: ModelViewerProps) {
   const [ready, setReady] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  // Only mount Canvas when the container scrolls into view
   useEffect(() => {
-    setMounted(true);
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect(); // Once visible, stay mounted
+        }
+      },
+      { rootMargin: '200px' } // Start loading 200px before visible
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   return (
     <div
+      ref={containerRef}
       className={className}
       style={{
         width: '100%',
@@ -86,7 +98,7 @@ export default function ModelViewer({ modelPath, className, style }: ModelViewer
         transition: 'opacity 0.6s ease, visibility 0.6s ease',
       }}
     >
-      {mounted && (
+      {isVisible && (
         <Canvas camera={{ position: [0, 0, 5], fov: 45 }} gl={{ alpha: true, antialias: true }} style={{ background: 'transparent' }}>
           <ambientLight intensity={0.8} />
           <spotLight position={[0, 10, 0]} angle={0.5} penumbra={1} intensity={3} castShadow color="#ffffff" />
@@ -103,5 +115,5 @@ export default function ModelViewer({ modelPath, className, style }: ModelViewer
   );
 }
 
-// Preload the model for faster first render
-useGLTF.preload('/assets/trophy.glb');
+// REMOVED: useGLTF.preload('/assets/trophy.glb')
+// Preloading a 22MB file at module level was loading it on EVERY page

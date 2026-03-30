@@ -68,7 +68,7 @@
     padding: 8px 16px;
     border-radius: 100px;
     background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid #ffffff1a;
     color: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
 }
@@ -116,10 +116,10 @@
     gap: 0;
     border-radius: 14px;
     overflow: hidden;
-    border: 1px solid #181818;
+    border: 1px solid #ffffff1a;
 }
 
-.meatCategory { border-bottom: 1px solid #181818; }
+.meatCategory { border-bottom: 1px solid #ffffff1a; }
 .stackedCategories { display: contents; }
 
 /* ── Category Header ── */
@@ -127,7 +127,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 10px;
+    font-size: 15px;
     font-weight: 800;
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -283,7 +283,7 @@
     grid-column: span 2;
     grid-row: span 2;
     background: #0c0c0c;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid #ffffff1a;
     border-radius: 4px;
     padding: 24px 26px;
     display: flex;
@@ -340,7 +340,7 @@
     align-items: flex-start;
     gap: 12px;
     padding-bottom: 11px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid #ffffff1a;
 }
 
 .buildStep:last-child {
@@ -473,7 +473,7 @@
 .pricingCardFeatured {
     background: #000;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid #ffffff1a;
 }
 
 .pricingCardBadge {
@@ -572,7 +572,7 @@
 }
 
 .brutalistList {
-    border-top: 1px solid #181818;
+    border-top: 1px solid #ffffff1a;
 }
 
 .brutalistRow {
@@ -580,7 +580,7 @@
     align-items: center;
     gap: 32px;
     padding: 24px 16px;
-    border-bottom: 1px solid #181818;
+    border-bottom: 1px solid #ffffff1a;
     text-decoration: none;
     color: #fff;
     border-radius: 6px;

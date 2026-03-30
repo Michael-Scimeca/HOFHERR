@@ -167,7 +167,7 @@
     border-radius: 20px;
     overflow: hidden;
     margin-bottom: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid #ffffff1a;
     aspect-ratio: 21 / 9;
     position: relative;
 }
@@ -269,7 +269,7 @@
 }
 
 .brutalistList {
-    border-top: 1px solid #181818;
+    border-top: 1px solid #ffffff1a;
 }
 
 .brutalistRow {
@@ -277,7 +277,7 @@
     align-items: center;
     gap: 32px;
     padding: 24px 16px;
-    border-bottom: 1px solid #181818;
+    border-bottom: 1px solid #ffffff1a;
     text-decoration: none;
     color: #fff;
     border-radius: 6px;
@@ -419,8 +419,8 @@
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid #ffffff1a;
+    border-left: 1px solid #ffffff1a;
     border-radius: 16px;
     padding: 30px 26px 34px;
     transition: transform 0.3s var(--ease-out), border-color 0.3s, background 0.3s;
@@ -439,7 +439,7 @@
 }
 
 .bbqCard:last-child {
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid #ffffff1a;
 }
 
 .bbqCard:hover {
@@ -461,7 +461,7 @@
     justify-content: space-between;
     margin-bottom: 22px;
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid #ffffff1a;
 }
 
 .bbqCardTitle {
@@ -500,7 +500,7 @@
     padding: 10px 0 10px 20px;
     position: relative;
     line-height: 1.4;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid #ffffff1a;
     transition: color 0.15s;
 }
 
@@ -532,7 +532,7 @@
     background: #000;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid #ffffff1a;
     border-radius: 20px;
     padding: 44px;
     display: flex;
@@ -608,7 +608,7 @@
     justify-content: space-between;
     align-items: center;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid #ffffff1a;
     border-radius: 12px;
     padding: 16px 20px;
     gap: 16px;
@@ -616,11 +616,11 @@
 }
 
 .bbqPriceRow:nth-child(even) {
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    border-right: 1px solid #ffffff1a;
 }
 
 .bbqPriceRow:nth-last-child(-n+2) {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid #ffffff1a;
 }
 
 .bbqPriceRow:hover {

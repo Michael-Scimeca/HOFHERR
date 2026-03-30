@@ -1,7 +1,7 @@
 .hubWrap {
     margin-top: 48px;
     background: #0d0d0d;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid #ffffff1a;
     border-radius: 20px;
     padding: 32px;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
@@ -87,7 +87,7 @@
     color: var(--red);
     margin: 0 0 24px;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid #ffffff1a;
 }
 
 .receiptItems {

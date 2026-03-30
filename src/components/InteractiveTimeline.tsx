@@ -23,7 +23,7 @@ export default function InteractiveTimeline({ events }: Props) {
     const nodeRefs    = useRef<(SVGGElement | null)[]>([]);
     const iconRefs    = useRef<(HTMLDivElement | null)[]>([]);
     const videoRefs   = useRef<(HTMLVideoElement | null)[]>([]);
-    const audioRefs   = useRef<(HTMLAudioElement | null)[]>([]);
+
 
     const totalH = events.length * STEP_H + 60;
 
@@ -113,16 +113,9 @@ export default function InteractiveTimeline({ events }: Props) {
                         );
                     }
 
-                    // Play video + fire sound when node is reached
+                    // Play video when node is reached
                     const videoEl = videoRefs.current[i];
                     if (videoEl) {
-                        if (!audioRefs.current[i]) {
-                            const audio = new Audio('/sounds/fire-lit.mp3');
-                            audio.volume = 0.1;
-                            audioRefs.current[i] = audio;
-                        }
-                        const fireAudio = audioRefs.current[i]!;
-                        
                         gsap.fromTo(videoEl,
                             { opacity: 0, scale: 0.4 },
                             {
@@ -130,8 +123,6 @@ export default function InteractiveTimeline({ events }: Props) {
                                 scrollTrigger: stConfig,
                                 onStart: () => {
                                     videoEl.play().catch(() => {});
-                                    fireAudio.currentTime = 0;
-                                    fireAudio.play().catch(() => {});
                                 },
                             }
                         );
@@ -146,13 +137,6 @@ export default function InteractiveTimeline({ events }: Props) {
 
         return () => {
             ctx?.revert();
-            // Clean up loose audio objects completely detached from the DOM so they stop when leaving the page
-            audioRefs.current.forEach(audio => {
-                if (audio) {
-                    audio.pause();
-                    audio.currentTime = 0;
-                }
-            });
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [events.length]);

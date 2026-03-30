@@ -6,6 +6,8 @@ import Image from 'next/image';
 import styles from './page.module.css';
 import CustomMap from '@/components/shared/CustomMap';
 
+
+
 /* ─── Location data ─── */
 const LOCATIONS = [
     {
@@ -21,7 +23,7 @@ const LOCATIONS = [
         email: 'butcher@hofherrmeatco.com',
         textLink: 'sms:8474416328&body=Hi%20Hofherr!%20I%20had%20a%20question%20about%20',
         directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093&travelmode=driving',
-        heroImage: '/assets/shop-exterior.jpg',
+        heroImage: '/shops/butcher-shop.jpeg',
         heroAlt: 'Hofherr Meat Co. storefront in Northfield, IL',
         hours: [
             { day: 'Tuesday – Friday', time: '10am – 6pm', open: true },
@@ -87,32 +89,40 @@ export default function VisitClient() {
         <main className={styles.page}>
 
             {/* ── Hero with toggle ── */}
-            <section className={styles.hero} key={loc.id + '-hero'}>
-                <Image
-                    src={loc.heroImage}
-                    alt={loc.heroAlt}
-                    fill
-                    priority
-                    style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
-                    sizes="100vw"
-                />
+            <section className={styles.hero}>
+                <div className={styles.heroImgWrapper}>
+                    <img
+                        src={loc.heroImage}
+                        alt={loc.heroAlt}
+                        className={styles.heroImg}
+                        data-parallax="inset"
+                    />
+                </div>
+
+
+
                 <div className={styles.heroOverlay} />
                 <div className={styles.heroInner}>
                     <p className={styles.eyebrow}>Visit Us</p>
                     <h1 className={styles.headline}>{loc.name}</h1>
                     <p className={styles.sub}>{loc.shortAddr}</p>
 
-                    {/* Toggle pills */}
-                    <div className={styles.toggleBar}>
-                        {LOCATIONS.map((l, i) => (
-                            <button
-                                key={l.id}
-                                className={`${styles.toggleBtn} ${i === active ? styles.toggleActive : ''}`}
-                                onClick={() => setActive(i)}
-                            >
-                                {l.label}
-                            </button>
-                        ))}
+                    {/* Controls row */}
+                    <div className={styles.heroControls}>
+                        {/* Toggle pills */}
+                        <div className={styles.toggleBar}>
+                            {LOCATIONS.map((l, i) => (
+                                <button
+                                    key={l.id}
+                                    className={`${styles.toggleBtn} ${i === active ? styles.toggleActive : ''}`}
+                                    onClick={() => setActive(i)}
+                                >
+                                    {l.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* CTA */}
                         <Link
                             href={`/online-orders?store=${loc.id}`}
                             className={`btn btn-primary ${styles.heroShopBtn}`}
@@ -179,23 +189,41 @@ export default function VisitClient() {
                     <h2 className={styles.galleryTitle}>See What Awaits You</h2>
                     <p className={styles.gallerySub}>Butcher shop, charcuterie counter, sandwich shop, event space, and a floor-to-ceiling rotisserie oven — all under one roof.</p>
                     <div className={styles.galleryGrid}>
+                        {/* Row 1: Large left + 2 stacked right */}
                         <div className={styles.galleryItemLarge}>
-                            <Image src="/assets/shop-exterior.jpg" alt="Hofherr Meat Co. storefront" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 55vw" data-parallax="inset" />
-                            <div className={styles.galleryCaption}>Our Northfield storefront</div>
+                            <img src="/images/visit/shop-interior.jpg" alt="Inside Hofherr Meat Co." className={styles.galleryImg} data-parallax="inset" />
+                            <div className={styles.galleryCaption}>Inside the Northfield butcher shop</div>
                         </div>
                         <div className={styles.galleryItemSmallA}>
-                            <Image src="/assets/shop-interior.jpg" alt="The butcher display case" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 42vw" data-parallax="inset" />
-                            <div className={styles.galleryCaption}>Hand-selected cuts daily</div>
+                            <img src="/images/visit/sauces-shelf.jpg" alt="Uncle Dougie's BBQ sauces and rubs on the shelf" className={styles.galleryImg} data-parallax="inset" />
+                            <div className={styles.galleryCaption}>Uncle Dougie&apos;s sauces &amp; house rubs</div>
                         </div>
                         <div className={styles.galleryItemSmallB}>
-                            <Image src="/assets/rotisserie-chickens.jpg" alt="Rotisserie chickens in the oven" fill style={{ objectFit: 'cover' }} sizes="(max-width:900px) 100vw, 42vw" data-parallax="inset" />
-                            <div className={styles.galleryCaption}>Floor-to-ceiling rotisserie oven</div>
+                            <img src="/images/visit/hanging-sausages.jpg" alt="House-made sausages hanging to cure" className={styles.galleryImg} data-parallax="inset" />
+                            <div className={styles.galleryCaption}>House-cured links &amp; salumi</div>
                         </div>
+
+                        {/* Row 2: Wide panorama */}
                         <div className={styles.galleryItemWide}>
-                            <Image src="/assets/shop-interior.jpg" alt="Shop interior" fill style={{ objectFit: 'cover' }} sizes="100vw" data-parallax="inset" />
-                            <div className={styles.galleryCaption}>A butcher shop that feels like home</div>
+                            <img src="/images/visit/shop-event.jpg" alt="Community tasting event at Hofherr Meat Co." className={styles.galleryImg} data-parallax="inset" style={{ objectPosition: 'center 15%' }} />
+                            <div className={styles.galleryCaption}>Community events &amp; tastings at the shop</div>
+                        </div>
+
+                        {/* Row 3: 3-up grid */}
+                        <div className={styles.galleryItemThird}>
+                            <img src="/images/visit/sandwich.jpg" alt="Fresh-sliced roast beef sandwich on artisan bread" className={styles.galleryImg} data-parallax="inset" />
+                            <div className={styles.galleryCaption}>Made-to-order deli sandwiches</div>
+                        </div>
+                        <div className={styles.galleryItemThird}>
+                            <img src="/images/visit/rooster-art.jpg" alt="Vintage rooster artwork in the shop" className={styles.galleryImg} data-parallax="inset" />
+                            <div className={styles.galleryCaption}>A shop full of character</div>
+                        </div>
+                        <div className={styles.galleryItemThird}>
+                            <img src="/images/visit/steins.jpg" alt="Collectible steins and decor on display" className={styles.galleryImg} data-parallax="inset" />
+                            <div className={styles.galleryCaption}>Curated decor &amp; collectibles</div>
                         </div>
                     </div>
+
                 </div>
             </section>
         </main>

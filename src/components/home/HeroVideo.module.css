@@ -94,7 +94,7 @@
     max-width: 900px !important;
     aspect-ratio: 16 / 9;
     border-radius: 20px;
-    border: 1px solid #181818;
+    border: 1px solid #ffffff1a;
     box-shadow: var(--shadow-lg);
     z-index: 101;
 }
@@ -178,7 +178,7 @@
     height: 32px;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #ffffff1a;
     border-radius: 50%;
     color: #fff;
     display: flex;

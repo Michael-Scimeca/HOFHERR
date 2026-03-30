@@ -52,7 +52,7 @@
     display: flex;
     align-items: center;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid #ffffff1a;
     border-radius: 8px;
     overflow: hidden;
     width: fit-content;
@@ -101,7 +101,7 @@
 
 .textarea {
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid #ffffff1a;
     color: #fff;
     padding: 14px 16px;
     border-radius: 8px;
@@ -115,7 +115,7 @@
 .textarea:focus {
     outline: none;
     background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: #ffffff1a;
 }
 
 .textarea::placeholder {
@@ -141,7 +141,7 @@
     align-items: center;
     padding: 14px 16px;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid #ffffff1a;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
@@ -151,7 +151,7 @@
 
 .packageOption:hover {
     background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: #ffffff1a;
 }
 
 .packageOptionActive {
@@ -167,7 +167,7 @@
 
 .stepperBtnSm {
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid #ffffff1a;
     color: var(--fg);
     width: 32px;
     height: 32px;
@@ -284,7 +284,7 @@
     color: var(--red);
     margin: 0 0 24px;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid #ffffff1a;
 }
 
 .receiptItems {
@@ -327,7 +327,7 @@
     font-weight: 800;
     color: #fff;
     padding-top: 20px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    border-top: 1px solid #ffffff1a;
     margin-bottom: 16px;
 }
 

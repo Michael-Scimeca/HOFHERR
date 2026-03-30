@@ -1,6 +1,6 @@
 .wrapper {
     background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid #ffffff1a;
     border-radius: 20px;
     padding: 24px 28px;
     margin: 40px auto;
@@ -76,7 +76,7 @@
 
 .legendTooSoon {
     background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid #ffffff1a;
 }
 
 /* Month navigation */
@@ -92,7 +92,7 @@
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid #ffffff1a;
     background: rgba(255, 255, 255, 0.04);
     color: rgba(255, 255, 255, 0.8);
     font-size: 20px;
@@ -106,7 +106,7 @@
 
 .navBtn:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: #ffffff1a;
 }
 
 .navBtn:disabled {
@@ -144,7 +144,7 @@
 
 .dayCell {
     aspect-ratio: 1;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid #ffffff1a;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
     cursor: pointer;
@@ -184,7 +184,7 @@
 .tooSoon:hover {
     transform: none !important;
     background: rgba(255, 255, 255, 0.02) !important;
-    border-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: #ffffff1a !important;
 }
 
 .tooSoonDot {
@@ -192,7 +192,7 @@
     height: 6px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid #ffffff1a;
     position: absolute;
     bottom: 8px;
     left: 50%;
@@ -225,7 +225,7 @@
 .past:hover {
     transform: none !important;
     background: rgba(255, 255, 255, 0.03) !important;
-    border-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: #ffffff1a !important;
 }
 
 .today {
@@ -281,7 +281,7 @@
     margin-top: 16px;
     padding: 20px 24px;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid #ffffff1a;
     border-radius: 14px;
     animation: slideUp 0.2s ease-out;
 }
@@ -381,7 +381,7 @@
     flex-direction: column;
     gap: 6px;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    border: 1px solid #ffffff1a;
     border-radius: 10px;
     padding: 12px 16px;
 }
@@ -414,7 +414,7 @@
 .notifyInput {
     flex: 1;
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid #ffffff1a;
     border-radius: 8px;
     padding: 8px 12px;
     font-size: 13px;
@@ -508,7 +508,7 @@
     color: rgba(255, 255, 255, 0.7);
     font-weight: 600;
     letter-spacing: 0.02em;
-    border-bottom: 1px solid #181818;
+    border-bottom: 1px solid #ffffff1a;
     padding-bottom: 10px;
 }
 
@@ -536,7 +536,7 @@
 .formSelect,
 .formTextarea {
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid #ffffff1a;
     border-radius: 8px;
     padding: 9px 12px;
     font-size: 14px;
@@ -585,7 +585,7 @@
 .cancelBtn {
     padding: 10px 18px;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid #ffffff1a;
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.5);
     font-size: 13px;
@@ -596,7 +596,7 @@
 }
 
 .cancelBtn:hover {
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: #ffffff1a;
     color: rgba(255, 255, 255, 0.8);
 }
 
@@ -650,7 +650,7 @@
     margin-top: 8px;
     padding: 9px 20px;
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid #ffffff1a;
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.6);
     font-size: 13px;

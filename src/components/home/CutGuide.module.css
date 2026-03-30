@@ -124,7 +124,7 @@
     border-radius: 100px;
     color: var(--tag, #666);
     background: color-mix(in srgb, var(--tag, #666) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--tag, #666) 25%, transparent);
+    border: 1px solid #ffffff1a 25%, transparent);
 }
 
 /* Tip */

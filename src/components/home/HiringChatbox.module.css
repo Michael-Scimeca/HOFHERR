@@ -20,7 +20,7 @@
     border: none;
     cursor: pointer;
     transition: all 0.2s var(--ease-out);
-    border-right: 1px solid #181818;
+    border-right: 1px solid #ffffff1a;
     opacity: 0.85;
 }
 

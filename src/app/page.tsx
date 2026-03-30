@@ -3,9 +3,11 @@ import Hero from '@/components/home/Hero';
 import SeasonalBanner from '@/components/home/SeasonalBanner';
 import Specials from '@/components/home/Specials';
 import Process from '@/components/home/Process';
-import QuotesSection from '@/components/home/QuotesSection';
+
 import Newsletter from '@/components/home/Newsletter';
-import AwardsSection from '@/components/home/AwardsSection';
+import dynamic from 'next/dynamic';
+
+const AwardsSection = dynamic(() => import('@/components/home/AwardsSection'), { ssr: true });
 export const metadata: Metadata = {
   title: 'Hofherr Meat Co. | Premium Butcher Shop — Northfield, IL',
   description:
@@ -34,10 +36,6 @@ export default function HomePage() {
       <Specials />
       <Process />
 
-      {/* Strict List - Numbered Index Concept */}
-      <AwardsSection />
-
-      <QuotesSection />
       <Newsletter />
     </>
   );

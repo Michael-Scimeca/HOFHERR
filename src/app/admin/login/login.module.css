@@ -68,7 +68,7 @@
     justify-content: center;
     padding: 40px 48px;
     background: #0B1120;
-    border-left: 1px solid rgba(255,255,255,0.06);
+    border-left: 1px solid #ffffff1a;
 }
 
 .loginCard {
@@ -134,7 +134,7 @@
 
 .input {
     background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.09);
+    border: 1px solid #ffffff1a;
     border-radius: 10px;
     padding: 13px 16px;
     color: #f8fafc;
@@ -209,7 +209,7 @@
     margin-top: 36px;
     text-align: center;
     padding-top: 24px;
-    border-top: 1px solid rgba(255,255,255,0.06);
+    border-top: 1px solid #ffffff1a;
 }
 
 .backLink {
@@ -239,6 +239,6 @@
     .formPanel {
         padding: 40px 24px;
         border-left: none;
-        border-top: 1px solid rgba(255,255,255,0.06);
+        border-top: 1px solid #ffffff1a;
     }
 }

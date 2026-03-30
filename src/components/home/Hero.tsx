@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import styles from './Hero.module.css';
 import HeroVideo from './HeroVideo';
-import HeroParallaxAssets from './HeroParallaxAssets';
-import TrophyCanvas from '@/components/TrophyModel';
+import LazyTrophy from './LazyTrophy';
 
 const SCHEDULE: Record<number, [number, number] | null> = {
     0: [600, 960],   // Sun 10am–4pm
@@ -37,12 +36,13 @@ export default function Hero() {
                     muted
                     loop
                     playsInline
+                    preload="metadata"
                     className={styles.heroVideoPlayer}
                 />
             </div>
 
             <div className={`container ${styles.content}`}>
-                <HeroParallaxAssets />
+
 
                 {/* Eyebrow */}
                 <div className={styles.eyebrow}>
@@ -67,7 +67,7 @@ export default function Hero() {
                             <div className={styles.floatingMedia}>
                                 <HeroVideo />
 
-                                <TrophyCanvas className={styles.heroTrophy} />
+                                <LazyTrophy className={styles.heroTrophy} />
                             </div>
                         </div>
 

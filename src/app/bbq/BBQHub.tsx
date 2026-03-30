@@ -14,8 +14,8 @@ export default function BBQHub({ events, calendarPricing }: Props) {
     // Shared State
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [guests, setGuests] = useState(25);
-    const [meats, setMeats] = useState(2);
-    const [sides, setSides] = useState(2);
+    const [selectedMeats, setSelectedMeats] = useState<string[]>(['Smoked Brisket', 'BBQ Pulled Pork']);
+    const [selectedSides, setSelectedSides] = useState<string[]>(['Pimento Mac n Cheese', 'North Shore Baked Beans']);
     const [charcuterie, setCharcuterie] = useState(false);
     const [pimento, setPimento] = useState(0);
     const [delivery, setDelivery] = useState(false);
@@ -37,6 +37,9 @@ export default function BBQHub({ events, calendarPricing }: Props) {
     const ADD_CHARC_PP = 4;
     const PIMENTO_TRAY = 20;
     const DELIVERY_FEE = 50;
+
+    const meats = selectedMeats.length;
+    const sides = selectedSides.length;
 
     const safeGuests = Math.max(MIN_GUESTS, guests);
     const additionalMeats = Math.max(0, meats - 1);
@@ -68,10 +71,10 @@ export default function BBQHub({ events, calendarPricing }: Props) {
         const cateringData = {
             date: dateLabel,
             guests: safeGuests,
-            packageName: `BBQ Catering (${meats} Meats, ${sides} Sides)`,
+            packageName: `BBQ Catering (${meats} Meat${meats !== 1 ? 's' : ''}, ${sides} Side${sides !== 1 ? 's' : ''})`,
             total: finalEstimate,
-            meats: [`${meats} Meats Selection`],
-            sides: [`${sides} Sides Selection`],
+            meats: selectedMeats,
+            sides: selectedSides,
         };
 
         try {
@@ -95,6 +98,10 @@ export default function BBQHub({ events, calendarPricing }: Props) {
         }
     };
 
+    // Dummy setMeats/setSides that are unused now but required by the interface
+    const setMeats = () => {};
+    const setSides = () => {};
+
     return (
         <section className={styles.hubWrap}>
             <div className={styles.hubGrid}>
@@ -107,8 +114,8 @@ export default function BBQHub({ events, calendarPricing }: Props) {
                     </div>
                     <CateringCalculator 
                         showReceipt={false}
-                        state={{ guests, meats, sides, charcuterie, pimento, delivery, notes }}
-                        setState={{ setGuests, setMeats, setSides, setCharcuterie, setPimento, setDelivery, setNotes }}
+                        state={{ guests, meats, sides, selectedMeats, selectedSides, charcuterie, pimento, delivery, notes }}
+                        setState={{ setGuests, setMeats, setSides, setSelectedMeats, setSelectedSides, setCharcuterie, setPimento, setDelivery, setNotes }}
                     />
                 </div>
 
@@ -152,9 +159,65 @@ export default function BBQHub({ events, calendarPricing }: Props) {
                                     <div className={styles.divider} style={{ margin: '12px 0', height: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
                                     
                                     <div className={styles.rItem}>
-                                        <span>Base Package <small>({meats} Meats, {sides} Sides)</small></span>
+                                        <span>Base Package <small>({meats} Meat{meats !== 1 ? 's' : ''}, {sides} Side{sides !== 1 ? 's' : ''})</small></span>
                                         <span>${totalGuestsCost}</span>
                                     </div>
+
+                                    {/* Show selected meats */}
+                                    {selectedMeats.length > 0 && (
+                                        <div style={{ 
+                                            background: 'rgba(255,255,255,0.03)', 
+                                            borderRadius: '8px', 
+                                            padding: '10px 12px',
+                                            border: '1px solid rgba(255,255,255,0.06)',
+                                        }}>
+                                            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>
+                                                🔥 Meats
+                                            </div>
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                                                {selectedMeats.map(m => (
+                                                    <span key={m} style={{
+                                                        fontSize: '11px',
+                                                        background: 'rgba(204, 13, 29, 0.12)',
+                                                        color: 'rgba(255,255,255,0.85)',
+                                                        padding: '3px 8px',
+                                                        borderRadius: '4px',
+                                                        fontWeight: 600,
+                                                    }}>
+                                                        {m}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Show selected sides */}
+                                    {selectedSides.length > 0 && (
+                                        <div style={{ 
+                                            background: 'rgba(255,255,255,0.03)', 
+                                            borderRadius: '8px', 
+                                            padding: '10px 12px',
+                                            border: '1px solid rgba(255,255,255,0.06)',
+                                        }}>
+                                            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>
+                                                🥗 Sides
+                                            </div>
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                                                {selectedSides.map(s => (
+                                                    <span key={s} style={{
+                                                        fontSize: '11px',
+                                                        background: 'rgba(46, 204, 113, 0.12)',
+                                                        color: 'rgba(255,255,255,0.85)',
+                                                        padding: '3px 8px',
+                                                        borderRadius: '4px',
+                                                        fontWeight: 600,
+                                                    }}>
+                                                        {s}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
 
                                     {charcuterie && (
                                         <div className={styles.rItem}>
@@ -183,6 +246,22 @@ export default function BBQHub({ events, calendarPricing }: Props) {
                                     <span style={{ fontSize: '24px', color: '#2ecc71' }}>${finalEstimate.toLocaleString()}</span>
                                 </div>
 
+                                {/* Validation warning */}
+                                {(selectedMeats.length === 0 || selectedSides.length === 0) && (
+                                    <div style={{
+                                        background: 'rgba(217, 119, 6, 0.1)',
+                                        border: '1px solid rgba(217, 119, 6, 0.25)',
+                                        borderRadius: '8px',
+                                        padding: '10px 14px',
+                                        marginBottom: '12px',
+                                        fontSize: '12px',
+                                        color: '#f59e0b',
+                                        fontWeight: 500,
+                                    }}>
+                                        ⚠ Please select at least 1 meat and 1 side to continue.
+                                    </div>
+                                )}
+
                                 {showForm ? (
                                     <form onSubmit={handleInquiry} style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', marginBottom: '16px' }}>
                                         <div style={{ marginBottom: '12px' }}>
@@ -197,14 +276,19 @@ export default function BBQHub({ events, calendarPricing }: Props) {
                                             <label style={{ display: 'block', fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>Phone</label>
                                             <input value={phone} onChange={e => setPhone(e.target.value)} style={{ width: '100%', background: '#000', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '8px', borderRadius: '6px' }} />
                                         </div>
-                                        <button className={`btn btn-primary`} type="submit" disabled={isSubmitting} style={{ width: '100%' }}>
+                                        <button className={`btn btn-primary`} type="submit" disabled={isSubmitting || selectedMeats.length === 0 || selectedSides.length === 0} style={{ width: '100%' }}>
                                             {isSubmitting ? 'Sending...' : 'Confirm Inquiry'}
                                         </button>
                                         <button type="button" onClick={() => setShowForm(false)} style={{ width: '100%', background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: '12px', marginTop: '10px', cursor: 'pointer' }}>Cancel</button>
                                     </form>
                                 ) : (
-                                    <button onClick={() => setShowForm(true)} className={`btn btn-primary`} style={{ width: '100%' }}>
-                                        Request This Quote
+                                    <button 
+                                        onClick={() => setShowForm(true)} 
+                                        className={`btn btn-primary`} 
+                                        style={{ width: '100%' }}
+                                        disabled={selectedMeats.length === 0 || selectedSides.length === 0}
+                                    >
+                                        Send Inquiry
                                     </button>
                                 )}
                             </>
