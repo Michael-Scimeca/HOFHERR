@@ -53,8 +53,7 @@ const SECTIONS = [
 const DevNav = () => {
     const [open, setOpen] = useState(false);
 
-    // Only show in development
-    if (process.env.NODE_ENV !== 'development') return null;
+    // Removed environment check per user request
 
     return (
         <div className={styles.floatingNav}>
