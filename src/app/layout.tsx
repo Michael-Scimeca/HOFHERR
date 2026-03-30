@@ -147,7 +147,7 @@ export default async function RootLayout({
                 <Footer />
               </PageTransition>
               <ChatWidgetWrapper />
-              {process.env.NODE_ENV === 'development' && <DevNav />}
+              <DevNav />
               <ParallaxImages />
 
             </CartProvider>

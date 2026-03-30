@@ -10,6 +10,7 @@ const SECTIONS = [
         links: [
             { href: '/', icon: '🏠', label: 'Home' },
             { href: '/our-story', icon: '📖', label: 'Our Story' },
+            { href: '/featured', icon: '⭐', label: 'Featured' },
             { href: '/visit', icon: '📍', label: 'Visit' },
             { href: '/jobs', icon: '💼', label: 'Jobs' },
             { href: '/faq', icon: '❓', label: 'FAQ' },
