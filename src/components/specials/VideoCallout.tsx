@@ -12,44 +12,23 @@ interface VideoCalloutProps {
 }
 
 export default function VideoCallout({ image, video, alt, title, sub }: VideoCalloutProps) {
-    const wrapperRef = useRef<HTMLDivElement>(null);
-    const videoRef   = useRef<HTMLVideoElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        const vid  = videoRef.current;
-        const wrap = wrapperRef.current;
-        if (!vid || !wrap) return;
-
-        // Autoplay
-        vid.play().catch(e => console.error('Autoplay muted prevented:', e));
-
-        // Parallax scroll
-        let rafId: number;
-        const update = () => {
-            if (window.innerWidth <= 1024) {
-                vid.style.transform = 'none';
-                return;
-            }
-            const rect     = wrap.getBoundingClientRect();
-            const vh       = window.innerHeight;
-            const raw      = 1 - rect.bottom / (vh + rect.height);
-            const progress = Math.max(0, Math.min(1, raw));
-            const shift    = (progress - 0.5) * 30; // ±15%
-            vid.style.transform = `translateY(${shift}%)`;
-        };
-
-        const onScroll = () => { cancelAnimationFrame(rafId); rafId = requestAnimationFrame(update); };
-        window.addEventListener('scroll', onScroll, { passive: true });
-        update();
-
-        return () => {
-            window.removeEventListener('scroll', onScroll);
-            cancelAnimationFrame(rafId);
-        };
+        const vid = videoRef.current;
+        if (!vid) return;
+        vid.play().catch(() => {});
     }, []);
 
     return (
-        <div ref={wrapperRef} className={styles.wrapper}>
+        <div className={styles.wrapper}>
+            {/* Static image in normal flow — guarantees the box always has height */}
+            <img
+                src={image}
+                alt={alt}
+                className={styles.posterImg}
+            />
+            {/* Video overlays the image */}
             <video
                 ref={videoRef}
                 src={video}
@@ -59,9 +38,7 @@ export default function VideoCallout({ image, video, alt, title, sub }: VideoCal
                 autoPlay
                 loop
                 className={styles.video}
-            >
-                <img src={image} alt={alt} />
-            </video>
+            />
             {(title || sub) && (
                 <div className={styles.overlay}>
                     {title && <div className={styles.title}>{title}</div>}

@@ -82,10 +82,9 @@ export default function EmberBackground() {
       }
     }
 
-    const particles: P[] = Array.from({ length: 40 }, (_, i) => {
+    const particles: P[] = Array.from({ length: 80 }, (_, i) => {
       const p = make(true)
-      // stagger — each particle starts at a different point in its life
-      p.life = p.maxLife * (1 - i / 40) * Math.random()
+      p.life = p.maxLife * (1 - i / 80) * Math.random()
       return p
     })
 
@@ -124,8 +123,8 @@ export default function EmberBackground() {
 
       burstTimer++
       if (burstTimer >= burstCooldown) {
-        burstTimer = 0; burstCooldown = between(25, 80)
-        let n = Math.floor(between(3, 8))
+        burstTimer = 0; burstCooldown = between(20, 60)
+        let n = Math.floor(between(5, 12))
         for (const p of particles) { if (p.dead && n-- > 0) Object.assign(p, make(false)) }
       }
 

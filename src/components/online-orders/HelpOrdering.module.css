@@ -1,7 +1,7 @@
 .section {
-    background: #fff;
+    background: var(--red);
     padding: 96px 0;
-    border-top: 1px solid var(--border-soft);
+    border-top: none;
     margin-top: 96px;
 }
 
@@ -18,14 +18,14 @@
 .title {
     font-size: 2.8rem;
     font-weight: 700;
-    color: var(--text);
+    color: #fff;
     margin-bottom: 20px;
     font-family: var(--font-heading);
 }
 
 .desc {
     font-size: 1.1rem;
-    color: var(--text-2);
+    color: rgba(255, 255, 255, 0.85);
     line-height: 1.6;
     max-width: 480px;
 }
@@ -54,25 +54,25 @@
 }
 
 .btnPrimary {
-    background: var(--red-dark, #600018);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(96, 0, 24, 0.2);
+    background: #fff;
+    color: var(--red);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btnPrimary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(96, 0, 24, 0.3);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
 .btnSecondary {
-    background: #fff;
-    color: var(--text);
-    border: 1px solid var(--border-soft);
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .btnSecondary:hover {
-    background: var(--bg-2);
-    border-color: var(--border);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 .icon {

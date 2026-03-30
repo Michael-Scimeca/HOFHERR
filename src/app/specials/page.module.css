@@ -695,12 +695,16 @@
     .featureGrid .imageCallout,
     .featureGrid .videoCalloutWrap {
         order: -1;
-        max-width: 100%;
-        margin: 0 auto;
+    }
+
+    .featureGrid .videoCalloutWrap,
+    .featureGrid .imageCallout {
+        width: 100%;
     }
 
     .featureGrid .featureCallout {
         max-width: 400px;
+        margin: 0 auto;
     }
 
     .bbqMenuGrid {
