@@ -142,6 +142,10 @@
     line-height: 1.7;
 }
 
+.videoCalloutWrap {
+    width: 100%;
+}
+
 .imageCallout {
     border-radius: 20px;
     overflow: hidden;
@@ -149,6 +153,9 @@
     aspect-ratio: 4 / 3;
     border: 1px solid var(--border);
     background: var(--bg-2);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+    transform: translateZ(0);
 }
 
 .imageCalloutImg {
@@ -170,6 +177,9 @@
     border: 1px solid #ffffff1a;
     aspect-ratio: 21 / 9;
     position: relative;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+    transform: translateZ(0);
 }
 
 .sectionImage {

@@ -31,6 +31,10 @@ export default function ParallaxMedia({
     let rafId: number;
 
     const update = () => {
+      if (window.innerWidth <= 1024) {
+        el.style.transform = 'none';
+        return;
+      }
       const rect = container.getBoundingClientRect();
       const vh   = window.innerHeight;
 

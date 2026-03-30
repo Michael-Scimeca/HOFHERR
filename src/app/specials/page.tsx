@@ -98,7 +98,7 @@ const FALLBACK_SIGNATURES: SignatureProduct[] = [
         title: 'Rotisserie Chicken Dinners',
         sectionLabel: 'Ready Daily · Tue–Sun',
         emoji: '🍗',
-        image: '/assets/rotisserie-chicken.jpg',
+        image: '/assets/rotisserie-chickens.jpg',
         video: '/video-clips/chicken.mp4',
         description: "These tasty, pasture-raised chickens come hot and ready with roasted schmaltzy potatoes. Slow-roasted on our floor-to-ceiling rotisserie — simple seasoning, perfect every time.\n\nAvailable for curbside pickup Tuesday through Sunday. Call ahead — they sell out most days.\n\n🏪 Depot Location: We are serving up beefs from 10:30am until sold out, Monday–Friday, inside the Winnetka Elm St. Metra Station.",
         calloutTitle: 'Hot & Ready',

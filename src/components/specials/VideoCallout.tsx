@@ -26,6 +26,10 @@ export default function VideoCallout({ image, video, alt, title, sub }: VideoCal
         // Parallax scroll
         let rafId: number;
         const update = () => {
+            if (window.innerWidth <= 1024) {
+                vid.style.transform = 'none';
+                return;
+            }
             const rect     = wrap.getBoundingClientRect();
             const vh       = window.innerHeight;
             const raw      = 1 - rect.bottom / (vh + rect.height);
