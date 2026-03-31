@@ -511,7 +511,6 @@ export default async function SpecialsPage() {
             <section className={styles.newsletter}>
                 <div className={`container ${styles.newsletterInner}`}>
                     <div className={styles.nlLeft}>
-                        <div className="section-label">Stay in the Loop</div>
                         <h2 className={styles.nlTitle}>Never Miss a Special</h2>
                         <p className={styles.nlSub}>Get early access to seasonal offerings, holiday pre-orders, and new additions to our lineup every Tuesday morning.</p>
                     </div>

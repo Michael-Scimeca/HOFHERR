@@ -654,8 +654,11 @@
 
 /* ── Newsletter ── */
 .newsletter {
-    background: var(--bg);
-    padding: 48px 24px;
+    background: linear-gradient(rgba(180, 20, 20, 0.85), rgba(140, 10, 10, 0.9)),
+                url('/BG-NEWSLETTER.jpg') center / 300px repeat;
+    padding: 64px 24px;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5), 0 8px 30px rgba(0, 0, 0, 0.5);
 }
 
 .newsletterInner {
