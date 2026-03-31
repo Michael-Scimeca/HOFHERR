@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/sanity/adminClient';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 // Basic in-memory rate limiting to prevent spam
 const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
@@ -75,7 +76,11 @@ export async function POST(req: Request) {
         const avatarOptions = ['/avatars/avator-chickin.png', '/avatars/avator-cow.png', '/avatars/avator-pig.png', '/avatars/avator-sheep.png'];
         const randomAvatar = avatarOptions[Math.floor(Math.random() * avatarOptions.length)];
 
-        // 4. Create customer in Sanity safely
+        // 4. Generate email verification token (24-hour expiry)
+        const verifyToken = crypto.randomBytes(32).toString('hex');
+        const verifyTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
+        // 5. Create customer in Sanity with emailVerified = false
         const customer = await adminClient.create({
             _type: 'customer',
             email: email.toLowerCase(),
@@ -84,11 +89,34 @@ export async function POST(req: Request) {
             phone: phone || '',
             address: address || '',
             avatar: randomAvatar,
+            emailVerified: false,
+            verifyToken,
+            verifyTokenExpiry,
             createdAt: new Date().toISOString(),
         });
 
+        // 6. Send verification email (fire-and-forget)
+        try {
+            const { sendEmail } = await import('@/lib/email');
+            const { buildVerifyEmail } = await import('@/lib/email-templates');
+
+            // Build the verification URL
+            const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL
+                ? `https://${process.env.VERCEL_URL}`
+                : 'http://localhost:3000');
+            const verifyUrl = `${baseUrl}/verify-email?token=${verifyToken}`;
+
+            const { subject, html, text } = buildVerifyEmail(name || '', email, verifyUrl);
+            sendEmail({ to: email.toLowerCase(), subject, html, text })
+                .then(r => console.log('[Register] Verification email:', r.success ? 'sent' : 'skipped'))
+                .catch(err => console.error('[Register] Verification email error:', err));
+        } catch (emailErr) {
+            console.error('[Register] Could not prepare verification email:', emailErr);
+        }
+
         return NextResponse.json({
-            message: 'Registration successful',
+            message: 'Registration successful! Please check your email to verify your account.',
+            requiresVerification: true,
             user: { id: customer._id, email: customer.email, name: customer.name }
         });
 

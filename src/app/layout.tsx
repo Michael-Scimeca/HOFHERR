@@ -110,12 +110,12 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" className={`${yanone.variable} ${inter.variable} ${outfit.variable}`}>
+    <html lang="en" className={`${yanone.variable} ${inter.variable} ${outfit.variable}`} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <Script
           id="google-analytics"
           strategy="afterInteractive"

@@ -237,6 +237,16 @@ export default function CheckoutClient() {
             const res = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(registerData) });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Registration failed');
+            
+            // If email verification is required, show message instead of auto-login
+            if (data.requiresVerification) {
+                setAuthError('');
+                setAuthLoading(false);
+                alert('✅ Account created! Please check your email to verify your account before signing in.');
+                setAuthMode('login');
+                return;
+            }
+
             const sr = await signIn('credentials', { email: registerData.email, password: registerData.password, redirect: false });
             if (sr?.error) throw new Error('Could not auto-login after registration');
             setStep('form');

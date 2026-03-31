@@ -121,7 +121,7 @@ export default async function CateringPage() {
                 <div className={`${styles.marqueeTrack} ${styles.marqueeRow3}`}>
                     {[0, 1].map(i => (
                         <span key={i} className={styles.marqueeText}>
-                            Smoked Brisket <img src="/crowd-ticker/chickeninticker.jpg" alt="" className={styles.marqueeBullet} /> Pulled Pork <img src="/crowd-ticker/chickeninticker.jpg" alt="" className={styles.marqueeBullet} /> Whole Hog <img src="/crowd-ticker/chickeninticker.jpg" alt="" className={styles.marqueeBullet} /> Charcuterie <img src="/crowd-ticker/chickeninticker.jpg" alt="" className={styles.marqueeBullet} />&nbsp;
+                            Smoked Brisket <img src="/crowd-ticker/chickeninticker-original.png" alt="" className={styles.marqueeBullet} /> Pulled Pork <img src="/crowd-ticker/chickeninticker-original.png" alt="" className={styles.marqueeBullet} /> Whole Hog <img src="/crowd-ticker/chickeninticker-original.png" alt="" className={styles.marqueeBullet} /> Charcuterie <img src="/crowd-ticker/chickeninticker-original.png" alt="" className={styles.marqueeBullet} />&nbsp;
                         </span>
                     ))}
                 </div>

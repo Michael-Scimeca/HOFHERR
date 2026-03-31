@@ -79,6 +79,7 @@ export async function POST(req: Request) {
         const coupon = body?.coupon;
         const storeId = sanitize(body?.storeId) || 'butcher'; // 'butcher' or 'depot'
         const paymentMethod = body?.paymentMethod || 'stripe';
+        const tipAmount = typeof body?.tipAmount === 'number' ? Math.max(0, Math.round(body.tipAmount * 100)) : 0; // in cents
 
         if (!Array.isArray(rawItems) || rawItems.length === 0) {
             return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
@@ -87,12 +88,12 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Too many items in cart' }, { status: 400 });
         }
 
-        // Validate contact
+        // Validate contact — require name + at least one of email or phone
         const name = sanitize(contact?.name);
         const email = sanitize(contact?.email, 254);
         const phone = sanitize(contact?.phone, 20);
         const pickup = sanitize(contact?.pickup);
-        if (!name || !email || !phone) {
+        if (!name || (!email && !phone)) {
             return NextResponse.json({ error: 'Missing required contact fields' }, { status: 400 });
         }
 
@@ -171,7 +172,7 @@ export async function POST(req: Request) {
         const discountedSubtotal = Math.max(0, subtotalCents - discountCents);
         const TAX_RATE = 0.0225;
         const taxCents = Math.round(discountedSubtotal * TAX_RATE);
-        const totalCents = discountedSubtotal + taxCents;
+        const totalCents = discountedSubtotal + taxCents + tipAmount;
 
         if (taxCents > 0) {
             lineItems.push({
@@ -181,6 +182,20 @@ export async function POST(req: Request) {
                         name: 'Estimated Sales Tax (2.25%)',
                     },
                     unit_amount: taxCents,
+                },
+                quantity: 1,
+            });
+        }
+
+        // Add tip as a line item if present
+        if (tipAmount > 0) {
+            lineItems.push({
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: 'Tip for the Team 💝',
+                    },
+                    unit_amount: tipAmount,
                 },
                 quantity: 1,
             });
@@ -206,7 +221,8 @@ export async function POST(req: Request) {
                     customer_email: email,
                     pickup_time: pickup,
                     store_id: storeId,
-                    order_note: orderNote.slice(0, 500)
+                    order_note: orderNote.slice(0, 500),
+                    tip_amount: (tipAmount / 100).toFixed(2),
                 }
             };
 
@@ -261,6 +277,7 @@ export async function POST(req: Request) {
                 store_id: storeId,
                 coupon_code: coupon?.code || '',
                 tax_amount: (taxCents / 100).toFixed(2),
+                tip_amount: (tipAmount / 100).toFixed(2),
                 total_amount: (totalCents / 100).toFixed(2),
                 order_note: orderNote.slice(0, 500),
                 order_summary: orderSummary.slice(0, 500),

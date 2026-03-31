@@ -112,6 +112,12 @@ body {
   overflow-x: clip;
   opacity: 0;
   transition: opacity 0.35s ease;
+  animation: bodyFadeIn 0.4s ease 0.3s forwards;
+}
+
+/* Fallback: ensures body becomes visible even if JS hydration fails */
+@keyframes bodyFadeIn {
+  to { opacity: 1; }
 }
 
 /* Ensure all direct page wrappers stack above the embers canvas */

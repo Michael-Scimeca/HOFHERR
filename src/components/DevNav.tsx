@@ -15,6 +15,7 @@ const SECTIONS = [
             { href: '/jobs', icon: '💼', label: 'Jobs' },
             { href: '/faq', icon: '❓', label: 'FAQ' },
             { href: '/gift-cards', icon: '🎁', label: 'Gift Cards' },
+            { href: '/sitemap-page', icon: '🗺️', label: 'Sitemap' },
         ],
     },
     {
@@ -50,7 +51,8 @@ const SECTIONS = [
             { href: '/admin', icon: '📊', label: 'Admin (Dashboard)' },
             { href: '/admin/login', icon: '🔒', label: 'Admin Login' },
             { href: '/studio', icon: '🎨', label: 'Studio' },
-            { href: '/debug-email', icon: '🐛', label: 'Debug Emails' },
+            { href: '/debug-email/preview', icon: '📧', label: 'Email Templates' },
+            { href: '/verify-email', icon: '✅', label: 'Verify Email' },
         ],
     },
     {

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './page.module.css';
-import CustomMap from '@/components/shared/CustomMap';
 
 
 
@@ -21,7 +20,6 @@ const LOCATIONS = [
         phone: '(847) 441-MEAT',
         phoneTel: 'tel:8474416328',
         email: 'butcher@hofherrmeatco.com',
-        textLink: 'sms:8474416328&body=Hi%20Hofherr!%20I%20had%20a%20question%20about%20',
         directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093&travelmode=driving',
         heroImage: '/shops/butcher-shop.jpeg',
         heroAlt: 'Hofherr Meat Co. storefront in Northfield, IL',
@@ -56,7 +54,6 @@ const LOCATIONS = [
         phone: '(847) 441-MEAT',
         phoneTel: 'tel:8474416328',
         email: 'butcher@hofherrmeatco.com',
-        textLink: null,
         directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=780+Elm+St,+Winnetka,+IL+60093&travelmode=driving',
         heroImage: '/shops/winnetka.png',
         heroAlt: 'The Depot at Winnetka Elm Street Metra Station',
@@ -140,14 +137,16 @@ export default function VisitClient() {
                         {/* Map */}
                         <div className={styles.mapCol}>
                             <div className={styles.mapWrap}>
-                                <CustomMap
+                                <iframe
                                     key={loc.id}
-                                    lat={loc.lat}
-                                    lng={loc.lng}
-                                    label={loc.label}
-                                    address={loc.address}
+                                    src={`https://www.google.com/maps?q=${encodeURIComponent(loc.address)}&output=embed`}
+                                    width="100%"
                                     height="100%"
-                                    iconType={loc.iconType}
+                                    style={{ border: 0, borderRadius: 12, filter: 'invert(90%) hue-rotate(180deg) saturate(0.6) brightness(0.8)' }}
+                                    allowFullScreen
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                    title={`Map of ${loc.label}`}
                                 />
                             </div>
                         </div>
@@ -174,7 +173,6 @@ export default function VisitClient() {
                                 <div className={styles.contacts}>
                                     <a href={loc.phoneTel}>📞 {loc.phone}</a>
                                     <a href={`mailto:${loc.email}`}>✉️ {loc.email}</a>
-                                    {loc.textLink && <a href={loc.textLink}>💬 Text us</a>}
                                 </div>
                             </div>
                         </div>

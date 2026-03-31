@@ -83,15 +83,8 @@ export default function Hero() {
                             <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
                         </div>
 
-                        {/* SMS strip */}
-                        <a
-                            href="sms:8474416328&body=Hi%20Hofherr!%20I%20had%20a%20question%20about%20"
-                            className={styles.smsStrip}
-                        >
-                            <span className={styles.smsBubble}>💬</span>
-                            <span>Text us at (847) 441-6328</span>
-                            <span className={styles.smsResponse}>{responseText}</span>
-                        </a>
+
+
                     </div>
                 </div>
 

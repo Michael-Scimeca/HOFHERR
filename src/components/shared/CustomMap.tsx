@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { setOptions, importLibrary } from '@googlemaps/js-api-loader';
 import styles from './CustomMap.module.css';
 
 interface CustomMapProps {
@@ -15,11 +16,44 @@ interface CustomMapProps {
     hideBottomBar?: boolean;
 }
 
-export default function CustomMap({ 
-    lat, 
-    lng, 
-    label, 
-    address, 
+/* ── Dark-themed map style ── */
+const MAP_STYLES: google.maps.MapTypeStyle[] = [
+    { elementType: 'geometry', stylers: [{ color: '#1a1a1a' }] },
+    { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1a1a' }] },
+    { elementType: 'labels.text.fill', stylers: [{ color: '#6b6b6b' }] },
+    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2c2c2c' }] },
+    { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#333' }] },
+    { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#3c3c3c' }] },
+    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0e1626' }] },
+    { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#4e6d8a' }] },
+    { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#222' }] },
+    { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#5a5a5a' }] },
+    { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#1e2e1e' }] },
+    { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#252525' }] },
+    { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#333' }] },
+];
+
+const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
+
+/* Shared loader promise so Google Maps JS loads only once */
+let loadPromise: Promise<void> | null = null;
+let optionsSet = false;
+function ensureLoaded(): Promise<void> {
+    if (!loadPromise) {
+        if (!optionsSet) {
+            setOptions({ key: apiKey, v: 'weekly' });
+            optionsSet = true;
+        }
+        loadPromise = importLibrary('maps').then(() => {});
+    }
+    return loadPromise!;
+}
+
+export default function CustomMap({
+    lat,
+    lng,
+    label,
+    address,
     zoom = 15,
     height = '100%',
     className,
@@ -27,118 +61,103 @@ export default function CustomMap({
     hideBottomBar = false,
 }: CustomMapProps) {
     const mapContainer = useRef<HTMLDivElement>(null);
-    const mapRef = useRef<L.Map | null>(null);
-    const markerRef = useRef<L.Marker | null>(null);
-    // Always holds the LATEST iconType, even if map isn't loaded yet
-    const iconTypeRef = useRef(iconType);
-    iconTypeRef.current = iconType;
+    const mapRef = useRef<google.maps.Map | null>(null);
+    const markerRef = useRef<google.maps.Marker | null>(null);
+    const infoRef = useRef<google.maps.InfoWindow | null>(null);
 
+    /* ── Init map ── */
     useEffect(() => {
         if (!mapContainer.current || mapRef.current) return;
 
         let cancelled = false;
 
-        (async () => {
-            const L = (await import('leaflet')).default;
-            await import('leaflet/dist/leaflet.css');
-
+        ensureLoaded().then(() => {
             if (cancelled || !mapContainer.current) return;
 
-            const map = L.map(mapContainer.current, {
-                center: [lat, lng],
+            const map = new google.maps.Map(mapContainer.current, {
+                center: { lat, lng },
                 zoom,
-                zoomControl: false,
-                attributionControl: false,
-                scrollWheelZoom: false,
-                dragging: true,
-                doubleClickZoom: true,
+                styles: MAP_STYLES,
+                disableDefaultUI: true,
+                zoomControl: true,
+                zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+                scrollwheel: false,
             });
 
-            L.tileLayer(
-                'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png',
-                { maxZoom: 19 }
-            ).addTo(map);
+            const sz = iconType === 'depot' ? 72 : 56;
+            const marker = new google.maps.Marker({
+                map,
+                position: { lat, lng },
+                title: label,
+                icon: {
+                    url: iconType === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png',
+                    scaledSize: new google.maps.Size(sz, sz),
+                    anchor: new google.maps.Point(sz / 2, sz),
+                },
+            });
 
-            L.control.zoom({ position: 'bottomright' }).addTo(map);
+            const info = new google.maps.InfoWindow({
+                content: `<div style="font-family:Inter,sans-serif;padding:8px 4px;">
+                    <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">${label}</div>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#c5a255;text-decoration:underline;">${address}</a>
+                </div>`,
+            });
 
-            // Use iconTypeRef.current so we get whatever the user has selected NOW
-            // (they may have clicked a tab while leaflet was still loading)
-            const makeIcon = (type: string) => {
-                const url = type === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png';
-                const sz = type === 'depot' ? 72 : 56;
-                return L.divIcon({
-                    className: '',
-                    html: `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:url('${url}') center/cover no-repeat;box-shadow:0 3px 10px rgba(0,0,0,0.5);border:3px solid #CC0E1D;"></div>`,
-                    iconSize: [sz, sz],
-                    iconAnchor: [sz / 2, sz],
-                    popupAnchor: [0, -sz],
-                });
-            };
-
-            const marker = L.marker([lat, lng], { icon: makeIcon(iconTypeRef.current) }).addTo(map);
-            marker.bindPopup(
-                `<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#F2F2F2;padding:4px 0;">${label}</div>
-                 <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#A8905F;text-decoration:underline;cursor:pointer;">${address}</a>`,
-                { closeButton: false, className: styles.customPopup }
-            );
+            marker.addListener('click', () => info.open({ anchor: marker, map }));
 
             mapRef.current = map;
             markerRef.current = marker;
-
-            setTimeout(() => map.invalidateSize(), 200);
-        })();
+            infoRef.current = info;
+        });
 
         return () => {
             cancelled = true;
-            if (mapRef.current) {
-                mapRef.current.remove();
-                mapRef.current = null;
-                markerRef.current = null;
-            }
+            if (markerRef.current) markerRef.current.setMap(null);
+            mapRef.current = null;
+            markerRef.current = null;
+            infoRef.current = null;
         };
     }, []);
 
-    // Fires when user switches tabs — updates icon, position, popup
+    /* ── Update on location switch ── */
     useEffect(() => {
         const map = mapRef.current;
         const marker = markerRef.current;
-        if (!map || !marker) return; // map not ready yet; init effect will use iconTypeRef.current
+        const info = infoRef.current;
+        if (!map || !marker) return;
 
-        (async () => {
-            const L = (await import('leaflet')).default;
-            const type = iconTypeRef.current;
-            const url = type === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png';
-            const sz = type === 'depot' ? 72 : 56;
-            marker.setIcon(L.divIcon({
-                className: '',
-                html: `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:url('${url}') center/cover no-repeat;box-shadow:0 3px 10px rgba(0,0,0,0.5);border:3px solid #CC0E1D;"></div>`,
-                iconSize: [sz, sz],
-                iconAnchor: [sz / 2, sz],
-                popupAnchor: [0, -sz],
-            }));
-            map.flyTo([lat, lng], zoom, { duration: 1.2 });
-            marker.setLatLng([lat, lng]);
-            marker.setPopupContent(
-                `<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#fff;padding:4px 0;">${label}</div>
-                 <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:rgba(255,255,255,0.7);text-decoration:underline;cursor:pointer;">${address}</a>`
-            );
-        })();
-    }, [lat, lng, label, address, zoom, iconType]);
+        map.panTo({ lat, lng });
+        marker.setPosition({ lat, lng });
+        marker.setTitle(label);
+
+        const sz = iconType === 'depot' ? 72 : 56;
+        marker.setIcon({
+            url: iconType === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png',
+            scaledSize: new google.maps.Size(sz, sz),
+            anchor: new google.maps.Point(sz / 2, sz),
+        });
+
+        if (info) {
+            info.setContent(`<div style="font-family:Inter,sans-serif;padding:8px 4px;">
+                <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">${label}</div>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#c5a255;text-decoration:underline;">${address}</a>
+            </div>`);
+        }
+    }, [lat, lng, label, address, iconType]);
 
     return (
         <div className={`${styles.container} ${className || ''}`} style={{ height }}>
             <div ref={mapContainer} className={styles.canvas} />
-            <div className={styles.overlay} />
             {!hideBottomBar && (
                 <div className={styles.bottomBar}>
                     <span className={styles.bottomLabel}>{label}</span>
-                    <a 
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                    <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className={styles.bottomLink}
                     >
-                        Get Map Direction
+                        Get Directions
                     </a>
                 </div>
             )}

@@ -53,6 +53,24 @@ export default {
             title: 'Password Reset Token Expiry',
             type: 'datetime',
             hidden: true,
+        },
+        {
+            name: 'emailVerified',
+            title: 'Email Verified',
+            type: 'boolean',
+            initialValue: false,
+        },
+        {
+            name: 'verifyToken',
+            title: 'Email Verification Token',
+            type: 'string',
+            hidden: true,
+        },
+        {
+            name: 'verifyTokenExpiry',
+            title: 'Verification Token Expiry',
+            type: 'datetime',
+            hidden: true,
         }
     ],
     indexes: [

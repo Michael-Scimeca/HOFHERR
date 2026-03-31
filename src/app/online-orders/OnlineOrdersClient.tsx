@@ -858,6 +858,60 @@ export default function CustomOrdersPage({
     const [orderNote, setOrderNote] = useState('');
     const [restockToast, setRestockToast] = useState(false);
 
+    // ── Favorites State ──────────────────────────────────────────────────
+    const [favorites, setFavorites] = useState<Set<string>>(new Set());
+    const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
+    // Hydrate favorites from localStorage after mount
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('hofherr_favorites');
+            if (saved) setFavorites(new Set(JSON.parse(saved)));
+        } catch { /* ignore */ }
+    }, []);
+
+    const toggleFavorite = useCallback((itemName: string) => {
+        setFavorites(prev => {
+            const next = new Set(prev);
+            if (next.has(itemName)) next.delete(itemName); else next.add(itemName);
+            try { localStorage.setItem('hofherr_favorites', JSON.stringify([...next])); } catch { }
+            return next;
+        });
+    }, []);
+
+    // ── Tip State ────────────────────────────────────────────────────────
+    const [tipPercent, setTipPercent] = useState<number | null>(null);
+    const [tipCustom, setTipCustom] = useState('');
+    const [showTipCustom, setShowTipCustom] = useState(false);
+
+    // ── Recently Ordered State ───────────────────────────────────────────
+    const [recentlyOrdered, setRecentlyOrdered] = useState<{ name: string; price: string }[]>([]);
+    const [showRecentlyOrdered, setShowRecentlyOrdered] = useState(true);
+
+    // Load recently ordered items from localStorage
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('hofherr_order_history');
+            if (saved) {
+                const history: { items: { name: string; price: string }[] }[] = JSON.parse(saved);
+                // Flatten and deduplicate, most recent first
+                const seen = new Set<string>();
+                const items: { name: string; price: string }[] = [];
+                for (const order of history) {
+                    for (const item of order.items) {
+                        if (!seen.has(item.name)) {
+                            seen.add(item.name);
+                            items.push(item);
+                        }
+                        if (items.length >= 8) break;
+                    }
+                    if (items.length >= 8) break;
+                }
+                setRecentlyOrdered(items);
+            }
+        } catch { }
+    }, []);
+
     const switchStore = (store: 'butcher' | 'depot') => {
         const audio = new Audio('/togglesound.mp3');
         audio.volume = 0.04;
@@ -1111,7 +1165,16 @@ export default function CustomOrdersPage({
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Registration failed');
             
-            // Sign in immediately via NextAuth
+            // If email verification is required, show message instead of auto-login
+            if (data.requiresVerification) {
+                setAuthError('');
+                setAuthLoading(false);
+                alert('✅ Account created! Please check your email to verify your account before signing in.');
+                setAuthMode('login');
+                return;
+            }
+
+            // Fallback: Sign in immediately via NextAuth (if verification not required)
             const signInRes = await signIn('credentials', {
                 email: registerData.email,
                 password: registerData.password,
@@ -1310,6 +1373,14 @@ export default function CustomOrdersPage({
         } catch { /* storage full or unavailable */ }
     }, [cart, activeStore]);
 
+    // ── Tip Amount (computed after cart is declared) ─────────────────────
+    const tipAmount = useMemo(() => {
+        const subtotal = cart.reduce((s: number, i: CartItem) => s + parseItemPrice(i.price) * i.qty, 0);
+        if (showTipCustom && tipCustom) return parseFloat(tipCustom) || 0;
+        if (tipPercent !== null) return Math.round(subtotal * tipPercent) / 100;
+        return 0;
+    }, [cart, tipPercent, tipCustom, showTipCustom]);
+
     // ── Load restock submissions from localStorage after hydration ──
     useEffect(() => {
         try {
@@ -1464,17 +1535,49 @@ export default function CustomOrdersPage({
                         customerId: user?.id,
                         coupon: appliedCoupon,
                         storeId: activeStore,
-                        paymentMethod
+                        paymentMethod,
+                        tipAmount: tipAmount,
                     }),
                 });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error ?? 'Checkout failed');
+
+                // Save order to history for "Recently Ordered" feature
+                try {
+                    const historyKey = 'hofherr_order_history';
+                    const saved = localStorage.getItem(historyKey);
+                    const history = saved ? JSON.parse(saved) : [];
+                    history.unshift({
+                        items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+                        date: new Date().toISOString(),
+                        store: activeStore,
+                    });
+                    // Keep only last 10 orders
+                    localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
+                } catch { /* ignore */ }
+
                 // Clear cart from localStorage on successful checkout
                 try {
                     const cartKey = activeStore === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
                     localStorage.removeItem(cartKey);
                     localStorage.removeItem('hofherr_cart');
                 } catch { /* ignore */ }
+
+                // Send order confirmation email
+                try {
+                    await fetch('/api/order-confirmation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty, note: i.note })),
+                            contact: form,
+                            orderNote,
+                            storeId: activeStore,
+                            tipAmount,
+                            coupon: appliedCoupon,
+                        }),
+                    });
+                } catch { /* non-blocking */ }
                 
                 if (data.url) {
                     window.location.href = data.url; // redirect to Stripe or success
@@ -1499,11 +1602,19 @@ export default function CustomOrdersPage({
             .filter(cat => cat.items.length > 0)
         : baseCategories;
 
-    const hiddenCount = filteredBySearch.reduce((sum, cat) => 
+    // Apply favorites filter
+    const filteredByFavorites = showFavoritesOnly
+        ? filteredBySearch.map(cat => ({
+            ...cat,
+            items: cat.items.filter(item => favorites.has(item.name)),
+        })).filter(cat => cat.items.length > 0)
+        : filteredBySearch;
+
+    const hiddenCount = filteredByFavorites.reduce((sum, cat) => 
         sum + cat.items.filter(item => item.inStock === false).length, 0
     );
 
-    const visibleCategories = filteredBySearch.map(cat => hideOutOfStock
+    const visibleCategories = filteredByFavorites.map(cat => hideOutOfStock
         ? { ...cat, items: cat.items.filter(item => item.inStock !== false) }
         : cat
     ).filter(cat => cat.items.length > 0);
@@ -1815,13 +1926,22 @@ export default function CustomOrdersPage({
                                 </div>
                             )}
                         </div>
-                        <button
-                            className={`${styles.hideOosBtn} ${hideOutOfStock ? styles.hideOosBtnActive : ''}`}
-                            onClick={() => setHideOutOfStock(h => !h)}
-                            type="button"
-                        >
-                            {hideOutOfStock ? `SHOW ALL (${hiddenCount})` : 'HIDE OUT OF STOCK'}
-                        </button>
+                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                            <button
+                                className={`${styles.favFilterBtn} ${showFavoritesOnly ? styles.favFilterBtnActive : ''}`}
+                                onClick={() => setShowFavoritesOnly(f => !f)}
+                                type="button"
+                            >
+                                {showFavoritesOnly ? '🔥 SHOWING FAVORITES' : `🔥 FAVORITES (${favorites.size})`}
+                            </button>
+                            <button
+                                className={`${styles.hideOosBtn} ${hideOutOfStock ? styles.hideOosBtnActive : ''}`}
+                                onClick={() => setHideOutOfStock(h => !h)}
+                                type="button"
+                            >
+                                {hideOutOfStock ? `SHOW ALL (${hiddenCount})` : 'HIDE OUT OF STOCK'}
+                            </button>
+                        </div>
                     </div>
 
                     {/* Horizontal custom scrollbar (mobile) */}
@@ -1888,6 +2008,34 @@ export default function CustomOrdersPage({
                         </div>
                     )}
 
+                    {/* ── Recently Ordered Section ── */}
+                    {recentlyOrdered.length > 0 && !searchQuery.trim() && !showFavoritesOnly && showRecentlyOrdered && (
+                        <div className={styles.recentlyOrdered}>
+                            <div className={styles.recentlyOrderedHeader}>
+                                <div className={styles.recentlyOrderedTitle}>
+                                    🔄 Order Again
+                                </div>
+                                <button className={styles.recentlyOrderedToggle} onClick={() => setShowRecentlyOrdered(false)}>Hide</button>
+                            </div>
+                            <div className={styles.recentlyOrderedItems}>
+                                {recentlyOrdered.map(item => (
+                                    <div key={item.name} className={styles.recentlyOrderedItem}>
+                                        <div className={styles.recentlyOrderedItemInfo}>
+                                            <div className={styles.recentlyOrderedItemName}>{item.name}</div>
+                                            <div className={styles.recentlyOrderedItemPrice}>{item.price}</div>
+                                        </div>
+                                        <button
+                                            className={styles.recentlyOrderedAddBtn}
+                                            onClick={() => openModal({ name: item.name, price: item.price })}
+                                        >
+                                            + Add
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     <div className={styles.productsWrap}>
                     {searchQuery.trim() && visibleCategories.length === 0 && (
                         <div className={styles.noResults}>
@@ -1912,6 +2060,15 @@ export default function CustomOrdersPage({
                             <div className={styles.itemList}>
                                 {cat.items.map(item => (
                                     <div key={item.name} className={`${styles.item} ${item.inStock === false ? styles.itemOut : ''}`}>
+                                        {/* Favorite Flame */}
+                                        <button
+                                            className={`${styles.favBtn} ${favorites.has(item.name) ? styles.favBtnActive : ''}`}
+                                            onClick={() => toggleFavorite(item.name)}
+                                            aria-label={favorites.has(item.name) ? 'Remove from favorites' : 'Add to favorites'}
+                                            type="button"
+                                        >
+                                            {favorites.has(item.name) ? '🔥' : '🔥'}
+                                        </button>
                                         {item.image && <img src={item.image} alt={item.name} className={styles.itemThumb} />}
                                         <div className={styles.itemInfo}>
                                             <div className={styles.itemName}>
@@ -2137,6 +2294,54 @@ export default function CustomOrdersPage({
                                         />
                                     </div>
 
+                                    {/* Tip Selector in Drawer */}
+                                    <div className={styles.drawerSection}>
+                                        <div className={styles.tipLabel}>💝 Add a Tip for Our Team</div>
+                                        <div className={styles.tipGrid}>
+                                            {[0, 10, 15, 20].map(pct => (
+                                                <button
+                                                    key={pct}
+                                                    type="button"
+                                                    className={`${styles.tipBtn} ${!showTipCustom && tipPercent === pct ? styles.tipBtnActive : ''}`}
+                                                    onClick={() => {
+                                                        setTipPercent(pct);
+                                                        setShowTipCustom(false);
+                                                        setTipCustom('');
+                                                    }}
+                                                >
+                                                    {pct === 0 ? 'None' : `${pct}%`}
+                                                </button>
+                                            ))}
+                                            <button
+                                                type="button"
+                                                className={`${styles.tipBtn} ${showTipCustom ? styles.tipBtnActive : ''}`}
+                                                onClick={() => {
+                                                    setShowTipCustom(true);
+                                                    setTipPercent(null);
+                                                }}
+                                            >
+                                                Custom
+                                            </button>
+                                        </div>
+                                        {showTipCustom && (
+                                            <div className={styles.tipCustomRow}>
+                                                <span style={{ color: 'var(--fg)', fontWeight: 700 }}>$</span>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    step="0.50"
+                                                    placeholder="0.00"
+                                                    className={styles.tipCustomInput}
+                                                    value={tipCustom}
+                                                    onChange={e => setTipCustom(e.target.value)}
+                                                />
+                                            </div>
+                                        )}
+                                        {tipAmount > 0 && (
+                                            <div className={styles.tipAmount}>Tip: {fmtTotal(tipAmount)}</div>
+                                        )}
+                                    </div>
+
                                     {/* Upsell strip */}
                                     {(() => {
                                         const cartNames = new Set(cart.map(i => i.name));
@@ -2193,9 +2398,15 @@ export default function CustomOrdersPage({
                                         <span>Estimated Tax</span>
                                         <strong>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0) * TAX_RATE)}</strong>
                                     </div>
+                                    {tipAmount > 0 && (
+                                        <div className={styles.drawerTotalRow}>
+                                            <span>Tip</span>
+                                            <strong>{fmtTotal(tipAmount)}</strong>
+                                        </div>
+                                    )}
                                     <div className={`${styles.drawerTotalRow} ${styles.drawerFinalTotal}`}>
                                         <span>Estimated Total</span>
-                                        <strong>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0) * (1 + TAX_RATE))}</strong>
+                                        <strong>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0) * (1 + TAX_RATE) + tipAmount)}</strong>
                                     </div>
                                     <p className={styles.drawerPriceNote}>
                                         *Final total is determined by exact scale weight at pickup.<br/>
@@ -2612,6 +2823,54 @@ export default function CustomOrdersPage({
                                                 </span>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    {/* ── Tip Selector ── */}
+                                    <div className={styles.tipSection}>
+                                        <div className={styles.tipLabel}>💝 Add a Tip for Our Team</div>
+                                        <div className={styles.tipGrid}>
+                                            {[0, 10, 15, 20].map(pct => (
+                                                <button
+                                                    key={pct}
+                                                    type="button"
+                                                    className={`${styles.tipBtn} ${!showTipCustom && tipPercent === pct ? styles.tipBtnActive : ''}`}
+                                                    onClick={() => {
+                                                        setTipPercent(pct);
+                                                        setShowTipCustom(false);
+                                                        setTipCustom('');
+                                                    }}
+                                                >
+                                                    {pct === 0 ? 'None' : `${pct}%`}
+                                                </button>
+                                            ))}
+                                            <button
+                                                type="button"
+                                                className={`${styles.tipBtn} ${showTipCustom ? styles.tipBtnActive : ''}`}
+                                                onClick={() => {
+                                                    setShowTipCustom(true);
+                                                    setTipPercent(null);
+                                                }}
+                                            >
+                                                Custom
+                                            </button>
+                                        </div>
+                                        {showTipCustom && (
+                                            <div className={styles.tipCustomRow}>
+                                                <span style={{ color: 'var(--fg)', fontWeight: 700 }}>$</span>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    step="0.50"
+                                                    placeholder="0.00"
+                                                    className={styles.tipCustomInput}
+                                                    value={tipCustom}
+                                                    onChange={e => setTipCustom(e.target.value)}
+                                                />
+                                            </div>
+                                        )}
+                                        {tipAmount > 0 && (
+                                            <div className={styles.tipAmount}>Tip: {fmtTotal(tipAmount)}</div>
+                                        )}
                                     </div>
 
                                     {stripeError && <p className={styles.stripeError}>⚠️ {stripeError}</p>}

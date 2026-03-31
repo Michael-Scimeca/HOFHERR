@@ -20,6 +20,18 @@ export async function POST(request: Request) {
         // Use the shared Mailchimp helper — it gracefully warns if creds aren't set yet
         await syncMailchimpSubscription(email.trim().toLowerCase(), true, name?.trim() || undefined);
 
+        // Send confirmation email (fire-and-forget)
+        try {
+            const { sendEmail } = await import('@/lib/email');
+            const { buildNewsletterWelcomeEmail } = await import('@/lib/email-templates');
+            const { subject, html, text } = buildNewsletterWelcomeEmail(email, name);
+            sendEmail({ to: email.trim().toLowerCase(), subject, html, text })
+                .then(r => console.log('[Newsletter] Confirmation email:', r.success ? 'sent' : 'skipped'))
+                .catch(err => console.error('[Newsletter] Confirmation email error:', err));
+        } catch (emailErr) {
+            console.error('[Newsletter] Could not prepare confirmation email:', emailErr);
+        }
+
         return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error('[newsletter-signup] Error:', error);

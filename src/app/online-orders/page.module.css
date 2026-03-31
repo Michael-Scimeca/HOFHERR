@@ -2183,6 +2183,8 @@
     border-radius: 8px;
     padding: 10px 14px;
     margin: 0;
+    grid-column: 1 / -1;
+    width: 100%;
 }
 
 /* Disabled button */
@@ -3165,4 +3167,379 @@
     background: rgba(139, 0, 0, 0.05);
     background-color: var(--bg-hover);
     transform: translateY(-1px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FAVORITES
+   ═══════════════════════════════════════════════════════════════════════ */
+.favBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 18px;
+    line-height: 1;
+    opacity: 0.3;
+    filter: grayscale(1);
+    transition: opacity 0.2s, filter 0.2s, transform 0.2s;
+    flex-shrink: 0;
+}
+.favBtn:hover {
+    opacity: 1;
+    filter: grayscale(0);
+    transform: scale(1.2);
+}
+.favBtnActive {
+    opacity: 1;
+    filter: grayscale(0);
+    animation: favPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes favPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+/* Favorites filter toggle in search bar area */
+.favFilterBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: none;
+    background: #333;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    font-family: inherit;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, opacity 0.15s;
+}
+.favFilterBtn:hover {
+    opacity: 0.85;
+}
+.favFilterBtnActive {
+    background: #e74c3c;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RECENTLY ORDERED SECTION
+   ═══════════════════════════════════════════════════════════════════════ */
+.recentlyOrdered {
+    margin-bottom: 8px;
+    border: 1px solid rgba(197,162,85,0.25);
+    border-radius: 12px;
+    overflow: hidden;
+    background: color-mix(in srgb, #c5a255 5%, var(--bg-2));
+}
+
+.recentlyOrderedHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 10px;
+}
+
+.recentlyOrderedTitle {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #c5a255;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.recentlyOrderedToggle {
+    font-size: 10px;
+    color: var(--fg-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+.recentlyOrderedToggle:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.recentlyOrderedItems {
+    display: flex;
+    gap: 8px;
+    padding: 0 20px 14px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.recentlyOrderedItems::-webkit-scrollbar { display: none; }
+
+.recentlyOrderedItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    min-width: 200px;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+}
+.recentlyOrderedItem:hover {
+    border-color: #c5a255;
+}
+
+.recentlyOrderedItemInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.recentlyOrderedItemName {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fg);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recentlyOrderedItemPrice {
+    font-size: 11px;
+    color: var(--fg-muted);
+}
+
+.recentlyOrderedAddBtn {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1.5px solid #c5a255;
+    background: none;
+    color: #c5a255;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+.recentlyOrderedAddBtn:hover {
+    background: #c5a255;
+    color: #000;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TIP SELECTOR 
+   ═══════════════════════════════════════════════════════════════════════ */
+.tipSection {
+    margin-top: 4px;
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+}
+
+.tipLabel {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tipGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+}
+
+.tipBtn {
+    padding: 8px 4px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--fg-muted);
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+}
+.tipBtn:hover {
+    border-color: var(--red);
+    color: var(--fg);
+}
+.tipBtnActive {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+}
+
+.tipCustomRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.tipCustomInput {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.tipCustomInput:focus {
+    border-color: var(--red);
+}
+
+.tipAmount {
+    font-size: 13px;
+    font-weight: 700;
+    color: #c5a255;
+    text-align: right;
+    margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ORDER STATUS TRACKING
+   ═══════════════════════════════════════════════════════════════════════ */
+.orderTracker {
+    padding: 30px 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.orderTrackerTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--fg);
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.orderTrackerSub {
+    font-size: 13px;
+    color: var(--fg-muted);
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.trackingSteps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    padding: 0 10px;
+    margin-bottom: 32px;
+}
+
+.trackingSteps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    right: 30px;
+    height: 3px;
+    background: var(--border);
+    z-index: 0;
+}
+
+.trackingStep {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.trackingDot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-2);
+    border: 3px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.3s;
+}
+
+.trackingDotActive {
+    background: var(--red);
+    border-color: var(--red);
+    box-shadow: 0 0 0 6px rgba(209,72,54,0.2);
+}
+
+.trackingDotDone {
+    background: #27ae60;
+    border-color: #27ae60;
+}
+
+.trackingLabel {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--fg-muted);
+    text-align: center;
+    max-width: 70px;
+}
+
+.trackingLabelActive {
+    color: var(--red);
+}
+
+.trackingProgress {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    height: 3px;
+    background: #27ae60;
+    z-index: 0;
+    transition: width 0.5s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DRAWERUSER (existing class enhancements)
+   ═══════════════════════════════════════════════════════════════════════ */
+.drawerUser {
+    font-size: 11px;
+    color: var(--fg-muted);
+    margin-top: 4px;
+}
+.drawerUserLinks {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+}
+.drawerUserLinks a,
+.drawerUserLinks button {
+    font-size: 11px;
+    color: #c5a255;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0;
+    text-decoration: underline;
+}
+.drawerUserLinks a:hover,
+.drawerUserLinks button:hover {
+    color: #fff;
 }

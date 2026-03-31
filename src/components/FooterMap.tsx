@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import styles from './FooterMap.module.css';
-import CustomMap from './shared/CustomMap';
 
 /* ─── Location data ─── */
 const LOCATIONS = [
@@ -53,13 +52,15 @@ export default function FooterMap() {
 
             {/* Map container */}
             <div className={styles.mapWrap}>
-                <CustomMap 
-                    lat={loc.lat} 
-                    lng={loc.lng} 
-                    label={loc.label} 
-                    address={loc.address} 
-                    iconType={loc.id as 'butcher' | 'depot'}
-                    hideBottomBar={true}
+                <iframe
+                    src={`https://www.google.com/maps?q=${encodeURIComponent(loc.address)}&output=embed`}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) saturate(0.6) brightness(0.8)' }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title={`Map of ${loc.label}`}
                 />
 
                 {/* Directions CTA */}
