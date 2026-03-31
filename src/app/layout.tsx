@@ -15,7 +15,7 @@ import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import ScrollToTop from "@/components/ScrollToTop";
 import SmoothScroll from "@/components/SmoothScroll";
-import PageTransition from "@/components/PageTransition";
+import PageTransition, { TransitionProvider } from "@/components/PageTransition";
 import { auth } from "@/auth";
 import ParallaxImages from "@/components/ParallaxImages";
 
@@ -136,6 +136,7 @@ export default async function RootLayout({
         <SiteSettingsProvider settings={settings}>
           <ClientProviders session={session}>
             <CartProvider>
+              <TransitionProvider>
               <JsonLd />
               <SmoothScroll />
               <ScrollToTop />
@@ -149,7 +150,7 @@ export default async function RootLayout({
               <ChatWidgetWrapper />
               <DevNav />
               <ParallaxImages />
-
+              </TransitionProvider>
             </CartProvider>
           </ClientProviders>
         </SiteSettingsProvider>

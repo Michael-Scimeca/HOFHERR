@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import TransitionLink from './TransitionLink';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
@@ -207,7 +208,7 @@ export default function Navbar() {
 
     const storePills = (
         <div className={styles.storeStatusWrap}>
-            <Link
+            <TransitionLink
                 href="/online-orders?store=butcher"
                 className={`${styles.storeStatus} ${styles[butcherStatus.status]}`}
             >
@@ -220,8 +221,8 @@ export default function Navbar() {
                         {butcherStatus.todayHours.replace(/:00/g, '').replace(/ /g, '').replace('–', '-')}
                     </span>
                 )}
-            </Link>
-            <Link
+            </TransitionLink>
+            <TransitionLink
                 href="/online-orders?store=depot"
                 className={`${styles.storeStatus} ${styles[depotStatus.status]}`}
             >
@@ -234,7 +235,7 @@ export default function Navbar() {
                         {depotStatus.todayHours.replace(/:00/g, '').replace(/ /g, '').replace('–', '-')}
                     </span>
                 )}
-            </Link>
+            </TransitionLink>
         </div>
     );
 
@@ -242,7 +243,7 @@ export default function Navbar() {
         <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
             <div className={styles.inner}>
                 {/* Logo */}
-                <Link href="/" className={styles.logo} onClick={() => setMobileOpen(false)}>
+                <TransitionLink href="/" className={styles.logo} onClick={() => setMobileOpen(false)}>
                     <Image
                         src="/assets/logo.svg"
                         alt="Hofherr Meat Co."
@@ -251,7 +252,7 @@ export default function Navbar() {
                         style={{ objectFit: 'contain', width: 'auto', height: '56px' }}
                         priority
                     />
-                </Link>
+                </TransitionLink>
 
                 {/* Desktop Nav */}
                 <nav className={styles.nav} ref={navRef}>
@@ -262,14 +263,14 @@ export default function Navbar() {
                         />
                     )}
                     {NAV_ITEMS.map((item) => (
-                        <Link
+                        <TransitionLink
                             key={item.label}
                             href={item.href}
                             ref={el => { if (el) linkRefs.current.set(item.label, el); }}
                             className={`${styles.navLink} ${isActive(item.href) ? styles.navActive : ''}`}
                         >
                             {item.label}
-                        </Link>
+                        </TransitionLink>
                     ))}
                     {showOwnerPortal && (
                         <Link href="/admin" className={`${styles.navLink} ${isActive('/admin') ? styles.navActive : ''}`} style={{ color: 'var(--red)', fontWeight: 'bold' }}>
@@ -304,7 +305,7 @@ export default function Navbar() {
                             </div>
                         )}
 
-                        <Link href="/online-orders" className={styles.cta} onClick={() => setMobileOpen(false)}>Order Online</Link>
+                        <TransitionLink href="/online-orders" className={styles.cta} onClick={() => setMobileOpen(false)}>Order Online</TransitionLink>
 
                         <NavCartIcon />
 
@@ -339,13 +340,13 @@ export default function Navbar() {
                     <div className={styles.mobileTopGroup}>
                         {NAV_ITEMS.map((item) => (
                             <div key={item.label} className={styles.mobileSection}>
-                                <Link
+                                <TransitionLink
                                     href={item.href}
                                     className={`${styles.mobilePrimary} ${isActive(item.href) ? styles.mobileActive : ''}`}
                                     onClick={() => setMobileOpen(false)}
                                 >
                                     {item.label}
-                                </Link>
+                                </TransitionLink>
                             </div>
                         ))}
                         {showOwnerPortal && (

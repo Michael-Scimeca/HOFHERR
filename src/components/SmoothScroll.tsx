@@ -26,6 +26,9 @@ export default function SmoothScroll() {
 
         requestAnimationFrame(raf);
 
+        // Scroll to top on route change
+        lenis.scrollTo(0, { immediate: true });
+
         return () => {
             lenis.destroy();
         };
