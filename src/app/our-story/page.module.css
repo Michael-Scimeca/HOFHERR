@@ -411,10 +411,12 @@
 
 /* ── CTA ── */
 .cta {
-    background: var(--red);
-    padding: 48px 24px;
+    background: linear-gradient(rgba(180, 20, 20, 0.85), rgba(140, 10, 10, 0.9)),
+                url('/BG-NEWSLETTER.jpg') center / 300px repeat;
+    padding: 64px 24px;
     text-align: center;
     color: #fff;
+    position: relative;
 }
 
 .cta h2 {
@@ -435,6 +437,30 @@
     gap: 16px;
     justify-content: center;
     flex-wrap: wrap;
+}
+
+/* Invert primary button on red background */
+.ctaBtns :global(.btn-primary) {
+    background: #fff;
+    color: var(--red);
+    border-color: #fff;
+}
+
+.ctaBtns :global(.btn-primary:hover) {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+}
+
+.ctaBtns :global(.btn-secondary) {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    color: #fff;
+}
+
+.ctaBtns :global(.btn-secondary:hover) {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
 }
 
 /* ── Responsive ── */

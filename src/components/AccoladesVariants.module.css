@@ -8,6 +8,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    margin-top: -100px;
 }
 
 /* Wrapper matches navbar: 1200px, centered, 24px side padding */
