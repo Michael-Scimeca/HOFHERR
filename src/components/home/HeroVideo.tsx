@@ -167,7 +167,7 @@ export default function HeroVideo() {
                 
                 {/* Elevated completely outside of the bubble mask so it doesn't get clipped */}
                 <div className={styles.playIconOverlay}>
-                    <svg viewBox="0 0 24 24" fill="#fff" width="22" height="22" style={{ transform: 'translateX(2.5px)' }}>
+                    <svg viewBox="0 0 24 24" fill="#fff" width="22" height="22" style={{ display: 'block' }}>
                         <path d="M8 5v14l11-7z" />
                     </svg>
                 </div>
