@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/sanity/adminClient';
+import { isRateLimited, getClientIp } from '@/lib/security';
 
 function sanitize(s: unknown, max = 300): string {
     if (typeof s !== 'string') return '';
@@ -8,6 +9,12 @@ function sanitize(s: unknown, max = 300): string {
 
 export async function POST(req: Request) {
     try {
+        // Rate limit: 5 inquiries per minute per IP
+        const ip = getClientIp(req);
+        if (isRateLimited('catering-inquiry', ip, 5)) {
+            return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
+        }
+
         const body = await req.json();
 
         const name      = sanitize(body?.name);

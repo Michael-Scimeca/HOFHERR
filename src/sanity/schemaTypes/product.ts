@@ -107,6 +107,32 @@ export const productType = defineType({
             },
         }),
         defineField({
+            name: 'hiddenFromShop',
+            title: 'Hidden from Shop',
+            type: 'boolean',
+            group: 'inventory',
+            description: 'When enabled, this product will not appear on the online ordering page.',
+            initialValue: false,
+        }),
+        defineField({
+            name: 'adminNotes',
+            title: 'Admin Notes',
+            type: 'text',
+            group: 'inventory',
+            description: 'Internal notes visible only on the inventory dashboard (e.g. supplier info, restock dates).',
+            rows: 2,
+        }),
+        defineField({
+            name: 'expiryDate',
+            title: 'Expiry Date',
+            type: 'date',
+            group: 'inventory',
+            description: 'Optional expiry/use-by date for perishable products. Visible on the inventory dashboard.',
+            options: {
+                dateFormat: 'YYYY-MM-DD',
+            },
+        }),
+        defineField({
             name: 'category',
             title: 'Category',
             type: 'reference',
@@ -259,8 +285,9 @@ export const productType = defineType({
             salePrice: 'salePrice',
             media: 'image',
             categoryIcon: 'category.icon',
+            hiddenFromShop: 'hiddenFromShop',
         },
-        prepare({ title, subtitle, stockStatus, categoryLabel, salePrice, media, categoryIcon }) {
+        prepare({ title, subtitle, stockStatus, categoryLabel, salePrice, media, categoryIcon, hiddenFromShop }) {
             const statusIcon: Record<string, string> = {
                 'in-stock': '',
                 'low-stock': '🔥 ',
@@ -269,10 +296,11 @@ export const productType = defineType({
                 'seasonal': '🌿 ',
             };
             const icon = statusIcon[stockStatus ?? 'in-stock'] ?? '';
+            const hiddenPrefix = hiddenFromShop ? '🚫 ' : '';
             const priceDisplay = salePrice ? `${salePrice} (was ${subtitle})` : subtitle;
             return {
-                title: `${icon}${title}`,
-                subtitle: `${priceDisplay} — ${categoryLabel ?? ''}`,
+                title: `${hiddenPrefix}${icon}${title}`,
+                subtitle: `${priceDisplay} — ${categoryLabel ?? ''}${hiddenFromShop ? ' [HIDDEN]' : ''}`,
                 media: media || categoryIcon,
             };
         },

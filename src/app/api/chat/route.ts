@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import twilio from 'twilio';
+import { isRateLimited, getClientIp } from '@/lib/security';
 import fs from 'fs';
 import path from 'path';
 
@@ -59,6 +60,12 @@ export async function GET() {
 // ─── POST — send SMS + increment counter ─────────────────────────────────────
 export async function POST(req: NextRequest) {
     try {
+        // Rate limit: 3 messages per minute per IP to prevent SMS abuse
+        const ip = getClientIp(req);
+        if (isRateLimited('chat', ip, 3)) {
+            return NextResponse.json({ error: 'Too many messages. Please wait a moment.' }, { status: 429 });
+        }
+
         const { name, phone, message } = await req.json();
 
         if (!message?.trim()) {

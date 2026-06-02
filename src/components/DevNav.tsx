@@ -49,10 +49,13 @@ const SECTIONS = [
         label: 'Admin',
         links: [
             { href: '/admin', icon: '📊', label: 'Admin (Dashboard)' },
+            { href: '/inventory', icon: '📦', label: 'Inventory Manager' },
             { href: '/admin/login', icon: '🔒', label: 'Admin Login' },
             { href: '/studio', icon: '🎨', label: 'Studio' },
             { href: '/debug-email/preview', icon: '📧', label: 'Email Templates' },
             { href: '/verify-email', icon: '✅', label: 'Verify Email' },
+            { href: '/roadmap', icon: '🗺️', label: 'Roadmap' },
+            { href: '/showcase', icon: '🎯', label: 'Showcase' },
         ],
     },
     {

@@ -4,12 +4,16 @@ import { getClient } from '@/sanity/client';
 import { CATERING_QUERY } from '@/sanity/queries';
 import type { Metadata } from 'next';
 
+// Block access in production — debug tools should never be publicly accessible
+const IS_DEV = process.env.NODE_ENV === 'development';
+
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Debug Email Body',
 };
 
 export default async function DebugEmailPage({ searchParams }: { searchParams: Promise<{ id?: string; package_id?: string }> }) {
+  if (!IS_DEV) return notFound();
   const params = await searchParams;
   const id = params.id ?? params.package_id;
   if (!id) return <p>No package id supplied.</p>;

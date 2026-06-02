@@ -8,7 +8,7 @@ export const CATEGORIES_QUERY = defineQuery(`
     sub,
     emoji,
     "icon": icon.asset->url,
-    "items": *[_type == "product" && references(^._id)] | order(sortOrder asc) {
+    "items": *[_type == "product" && references(^._id) && hiddenFromShop != true] | order(sortOrder asc) {
       name,
       "desc": description,
       price,

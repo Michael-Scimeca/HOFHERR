@@ -16,7 +16,7 @@ export const metadata: Metadata = {
         title: 'BBQ Catering, Pig Roasts & Event Services | Hofherr Meat Co.',
         description: 'Authentic low-and-slow BBQ catering plus whole-pig roasts, Ravinia picnic baskets, tailgate spreads, corporate buffets & wild game processing. Brisket, ribs, pulled pork & full sides. Chicago North Shore.',
         url: 'https://hofherrmeatco.com/bbq',
-        images: [{ url: '/OG/og-bbq.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-bbq.jpg', width: 1200, height: 630, alt: 'BBQ Catering — Hofherr Meat Co.' }],
     },
     twitter: {
         card: 'summary_large_image',

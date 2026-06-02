@@ -11,7 +11,7 @@ export const metadata = {
         title: 'FAQ | Hofherr Meat Co.',
         description: 'Answers to common questions about orders, catering, custom cuts, and gift cards.',
         url: 'https://hofherrmeatco.com/faq',
-        images: [{ url: '/OG/og-image.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-image.jpg', width: 1200, height: 630, alt: 'FAQ — Hofherr Meat Co.' }],
     },
     twitter: {
         card: 'summary_large_image',

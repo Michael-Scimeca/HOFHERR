@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { NextResponse } from 'next/server';
+import { isRateLimited, getClientIp, escapeHtml } from '@/lib/security';
 
 /* ── Foundation for Emails — inlined CSS reset (critical subset) ──────────── */
 const FOUNDATION_RESET = `
@@ -316,6 +317,12 @@ function buildTeamNotification(data: {
 /* ── API Route ── */
 export async function POST(req: Request) {
     try {
+        // Rate limit: 3 inquiries per minute per IP
+        const ip = getClientIp(req);
+        if (isRateLimited('catering', ip, 3)) {
+            return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
+        }
+
         const body = await req.json();
         const { name, email, phone, cateringData } = body;
 
@@ -328,8 +335,8 @@ export async function POST(req: Request) {
             port: Number(process.env.SMTP_PORT) || 587,
             secure: false,
             auth: {
-                user: process.env.SMTP_USER || 'patience.schmeler48@ethereal.email',
-                pass: process.env.SMTP_PASS || '6hTNRXUzv3QZ2n5W5a',
+                user: process.env.SMTP_USER || '',
+                pass: process.env.SMTP_PASS || '',
             },
         });
 

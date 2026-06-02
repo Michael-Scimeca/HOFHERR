@@ -1,6 +1,8 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/sanity/adminClient';
+import { COUPON_BY_CODE_QUERY } from '@/sanity/queries';
+import { decrementStock } from '@/lib/decrementStock';
 
 // ── Server-side canonical product catalog ─────────────────────────────────────
 // Prices here are authoritative — client-submitted prices are IGNORED
@@ -148,25 +150,36 @@ export async function POST(req: Request) {
         // ── Totals & Tax Logic ───────────────────────────────────────────────
         const subtotalCents = items.reduce((s, i) => s + (parsePriceCents(i.price) || 0) * i.qty, 0);
         let discountCents = 0;
-        if (coupon && coupon.valid !== false) {
-            if (coupon.type === 'percent') {
-                discountCents = Math.floor(subtotalCents * (coupon.value / 100));
-            } else if (coupon.type === 'fixed') {
-                discountCents = coupon.value * 100;
-            }
+        let validatedCouponCode = '';
 
-            if (discountCents > 0) {
-                lineItems.push({
-                    price_data: {
-                        currency: 'usd',
-                        product_data: {
-                            name: `Discount (${coupon.code})`,
-                        },
-                        unit_amount: -discountCents,
-                    },
-                    quantity: 1,
-                });
+        // Server-side coupon re-validation — never trust client-submitted discount values
+        if (coupon?.code) {
+            const validatedCoupon = await adminClient.fetch(COUPON_BY_CODE_QUERY, {
+                code: String(coupon.code).toUpperCase().trim(),
+            });
+
+            if (validatedCoupon && (!validatedCoupon.expiryDate || new Date(validatedCoupon.expiryDate) >= new Date())) {
+                validatedCouponCode = validatedCoupon.code;
+                if (validatedCoupon.discountType === 'percent') {
+                    discountCents = Math.floor(subtotalCents * (validatedCoupon.discountValue / 100));
+                } else if (validatedCoupon.discountType === 'fixed') {
+                    discountCents = Math.round(validatedCoupon.discountValue * 100);
+                }
             }
+            // If coupon is invalid/expired, silently ignore — don't apply discount
+        }
+
+        if (discountCents > 0) {
+            lineItems.push({
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: `Discount (${validatedCouponCode})`,
+                    },
+                    unit_amount: -discountCents,
+                },
+                quantity: 1,
+            });
         }
         
         const discountedSubtotal = Math.max(0, subtotalCents - discountCents);
@@ -226,8 +239,8 @@ export async function POST(req: Request) {
                 }
             };
 
-            if (coupon?.code) {
-                orderDoc.couponCode = coupon.code;
+            if (validatedCouponCode) {
+                orderDoc.couponCode = validatedCouponCode;
             }
 
             if (customerId) {
@@ -244,6 +257,11 @@ export async function POST(req: Request) {
                 console.error('[Checkout] Sanity sync failed for instore order:', err);
                 return NextResponse.json({ error: 'Failed to save order to database' }, { status: 500 });
             }
+
+            // ── Auto-decrement stock for in-store orders ──
+            decrementStock(items.map(i => ({ name: i.name, qty: i.qty })))
+                .then(r => console.log(`[Checkout] Stock decremented: ${r.updated} products`))
+                .catch(err => console.error('[Checkout] Stock decrement error:', err));
 
             // Return false URL to direct client to success page immediately
             return NextResponse.json({ url: false });
@@ -275,7 +293,7 @@ export async function POST(req: Request) {
                 pickup_time: pickup,
                 customer_id: customerId || '',
                 store_id: storeId,
-                coupon_code: coupon?.code || '',
+                coupon_code: validatedCouponCode || '',
                 tax_amount: (taxCents / 100).toFixed(2),
                 tip_amount: (tipAmount / 100).toFixed(2),
                 total_amount: (totalCents / 100).toFixed(2),

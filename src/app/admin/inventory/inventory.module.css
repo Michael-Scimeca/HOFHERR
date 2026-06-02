@@ -1,0 +1,441 @@
+/* ─── Inventory Management Page ─── */
+
+.container {
+    min-height: calc(100vh - var(--page-stem));
+    background: #0B1120;
+    color: #f8fafc;
+    padding: 40px 32px 140px 32px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ── Header ── */
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.header h1 { font-size: 24px; font-weight: 700; margin: 0; font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif; }
+.headerActions { display: flex; gap: 10px; align-items: center; }
+
+.backBtn {
+    padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+    background: transparent; color: #94a3b8; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+}
+.backBtn:hover { background: rgba(255,255,255,0.05); color: #f8fafc; }
+.lastUpdated { font-size: 12px; color: #64748b; margin-bottom: 28px; }
+
+/* ── View Tabs ── */
+.viewTabs {
+    display: flex; gap: 4px; background: #1e293b; padding: 3px; border-radius: 10px;
+    width: fit-content; margin-bottom: 24px; border: 1px solid #334155;
+}
+.viewTab {
+    padding: 8px 20px; border-radius: 8px; border: none; cursor: pointer;
+    background: transparent; color: #94a3b8; font-size: 13px; font-weight: 700;
+    transition: all 0.2s; font-family: inherit;
+}
+.viewTabActive { background: #334155; color: #fff; }
+
+/* ── Stats Bar ── */
+.statsBar { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.statCard { background: linear-gradient(145deg, #131c31 0%, #0d1425 100%); padding: 16px 18px; border-radius: 12px; border: 1px solid #ffffff1a; }
+.statLabel { display: block; color: #94a3b8; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+.statValue { font-size: 22px; font-weight: 800; color: #fff; }
+.statValueGreen { color: #4ade80; }
+.statValueYellow { color: #facc15; }
+.statValueRed { color: #f87171; }
+.statValueBlue { color: #60a5fa; }
+
+/* ── Toolbar ── */
+.toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
+.searchInput {
+    padding: 10px 16px; border-radius: 8px; border: 1px solid #334155;
+    background: #1e293b; color: #f8fafc; font-size: 14px; outline: none;
+    transition: border-color 0.2s; flex: 1; min-width: 200px; max-width: 280px;
+}
+.searchInput:focus { border-color: #ef4444; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15); }
+.filterSelect {
+    padding: 8px 12px; border-radius: 8px; border: 1px solid #334155;
+    background: #1e293b; color: #94a3b8; font-size: 12px; font-weight: 600;
+    cursor: pointer; outline: none; font-family: inherit;
+    transition: border-color 0.2s; appearance: auto; min-width: 140px;
+}
+.filterSelect:focus { border-color: #ef4444; }
+.filterSelect:hover { border-color: #475569; color: #f8fafc; }
+.filterBtnGroup { display: flex; gap: 6px; flex-wrap: wrap; }
+.filterBtn {
+    padding: 6px 14px; border-radius: 6px; border: 1px solid #334155;
+    background: transparent; color: #94a3b8; font-size: 11px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap;
+}
+.filterBtn:hover { background: rgba(255,255,255,0.05); color: #f8fafc; }
+.filterBtnActive { background: #ef4444; border-color: #ef4444; color: #fff; }
+.clearFiltersBtn {
+    padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(239,68,68,0.3);
+    background: rgba(239,68,68,0.08); color: #f87171; font-size: 11px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s; font-family: inherit; white-space: nowrap;
+}
+.clearFiltersBtn:hover { background: rgba(239,68,68,0.15); border-color: #ef4444; }
+
+/* ── Category Groups ── */
+.categoryGroup { margin-bottom: 28px; }
+.categoryHeader {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; background: rgba(255,255,255,0.03);
+    border: 1px solid #ffffff1a; border-radius: 10px 10px 0 0;
+}
+.categoryName {
+    font-size: 16px; font-weight: 700; font-family: "Yanone Kaffeesatz", sans-serif;
+    text-transform: uppercase; letter-spacing: 0.03em; display: flex; align-items: center; gap: 8px;
+}
+.categoryCount { font-size: 10px; font-weight: 800; background: rgba(148,163,184,0.15); color: #94a3b8; padding: 2px 8px; border-radius: 100px; }
+.categoryRevenue { font-size: 11px; color: #4ade80; font-weight: 600; margin-left: 8px; }
+.categoryActions { display: flex; gap: 6px; }
+.catBtn {
+    padding: 4px 10px; border-radius: 6px; border: 1px solid #334155;
+    background: transparent; color: #94a3b8; font-size: 10px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s; font-family: inherit;
+    text-transform: uppercase; letter-spacing: 0.04em;
+}
+.catBtn:hover { background: rgba(255,255,255,0.05); color: #f8fafc; }
+.catBtnGreen { border-color: rgba(34,197,94,0.3); color: #4ade80; }
+.catBtnGreen:hover { background: rgba(34,197,94,0.1); }
+.catBtnRed { border-color: rgba(239,68,68,0.3); color: #f87171; }
+.catBtnRed:hover { background: rgba(239,68,68,0.1); }
+
+/* ── Product Table ── */
+.productTable {
+    width: 100%; border-collapse: collapse;
+    background: linear-gradient(145deg, #131c31 0%, #0d1425 100%);
+    border: 1px solid #ffffff1a; border-top: none;
+    border-radius: 0 0 10px 10px; overflow: hidden;
+}
+.productTable th {
+    padding: 10px 16px; font-size: 10px; font-weight: 700; color: #64748b;
+    text-transform: uppercase; letter-spacing: 0.05em; text-align: left;
+    border-bottom: 1px solid #ffffff0d; background: #0d1425;
+}
+.productTable td { padding: 10px 16px; font-size: 13px; color: #e2e8f0; border-bottom: 1px solid #ffffff0a; vertical-align: middle; }
+.productTable tr:last-child td { border-bottom: none; }
+.productTable tr:hover td { background: rgba(255,255,255,0.02); }
+
+.productName { font-weight: 600; font-size: 14px; }
+.productPrice { color: #94a3b8; font-size: 12px; }
+.productTags { display: flex; gap: 4px; margin-top: 3px; flex-wrap: wrap; }
+
+/* ── Inline Price Editing ── */
+.priceCell { display: flex; flex-direction: column; gap: 4px; min-width: 100px; }
+.priceEditable {
+    color: #94a3b8; font-size: 12px; cursor: pointer; padding: 2px 4px;
+    border-radius: 4px; transition: all 0.15s; border: 1px solid transparent;
+}
+.priceEditable:hover {
+    background: rgba(255,255,255,0.05); border-color: #334155; color: #f8fafc;
+}
+.priceInput {
+    background: #1e293b; border: 1px solid #ef4444; border-radius: 4px;
+    color: #f8fafc; font-size: 12px; padding: 3px 6px; width: 110px;
+    outline: none; font-family: inherit;
+    box-shadow: 0 0 0 2px rgba(239,68,68,0.15);
+}
+.priceInputSale { border-color: #f97316; box-shadow: 0 0 0 2px rgba(249,115,22,0.15); }
+.salePriceRow { display: flex; align-items: center; gap: 4px; }
+.salePriceTag {
+    font-size: 11px; font-weight: 700; color: #f87171;
+    background: rgba(239,68,68,0.1); padding: 1px 6px; border-radius: 4px;
+}
+.editSaleBtn {
+    background: none; border: none; cursor: pointer; font-size: 11px;
+    padding: 1px 2px; opacity: 0.4; transition: opacity 0.15s;
+}
+.editSaleBtn:hover { opacity: 1; }
+
+/* ── Product Badges ── */
+.badge {
+    font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 2px 6px; border-radius: 4px; display: inline-block;
+}
+.badgeFeatured { background: rgba(168,144,95,0.2); color: #c4ae82; }
+.badgeNew { background: rgba(59,130,246,0.2); color: #60a5fa; }
+.badgeSale { background: rgba(239,68,68,0.2); color: #f87171; }
+
+/* ── Toggle Switch ── */
+.toggleRow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.toggle {
+    width: 32px; height: 18px; border-radius: 9px; cursor: pointer;
+    position: relative; border: none; transition: background 0.2s; flex-shrink: 0;
+}
+.toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px; border-radius: 50%; background: #fff;
+    transition: transform 0.2s;
+}
+.toggleOff { background: #334155; }
+.toggleOn { background: #4ade80; }
+.toggleOn::after { transform: translateX(14px); }
+.toggleLabel { font-size: 10px; color: #94a3b8; font-weight: 600; white-space: nowrap; }
+
+/* ── Sales Data ── */
+.salesCell { display: flex; flex-direction: column; gap: 2px; }
+.salesMain { font-size: 14px; font-weight: 700; color: #f8fafc; }
+.salesSub { font-size: 10px; color: #64748b; }
+.salesTrend { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; display: inline-block; }
+.trendHot { background: rgba(239,68,68,0.15); color: #f87171; }
+.trendSteady { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.trendSlow { background: rgba(148,163,184,0.1); color: #64748b; }
+
+/* ── Quantity Control ── */
+.qtyControl { display: flex; align-items: center; gap: 0; }
+.qtyBtn {
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    border: 1px solid #334155; background: #1e293b; color: #f8fafc;
+    font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.qtyBtn:first-child { border-radius: 6px 0 0 6px; }
+.qtyBtn:last-child { border-radius: 0 6px 6px 0; }
+.qtyBtn:hover { background: #334155; }
+.qtyBtn:active { transform: scale(0.95); }
+.qtyValue {
+    width: 40px; height: 28px; display: flex; align-items: center; justify-content: center;
+    background: #0f172a; border-top: 1px solid #334155; border-bottom: 1px solid #334155;
+    font-size: 13px; font-weight: 700; color: #f8fafc;
+}
+
+/* ── Status Badge ── */
+.statusBadge { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; padding: 4px 10px; border-radius: 6px; display: inline-block; white-space: nowrap; }
+.statusInStock { background: rgba(34,197,94,0.15); color: #4ade80; }
+.statusLowStock { background: rgba(234,179,8,0.15); color: #facc15; }
+.statusOutOfStock { background: rgba(239,68,68,0.15); color: #f87171; }
+.statusPreOrder { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.statusSeasonal { background: rgba(168,144,95,0.15); color: #c4ae82; }
+
+/* ── Saving indicator ── */
+.saving { font-size: 11px; color: #facc15; animation: blink 0.8s ease-in-out infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.saved { font-size: 11px; color: #4ade80; }
+
+/* ── Activity Feed ── */
+.activityPanel {
+    background: linear-gradient(145deg, #131c31 0%, #0d1425 100%);
+    border: 1px solid #ffffff1a; border-radius: 12px; padding: 20px;
+    margin-bottom: 28px;
+}
+.activityPanel h3 {
+    font-family: "Yanone Kaffeesatz", sans-serif; font-size: 18px;
+    font-weight: 600; margin: 0 0 16px 0; color: #f8fafc;
+}
+.activityList { display: flex; flex-direction: column; gap: 6px; max-height: 300px; overflow-y: auto; }
+.activityItem {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 12px; border-radius: 8px; font-size: 13px;
+    border: 1px solid #ffffff08; transition: background 0.15s;
+}
+.activityItem:hover { background: rgba(255,255,255,0.02); }
+.activityDot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.activityDotGreen { background: #4ade80; }
+.activityDotYellow { background: #facc15; }
+.activityDotBlue { background: #60a5fa; }
+.activityProduct { font-weight: 600; color: #e2e8f0; flex: 1; }
+.activityQty { font-size: 12px; color: #94a3b8; font-weight: 600; }
+.activityDate { font-size: 11px; color: #64748b; white-space: nowrap; }
+.activityStatus {
+    font-size: 9px; font-weight: 800; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 4px;
+}
+
+/* ── Insights Panel ── */
+.insightsPanel {
+    display: flex; flex-direction: column; gap: 24px;
+    margin-bottom: 28px; padding: 20px;
+    background: linear-gradient(145deg, rgba(15,23,42,0.6) 0%, rgba(15,23,42,0.3) 100%);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
+}
+.insightsSection {}
+.insightsSectionTitle { font-size: 16px; font-weight: 800; margin: 0 0 4px 0; font-family: "Yanone Kaffeesatz", sans-serif; letter-spacing: 0.02em; color: #e2e8f0; }
+.insightsSubtext { font-size: 11px; color: #64748b; margin: 0 0 10px 0; line-height: 1.4; }
+.insightsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.insightCard { background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; transition: border-color 0.15s; }
+.insightCard:hover { border-color: rgba(255,255,255,0.12); }
+.insightCardGold { border-left: 3px solid #f59e0b; }
+.insightCardDead { border-left: 3px solid #64748b; opacity: 0.85; }
+.insightCardHeader { display: flex; align-items: center; gap: 6px; }
+.insightRank { font-size: 11px; font-weight: 900; color: #f59e0b; background: rgba(245,158,11,0.1); padding: 1px 6px; border-radius: 4px; min-width: 24px; text-align: center; }
+.insightName { font-size: 13px; font-weight: 700; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.insightMeta { display: flex; justify-content: space-between; align-items: center; }
+.insightCategory { font-size: 10px; color: #64748b; }
+.insightStat { font-size: 10px; font-weight: 700; color: #94a3b8; }
+.insightFooter { display: flex; justify-content: space-between; align-items: center; }
+.insightWeekly { font-size: 10px; color: #64748b; }
+.insightRevenue { font-size: 12px; font-weight: 800; color: #4ade80; }
+.insightLastSold { font-size: 10px; color: #94a3b8; font-style: italic; }
+.insightPrice { font-size: 11px; font-weight: 700; color: #64748b; }
+
+/* ── Empty / Loading ── */
+.empty { text-align: center; padding: 60px 20px; color: #64748b; font-size: 14px; }
+.loading { display: flex; justify-content: center; align-items: center; height: 400px; color: #94a3b8; font-size: 16px; }
+
+/* ── Expiry Date ── */
+.expiryInput {
+    padding: 2px 6px; border-radius: 4px; border: 1px solid transparent;
+    background: transparent; color: #64748b; font-size: 10px;
+    cursor: pointer; outline: none; font-family: inherit; width: 110px;
+    transition: all 0.15s;
+}
+.expiryInput:hover { border-color: #334155; color: #94a3b8; }
+.expiryInput:focus { border-color: #ef4444; color: #f8fafc; background: #1e293b; }
+.badgeExpiry { background: rgba(59,130,246,0.12) !important; color: #60a5fa !important; }
+.badgeExpiringSoon { background: rgba(245,158,11,0.15) !important; color: #fbbf24 !important; animation: pulse 2s ease-in-out infinite; }
+.badgeExpired { background: rgba(239,68,68,0.15) !important; color: #f87171 !important; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+/* ── Purchases Panel ── */
+.purchasesPanel {
+    background: linear-gradient(145deg, rgba(15,23,42,0.5) 0%, rgba(15,23,42,0.2) 100%);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
+    padding: 20px; margin-bottom: 24px;
+}
+.purchasesTitle { font-size: 18px; font-weight: 800; margin: 0 0 4px 0; font-family: "Yanone Kaffeesatz", sans-serif; color: #e2e8f0; }
+.purchasesSubtext { font-size: 11px; color: #64748b; margin: 0 0 16px 0; }
+.purchasesTable { overflow-x: auto; }
+.orderNumber { font-size: 12px; font-weight: 700; color: #60a5fa; font-family: monospace; }
+.customerName { font-size: 13px; font-weight: 600; color: #f8fafc; display: block; }
+.customerEmail { font-size: 10px; color: #64748b; display: block; margin-top: 1px; }
+.purchaseItems { display: flex; flex-direction: column; gap: 2px; }
+.purchaseItem { font-size: 11px; color: #94a3b8; white-space: nowrap; }
+.purchaseItemPrice { color: #64748b; margin-left: 4px; }
+.purchaseItemMore { font-size: 10px; color: #64748b; font-style: italic; }
+.purchaseTotal { font-size: 13px; font-weight: 800; color: #4ade80; }
+.purchaseStatus { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; text-transform: capitalize; background: rgba(100,116,139,0.15); color: #94a3b8; }
+.purchaseStatus_completed { background: rgba(34,197,94,0.12); color: #4ade80; }
+.purchaseStatus_paid { background: rgba(59,130,246,0.12); color: #60a5fa; }
+.purchaseStatus_pending { background: rgba(245,158,11,0.12); color: #fbbf24; }
+.purchaseStatus_readypaid { background: rgba(34,197,94,0.12); color: #4ade80; }
+.purchaseStatus_readypending { background: rgba(245,158,11,0.12); color: #fbbf24; }
+.purchaseDate { font-size: 12px; color: #e2e8f0; display: block; }
+.purchaseTime { font-size: 10px; color: #64748b; display: block; }
+
+/* ── Alert Notification Panel ── */
+.alertBanner {
+    background: linear-gradient(145deg, rgba(234,179,8,0.06) 0%, rgba(239,68,68,0.04) 100%);
+    border: 1px solid rgba(234,179,8,0.25); border-radius: 12px;
+    padding: 16px 20px; margin-bottom: 24px;
+    animation: alertSlideIn 0.3s ease-out;
+}
+@keyframes alertSlideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.alertHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.alertTitle { font-size: 14px; font-weight: 700; color: #facc15; font-family: "Yanone Kaffeesatz", sans-serif; letter-spacing: 0.02em; }
+.alertDismiss { background: none; border: none; color: #64748b; font-size: 22px; cursor: pointer; padding: 0 4px; line-height: 1; transition: color 0.15s; }
+.alertDismiss:hover { color: #f8fafc; }
+.alertSection { margin-bottom: 12px; }
+.alertSection:last-child { margin-bottom: 0; }
+.alertSectionTitle { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px; }
+.alertList { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 6px; }
+.alertItem { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; background: rgba(0,0,0,0.2); font-size: 12px; }
+.alertItemCritical { border-left: 3px solid #ef4444; }
+.alertItemOOS { border-left: 3px solid #64748b; }
+.alertItemName { font-weight: 600; color: #e2e8f0; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.alertItemCategory { font-size: 10px; color: #64748b; white-space: nowrap; }
+.alertItemQty { font-size: 11px; font-weight: 800; color: #facc15; background: rgba(234,179,8,0.15); padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+.alertCritical { color: #f87171 !important; background: rgba(239,68,68,0.2) !important; }
+.alertRestockBtn { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; }
+.alertRestockBtn:hover { background: rgba(34,197,94,0.2); border-color: #4ade80; }
+.alertCollapsed { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; padding: 8px 14px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.alertCollapsed:hover { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
+.alertCollapsedBadgeRed { font-size: 11px; font-weight: 700; color: #f87171; background: rgba(239,68,68,0.1); padding: 2px 8px; border-radius: 4px; }
+.alertCollapsedBadgeYellow { font-size: 11px; font-weight: 700; color: #facc15; background: rgba(234,179,8,0.1); padding: 2px 8px; border-radius: 4px; }
+
+/* ── Product Notes ── */
+.noteDisplay { background: none; border: none; cursor: pointer; font-size: 10px; color: #475569; padding: 2px 0; text-align: left; font-family: inherit; transition: color 0.15s; display: block; margin-top: 4px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.noteDisplay:hover { color: #94a3b8; }
+.noteHasContent { color: #94a3b8; font-style: italic; }
+.noteInput { background: #1e293b; border: 1px solid #334155; border-radius: 4px; color: #f8fafc; font-size: 11px; padding: 4px 6px; width: 200px; outline: none; font-family: inherit; resize: none; margin-top: 4px; transition: border-color 0.2s; }
+.noteInput:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.15); }
+
+/* ── Add Product Button ── */
+.addProductBtn {
+    padding: 8px 18px; border-radius: 8px; border: 1px solid rgba(34,197,94,0.4);
+    background: rgba(34,197,94,0.1); color: #4ade80; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+}
+.addProductBtn:hover { background: rgba(34,197,94,0.2); border-color: #4ade80; }
+
+/* ── Delete Button ── */
+.deleteBtn {
+    background: none; border: none; cursor: pointer; font-size: 12px;
+    opacity: 0.25; transition: opacity 0.15s; padding: 2px 4px;
+}
+.deleteBtn:hover { opacity: 1; }
+
+/* ── Modal ── */
+.modalOverlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+    animation: fadeIn 0.15s ease-out;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modalContent {
+    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+    padding: 28px 32px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    animation: slideUp 0.2s ease-out;
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.modalHeader {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+}
+.modalHeader h2 {
+    font-size: 20px; font-weight: 700; margin: 0;
+    font-family: "Yanone Kaffeesatz", sans-serif; letter-spacing: 0.02em;
+}
+.modalClose {
+    background: none; border: none; color: #64748b; font-size: 28px;
+    cursor: pointer; line-height: 1; padding: 0; transition: color 0.15s;
+}
+.modalClose:hover { color: #f8fafc; }
+.modalError {
+    background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+    color: #f87171; padding: 8px 12px; border-radius: 8px; font-size: 12px;
+    font-weight: 600; margin-bottom: 16px;
+}
+.modalForm { display: flex; flex-direction: column; gap: 16px; }
+.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.formGroup { display: flex; flex-direction: column; gap: 6px; }
+.formGroup label {
+    font-size: 10px; font-weight: 700; color: #94a3b8;
+    text-transform: uppercase; letter-spacing: 0.06em;
+}
+.formInput {
+    padding: 10px 14px; border-radius: 8px; border: 1px solid #334155;
+    background: #0f172a; color: #f8fafc; font-size: 14px; outline: none;
+    transition: border-color 0.2s; font-family: inherit;
+}
+.formInput:focus { border-color: #ef4444; box-shadow: 0 0 0 2px rgba(239,68,68,0.15); }
+.formInput option { background: #0f172a; color: #f8fafc; }
+.modalActions {
+    display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;
+    padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06);
+}
+.modalCancelBtn {
+    padding: 10px 20px; border-radius: 8px; border: 1px solid #334155;
+    background: transparent; color: #94a3b8; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+}
+.modalCancelBtn:hover { background: rgba(255,255,255,0.05); color: #f8fafc; }
+.modalSaveBtn {
+    padding: 10px 24px; border-radius: 8px; border: none;
+    background: #ef4444; color: #fff; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+}
+.modalSaveBtn:hover { background: #dc2626; }
+.modalSaveBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .container { padding: 24px 16px 120px; }
+    .header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .searchInput { max-width: 100%; }
+    .categoryHeader { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .productTable { font-size: 12px; }
+    .insightsGrid { grid-template-columns: 1fr 1fr; }
+    .modalContent { margin: 16px; max-width: calc(100% - 32px); }
+    .formRow { grid-template-columns: 1fr; }
+}

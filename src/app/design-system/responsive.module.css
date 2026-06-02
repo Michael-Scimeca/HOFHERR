@@ -1,0 +1,188 @@
+/* ─── Responsive Preview Component ─── */
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ── Controls ── */
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.controlGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.controlLabel {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+}
+
+/* ── Device Tabs ── */
+.deviceTabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.deviceTab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+    color: var(--fg-3);
+    font-size: 12px;
+}
+
+.deviceTab:hover {
+    border-color: color-mix(in srgb, var(--red) 40%, transparent);
+    color: var(--fg);
+}
+
+.deviceTabActive {
+    border-color: var(--red);
+    background: color-mix(in srgb, var(--red) 8%, transparent);
+    color: var(--fg);
+}
+
+.deviceIcon {
+    font-size: 14px;
+}
+
+.deviceName {
+    font-weight: 600;
+}
+
+.deviceWidth {
+    font-size: 10px;
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+    font-family: monospace;
+}
+
+/* ── Page Tabs ── */
+.pageTabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.pageTab {
+    padding: 6px 14px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+    color: var(--fg-3);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.pageTab:hover {
+    border-color: color-mix(in srgb, var(--gold) 40%, transparent);
+    color: var(--fg);
+}
+
+.pageTabActive {
+    border-color: var(--gold);
+    background: color-mix(in srgb, var(--gold) 10%, transparent);
+    color: var(--gold);
+}
+
+/* ── Viewport Info Bar ── */
+.viewportBar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 16px;
+    background: var(--bg-3);
+    border-radius: 8px 8px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+}
+
+.viewportLabel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--fg);
+}
+
+.viewportDimension {
+    font-size: 12px;
+    font-family: monospace;
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+    background: color-mix(in srgb, var(--gold) 8%, transparent);
+    padding: 2px 10px;
+    border-radius: 4px;
+}
+
+.viewportPath {
+    font-size: 12px;
+    font-family: monospace;
+    color: var(--fg-muted);
+    margin-left: auto;
+}
+
+/* ── Frame ── */
+.frameWrapper {
+    display: flex;
+    justify-content: center;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    padding: 24px;
+    overflow: hidden;
+    min-height: 500px;
+}
+
+.frameContainer {
+    position: relative;
+    transition: width 0.4s var(--ease-out);
+    border: 1px solid color-mix(in srgb, var(--red) 20%, transparent);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+}
+
+.iframe {
+    display: block;
+    border: none;
+    background: #000;
+}
+
+/* ── Mobile Responsive ── */
+@media (max-width: 768px) {
+    .deviceName {
+        display: none;
+    }
+
+    .deviceTab {
+        padding: 6px 10px;
+    }
+
+    .viewportBar {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .viewportPath {
+        margin-left: 0;
+    }
+}

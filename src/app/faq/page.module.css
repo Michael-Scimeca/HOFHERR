@@ -164,9 +164,32 @@
     color: var(--red);
 }
 
+/* ── Answer (smooth expand via grid rows) ── */
+.answerOuter {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.itemOpen .answerOuter {
+    grid-template-rows: 1fr;
+}
+
+.answerInner {
+    overflow: hidden;
+}
+
 .answer {
     padding: 0 20px 20px;
     border-top: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.3s 0.05s ease, transform 0.3s 0.05s ease;
+}
+
+.itemOpen .answer {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .answer p {

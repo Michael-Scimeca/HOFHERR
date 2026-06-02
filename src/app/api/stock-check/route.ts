@@ -33,8 +33,24 @@ type Settings = {
  *  3. (Future) Can trigger email notifications
  *
  * Call this on a cron schedule (e.g. Vercel Cron) or manually.
+ * Requires CRON_SECRET (via Authorization header) or admin session.
  */
-export async function GET() {
+export async function GET(request: Request) {
+    // Verify authorization: Vercel cron sends Bearer token, or require admin session
+    const authHeader = request.headers.get('authorization');
+    const cronSecret = process.env.CRON_SECRET;
+
+    if (cronSecret && authHeader === `Bearer ${cronSecret}`) {
+        // Valid cron request — proceed
+    } else {
+        // Fall back to admin session check
+        const { auth } = await import('@/auth');
+        const session = await auth();
+        if (!session?.user?.isAdmin) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+    }
+
     try {
         // 1. Get settings
         const settings: Settings = await client.fetch(`

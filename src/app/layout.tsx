@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     description: "Northfield's Premier Craft Butcher & BBQ Pitmasters",
     images: [
       {
-        url: "/assets/og-image.jpg",
+        url: "/OG/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Hofherr Meat Co storefront",
@@ -112,10 +112,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${yanone.variable} ${inter.variable} ${outfit.variable}`} suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      </head>
+      <head />
       <body suppressHydrationWarning>
         <Script
           id="google-analytics"

@@ -4,7 +4,7 @@
     left: 24px;
     z-index: 99999;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: flex-start;
     gap: 8px;
 }
@@ -43,14 +43,21 @@
     border: 1px solid #ffffff1a;
     border-radius: 12px;
     padding: 12px;
-    width: 200px;
+    width: 210px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 70vh;
+    max-height: calc(100vh - 100px);
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #334155 transparent;
 }
+
+.panel::-webkit-scrollbar { width: 5px; }
+.panel::-webkit-scrollbar-track { background: transparent; }
+.panel::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+.panel::-webkit-scrollbar-thumb:hover { background: #475569; }
 
 .section {
     display: flex;

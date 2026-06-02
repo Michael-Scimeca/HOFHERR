@@ -81,11 +81,13 @@ export default function FaqClient({ faqs }: { faqs: FaqGroup[] }) {
                                                         <path d="M6 9l6 6 6-6" />
                                                     </svg>
                                                 </button>
-                                                {isOpen && (
-                                                    <div className={styles.answer}>
-                                                        <p>{item.a}</p>
+                                                <div className={styles.answerOuter}>
+                                                    <div className={styles.answerInner}>
+                                                        <div className={styles.answer}>
+                                                            <p>{item.a}</p>
+                                                        </div>
                                                     </div>
-                                                )}
+                                                </div>
                                             </div>
                                         );
                                     })}

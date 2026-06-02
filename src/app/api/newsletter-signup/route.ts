@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { syncMailchimpSubscription } from '@/lib/mailchimp';
+import { isRateLimited, getClientIp } from '@/lib/security';
 
 /**
  * POST /api/newsletter-signup
@@ -11,6 +12,12 @@ import { syncMailchimpSubscription } from '@/lib/mailchimp';
  */
 export async function POST(request: Request) {
     try {
+        // Rate limit: 5 signups per minute per IP
+        const ip = getClientIp(request);
+        if (isRateLimited('newsletter', ip, 5)) {
+            return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
+        }
+
         const { email, name } = await request.json();
 
         if (!email || typeof email !== 'string' || !email.includes('@')) {

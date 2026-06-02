@@ -53,6 +53,9 @@ export async function POST(req: Request) {
         if (password.length < 8) {
             return NextResponse.json({ error: 'Password must be at least 8 characters long.' }, { status: 400 });
         }
+        if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
+            return NextResponse.json({ error: 'Password must include uppercase, lowercase, and a number.' }, { status: 400 });
+        }
 
         // Limit name size to prevent string-based DoS
         if (name && name.length > 100) {

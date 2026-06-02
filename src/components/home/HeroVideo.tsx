@@ -132,7 +132,10 @@ export default function HeroVideo() {
 
     const handleClose = (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (playerRef.current) try { playerRef.current.pauseVideo(); } catch (err) {}
+        if (playerRef.current) {
+            try { playerRef.current.destroy(); } catch (err) {}
+            playerRef.current = null;
+        }
         setHasStarted(false);
         dragData.current.currentX = 0;
         dragData.current.currentY = 0;

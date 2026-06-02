@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { buildWelcomeEmail, buildNewsletterWelcomeEmail, buildVerifyEmail } from '@/lib/email-templates';
+
+// Block access in production — debug tools should never be publicly accessible
+const IS_DEV = process.env.NODE_ENV === 'development';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'Email Template Preview' };
@@ -178,6 +182,7 @@ const TEMPLATE_NAMES: Record<string, string> = {
 };
 
 export default async function EmailPreviewPage({ searchParams }: { searchParams: Promise<{ template?: string }> }) {
+    if (!IS_DEV) return notFound();
     const params = await searchParams;
     const template = params.template || 'welcome';
 

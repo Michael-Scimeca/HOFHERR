@@ -533,6 +533,7 @@ export default function AdminDashboard() {
             <div className={styles.header}>
                 <h1>Hofherr Meat Co. | Admin Console</h1>
                 <div style={{ display: 'flex', gap: '12px' }}>
+                    <button onClick={() => router.push('/admin/inventory')} className={styles.tab} style={{ border: '1px solid rgba(34, 197, 94, 0.4)', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '8px', padding: '10px 16px', color: '#4ade80', fontWeight: 700 }}>📦 Inventory</button>
                     <button onClick={() => router.push('/featured')} className={styles.tab} style={{ border: '1px solid rgba(199, 132, 58, 0.4)', background: 'rgba(199, 132, 58, 0.1)', borderRadius: '8px', padding: '10px 16px', color: 'var(--gold, #c7843a)', fontWeight: 700 }}>Features &amp; Docs</button>
                     <button onClick={() => router.push('/')} className={styles.tab} style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '10px 16px' }}>View Store</button>
                     <button onClick={() => signOut({ callbackUrl: '/admin/login' })} className={styles.tab} style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px', padding: '10px 16px' }}>Logout</button>

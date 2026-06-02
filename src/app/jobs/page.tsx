@@ -11,7 +11,7 @@ export const metadata: Metadata = {
         title: 'Jobs & Careers | Hofherr Meat Co.',
         description: 'Work with passionate craftspeople at Hofherr Meat Co. Open roles in Northfield, IL.',
         url: 'https://hofherrmeatco.com/jobs',
-        images: [{ url: '/OG/og-image.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-image.jpg', width: 1200, height: 630, alt: 'Jobs — Hofherr Meat Co.' }],
     },
     twitter: {
         card: 'summary_large_image',

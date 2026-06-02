@@ -15,7 +15,7 @@ export const metadata: Metadata = {
         title: 'Catering | Hofherr Meat Co.',
         description: 'Pig roasts, BBQ catering, rotisserie packages & custom menus for any event. Northfield & Winnetka, IL.',
         url: 'https://hofherrmeatco.com/catering',
-        images: [{ url: '/OG/og-catering.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-catering.jpg', width: 1200, height: 630, alt: 'Catering — Hofherr Meat Co.' }],
     },
     twitter: {
         card: 'summary_large_image',

@@ -6,6 +6,17 @@ export const metadata: Metadata = {
     title: 'Gift Cards | Hofherr Meat Co. — The Perfect Gift for Meat Lovers',
     description: 'Give the gift of premium butcher-shop quality. Hofherr Meat Co. offers physical gift cards (mailed free) and instant eGift cards via Square. Northfield, IL.',
     alternates: { canonical: 'https://hofherrmeatco.com/gift-cards' },
+    openGraph: {
+        title: 'Gift Cards | Hofherr Meat Co.',
+        description: 'Physical gift cards mailed free or instant eGift cards via Square. The perfect gift for the meat lover in your life.',
+        url: 'https://hofherrmeatco.com/gift-cards',
+        images: [{ url: '/OG/og-image.jpg', width: 1200, height: 630, alt: 'Gift Cards — Hofherr Meat Co.' }],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Gift Cards | Hofherr Meat Co.',
+        description: 'Premium butcher shop gift cards — physical or instant eGift. Northfield, IL.',
+    },
 };
 
 export default function GiftCardsPage() {

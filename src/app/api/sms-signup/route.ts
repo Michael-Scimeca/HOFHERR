@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import twilio from 'twilio';
+import { isRateLimited, getClientIp } from '@/lib/security';
 
 // ─── Twilio client (lazy — only created when route is hit) ───────────────────
 function getClient() {
@@ -41,6 +42,12 @@ Reply STOP anytime to unsubscribe.
 // ─── Route handler ────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
     try {
+        // Rate limit: 5 signups per minute per IP to prevent Twilio cost abuse
+        const ip = getClientIp(req);
+        if (isRateLimited('sms-signup', ip, 5)) {
+            return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
+        }
+
         const body = await req.json();
         const { phone, name } = body;
 

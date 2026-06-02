@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         title: "Italian Beef, Rotisserie Chicken, BBQ & Pig Roasts | Hofherr Meat Co.",
         description: "Italian beef (as featured on America's Test Kitchen), daily rotisserie chicken dinners, BBQ catering, and whole-hog pig roasts — the best of Hofherr Meat Co. North Shore, IL.",
         url: 'https://hofherrmeatco.com/specials',
-        images: [{ url: '/OG/og-specials.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-specials.jpg', width: 1200, height: 630, alt: 'Specials — Hofherr Meat Co.' }],
     },
     twitter: {
         card: 'summary_large_image',

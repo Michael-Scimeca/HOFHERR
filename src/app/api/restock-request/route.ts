@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminClient } from '@/sanity/adminClient';
+import { isRateLimited, getClientIp, escapeHtml } from '@/lib/security';
 
 // ─── Restock Request API ─────────────────────────────────────────────────────
 // Accepts { name, item, qty, store } and sends an email notification.
@@ -17,6 +18,12 @@ interface RestockPayload {
 
 export async function POST(req: NextRequest) {
     try {
+        // Rate limit: 5 requests per minute per IP
+        const ip = getClientIp(req);
+        if (isRateLimited('restock', ip, 5)) {
+            return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
+        }
+
         const body: RestockPayload = await req.json();
         const { name, contactType, contact, item, qty, store } = body;
 
@@ -72,9 +79,9 @@ export async function POST(req: NextRequest) {
             <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
                 <h2 style="color: #c0392b; margin: 0 0 16px;">🥩 Restock Request</h2>
                 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                    <tr><td style="padding: 8px 0; color: #666;">Customer</td><td style="padding: 8px 0; font-weight: 600;">${name.trim()}</td></tr>
-                    <tr><td style="padding: 8px 0; color: #666;">${contactLabel}</td><td style="padding: 8px 0; font-weight: 600;">${contact || 'Not provided'}</td></tr>
-                    <tr><td style="padding: 8px 0; color: #666;">Item</td><td style="padding: 8px 0; font-weight: 600;">${item}</td></tr>
+                    <tr><td style="padding: 8px 0; color: #666;">Customer</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(name.trim())}</td></tr>
+                    <tr><td style="padding: 8px 0; color: #666;">${escapeHtml(contactLabel)}</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(contact || 'Not provided')}</td></tr>
+                    <tr><td style="padding: 8px 0; color: #666;">Item</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(item)}</td></tr>
                     <tr><td style="padding: 8px 0; color: #666;">Quantity</td><td style="padding: 8px 0; font-weight: 600;">${qty}</td></tr>
                     <tr><td style="padding: 8px 0; color: #666;">Store</td><td style="padding: 8px 0; font-weight: 600;">${store === 'butcher' ? 'The Butcher Shop' : 'The Depot'}</td></tr>
                     <tr><td style="padding: 8px 0; color: #666;">Submitted</td><td style="padding: 8px 0;">${timestamp}</td></tr>
@@ -130,11 +137,28 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     try {
+        // Require admin authentication
+        const { auth } = await import('@/auth');
+        const session = await auth();
+        if (!session?.user?.isAdmin) {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
         const url = new URL(req.url);
         const id = url.searchParams.get('id');
 
         if (!id) {
             return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+        }
+
+        // Verify the document is actually a restockRequest to prevent
+        // unauthorized deletion of other document types
+        const doc = await adminClient.fetch(
+            `*[_id == $id && _type == "restockRequest"][0]{ _id }`,
+            { id }
+        );
+        if (!doc) {
+            return NextResponse.json({ error: 'Restock request not found' }, { status: 404 });
         }
 
         await adminClient.delete(id);

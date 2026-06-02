@@ -22,13 +22,15 @@ export async function GET(request: Request) {
         const start = (page - 1) * limit;
         const end = start + limit - 1;
 
-        let filter = `*[_type == "customer"]`;
-        if (query) {
-            filter = `*[_type == "customer" && (name match "*${query}*" || email match "*${query}*" || phone match "*${query}*")]`;
-        }
+        // Use parameterized queries to prevent GROQ injection
+        const hasQuery = !!query;
+        const baseFilter = hasQuery
+            ? `*[_type == "customer" && (name match $q || email match $q || phone match $q)]`
+            : `*[_type == "customer"]`;
+        const params = hasQuery ? { q: `*${query}*` } : {};
 
         const [users, total] = await Promise.all([
-            adminClient.fetch(`${filter} | order(_createdAt desc) [${start}..${end}] {
+            adminClient.fetch(`${baseFilter} | order(_createdAt desc) [$start..$end] {
                 _id,
                 name,
                 email,
@@ -36,8 +38,8 @@ export async function GET(request: Request) {
                 "hasPassword": defined(password),
                 "createdAt": _createdAt,
                 address
-            }`),
-            adminClient.fetch(`count(${filter})`)
+            }`, { ...params, start, end }),
+            adminClient.fetch(`count(${baseFilter})`, params)
         ]);
 
         return NextResponse.json({ users, total });

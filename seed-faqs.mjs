@@ -1,12 +1,18 @@
+import 'dotenv/config';
 import { createClient } from '@sanity/client';
 
 const client = createClient({
-    projectId: 'a2p2fvte',
-    dataset: 'production',
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
     apiVersion: '2024-01-01',
-    token: 'skkAMMLNehuTzoLhkTtglIsj6Ub4cPJy7clLdw361NQMbgjwpTbYIzZGJL7R9IogrC0s4KplTo8i2nHBKWCkOrr1X0C4is8dD0S0Vl7MCw3YMhCvcjhVxGbTHaW2grwh6Bya3xBfAdUdtJ88zEgu58etnJixY1GRcBhh5ZTn4kr5XUZkDZlC',
+    token: process.env.SANITY_API_WRITE_TOKEN,
     useCdn: false,
 });
+
+if (!process.env.SANITY_API_WRITE_TOKEN) {
+    console.error('❌ SANITY_API_WRITE_TOKEN not set. Ensure .env.local is configured.');
+    process.exit(1);
+}
 
 function block(text) {
     return [{

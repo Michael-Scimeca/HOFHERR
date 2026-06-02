@@ -1,0 +1,586 @@
+/* ─── Client Showcase / Sales Pitch Page ─── */
+
+.page {
+    min-height: 100vh;
+    background: #000;
+    overflow-x: hidden;
+}
+
+/* ── Hero ── */
+.hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 100vh;
+    padding: calc(var(--nav-h) + 60px) 24px 80px;
+    overflow: hidden;
+}
+
+.heroGlow {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 60% 50% at 50% 40%, rgba(204,14,29,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 30% 60%, rgba(168,144,95,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+}
+
+.heroBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: color-mix(in srgb, var(--gold) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--gold) 20%, transparent);
+    padding: 8px 20px;
+    border-radius: 100px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s var(--ease-out) both;
+}
+
+.heroBadgeDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+}
+
+.heroTitle {
+    font-size: clamp(3.2rem, 8vw, 6.5rem);
+    line-height: 0.95;
+    color: #fff;
+    margin: 0 0 28px;
+    animation: fadeUp 0.8s var(--ease-out) 0.1s both;
+}
+
+.heroTitleAccent {
+    color: var(--red);
+}
+
+.heroSub {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--fg-3);
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto 48px;
+    animation: fadeUp 0.8s var(--ease-out) 0.2s both;
+}
+
+.heroStats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    animation: fadeUp 0.8s var(--ease-out) 0.35s both;
+}
+
+.heroStat {
+    text-align: center;
+}
+
+.heroStatNum {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+}
+
+.heroStatLabel {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    margin-top: 6px;
+}
+
+.heroScroll {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--fg-muted);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: fadeUp 0.8s var(--ease-out) 0.5s both;
+}
+
+.heroScrollLine {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--fg-muted), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Section shared ── */
+.sectionWrap {
+    padding: 100px 24px;
+    position: relative;
+}
+
+.sectionWrapAlt {
+    background: rgba(255,255,255,0.015);
+}
+
+.sectionInner {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.sectionEyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sectionEyebrowLine {
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--red);
+}
+
+.sectionTitle {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: #fff;
+    margin: 0 0 16px;
+    line-height: 1.05;
+}
+
+.sectionSub {
+    font-size: 16px;
+    color: var(--fg-muted);
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 0 56px;
+}
+
+/* ── Feature Showcase Cards ── */
+.showcaseGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+}
+
+.showcaseCard {
+    position: relative;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 28px 28px;
+    transition: all 0.3s var(--ease-out);
+    overflow: hidden;
+}
+
+.showcaseCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.showcaseCard:hover {
+    border-color: rgba(204,14,29,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+.showcaseCard:hover::before {
+    opacity: 1;
+}
+
+.showcaseIcon {
+    font-size: 2rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: rgba(204,14,29,0.08);
+    border: 1px solid rgba(204,14,29,0.15);
+    border-radius: 14px;
+}
+
+.showcaseCardTitle {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 8px;
+}
+
+.showcaseCardDesc {
+    font-size: 14px;
+    color: var(--fg-muted);
+    line-height: 1.7;
+    margin: 0 0 16px;
+}
+
+.showcaseTag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: color-mix(in srgb, var(--gold) 10%, transparent);
+    padding: 4px 12px;
+    border-radius: 100px;
+    display: inline-block;
+}
+
+.showcaseTagLive {
+    color: #4caf50;
+    background: rgba(76,175,80,0.1);
+}
+
+/* ── Page Preview (screenshot browser frame) ── */
+.previewGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    gap: 28px;
+}
+
+.previewCard {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #111;
+    transition: all 0.3s var(--ease-out);
+}
+
+.previewCard:hover {
+    border-color: rgba(204,14,29,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+
+.previewBar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #1a1a1a;
+    border-bottom: 1px solid var(--border);
+}
+
+.previewDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.previewDotR { background: #ff5f57; }
+.previewDotY { background: #ffbd2e; }
+.previewDotG { background: #28c841; }
+
+.previewUrl {
+    flex: 1;
+    margin-left: 8px;
+    font-size: 11px;
+    color: var(--fg-muted);
+    font-family: monospace;
+    background: #0d0d0d;
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.previewImg {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: top left;
+}
+
+.previewLabel {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.previewName {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.previewDesc {
+    font-size: 12px;
+    color: var(--fg-muted);
+}
+
+/* ── Opportunity Cards (new features) ── */
+.oppGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.oppCard {
+    position: relative;
+    background: rgba(255,255,255,0.02);
+    border: 1px dashed rgba(204,14,29,0.25);
+    border-radius: 16px;
+    padding: 28px 24px;
+    transition: all 0.3s var(--ease-out);
+}
+
+.oppCard:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(204,14,29,0.5);
+    border-style: solid;
+    transform: translateY(-2px);
+}
+
+.oppHeader {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.oppEmoji {
+    font-size: 1.8rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.oppTitle {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 2px;
+}
+
+.oppImpact {
+    font-size: 10px;
+    font-weight: 700;
+    color: #4caf50;
+    letter-spacing: 0.5px;
+}
+
+.oppDesc {
+    font-size: 13px;
+    color: var(--fg-muted);
+    line-height: 1.7;
+    margin: 0 0 16px;
+}
+
+.oppBullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.oppBullets li {
+    font-size: 12px;
+    color: var(--fg-3);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+}
+
+.oppBullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-weight: 700;
+}
+
+.oppNewBadge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--red);
+    background: rgba(204,14,29,0.1);
+    border: 1px solid rgba(204,14,29,0.25);
+    padding: 3px 10px;
+    border-radius: 100px;
+}
+
+/* ── Competitor Context ── */
+.compContext {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.compContextLabel {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+.compContextTag {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--fg-3);
+    background: rgba(255,255,255,0.05);
+    padding: 3px 10px;
+    border-radius: 100px;
+}
+
+/* ── CTA Section ── */
+.cta {
+    text-align: center;
+    padding: 120px 24px;
+    position: relative;
+}
+
+.ctaGlow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(204,14,29,0.08) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.ctaContent {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.ctaTitle {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: #fff;
+    margin: 0 0 20px;
+    line-height: 1.1;
+}
+
+.ctaSub {
+    font-size: 16px;
+    color: var(--fg-muted);
+    line-height: 1.8;
+    margin: 0 0 40px;
+}
+
+.ctaBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 40px;
+    background: var(--red);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(204,14,29,0.4);
+}
+
+.ctaBtn:hover {
+    background: var(--red-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(204,14,29,0.5);
+}
+
+/* ── Divider ── */
+.divider {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.dividerLine {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .heroStats {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .showcaseGrid,
+    .oppGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .previewGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .sectionWrap {
+        padding: 64px 16px;
+    }
+
+    .hero {
+        padding-top: calc(var(--nav-h) + 40px);
+    }
+
+    .detailGrid {
+        grid-template-columns: 1fr;
+    }
+}

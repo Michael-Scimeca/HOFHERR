@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { escapeHtml } from '@/lib/security';
 
 /**
  * Order Confirmation Email API
@@ -47,10 +48,10 @@ function buildConfirmationEmail(payload: OrderPayload): { subject: string; html:
         return `
         <tr>
             <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;color:#f2f2f2;font-size:14px;">
-                ${i.name}${i.note ? `<br/><span style="font-size:11px;color:#888;font-style:italic;">📝 ${i.note}</span>` : ''}
+                ${escapeHtml(i.name)}${i.note ? `<br/><span style="font-size:11px;color:#888;font-style:italic;">📝 ${escapeHtml(i.note)}</span>` : ''}
             </td>
             <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;color:#999;font-size:13px;text-align:center;">×${i.qty}</td>
-            <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;color:#f2f2f2;font-size:14px;text-align:right;font-weight:600;">${i.price}</td>
+            <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;color:#f2f2f2;font-size:14px;text-align:right;font-weight:600;">${escapeHtml(i.price)}</td>
             <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;color:#c5a255;font-size:14px;text-align:right;font-weight:700;">$${lineTotal.toFixed(2)}</td>
         </tr>`;
     }).join('');
@@ -81,7 +82,7 @@ function buildConfirmationEmail(payload: OrderPayload): { subject: string; html:
                     <td style="background:linear-gradient(135deg,#800020,#5c0018);padding:28px 30px;text-align:center;">
                         <div style="font-size:32px;margin-bottom:8px;">✅</div>
                         <div style="font-size:22px;font-weight:700;color:#fff;">Order Confirmed!</div>
-                        <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:6px;">Thank you, ${contact.name}. We're preparing your order.</div>
+                        <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:6px;">Thank you, ${escapeHtml(contact.name)}. We're preparing your order.</div>
                         <div style="margin-top:12px;display:inline-block;background:rgba(0,0,0,0.3);border-radius:6px;padding:6px 16px;">
                             <span style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:1px;">ORDER #</span>
                             <span style="font-size:16px;font-weight:800;color:#fff;margin-left:4px;">${orderNum}</span>
@@ -121,7 +122,7 @@ function buildConfirmationEmail(payload: OrderPayload): { subject: string; html:
                             </tr>
                             ${itemRows}
                         </table>
-                        ${orderNote ? `<div style="margin-top:12px;padding:10px;background:#1a1a1a;border-radius:6px;font-size:12px;color:#999;">📝 <em>${orderNote}</em></div>` : ''}
+                        ${orderNote ? `<div style="margin-top:12px;padding:10px;background:#1a1a1a;border-radius:6px;font-size:12px;color:#999;">📝 <em>${escapeHtml(orderNote)}</em></div>` : ''}
                     </td>
                 </tr>
 
@@ -202,10 +203,22 @@ Pickup time: ${contact.pickup || 'To be confirmed'}
 
 export async function POST(req: Request) {
     try {
+        // Require authentication to prevent abuse (phishing via spoofed order emails)
+        const { auth } = await import('@/auth');
+        const session = await auth();
+        if (!session?.user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const payload: OrderPayload = await req.json();
 
         if (!payload.contact?.email) {
             return NextResponse.json({ error: 'No email provided' }, { status: 400 });
+        }
+
+        // Only allow sending to the authenticated user's own email (or admin can send to anyone)
+        if (!session.user.isAdmin && payload.contact.email.toLowerCase() !== session.user.email?.toLowerCase()) {
+            return NextResponse.json({ error: 'Email mismatch' }, { status: 403 });
         }
 
         const { subject, html, text } = buildConfirmationEmail(payload);

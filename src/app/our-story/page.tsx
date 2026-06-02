@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         title: 'Our Story & Team | Hofherr Meat Co.',
         description: '120+ years of butchering heritage. Meet Sean Hofherr and the full HMC crew — butchers, chefs, and managers. Chicago South Side roots, now in Northfield & Winnetka, IL.',
         url: 'https://hofherrmeatco.com/our-story',
-        images: [{ url: '/OG/og-our-story.png', width: 1200, height: 630 }],
+        images: [{ url: '/OG/og-our-story.jpg', width: 1200, height: 630, alt: 'Our Story — Hofherr Meat Co.' }],
     },
     twitter: {
         card: 'summary_large_image',

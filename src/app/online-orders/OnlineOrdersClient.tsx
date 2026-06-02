@@ -1684,22 +1684,22 @@ export default function CustomOrdersPage({
         setTimeout(updateSideThumb, 50);
     }, [activeStore, updateSideThumb]);
 
-    // ── Capture mouse-wheel on the sidebar and redirect it to the inner list ──
+    // ── Capture mouse-wheel on the sidebar — never let it bubble to the page ──
     useEffect(() => {
         const el = sidebarScrollRef.current;
         if (!el) return;
         const handler = (e: WheelEvent) => {
-            const { scrollTop, scrollHeight, clientHeight } = el;
+            // Always prevent the page from scrolling when cursor is over sidebar
+            e.preventDefault();
+            e.stopPropagation();
+
             // Normalize delta across deltaMode (pixel=0, line=1, page=2)
+            const { clientHeight } = el;
             let delta = e.deltaY;
             if (e.deltaMode === 1) delta *= 24;  // line mode
             if (e.deltaMode === 2) delta *= clientHeight; // page mode
-            const atTop = scrollTop <= 0 && delta < 0;
-            const atBottom = scrollTop + clientHeight >= scrollHeight - 1 && delta > 0;
-            if (!atTop && !atBottom) {
-                e.preventDefault();
-                el.scrollBy({ top: delta, behavior: 'instant' });
-            }
+
+            el.scrollBy({ top: delta, behavior: 'instant' });
         };
         el.addEventListener('wheel', handler, { passive: false });
         return () => el.removeEventListener('wheel', handler);

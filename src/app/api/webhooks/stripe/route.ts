@@ -3,6 +3,7 @@ import twilio from 'twilio';
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { adminClient } from '@/sanity/adminClient';
+import { decrementStock } from '@/lib/decrementStock';
 
 // ── Disable body parsing — Stripe needs the raw body to verify signature ──────
 export const config = { api: { bodyParser: false } };
@@ -41,13 +42,16 @@ export async function POST(req: Request) {
     const sig = headersList.get('stripe-signature');
 
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (!webhookSecret) {
-        console.warn('[Webhook] STRIPE_WEBHOOK_SECRET not set — skipping signature verification');
-    }
-
     const stripeKey = process.env.STRIPE_SECRET_KEY;
     if (!stripeKey) {
         return NextResponse.json({ error: 'Stripe not configured' }, { status: 503 });
+    }
+
+    // In production, always require webhook secret to prevent forged events
+    const isLocalDev = process.env.NODE_ENV === 'development';
+    if (!webhookSecret && !isLocalDev) {
+        console.error('[Webhook] STRIPE_WEBHOOK_SECRET not set in production — rejecting');
+        return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 503 });
     }
 
     const stripe = new Stripe(stripeKey);
@@ -57,9 +61,12 @@ export async function POST(req: Request) {
     try {
         if (webhookSecret && sig) {
             event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
-        } else {
-            // Dev mode without secret — parse but don't verify
+        } else if (isLocalDev) {
+            // Local dev only — parse without verification
+            console.warn('[Webhook] DEV MODE: Skipping signature verification');
             event = JSON.parse(rawBody) as Stripe.Event;
+        } else {
+            return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
         }
     } catch (err) {
         console.error('[Webhook] Signature verification failed:', err);
@@ -76,6 +83,15 @@ export async function POST(req: Request) {
             } catch (err) {
                 console.error('[Webhook] Sanity sync failed:', err);
                 // Continue so SMS still tries to send
+            }
+
+            // ── Auto-decrement stock after confirmed payment ──
+            const orderSummary = session.metadata?.order_summary || '';
+            const parsedItems = parseOrderSummary(orderSummary);
+            if (parsedItems.length > 0) {
+                decrementStock(parsedItems)
+                    .then(r => console.log(`[Webhook] Stock decremented: ${r.updated} products`))
+                    .catch(err => console.error('[Webhook] Stock decrement error:', err));
             }
         }
     }
@@ -182,4 +198,24 @@ async function saveOrderToSanity(session: Stripe.Checkout.Session) {
 
     await adminClient.create(orderDoc);
     console.log('[Webhook] Order saved to Sanity:', orderDoc.orderNumber);
+}
+
+/**
+ * Parse the order_summary metadata string into item names + quantities.
+ * Format: "New York Strip x2 ($42.99/lb), Ground Chuck x1 ($9.99/lb)"
+ */
+function parseOrderSummary(summary: string): Array<{ name: string; qty: number }> {
+    if (!summary) return [];
+    const items: Array<{ name: string; qty: number }> = [];
+
+    // Split on comma, then parse each segment
+    const segments = summary.split(',').map(s => s.trim()).filter(Boolean);
+    for (const seg of segments) {
+        // Match pattern: "Product Name x2 ($price)" or "Product Name x2 ($price) [note]"
+        const match = seg.match(/^(.+?)\s+x(\d+)\s*\(/);
+        if (match) {
+            items.push({ name: match[1].trim(), qty: parseInt(match[2], 10) || 1 });
+        }
+    }
+    return items;
 }
