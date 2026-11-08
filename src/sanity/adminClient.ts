@@ -1,8 +1,8 @@
 import { createClient } from 'next-sanity';
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
-const token = process.env.SANITY_API_WRITE_TOKEN!;
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'a2p2fvte';
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production';
+const token = process.env.SANITY_API_WRITE_TOKEN;
 
 /** 
  * Admin client used for server-side mutations (registration, order saving)

@@ -5,8 +5,8 @@ import { headers } from 'next/headers';
 import { adminClient } from '@/sanity/adminClient';
 import { decrementStock } from '@/lib/decrementStock';
 
-// ── Disable body parsing — Stripe needs the raw body to verify signature ──────
-export const config = { api: { bodyParser: false } };
+// App Router route handlers use Web Request API (`await req.text()`) for raw body verification
+export const dynamic = 'force-dynamic';
 
 function formatPhone(raw: string): string {
     // Normalize to E.164 if it looks like a 10-digit US number

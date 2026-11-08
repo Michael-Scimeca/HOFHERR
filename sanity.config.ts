@@ -14,8 +14,8 @@ import { schemaTypes } from './src/sanity/schemaTypes';
 export default defineConfig({
     name: 'hofherr',
     title: 'Hofherr Meat Co.',
-    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'a2p2fvte',
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
     basePath: '/studio',
     plugins: [
         structureTool({
