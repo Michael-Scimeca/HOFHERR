@@ -176,8 +176,9 @@ export function waitForPageAssets(
             await Promise.allSettled(tasks);
 
             // Second pass: catch any <img> tags mounted after the first batch resolved
+            const seenImgs = new Set(imgs);
             const lateImgs = Array.from(document.querySelectorAll<HTMLImageElement>('img')).filter(
-                img => !imgs.includes(img)
+                img => !seenImgs.has(img)
             );
             if (lateImgs.length > 0) {
                 await Promise.allSettled(lateImgs.map(img => track(waitForSingleImage(img))));
