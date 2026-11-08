@@ -21,11 +21,20 @@ export const metadata: Metadata = {
 
 export default function GiftCardsPage() {
     return (
-        <div className={styles.wrapper}>
+        <main className={styles.wrapper}>
             <div className={styles.splitLayout}>
                 {/* Visual Pane */}
                 <div className={styles.visualPane}>
                     <div className={styles.imageWrapper}>
+                         <Image
+                             src="/assets/gift-card-left-image.webp"
+                             alt="Hofherr Meat Co. craft butcher selection"
+                             fill
+                             priority
+                             fetchPriority="high"
+                             sizes="(max-width: 768px) 100vw, 45vw"
+                             className={styles.heroImg}
+                         />
                          <div className={styles.overlayText}>
                              <h2>The ultimate<br/>gift for the<br/>meat lover.</h2>
                              <p>Never expires. Always delicious.</p>
@@ -114,6 +123,6 @@ export default function GiftCardsPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }

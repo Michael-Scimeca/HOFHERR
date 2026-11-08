@@ -30,13 +30,13 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <>
+    <main>
       <Hero />
       <SeasonalBanner />
       <Specials />
       <Process />
 
       <Newsletter />
-    </>
+    </main>
   );
 }

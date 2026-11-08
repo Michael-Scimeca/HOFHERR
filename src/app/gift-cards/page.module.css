@@ -23,19 +23,22 @@
     margin-top: -88px;
     height: 100vh;
     width: 100%;
-    background-image: url('/assets/gift-card-left-image.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     display: flex;
     align-items: flex-end;
     overflow: hidden;
+}
+
+.heroImg {
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
 }
 
 .imageWrapper::before {
     content: '';
     position: absolute;
     inset: 0;
+    z-index: 1;
     pointer-events: none;
     background: linear-gradient(to top, rgba(0,0,0,0.95), transparent 60%);
 }

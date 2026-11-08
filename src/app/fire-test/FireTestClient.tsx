@@ -1043,7 +1043,7 @@ export default function FireTestClient({
         };
 
         /* Sizing */
-        let rebuildBurn: () => void = () => {}; // assigned once the burn canvas is set up below
+        let rebuildBurn: () => void = () => { }; // assigned once the burn canvas is set up below
         const resize = () => {
             rebuildBurn();
             const w = canvas.clientWidth;
@@ -1099,7 +1099,7 @@ export default function FireTestClient({
         const buildBurn = () => { buildLogoBurn(); };
         rebuildBurn = buildBurn;
         buildBurn();
-        document.fonts?.ready.then(buildBurn).catch(() => {});
+        document.fonts?.ready.then(buildBurn).catch(() => { });
 
         /* Logo hand-off: during the preloader the whole navbar is hidden and only the big burning
            logo shows. Once it is fully lit (and the flame flares), the big logo burns away, and then
@@ -1605,8 +1605,10 @@ export default function FireTestClient({
         });
     };
 
+    const RootTag = preloader ? 'div' : 'main';
+
     return (
-        <main className={preloader ? styles.preloaderRoot : styles.page}>
+        <RootTag className={preloader ? styles.preloaderRoot : styles.page}>
             <canvas
                 ref={canvasRef}
                 className={styles.stage}
@@ -1634,250 +1636,250 @@ export default function FireTestClient({
             </p>
 
             {!preloader && (<>
-            <section id="fire-controls" aria-labelledby="fire-controls-heading" className={styles.panel}>
-                <h1 id="fire-controls-heading" className={styles.title}>5-Flame Lab</h1>
+                <section id="fire-controls" aria-labelledby="fire-controls-heading" className={styles.panel}>
+                    <h1 id="fire-controls-heading" className={styles.title}>5-Flame Lab</h1>
 
-                <div className={styles.presets} role="group" aria-label="Select one of the 5 flames">
-                    {(settings.flames ?? FIVE_FLAME_DEFAULTS).map((slot, idx) => {
-                        const isSel = (settings.selectedIndex ?? 0) === idx;
-                        return (
-                            <button
-                                key={slot.label}
-                                type="button"
-                                className={`${styles.preset} ${isSel ? styles.presetActive : ''}`}
-                                aria-pressed={isSel}
-                                onClick={() => {
-                                    setSettings(prev => {
-                                        const picked = (prev.flames ?? FIVE_FLAME_DEFAULTS)[idx];
-                                        return { ...prev, ...picked, selectedIndex: idx };
-                                    });
-                                }}
-                            >
-                                {slot.enabled ? '🔥' : '🚫'} {slot.label}
-                            </button>
-                        );
-                    })}
-                </div>
+                    <div className={styles.presets} role="group" aria-label="Select one of the 5 flames">
+                        {(settings.flames ?? FIVE_FLAME_DEFAULTS).map((slot, idx) => {
+                            const isSel = (settings.selectedIndex ?? 0) === idx;
+                            return (
+                                <button
+                                    key={slot.label}
+                                    type="button"
+                                    className={`${styles.preset} ${isSel ? styles.presetActive : ''}`}
+                                    aria-pressed={isSel}
+                                    onClick={() => {
+                                        setSettings(prev => {
+                                            const picked = (prev.flames ?? FIVE_FLAME_DEFAULTS)[idx];
+                                            return { ...prev, ...picked, selectedIndex: idx };
+                                        });
+                                    }}
+                                >
+                                    {slot.enabled ? '🔥' : '🚫'} {slot.label}
+                                </button>
+                            );
+                        })}
+                    </div>
 
-                <div className={styles.modeRow} role="group" aria-label="Multi-flame visibility">
-                    <button
-                        type="button"
-                        className={`${styles.preset} ${settings.showAll5 ? styles.presetActive : ''}`}
-                        aria-pressed={settings.showAll5}
-                        onClick={() => setSettings(prev => ({ ...prev, showAll5: !prev.showAll5 }))}
-                    >
-                        {settings.showAll5 ? '👁 Showing All 5' : '1️⃣ Solo Selected'}
-                    </button>
-                    <button
-                        type="button"
-                        className={`${styles.preset} ${settings.enabled ? styles.presetActive : ''}`}
-                        aria-pressed={settings.enabled}
-                        onClick={() => updateActiveSlot({ enabled: !settings.enabled })}
-                    >
-                        {settings.enabled ? '✅ Slot Enabled' : '🚫 Slot Muted'}
-                    </button>
-                </div>
-
-                <div className={styles.divider} />
-
-                <div className={styles.presets} role="group" aria-label="Preset">
-                    {PRESETS.map(p => (
-                        <button
-                            key={p.id}
-                            type="button"
-                            className={`${styles.preset} ${preset === p.id ? styles.presetActive : ''}`}
-                            aria-pressed={preset === p.id}
-                            onClick={() => applyPreset(p)}
-                        >
-                            {p.label}
-                        </button>
-                    ))}
-                </div>
-
-                {SLIDERS.map(sl => {
-                    const numVal = Number(settings[sl.key] ?? 0);
-                    return (
-                        <div className={styles.ctl} key={sl.key}>
-                            <label htmlFor={`fire-${sl.key}`}>
-                                {sl.label} <output>{sl.fmt(numVal)}</output>
-                            </label>
-                            <input
-                                id={`fire-${sl.key}`}
-                                type="range"
-                                min={sl.min}
-                                max={sl.max}
-                                step={sl.step}
-                                value={numVal}
-                                onChange={e => {
-                                    updateActiveSlot({ [sl.key]: parseFloat(e.target.value) });
-                                    setPreset(null);
-                                }}
-                            />
-                        </div>
-                    );
-                })}
-
-                <div className={styles.divider} />
-
-                <div className={styles.presets} role="group" aria-label="Flare-up and die-down style">
-                    {FLARE_PRESETS.map(fp => (
-                        <button
-                            key={fp.id}
-                            type="button"
-                            className={styles.preset}
-                            title={fp.desc}
-                            onClick={() => {
-                                updateActiveSlot({
-                                    flareRise: fp.flareRise,
-                                    flareHold: fp.flareHold,
-                                    flareDecay: fp.flareDecay,
-                                    flareEndHeight: fp.flareEndHeight,
-                                    flarePeakHeight: fp.flarePeakHeight,
-                                    flareBelly: fp.flareBelly,
-                                    flareSpeedBoost: fp.flareSpeedBoost,
-                                });
-                                flareStartRef.current = performance.now();
-                                burstRef.current += 16;
-                            }}
-                        >
-                            {fp.label}
-                        </button>
-                    ))}
-                </div>
-
-                {FLARE_SLIDERS.map(sl => {
-                    const numVal = Number(settings[sl.key] ?? 0);
-                    return (
-                        <div className={styles.ctl} key={sl.key}>
-                            <label htmlFor={`fire-${sl.key}`}>
-                                {sl.label} <output>{sl.fmt(numVal)}</output>
-                            </label>
-                            <input
-                                id={`fire-${sl.key}`}
-                                type="range"
-                                min={sl.min}
-                                max={sl.max}
-                                step={sl.step}
-                                value={numVal}
-                                onChange={e => {
-                                    const val = parseFloat(e.target.value);
-                                    updateActiveSlot({ [sl.key]: val });
-                                    flareStartRef.current = performance.now();
-                                    burstRef.current += 8;
-                                }}
-                            />
-                        </div>
-                    );
-                })}
-
-                <div className={styles.divider} />
-
-                <div className={styles.modeRow} role="group" aria-label="Canvas drag mode">
-                    <button
-                        type="button"
-                        className={`${styles.preset} ${dragMode === 'move' ? styles.presetActive : ''}`}
-                        aria-pressed={dragMode === 'move'}
-                        onClick={() => setDragMode('move')}
-                    >
-                        Drag Flame
-                    </button>
-                    <button
-                        type="button"
-                        className={`${styles.preset} ${dragMode === 'orbit' ? styles.presetActive : ''}`}
-                        aria-pressed={dragMode === 'orbit'}
-                        onClick={() => setDragMode('orbit')}
-                    >
-                        Rotate 3D
-                    </button>
-                </div>
-
-                {POSITION_SLIDERS.map(sl => {
-                    const numVal = Number(settings[sl.key] ?? 0);
-                    return (
-                        <div className={styles.ctl} key={sl.key}>
-                            <label htmlFor={`fire-${sl.key}`}>
-                                {sl.label} <output>{sl.fmt(numVal)}</output>
-                            </label>
-                            <input
-                                id={`fire-${sl.key}`}
-                                type="range"
-                                min={sl.min}
-                                max={sl.max}
-                                step={sl.step}
-                                value={numVal}
-                                onChange={e => {
-                                    const val = parseFloat(e.target.value);
-                                    updateActiveSlot({ [sl.key]: val });
-                                }}
-                            />
-                        </div>
-                    );
-                })}
-
-                <button type="button" className={styles.resetBtn} onClick={resetPosition}>
-                    Center Flame (Reset)
-                </button>
-
-                <div className={styles.hint}>
-                    <span>{dragMode === 'move' ? 'Drag flame to place' : 'Drag to rotate'}</span>
-                    <span>Scroll to zoom</span>
-                    <span ref={fpsRef}>— fps</span>
-                </div>
-            </section>
-
-            <section id="preloader-steps" aria-labelledby="preloader-steps-heading" className={styles.stepsPanel}>
-                <div className={styles.stepsHeader}>
-                    <h2 id="preloader-steps-heading" className={styles.stepsTitle}>Preloader Steps</h2>
-                    <div className={styles.stepsActions}>
+                    <div className={styles.modeRow} role="group" aria-label="Multi-flame visibility">
                         <button
                             type="button"
-                            className={`${styles.stepActionBtn} ${paused ? styles.stepActionActive : ''}`}
-                            onClick={() => setPaused(p => !p)}
+                            className={`${styles.preset} ${settings.showAll5 ? styles.presetActive : ''}`}
+                            aria-pressed={settings.showAll5}
+                            onClick={() => setSettings(prev => ({ ...prev, showAll5: !prev.showAll5 }))}
                         >
-                            {paused ? '▶ Play' : '⏸ Pause'}
+                            {settings.showAll5 ? '👁 Showing All 5' : '1️⃣ Solo Selected'}
                         </button>
                         <button
                             type="button"
-                            className={styles.stepActionBtn}
-                            onClick={fireItUp}
+                            className={`${styles.preset} ${settings.enabled ? styles.presetActive : ''}`}
+                            aria-pressed={settings.enabled}
+                            onClick={() => updateActiveSlot({ enabled: !settings.enabled })}
                         >
-                            ↻ Replay
+                            {settings.enabled ? '✅ Slot Enabled' : '🚫 Slot Muted'}
                         </button>
                     </div>
-                </div>
 
-                <div className={styles.stepsList} role="group" aria-label="Jump to preloader step">
-                    {PRELOADER_STEPS.map(step => {
-                        const isCurrent = activeStep === step.id;
-                        const isDone = activeStep > step.id;
-                        return (
+                    <div className={styles.divider} />
+
+                    <div className={styles.presets} role="group" aria-label="Preset">
+                        {PRESETS.map(p => (
                             <button
-                                key={step.id}
+                                key={p.id}
                                 type="button"
-                                className={`${styles.stepCard} ${isCurrent ? styles.stepCardActive : ''} ${isDone ? styles.stepCardDone : ''}`}
-                                aria-pressed={isCurrent}
-                                onClick={() => jumpToStep(step.id)}
+                                className={`${styles.preset} ${preset === p.id ? styles.presetActive : ''}`}
+                                aria-pressed={preset === p.id}
+                                onClick={() => applyPreset(p)}
                             >
-                                <div className={styles.stepTop}>
-                                    <span className={styles.stepBadge}>{step.num}</span>
-                                    <span className={styles.stepLabel}>{step.label}</span>
-                                    <span className={styles.stepTiming}>{step.timing}</span>
-                                </div>
-                                <span className={styles.stepDesc}>{step.desc}</span>
+                                {p.label}
                             </button>
+                        ))}
+                    </div>
+
+                    {SLIDERS.map(sl => {
+                        const numVal = Number(settings[sl.key] ?? 0);
+                        return (
+                            <div className={styles.ctl} key={sl.key}>
+                                <label htmlFor={`fire-${sl.key}`}>
+                                    {sl.label} <output>{sl.fmt(numVal)}</output>
+                                </label>
+                                <input
+                                    id={`fire-${sl.key}`}
+                                    type="range"
+                                    min={sl.min}
+                                    max={sl.max}
+                                    step={sl.step}
+                                    value={numVal}
+                                    onChange={e => {
+                                        updateActiveSlot({ [sl.key]: parseFloat(e.target.value) });
+                                        setPreset(null);
+                                    }}
+                                />
+                            </div>
                         );
                     })}
-                </div>
-            </section>
 
-            <button type="button" className={styles.flare} onClick={fireItUp}>
-                Fire it up
-            </button>
+                    <div className={styles.divider} />
+
+                    <div className={styles.presets} role="group" aria-label="Flare-up and die-down style">
+                        {FLARE_PRESETS.map(fp => (
+                            <button
+                                key={fp.id}
+                                type="button"
+                                className={styles.preset}
+                                title={fp.desc}
+                                onClick={() => {
+                                    updateActiveSlot({
+                                        flareRise: fp.flareRise,
+                                        flareHold: fp.flareHold,
+                                        flareDecay: fp.flareDecay,
+                                        flareEndHeight: fp.flareEndHeight,
+                                        flarePeakHeight: fp.flarePeakHeight,
+                                        flareBelly: fp.flareBelly,
+                                        flareSpeedBoost: fp.flareSpeedBoost,
+                                    });
+                                    flareStartRef.current = performance.now();
+                                    burstRef.current += 16;
+                                }}
+                            >
+                                {fp.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {FLARE_SLIDERS.map(sl => {
+                        const numVal = Number(settings[sl.key] ?? 0);
+                        return (
+                            <div className={styles.ctl} key={sl.key}>
+                                <label htmlFor={`fire-${sl.key}`}>
+                                    {sl.label} <output>{sl.fmt(numVal)}</output>
+                                </label>
+                                <input
+                                    id={`fire-${sl.key}`}
+                                    type="range"
+                                    min={sl.min}
+                                    max={sl.max}
+                                    step={sl.step}
+                                    value={numVal}
+                                    onChange={e => {
+                                        const val = parseFloat(e.target.value);
+                                        updateActiveSlot({ [sl.key]: val });
+                                        flareStartRef.current = performance.now();
+                                        burstRef.current += 8;
+                                    }}
+                                />
+                            </div>
+                        );
+                    })}
+
+                    <div className={styles.divider} />
+
+                    <div className={styles.modeRow} role="group" aria-label="Canvas drag mode">
+                        <button
+                            type="button"
+                            className={`${styles.preset} ${dragMode === 'move' ? styles.presetActive : ''}`}
+                            aria-pressed={dragMode === 'move'}
+                            onClick={() => setDragMode('move')}
+                        >
+                            Drag Flame
+                        </button>
+                        <button
+                            type="button"
+                            className={`${styles.preset} ${dragMode === 'orbit' ? styles.presetActive : ''}`}
+                            aria-pressed={dragMode === 'orbit'}
+                            onClick={() => setDragMode('orbit')}
+                        >
+                            Rotate 3D
+                        </button>
+                    </div>
+
+                    {POSITION_SLIDERS.map(sl => {
+                        const numVal = Number(settings[sl.key] ?? 0);
+                        return (
+                            <div className={styles.ctl} key={sl.key}>
+                                <label htmlFor={`fire-${sl.key}`}>
+                                    {sl.label} <output>{sl.fmt(numVal)}</output>
+                                </label>
+                                <input
+                                    id={`fire-${sl.key}`}
+                                    type="range"
+                                    min={sl.min}
+                                    max={sl.max}
+                                    step={sl.step}
+                                    value={numVal}
+                                    onChange={e => {
+                                        const val = parseFloat(e.target.value);
+                                        updateActiveSlot({ [sl.key]: val });
+                                    }}
+                                />
+                            </div>
+                        );
+                    })}
+
+                    <button type="button" className={styles.resetBtn} onClick={resetPosition}>
+                        Center Flame (Reset)
+                    </button>
+
+                    <div className={styles.hint}>
+                        <span>{dragMode === 'move' ? 'Drag flame to place' : 'Drag to rotate'}</span>
+                        <span>Scroll to zoom</span>
+                        <span ref={fpsRef}>— fps</span>
+                    </div>
+                </section>
+
+                <section id="preloader-steps" aria-labelledby="preloader-steps-heading" className={styles.stepsPanel}>
+                    <div className={styles.stepsHeader}>
+                        <h2 id="preloader-steps-heading" className={styles.stepsTitle}>Preloader Steps</h2>
+                        <div className={styles.stepsActions}>
+                            <button
+                                type="button"
+                                className={`${styles.stepActionBtn} ${paused ? styles.stepActionActive : ''}`}
+                                onClick={() => setPaused(p => !p)}
+                            >
+                                {paused ? '▶ Play' : '⏸ Pause'}
+                            </button>
+                            <button
+                                type="button"
+                                className={styles.stepActionBtn}
+                                onClick={fireItUp}
+                            >
+                                ↻ Replay
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className={styles.stepsList} role="group" aria-label="Jump to preloader step">
+                        {PRELOADER_STEPS.map(step => {
+                            const isCurrent = activeStep === step.id;
+                            const isDone = activeStep > step.id;
+                            return (
+                                <button
+                                    key={step.id}
+                                    type="button"
+                                    className={`${styles.stepCard} ${isCurrent ? styles.stepCardActive : ''} ${isDone ? styles.stepCardDone : ''}`}
+                                    aria-pressed={isCurrent}
+                                    onClick={() => jumpToStep(step.id)}
+                                >
+                                    <div className={styles.stepTop}>
+                                        <span className={styles.stepBadge}>{step.num}</span>
+                                        <span className={styles.stepLabel}>{step.label}</span>
+                                        <span className={styles.stepTiming}>{step.timing}</span>
+                                    </div>
+                                    <span className={styles.stepDesc}>{step.desc}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </section>
+
+                <button type="button" className={styles.flare} onClick={fireItUp}>
+                    Fire it up
+                </button>
             </>)}
 
             <div ref={errorRef} className={styles.error} hidden>
                 This browser couldn&apos;t start WebGL, so the fire can&apos;t render here.
             </div>
-        </main>
+        </RootTag>
     );
 }

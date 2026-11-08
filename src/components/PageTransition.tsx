@@ -594,7 +594,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
             const meltRem = Math.pow(1 - p, 1.65);
             blurRem = meltRem * mBlur;
             contrastVal = 1 + meltRem * (mCon - 1);
-            opacityVal = Math.min(1, Math.pow(p, 0.5));
+            opacityVal = includeHeader ? 1 : Math.min(1, Math.pow(p, 0.5));
             scaleVal = (1 - scaleDelta) + scaleDelta * easeOut;
             translateY = (1 - easeOut) * yPx;
         }

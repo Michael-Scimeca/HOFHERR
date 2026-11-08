@@ -45,7 +45,7 @@ export default async function CateringPage() {
     }
 
     return (
-        <div>
+        <main>
             {/* ── Hero ── */}
             <section className={styles.hero}>
                 <div className={`container ${styles.heroInner}`}>
@@ -133,6 +133,6 @@ export default async function CateringPage() {
                     ))}
                 </div>
             </div>
-        </div>
+        </main>
     );
 }

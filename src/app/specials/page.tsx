@@ -200,7 +200,7 @@ export default async function SpecialsPage() {
     }, {} as Record<string, string[]>);
 
     return (
-        <div>
+        <main>
 
             {/* ── Hero ── */}
             <section className={styles.hero}>
@@ -522,6 +522,6 @@ export default async function SpecialsPage() {
                 </div>
             </section>
 
-        </div>
+        </main>
     );
 }

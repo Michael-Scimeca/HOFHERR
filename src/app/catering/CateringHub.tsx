@@ -296,10 +296,10 @@ export default function CateringHub({ events, calendarPricing }: Props) {
 
                         {/* Guest Count */}
                         <div className={calcStyles.inputGroup}>
-                            <label className={calcStyles.label}>Number of Guests</label>
+                            <label htmlFor="catering-guest-count" className={calcStyles.label}>Number of Guests</label>
                             <div className={calcStyles.numberInputWrap}>
                                 <button className={calcStyles.stepperBtn} onClick={() => setGuests(Math.max(1, guests - 5))} aria-label="Decrease guests">−</button>
-                                <input type="number" className={calcStyles.numberInput} value={guests} onChange={handleGuestChange} onBlur={handleGuestBlur} />
+                                <input id="catering-guest-count" aria-label="Number of Guests" type="number" className={calcStyles.numberInput} value={guests} onChange={handleGuestChange} onBlur={handleGuestBlur} />
                                 <button className={calcStyles.stepperBtn} onClick={() => setGuests(Math.min(500, guests + 5))} aria-label="Increase guests">+</button>
                             </div>
                         </div>
