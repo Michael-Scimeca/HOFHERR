@@ -57,6 +57,14 @@ const parseTime = (t: string) => {
     return hours * 60 + mins;
 };
 
+const CHICAGO_TIME_FORMATTER = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Chicago',
+    weekday: 'long',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false
+});
+
 /**
  * Determines current store status based on Central Time
  */
@@ -65,15 +73,7 @@ function getShopStatus(hours: StoreHourEntry[], absoluteNow: Date) {
 
     try {
         // Robust timezone formatting for Chicago
-        const formatter = new Intl.DateTimeFormat('en-US', {
-            timeZone: 'America/Chicago',
-            weekday: 'long',
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: false
-        });
-
-        const parts = formatter.formatToParts(absoluteNow);
+        const parts = CHICAGO_TIME_FORMATTER.formatToParts(absoluteNow);
         const getPart = (type: string) => parts.find(p => p.type === type)?.value;
 
         const dayName = getPart('weekday');
@@ -195,17 +195,6 @@ export default function Navbar() {
     const butcherStatus = getShopStatus(butcherHours, currentTime);
     const depotStatus = getShopStatus(depotHours, currentTime);
 
-    // Debug exposed to window
-    if (typeof window !== 'undefined') {
-        (window as any).NAV_DEBUG = {
-            currentTime: currentTime.toLocaleTimeString(),
-            chicagoTime: new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', timeStyle: 'short' }).format(currentTime),
-            butcher: butcherStatus,
-            depot: depotStatus,
-            rawHours: { butcher: butcherHours, depot: depotHours }
-        };
-    }
-
     const storePills = (
         <div className={styles.storeStatusWrap}>
             <TransitionLink
@@ -241,7 +230,7 @@ export default function Navbar() {
 
     return (
         <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
-            <div className={styles.inner}>
+            <div className={`container ${styles.inner}`}>
                 {/* Logo */}
                 <TransitionLink href="/" className={styles.logo} onClick={() => setMobileOpen(false)}>
                     <Image
@@ -284,9 +273,9 @@ export default function Navbar() {
                     <div className={styles.rightActions}>
                         {!user ? (
                             <div className={styles.authPill}>
-                                <Link href="/online-orders?login=true" className={styles.signInLink}>Sign In</Link>
+                                <TransitionLink href="/online-orders?login=true" className={styles.signInLink}>Sign In</TransitionLink>
                                 <span className={styles.authDivider}>/</span>
-                                <Link href="/online-orders?signup=true" className={styles.signInLink}>Sign Up</Link>
+                                <TransitionLink href="/online-orders?signup=true" className={styles.signInLink}>Sign Up</TransitionLink>
                             </div>
                         ) : (
                             <div className={styles.avatarDropdownWrap}>
@@ -297,9 +286,9 @@ export default function Navbar() {
                                     />
                                 </button>
                                 <div className={styles.avatarDropdown}>
-                                    <Link href={user.isAdmin ? "/admin" : "/dashboard"} className={styles.avatarDropdownItem}>
+                                    <TransitionLink href={user.isAdmin ? "/admin" : "/dashboard"} className={styles.avatarDropdownItem}>
                                         {user.isAdmin ? '🛡️ Admin Panel' : '📊 My Dashboard'}
-                                    </Link>
+                                    </TransitionLink>
                                     <button onClick={() => signOut()} className={styles.avatarDropdownItem} style={{ color: '#ef4444' }}>🚪 Sign Out</button>
                                 </div>
                             </div>
@@ -396,11 +385,11 @@ export default function Navbar() {
                         <div className={styles.mobileCTA}>
                             {!user ? (
                                 <div className={styles.mobileAuthGrid}>
-                                    <Link href="/online-orders?login=true" className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Sign In</Link>
-                                    <Link href="/online-orders?signup=true" className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Sign Up</Link>
+                                    <TransitionLink href="/online-orders?login=true" className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Sign In</TransitionLink>
+                                    <TransitionLink href="/online-orders?signup=true" className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Sign Up</TransitionLink>
                                 </div>
                             ) : (
-                                <Link href="/dashboard" className="btn btn-secondary" onClick={() => setMobileOpen(false)}>Dashboard</Link>
+                                <TransitionLink href="/dashboard" className="btn btn-secondary" onClick={() => setMobileOpen(false)}>Dashboard</TransitionLink>
                             )}
                         </div>
                     </div>

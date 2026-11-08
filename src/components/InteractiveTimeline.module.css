@@ -42,6 +42,7 @@
     position: relative;
     margin: 0 auto;
     width: 100%;
+    height: var(--tl-h, 1560px);
 }
 
 /* Ambient glow blobs */
@@ -84,28 +85,35 @@
 /* ── Row: absolutely positioned at each node's y% ── */
 .row {
     position: absolute;
+    top: var(--row-top, 0%);
     left: 0;
     right: 0;
     transform: translateY(-28px); /* node circle sits at the TOP corner of the card */
     display: grid;
-    grid-template-columns: 1fr 90px 1fr;
+    grid-template-columns: 1fr 80px 1fr;
     align-items: center;
     z-index: 3;
     pointer-events: none;
 }
 
+.nodeGroup {
+    opacity: 0;
+}
+
 /* ── Slots ── */
 .slotLeft {
     display: flex;
-    justify-content: flex-end;
-    padding-right: 28px;
+    justify-content: flex-start;
+    padding-left: 3.6%;
+    padding-right: 24px;
     pointer-events: all;
 }
 
 .slotRight {
     display: flex;
-    justify-content: flex-start;
-    padding-left: 28px;
+    justify-content: flex-end;
+    padding-right: 3.6%;
+    padding-left: 24px;
     pointer-events: all;
 }
 
@@ -117,12 +125,22 @@
     position: relative;
 }
 
+.nodeVideoWrap {
+    position: absolute;
+    left: var(--node-x, 0%);
+    top: var(--node-y, 0%);
+    transform: translate(-50%, -50%);
+    z-index: 33;
+    pointer-events: none;
+}
+
 /* Circular video overlay on a node */
 .nodeVideo {
     width: 80px;
     height: 80px;
     border-radius: 50%;
     object-fit: cover;
+    opacity: 0;
 }
 
 /* ── Node icon (HTML overlay on SVG circle) ── */
@@ -138,9 +156,10 @@
     background: linear-gradient(308deg, #000 50%, #0000006e 100%);
     border: 1px solid #ffffff1a;
     border-radius: 16px;
-    padding: 24px 28px;
+    padding: 28px 36px;
     width: 100%;
-    max-width: 360px;
+    max-width: 560px;
+    opacity: 0;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 

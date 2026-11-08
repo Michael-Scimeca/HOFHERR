@@ -1,5 +1,16 @@
+/* ── Page wrapper (waits for map ready before reveal) ── */
+.page {
+    opacity: 0;
+    transition: opacity 0.25s var(--ease-out);
+}
+
+.pageReady {
+    opacity: 1;
+}
+
 /* ── Hero ── */
 .hero {
+    --visit-overlap: 128px;
     position: relative;
     margin-top: 0;
     display: flex;
@@ -42,10 +53,10 @@
 .heroInner {
     position: relative;
     z-index: 2;
-    max-width: 1200px;
+    max-width: var(--max-w, 1800px);
     margin: 0 auto;
     width: 100%;
-    padding: 100px 40px 36px;
+    padding: 100px var(--container-px) calc(var(--visit-overlap) + 40px);
 }
 
 .heroBox {
@@ -159,6 +170,15 @@
     padding: 96px 0;
 }
 
+/* First section after the hero slides up over the hero image */
+.locationOverlap {
+    --visit-overlap: 128px; /* keep in sync with .hero */
+    position: relative;
+    z-index: 3;
+    margin-top: calc(var(--visit-overlap) * -1);
+    padding-top: 0;
+}
+
 .locationSection+.locationSection {
     border-top: 1px solid var(--border);
     background: var(--bg-2);
@@ -200,15 +220,40 @@
 }
 
 .mapWrap {
+    position: relative;
+    background: #181a1b;
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid #ffffff1a;
     flex: 1;
+    min-height: 360px;
 }
 
-.mapWrap iframe {
+.mapIframe {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
+    border: 0;
+    border-radius: 12px;
+    filter: invert(90%) hue-rotate(180deg) saturate(0.6) brightness(0.8);
+    transition: opacity 0.2s ease;
+}
+
+.mapIframeActive {
+    opacity: 1;
+    z-index: 2;
+    pointer-events: auto;
+}
+
+.mapIframeHidden {
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.galleryImgTop {
+    object-position: center 15%;
 }
 
 .directionsBtn {
@@ -387,7 +432,7 @@
 
 /* ── Gallery ── */
 .gallery {
-    padding: 96px 0;
+    padding: 0 0 96px; /* top spacing comes from the location section above */
     background: var(--bg);
 }
 
@@ -516,7 +561,7 @@
     }
 
     .heroInner {
-        padding: 80px 20px 28px;
+        padding: 80px var(--container-px) calc(var(--visit-overlap) + 32px);
     }
 
     .heroControls {

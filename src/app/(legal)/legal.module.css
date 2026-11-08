@@ -1,7 +1,7 @@
 .page {
     max-width: 800px;
     margin: 0 auto;
-    padding: 120px 24px 80px;
+    padding: 120px var(--container-px) 80px;
     color: var(--text);
     font-family: var(--body-font, 'Inter', sans-serif);
     line-height: 1.7;

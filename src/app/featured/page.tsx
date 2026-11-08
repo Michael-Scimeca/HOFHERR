@@ -52,7 +52,7 @@ export default async function FeaturedPage() {
     }
 
     return (
-        <main style={{ padding: '120px 24px 64px', maxWidth: '1200px', margin: '0 auto', color: '#fff' }}>
+        <main className="container" style={{ paddingBlock: '120px 64px' }}>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '3rem', marginBottom: '16px', color: 'var(--red)' }}>
                 Featured Capabilities
             </h1>
@@ -101,6 +101,7 @@ export default async function FeaturedPage() {
                         src="/studio" 
                         style={{ width: '100%', height: '100%', border: 'none' }} 
                         title="Sanity CMS Studio"
+                        sandbox="allow-scripts allow-forms allow-popups"
                     />
                 </div>
             </section>

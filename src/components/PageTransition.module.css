@@ -1,0 +1,529 @@
+/* ─── Page Transition & Timeline Controller HUD (Bottom-Left) ─── */
+
+.hud {
+    position: fixed;
+    left: max(16px, env(safe-area-inset-left, 0px));
+    bottom: max(64px, env(safe-area-inset-bottom, 0px));
+    z-index: 9999;
+    width: min(400px, calc(100vw - 32px));
+    font-family: var(--font-body);
+}
+
+/* ─── Standalone 5-Flame Control Studio UI (Top-Right, In Its Own UI) ─── */
+
+.flameHud {
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right, 0px));
+    top: 88px;
+    z-index: 9999;
+    width: min(440px, calc(100vw - 32px));
+    font-family: var(--font-body);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.flameCard {
+    width: 100%;
+    background: rgba(13, 10, 14, 0.94);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.72);
+    display: grid;
+    gap: 12px;
+    max-height: calc(100svh - 104px);
+    overflow-y: auto;
+}
+
+.flameSlotsGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+}
+
+.flameSlotBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 4px;
+    color: var(--fg-2);
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s, transform 0.15s;
+}
+.flameSlotBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+    transform: translateY(-1px);
+}
+
+.flameSlotBtnActive {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--fg);
+}
+.flameSlotBtnActive:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.flameSlotBtnMuted {
+    opacity: 0.45;
+}
+
+.flameSlotNum {
+    font: 700 10px var(--font-body);
+    letter-spacing: 0.4px;
+    font-variant-numeric: tabular-nums;
+    color: var(--gold);
+}
+.flameSlotBtnActive .flameSlotNum {
+    color: var(--fg);
+}
+
+.flameSlotName {
+    font: 700 9px var(--font-body);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.burstHeroRow {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 8px;
+}
+
+.stageToolsRow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.subTabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.minimizedPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold);
+    color: var(--dark);
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font: 700 12px var(--font-body);
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    transition: transform 0.15s, background-color 0.2s, border-color 0.2s;
+}
+.minimizedPill:hover {
+    transform: translateY(-1px);
+    background: var(--fg);
+    border-color: var(--fg);
+}
+
+.pillBadge {
+    font-weight: 700;
+    opacity: 0.7;
+    font-variant-numeric: tabular-nums;
+}
+
+.pillText {
+    font-weight: 700;
+}
+
+.card {
+    background: rgba(13, 10, 14, 0.94);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65);
+    display: grid;
+    gap: 12px;
+    max-height: calc(100svh - 32px);
+    overflow-y: auto;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.titleWrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.title {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--fg);
+    line-height: 1;
+}
+
+.phaseBadge {
+    font: 700 10px var(--font-body);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--dark);
+    background: var(--gold);
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.routeTag {
+    font: 600 10px var(--font-body);
+    color: var(--fg-3);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px 8px;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.iconBtn {
+    font: 700 12px var(--font-body);
+    color: var(--fg-2);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+.iconBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+/* ─── Mode Switcher Tabs ─── */
+.tabs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.presetsGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+}
+
+.presetBtn {
+    font: 700 9px var(--font-body);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.presetBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+.presetBtnActive {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--fg);
+}
+
+.tabBtn {
+    font: 700 11px var(--font-body);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.tabBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+.tabBtnActive {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--fg);
+}
+
+/* ─── Timeline Track & Scrubber ─── */
+.timelineBox {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    display: grid;
+    gap: 8px;
+}
+
+.timelineLabels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font: 600 10px var(--font-body);
+    color: var(--fg-3);
+    font-variant-numeric: tabular-nums;
+}
+
+.timelineReadout {
+    color: var(--gold);
+    font-weight: 700;
+}
+
+.trackBar {
+    position: relative;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    display: flex;
+}
+
+.zoneExit {
+    width: 38.5%;
+    height: 100%;
+    background: rgba(204, 14, 29, 0.45);
+    border-right: 2px solid var(--gold);
+}
+
+.zoneEnter {
+    flex: 1;
+    height: 100%;
+    background: rgba(212, 168, 83, 0.35);
+}
+
+.scrubberInput {
+    width: 100%;
+    accent-color: var(--gold);
+    cursor: pointer;
+    margin: 0;
+}
+
+/* ─── Step Pills Grid ─── */
+.stepsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.stepPill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 12px;
+    color: var(--fg-2);
+    font: 600 11px var(--font-body);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+.stepPill:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.stepPillDone {
+    border-color: rgba(212, 168, 83, 0.4);
+    color: var(--fg);
+}
+
+.stepPillActive {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--dark);
+}
+.stepPillActive:hover {
+    color: var(--dark);
+}
+
+.stepNum {
+    font-weight: 700;
+    opacity: 0.65;
+    font-variant-numeric: tabular-nums;
+}
+
+.stepName {
+    font-weight: 700;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stepTime {
+    font-size: 9px;
+    opacity: 0.8;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ─── Action Buttons ─── */
+.actionsRow {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr auto;
+    gap: 8px;
+}
+
+.actionBtn {
+    font: 700 10px var(--font-body);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.actionBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.actionBtnPrimary {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--fg);
+}
+.actionBtnPrimary:hover {
+    background: var(--red-light);
+    border-color: var(--red-light);
+}
+
+/* ─── Duration & Effect Sliders ─── */
+.slidersGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+}
+
+.sliderCtl {
+    display: grid;
+    gap: 4px;
+}
+
+.sliderCtl label {
+    display: flex;
+    justify-content: space-between;
+    font: 600 10px var(--font-body);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+.sliderCtl output {
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+}
+
+.sliderCtl input[type='range'] {
+    width: 100%;
+    accent-color: var(--gold);
+    margin: 0;
+}
+
+/* ─── Quick Page Jump Bar ─── */
+.quickJumpWrap {
+    display: grid;
+    gap: 6px;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+}
+
+.quickJumpTitle {
+    font: 600 10px var(--font-body);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+.quickJumpRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.jumpPill {
+    font: 600 10px var(--font-body);
+    color: var(--fg-2);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.jumpPill:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+.jumpPillActive {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.descLine {
+    margin: 0;
+    font: 400 11px/1.4 var(--font-body);
+    color: var(--fg-3);
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+}
+.descLine strong {
+    color: var(--gold);
+    font-weight: 700;
+}
+

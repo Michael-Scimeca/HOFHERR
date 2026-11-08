@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import styles from './page.module.css';
+
+const GOOGLE_MAPS_SANDBOX = 'allow-scripts allow-same-origin allow-popups';
 
 
 
@@ -21,7 +22,7 @@ const LOCATIONS = [
         phoneTel: 'tel:8474416328',
         email: 'butcher@hofherrmeatco.com',
         directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093&travelmode=driving',
-        heroImage: '/shops/butcher-shop.jpeg',
+        heroImage: '/assets/cleanupfront.png',
         heroAlt: 'Hofherr Meat Co. storefront in Northfield, IL',
         hours: [
             { day: 'Tuesday – Friday', time: '10am – 6pm', open: true },
@@ -80,14 +81,31 @@ const LOCATIONS = [
 
 export default function VisitClient() {
     const [active, setActive] = useState(0);
+    const [mapReady, setMapReady] = useState(false);
+    const mapReadyDispatched = useRef(false);
     const loc = LOCATIONS[active];
 
+    const markMapReady = useCallback(() => {
+        setMapReady(true);
+        if (!mapReadyDispatched.current && typeof window !== 'undefined') {
+            mapReadyDispatched.current = true;
+            (window as unknown as { __hofherrMapReady?: boolean }).__hofherrMapReady = true;
+            window.dispatchEvent(new CustomEvent('visit-map-ready'));
+        }
+    }, []);
+
+    useEffect(() => {
+        // Safety fallback so page never stays hidden if Google Maps is slow or blocked
+        const t = setTimeout(markMapReady, 650);
+        return () => clearTimeout(t);
+    }, [markMapReady]);
+
     return (
-        <main className={styles.page}>
+        <main className={`${styles.page} ${mapReady ? styles.pageReady : ''}`}>
 
             {/* ── Hero with toggle ── */}
             <section className={styles.hero}>
-                <div className={styles.heroImgWrapper}>
+                <div className={`${styles.heroImgWrapper} mask-fade-bottom`}>
                     <img
                         src={loc.heroImage}
                         alt={loc.heroAlt}
@@ -98,8 +116,8 @@ export default function VisitClient() {
 
 
 
-                <div className={styles.heroOverlay} />
-                <div className={styles.heroInner}>
+                <div className={`${styles.heroOverlay} mask-fade-bottom`} />
+                <div className={`container ${styles.heroInner}`}>
                     <p className={styles.eyebrow}>Visit Us</p>
                     <h1 className={styles.headline}>{loc.name}</h1>
                     <p className={styles.sub}>{loc.shortAddr}</p>
@@ -131,23 +149,25 @@ export default function VisitClient() {
             </section>
 
             {/* ── Location detail ── */}
-            <section className={styles.locationSection}>
+            <section className={`${styles.locationSection} ${styles.locationOverlap}`}>
                 <div className="container">
                     <div className={styles.grid}>
-                        {/* Map */}
+                        {/* Map — both locations preloaded eagerly so switching & initial reveal are instant */}
                         <div className={styles.mapCol}>
                             <div className={styles.mapWrap}>
-                                <iframe
-                                    key={loc.id}
-                                    src={`https://www.google.com/maps?q=${encodeURIComponent(loc.address)}&output=embed`}
-                                    width="100%"
-                                    height="100%"
-                                    style={{ border: 0, borderRadius: 12, filter: 'invert(90%) hue-rotate(180deg) saturate(0.6) brightness(0.8)' }}
-                                    allowFullScreen
-                                    loading="lazy"
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                    title={`Map of ${loc.label}`}
-                                />
+                                {LOCATIONS.map((item, idx) => (
+                                    <iframe
+                                        key={item.id}
+                                        src={`https://www.google.com/maps?q=${encodeURIComponent(item.address)}&output=embed`}
+                                        className={`${styles.mapIframe} ${idx === active ? styles.mapIframeActive : styles.mapIframeHidden}`}
+                                        allowFullScreen
+                                        loading="eager"
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                        sandbox={GOOGLE_MAPS_SANDBOX}
+                                        title={`Map of ${item.label}`}
+                                        onLoad={idx === 0 ? markMapReady : undefined}
+                                    />
+                                ))}
                             </div>
                         </div>
 
@@ -203,7 +223,7 @@ export default function VisitClient() {
 
                         {/* Row 2: Wide panorama */}
                         <div className={styles.galleryItemWide}>
-                            <img src="/images/visit/shop-event.jpg" alt="Community tasting event at Hofherr Meat Co." className={styles.galleryImg} data-parallax="inset" style={{ objectPosition: 'center 15%' }} />
+                            <img src="/images/visit/shop-event.jpg" alt="Community tasting event at Hofherr Meat Co." className={`${styles.galleryImg} ${styles.galleryImgTop}`} data-parallax="inset" />
                             <div className={styles.galleryCaption}>Community events &amp; tastings at the shop</div>
                         </div>
 

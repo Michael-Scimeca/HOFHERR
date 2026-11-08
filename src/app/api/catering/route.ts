@@ -12,19 +12,19 @@ img { outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; width:
 `;
 
 const BRAND = {
-    red: '#CC0E1D',
-    dark: '#111111',
-    bg: '#f3f3f3',
-    white: '#ffffff',
-    muted: '#999999',
-    gold: '#A8905F',
-    green: '#2ecc71',
-    font: "Arial, Helvetica, sans-serif",
+  red: '#CC0E1D',
+  dark: '#111111',
+  bg: '#f3f3f3',
+  white: '#ffffff',
+  muted: '#999999',
+  gold: '#A8905F',
+  green: '#2ecc71',
+  font: "Arial, Helvetica, sans-serif",
 };
 
 /* ── Foundation for Emails helper: wrap content in a proper email document ── */
 function emailDocument(title: string, preheader: string, bodyContent: string): string {
-    return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -64,7 +64,7 @@ function emailDocument(title: string, preheader: string, bodyContent: string): s
 
 /* ── Foundation table row helper ── */
 function row(content: string, bgColor = BRAND.white): string {
-    return `
+  return `
     <table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="background:${bgColor};margin:0 auto;">
       <tr>
         <td>
@@ -82,15 +82,15 @@ function row(content: string, bgColor = BRAND.white): string {
 
 /* ── Foundation divider ── */
 function divider(color = '#e0e0e0'): string {
-    return `<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:1px;background:${color};font-size:1px;line-height:1px;">&nbsp;</td></tr></table>`;
+  return `<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:1px;background:${color};font-size:1px;line-height:1px;">&nbsp;</td></tr></table>`;
 }
 
 /* ── Line item row for the receipt ── */
 function lineItem(label: string, value: string, bold = false): string {
-    const fw = bold ? 'font-weight:700;' : '';
-    const fs = bold ? 'font-size:18px;' : 'font-size:14px;';
-    const color = bold ? `color:${BRAND.green};` : 'color:#333;';
-    return `
+  const fw = bold ? 'font-weight:700;' : '';
+  const fs = bold ? 'font-size:18px;' : 'font-size:14px;';
+  const color = bold ? `color:${BRAND.green};` : 'color:#333;';
+  return `
     <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:8px;">
       <tr>
         <td style="${fs}${fw}color:#333;font-family:${BRAND.font};padding:4px 0;">${label}</td>
@@ -99,37 +99,39 @@ function lineItem(label: string, value: string, bold = false): string {
     </table>`;
 }
 
+const USD_FORMATTER = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
 /* ── Build the customer receipt email ── */
 function buildCustomerReceipt(data: {
-    name: string;
-    date: string;
-    guests: number;
-    packageName: string;
-    total: number;
-    meats: string[];
-    sides: string[];
+  name: string;
+  date: string;
+  guests: number;
+  packageName: string;
+  total: number;
+  meats: string[];
+  sides: string[];
 }): string {
-    const totalFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data.total);
+  const totalFormatted = USD_FORMATTER.format(data.total);
 
-    const meatChips = data.meats.map(m =>
-        `<span style="display:inline-block;background:#fde8e8;color:${BRAND.red};padding:4px 10px;border-radius:4px;font-size:13px;font-weight:600;margin:2px 4px 2px 0;font-family:${BRAND.font};">${m}</span>`
-    ).join('');
+  const meatChips = data.meats.map(m =>
+    `<span style="display:inline-block;background:#fde8e8;color:${BRAND.red};padding:4px 10px;border-radius:4px;font-size:13px;font-weight:600;margin:2px 4px 2px 0;font-family:${BRAND.font};">${m}</span>`
+  ).join('');
 
-    const sideChips = data.sides.map(s =>
-        `<span style="display:inline-block;background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:600;margin:2px 4px 2px 0;font-family:${BRAND.font};">${s}</span>`
-    ).join('');
+  const sideChips = data.sides.map(s =>
+    `<span style="display:inline-block;background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:600;margin:2px 4px 2px 0;font-family:${BRAND.font};">${s}</span>`
+  ).join('');
 
-    const body = [
-        // Header banner
-        `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;overflow:hidden;border-radius:8px 8px 0 0;">
+  const body = [
+    // Header banner
+    `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;overflow:hidden;border-radius:8px 8px 0 0;">
           <tr><td style="background:${BRAND.red};padding:32px 24px;text-align:center;">
             <h1 style="color:#fff;font-family:${BRAND.font};font-size:32px;margin:0;">✓ Inquiry Received</h1>
             <p style="color:rgba(255,255,255,0.8);font-family:${BRAND.font};font-size:14px;margin:8px 0 0;">We'll be in touch shortly to confirm your date.</p>
           </td></tr>
         </table>`,
 
-        // Greeting
-        row(`
+    // Greeting
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:24px;">&nbsp;</td></tr></table>
           <p style="font-size:16px;color:#333;font-family:${BRAND.font};margin:0 0 8px;">Hi ${data.name.split(' ')[0]},</p>
           <p style="font-size:14px;color:#666;font-family:${BRAND.font};line-height:1.6;margin:0 0 20px;">
@@ -137,8 +139,8 @@ function buildCustomerReceipt(data: {
           </p>
         `),
 
-        // Event details
-        row(`
+    // Event details
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
           <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:${BRAND.muted};font-family:${BRAND.font};margin:0 0 12px;font-weight:700;">Event Details</p>
           ${lineItem('📅 Date', data.date || 'To be confirmed')}
@@ -147,24 +149,24 @@ function buildCustomerReceipt(data: {
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `),
 
-        // Meats
-        data.meats.length > 0 ? row(`
+    // Meats
+    data.meats.length > 0 ? row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
           <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:${BRAND.muted};font-family:${BRAND.font};margin:0 0 8px;font-weight:700;">🔥 Selected Meats</p>
           <div style="line-height:2;">${meatChips}</div>
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `) : '',
 
-        // Sides
-        data.sides.length > 0 ? row(`
+    // Sides
+    data.sides.length > 0 ? row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
           <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:${BRAND.muted};font-family:${BRAND.font};margin:0 0 8px;font-weight:700;">🥗 Selected Sides</p>
           <div style="line-height:2;">${sideChips}</div>
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `) : '',
 
-        // Total
-        row(`
+    // Total
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:12px;">&nbsp;</td></tr></table>
           ${divider(BRAND.gold)}
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:16px;">&nbsp;</td></tr></table>
@@ -172,8 +174,8 @@ function buildCustomerReceipt(data: {
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:16px;">&nbsp;</td></tr></table>
         `),
 
-        // Note + CTA
-        row(`
+    // Note + CTA
+    row(`
           <p style="font-size:13px;color:#666;font-family:${BRAND.font};line-height:1.6;margin:0 0 20px;">
             Sean and the team will review your inquiry and reach out to confirm availability, finalize your menu, and discuss any dietary needs or special requests.
           </p>
@@ -195,8 +197,8 @@ function buildCustomerReceipt(data: {
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `),
 
-        // Footer
-        `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;border-radius:0 0 8px 8px;overflow:hidden;">
+    // Footer
+    `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;border-radius:0 0 8px 8px;overflow:hidden;">
           <tr><td style="background:${BRAND.dark};padding:20px 24px;text-align:center;">
             <p style="color:rgba(255,255,255,0.5);font-family:${BRAND.font};font-size:12px;margin:0;line-height:1.6;">
               Hofherr Meat Co. · 807 Happ Rd, Northfield, IL 60093 · (847) 441-MEAT<br/>
@@ -204,42 +206,42 @@ function buildCustomerReceipt(data: {
             </p>
           </td></tr>
         </table>`,
-    ].join('');
+  ].join('');
 
-    return emailDocument(
-        `Your Catering Inquiry — Hofherr Meat Co.`,
-        `Hi ${data.name.split(' ')[0]}, we received your catering inquiry for ${data.date}. Estimated total: ${totalFormatted}.`,
-        body
-    );
+  return emailDocument(
+    `Your Catering Inquiry — Hofherr Meat Co.`,
+    `Hi ${data.name.split(' ')[0]}, we received your catering inquiry for ${data.date}. Estimated total: ${totalFormatted}.`,
+    body
+  );
 }
 
 /* ── Build the internal team notification email ── */
 function buildTeamNotification(data: {
-    name: string;
-    email: string;
-    phone: string;
-    date: string;
-    guests: number;
-    packageName: string;
-    total: number;
-    meats: string[];
-    sides: string[];
+  name: string;
+  email: string;
+  phone: string;
+  date: string;
+  guests: number;
+  packageName: string;
+  total: number;
+  meats: string[];
+  sides: string[];
 }): string {
-    const totalFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data.total);
+  const totalFormatted = USD_FORMATTER.format(data.total);
 
-    const meatsList = data.meats.map(m => `<li style="font-size:14px;color:#333;font-family:${BRAND.font};padding:2px 0;">${m}</li>`).join('');
-    const sidesList = data.sides.map(s => `<li style="font-size:14px;color:#333;font-family:${BRAND.font};padding:2px 0;">${s}</li>`).join('');
+  const meatsList = data.meats.map(m => `<li style="font-size:14px;color:#333;font-family:${BRAND.font};padding:2px 0;">${m}</li>`).join('');
+  const sidesList = data.sides.map(s => `<li style="font-size:14px;color:#333;font-family:${BRAND.font};padding:2px 0;">${s}</li>`).join('');
 
-    const body = [
-        // Header
-        `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;overflow:hidden;border-radius:8px 8px 0 0;">
+  const body = [
+    // Header
+    `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;overflow:hidden;border-radius:8px 8px 0 0;">
           <tr><td style="background:${BRAND.dark};padding:24px;border-bottom:3px solid ${BRAND.red};">
             <h1 style="color:#fff;font-family:${BRAND.font};font-size:28px;margin:0;">🔔 New Catering Inquiry</h1>
           </td></tr>
         </table>`,
 
-        // Customer info
-        row(`
+    // Customer info
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:20px;">&nbsp;</td></tr></table>
           <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:${BRAND.muted};font-family:${BRAND.font};margin:0 0 12px;font-weight:700;">Customer Info</p>
           ${lineItem('Name', data.name)}
@@ -248,10 +250,10 @@ function buildTeamNotification(data: {
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `),
 
-        row(`${divider()}`),
+    row(`${divider()}`),
 
-        // Event details
-        row(`
+    // Event details
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:16px;">&nbsp;</td></tr></table>
           <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:${BRAND.muted};font-family:${BRAND.font};margin:0 0 12px;font-weight:700;">Event Details</p>
           ${lineItem('📅 Date', data.date || 'TBD')}
@@ -260,8 +262,8 @@ function buildTeamNotification(data: {
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `),
 
-        // Meats + Sides
-        row(`
+    // Meats + Sides
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
           <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
@@ -278,16 +280,16 @@ function buildTeamNotification(data: {
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:16px;">&nbsp;</td></tr></table>
         `),
 
-        // Total
-        row(`
+    // Total
+    row(`
           ${divider(BRAND.gold)}
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:12px;">&nbsp;</td></tr></table>
           ${lineItem('Estimated Total', totalFormatted, true)}
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:12px;">&nbsp;</td></tr></table>
         `),
 
-        // Reply CTA
-        row(`
+    // Reply CTA
+    row(`
           <table class="button" width="100%" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
               <td align="center">
@@ -305,74 +307,74 @@ function buildTeamNotification(data: {
           </table>
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:16px;">&nbsp;</td></tr></table>
         `),
-    ].join('');
+  ].join('');
 
-    return emailDocument(
-        `New Inquiry: ${data.name} — ${data.date || 'TBD'}`,
-        `New catering inquiry from ${data.name} for ${data.guests} guests on ${data.date}. Total: ${totalFormatted}`,
-        body
-    );
+  return emailDocument(
+    `New Inquiry: ${data.name} — ${data.date || 'TBD'}`,
+    `New catering inquiry from ${data.name} for ${data.guests} guests on ${data.date}. Total: ${totalFormatted}`,
+    body
+  );
 }
 
 /* ── API Route ── */
 export async function POST(req: Request) {
-    try {
-        // Rate limit: 3 inquiries per minute per IP
-        const ip = getClientIp(req);
-        if (isRateLimited('catering', ip, 3)) {
-            return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
-        }
-
-        const body = await req.json();
-        const { name, email, phone, cateringData } = body;
-
-        if (!name || !email || !cateringData) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-        }
-
-        const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST || 'smtp.ethereal.email',
-            port: Number(process.env.SMTP_PORT) || 587,
-            secure: false,
-            auth: {
-                user: process.env.SMTP_USER || '',
-                pass: process.env.SMTP_PASS || '',
-            },
-        });
-
-        const emailData = {
-            name,
-            email,
-            phone: phone || '',
-            date: cateringData.date || 'TBD',
-            guests: cateringData.guests,
-            packageName: cateringData.packageName,
-            total: cateringData.total,
-            meats: cateringData.meats || [],
-            sides: cateringData.sides || [],
-        };
-
-        // Send to Hofherr team
-        await transporter.sendMail({
-            from: '"Hofherr Website" <catering@hofherrmeats.com>',
-            to: 'catering@hofherrmeats.com',
-            replyTo: email,
-            subject: `Catering Inquiry: ${name} — ${emailData.date}`,
-            html: buildTeamNotification(emailData),
-        });
-
-        // Send receipt to customer
-        await transporter.sendMail({
-            from: '"Hofherr Meat Co." <catering@hofherrmeats.com>',
-            to: email,
-            subject: `Your Hofherr Catering Inquiry — Confirmation`,
-            html: buildCustomerReceipt(emailData),
-        });
-
-        return NextResponse.json({ success: true });
-
-    } catch (err: any) {
-        console.error("Inquiry Hub Error:", err);
-        return NextResponse.json({ error: err.message }, { status: 500 });
+  try {
+    // Rate limit: 3 inquiries per minute per IP
+    const ip = getClientIp(req);
+    if (isRateLimited('catering', ip, 3)) {
+      return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
     }
+
+    const body = await req.json();
+    const { name, email, phone, cateringData } = body;
+
+    if (!name || !email || !cateringData) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.ethereal.email',
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: false,
+      auth: {
+        user: process.env.SMTP_USER || '',
+        pass: process.env.SMTP_PASS || '',
+      },
+    });
+
+    const emailData = {
+      name,
+      email,
+      phone: phone || '',
+      date: cateringData.date || 'TBD',
+      guests: cateringData.guests,
+      packageName: cateringData.packageName,
+      total: cateringData.total,
+      meats: cateringData.meats || [],
+      sides: cateringData.sides || [],
+    };
+
+    // Send to Hofherr team
+    await transporter.sendMail({
+      from: '"Hofherr Website" <catering@hofherrmeats.com>',
+      to: 'catering@hofherrmeats.com',
+      replyTo: email,
+      subject: `Catering Inquiry: ${name} — ${emailData.date}`,
+      html: buildTeamNotification(emailData),
+    });
+
+    // Send receipt to customer
+    await transporter.sendMail({
+      from: '"Hofherr Meat Co." <catering@hofherrmeats.com>',
+      to: email,
+      subject: `Your Hofherr Catering Inquiry — Confirmation`,
+      html: buildCustomerReceipt(emailData),
+    });
+
+    return NextResponse.json({ success: true });
+
+  } catch (err: any) {
+    console.error("Inquiry Hub Error:", err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
 }

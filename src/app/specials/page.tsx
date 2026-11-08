@@ -249,9 +249,11 @@ export default async function SpecialsPage() {
                         {product.calloutTitle && <div className={styles.calloutTitle} style={calloutTitleStyle}>{product.calloutTitle}</div>}
                         {product.calloutSub && (
                             <div className={styles.calloutSub} style={calloutSubStyle}>
-                                {product.calloutSub.split('\n').map((line, i) => (
-                                    <span key={i}>{line}<br /></span>
-                                ))}
+                                {
+                                        product.calloutSub.split('\n').map((line) => (
+                                            <span key={line}>{line}<br /></span>
+                                        ))
+                                    }
                             </div>
                         )}
                     </div>
@@ -348,8 +350,8 @@ export default async function SpecialsPage() {
                                         const lower = link.label.toLowerCase().trim();
                                         return !(lower.includes('order online') || lower.includes('order beef by the pound'));
                                     })
-                                    .concat(product.title.toLowerCase().includes('beef') 
-                                        ? [{ label: '📞 RESERVE AT (847) 441-MEAT', url: 'tel:8474416328', isPrimary: true }] 
+                                    .concat(product.title.toLowerCase().includes('beef')
+                                        ? [{ label: '📞 RESERVE AT (847) 441-MEAT', url: 'tel:8474416328', isPrimary: true }]
                                         : [])
                                     .map(link => {
                                         // Override CMS defaults: Order buttons should always be the prominent red CTA
@@ -420,7 +422,7 @@ export default async function SpecialsPage() {
 
                     <div style={{ marginBottom: '32px' }}>
                         <div className={bbqStyles.menuBoard}>
-                            
+
                             {/* Left Column: Sides */}
                             <div className={`${bbqStyles.menuCategory} ${bbqStyles.sidesColumn}`}>
                                 <h2 className={bbqStyles.catTitle}>🥗 Side Options</h2>
@@ -450,7 +452,7 @@ export default async function SpecialsPage() {
 
                             {/* Right Column: Meats and Appetizers */}
                             <div className={`${bbqStyles.menuCategory} ${bbqStyles.meatCategory}`}>
-                                
+
                                 {/* Meats */}
                                 <h2 className={bbqStyles.catTitle}>🔥 Add'l Meats Options</h2>
                                 <p className={bbqStyles.catDesc}>All meats are slow-smoked in-house over authentic oak and cherry wood for up to 14 hours.</p>

@@ -3,14 +3,14 @@ import { NextResponse } from 'next/server';
 /* ── Copy of the email builder from the parent route (for preview only) ── */
 
 const BRAND = {
-    red: '#CC0E1D',
-    dark: '#111111',
-    bg: '#f3f3f3',
-    white: '#ffffff',
-    muted: '#999999',
-    gold: '#A8905F',
-    green: '#2ecc71',
-    font: "Arial, Helvetica, sans-serif",
+  red: '#CC0E1D',
+  dark: '#111111',
+  bg: '#f3f3f3',
+  white: '#ffffff',
+  muted: '#999999',
+  gold: '#A8905F',
+  green: '#2ecc71',
+  font: "Arial, Helvetica, sans-serif",
 };
 
 const FOUNDATION_RESET = `
@@ -22,7 +22,7 @@ img { outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; width:
 `;
 
 function emailDocument(title: string, preheader: string, bodyContent: string): string {
-    return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -56,7 +56,7 @@ function emailDocument(title: string, preheader: string, bodyContent: string): s
 }
 
 function row(content: string, bgColor = BRAND.white): string {
-    return `
+  return `
     <table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="background:${bgColor};margin:0 auto;">
       <tr>
         <td>
@@ -73,14 +73,14 @@ function row(content: string, bgColor = BRAND.white): string {
 }
 
 function divider(color = '#e0e0e0'): string {
-    return `<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:1px;background:${color};font-size:1px;line-height:1px;">&nbsp;</td></tr></table>`;
+  return `<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:1px;background:${color};font-size:1px;line-height:1px;">&nbsp;</td></tr></table>`;
 }
 
 function lineItem(label: string, value: string, bold = false): string {
-    const fw = bold ? 'font-weight:700;' : '';
-    const fs = bold ? 'font-size:18px;' : 'font-size:14px;';
-    const color = bold ? `color:${BRAND.green};` : 'color:#333;';
-    return `
+  const fw = bold ? 'font-weight:700;' : '';
+  const fs = bold ? 'font-size:18px;' : 'font-size:14px;';
+  const color = bold ? `color:${BRAND.green};` : 'color:#333;';
+  return `
     <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:8px;">
       <tr>
         <td style="${fs}${fw}color:#333;font-family:${BRAND.font};padding:4px 0;">${label}</td>
@@ -90,44 +90,46 @@ function lineItem(label: string, value: string, bold = false): string {
 }
 
 /* ── Sample data ── */
+const USD_FORMATTER = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
 const SAMPLE = {
-    name: 'Mike Scimeca',
-    email: 'mike@example.com',
-    phone: '(847) 555-1234',
-    date: 'Saturday, April 12, 2026',
-    guests: 50,
-    packageName: 'BBQ Catering (3 Meats, 2 Sides)',
-    total: 1490,
-    meats: ['Smoked Brisket', 'BBQ Pulled Pork', 'Smoked Ribs'],
-    sides: ['Pimento Mac n Cheese', 'North Shore Baked Beans'],
+  name: 'Mike Scimeca',
+  email: 'mike@example.com',
+  phone: '(847) 555-1234',
+  date: 'Saturday, April 12, 2026',
+  guests: 50,
+  packageName: 'BBQ Catering (3 Meats, 2 Sides)',
+  total: 1490,
+  meats: ['Smoked Brisket', 'BBQ Pulled Pork', 'Smoked Ribs'],
+  sides: ['Pimento Mac n Cheese', 'North Shore Baked Beans'],
 };
 
 function buildCustomerReceipt(data: typeof SAMPLE): string {
-    const totalFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data.total);
+  const totalFormatted = USD_FORMATTER.format(data.total);
 
-    const meatChips = data.meats.map(m =>
-        `<span style="display:inline-block;background:#fde8e8;color:${BRAND.red};padding:4px 10px;border-radius:4px;font-size:13px;font-weight:600;margin:2px 4px 2px 0;font-family:${BRAND.font};">${m}</span>`
-    ).join('');
+  const meatChips = data.meats.map(m =>
+    `<span style="display:inline-block;background:#fde8e8;color:${BRAND.red};padding:4px 10px;border-radius:4px;font-size:13px;font-weight:600;margin:2px 4px 2px 0;font-family:${BRAND.font};">${m}</span>`
+  ).join('');
 
-    const sideChips = data.sides.map(s =>
-        `<span style="display:inline-block;background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:600;margin:2px 4px 2px 0;font-family:${BRAND.font};">${s}</span>`
-    ).join('');
+  const sideChips = data.sides.map(s =>
+    `<span style="display:inline-block;background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:600;margin:2px 4px 2px 0;font-family:${BRAND.font};">${s}</span>`
+  ).join('');
 
-    const body = [
-        `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;overflow:hidden;border-radius:8px 8px 0 0;">
+  const body = [
+    `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;overflow:hidden;border-radius:8px 8px 0 0;">
           <tr><td style="background:${BRAND.red};padding:32px 24px;text-align:center;">
             <h1 style="color:#fff;font-family:${BRAND.font};font-size:32px;margin:0;">✓ Inquiry Received</h1>
             <p style="color:rgba(255,255,255,0.8);font-family:${BRAND.font};font-size:14px;margin:8px 0 0;">We'll be in touch shortly to confirm your date.</p>
           </td></tr>
         </table>`,
-        row(`
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:24px;">&nbsp;</td></tr></table>
           <p style="font-size:16px;color:#333;font-family:${BRAND.font};margin:0 0 8px;">Hi ${data.name.split(' ')[0]},</p>
           <p style="font-size:14px;color:#666;font-family:${BRAND.font};line-height:1.6;margin:0 0 20px;">
             Thank you for your catering inquiry. Here's a summary of your request:
           </p>
         `),
-        row(`
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
           <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:${BRAND.muted};font-family:${BRAND.font};margin:0 0 12px;font-weight:700;">Event Details</p>
           ${lineItem('📅 Date', data.date)}
@@ -135,26 +137,26 @@ function buildCustomerReceipt(data: typeof SAMPLE): string {
           ${lineItem('📦 Package', data.packageName)}
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `),
-        row(`
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
           <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:${BRAND.muted};font-family:${BRAND.font};margin:0 0 8px;font-weight:700;">🔥 Selected Meats</p>
           <div style="line-height:2;">${meatChips}</div>
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `),
-        row(`
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
           <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:${BRAND.muted};font-family:${BRAND.font};margin:0 0 8px;font-weight:700;">🥗 Selected Sides</p>
           <div style="line-height:2;">${sideChips}</div>
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `),
-        row(`
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:12px;">&nbsp;</td></tr></table>
           ${divider(BRAND.gold)}
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:16px;">&nbsp;</td></tr></table>
           ${lineItem('Estimated Total', totalFormatted, true)}
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:16px;">&nbsp;</td></tr></table>
         `),
-        row(`
+    row(`
           <p style="font-size:13px;color:#666;font-family:${BRAND.font};line-height:1.6;margin:0 0 20px;">
             Sean and the team will review your inquiry and reach out to confirm availability, finalize your menu, and discuss any dietary needs or special requests.
           </p>
@@ -175,7 +177,7 @@ function buildCustomerReceipt(data: typeof SAMPLE): string {
           </table>
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `),
-        `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;border-radius:0 0 8px 8px;overflow:hidden;">
+    `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;border-radius:0 0 8px 8px;overflow:hidden;">
           <tr><td style="background:${BRAND.dark};padding:20px 24px;text-align:center;">
             <p style="color:rgba(255,255,255,0.5);font-family:${BRAND.font};font-size:12px;margin:0;line-height:1.6;">
               Hofherr Meat Co. · 807 Happ Rd, Northfield, IL 60093 · (847) 441-MEAT<br/>
@@ -183,23 +185,23 @@ function buildCustomerReceipt(data: typeof SAMPLE): string {
             </p>
           </td></tr>
         </table>`,
-    ].join('');
+  ].join('');
 
-    return emailDocument('Your Catering Inquiry — Hofherr Meat Co.', `Hi Mike, we received your catering inquiry for April 12. Total: ${totalFormatted}`, body);
+  return emailDocument('Your Catering Inquiry — Hofherr Meat Co.', `Hi Mike, we received your catering inquiry for April 12. Total: ${totalFormatted}`, body);
 }
 
 function buildTeamNotification(data: typeof SAMPLE): string {
-    const totalFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data.total);
-    const meatsList = data.meats.map(m => `<li style="font-size:14px;color:#333;font-family:${BRAND.font};padding:2px 0;">${m}</li>`).join('');
-    const sidesList = data.sides.map(s => `<li style="font-size:14px;color:#333;font-family:${BRAND.font};padding:2px 0;">${s}</li>`).join('');
+  const totalFormatted = USD_FORMATTER.format(data.total);
+  const meatsList = data.meats.map(m => `<li style="font-size:14px;color:#333;font-family:${BRAND.font};padding:2px 0;">${m}</li>`).join('');
+  const sidesList = data.sides.map(s => `<li style="font-size:14px;color:#333;font-family:${BRAND.font};padding:2px 0;">${s}</li>`).join('');
 
-    const body = [
-        `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;overflow:hidden;border-radius:8px 8px 0 0;">
+  const body = [
+    `<table class="container" width="580" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;overflow:hidden;border-radius:8px 8px 0 0;">
           <tr><td style="background:${BRAND.dark};padding:24px;border-bottom:3px solid ${BRAND.red};">
             <h1 style="color:#fff;font-family:${BRAND.font};font-size:28px;margin:0;">🔔 New Catering Inquiry</h1>
           </td></tr>
         </table>`,
-        row(`
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:20px;">&nbsp;</td></tr></table>
           <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:${BRAND.muted};font-family:${BRAND.font};margin:0 0 12px;font-weight:700;">Customer Info</p>
           ${lineItem('Name', data.name)}
@@ -207,8 +209,8 @@ function buildTeamNotification(data: typeof SAMPLE): string {
           ${lineItem('Phone', data.phone)}
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `),
-        row(`${divider()}`),
-        row(`
+    row(`${divider()}`),
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:16px;">&nbsp;</td></tr></table>
           <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:${BRAND.muted};font-family:${BRAND.font};margin:0 0 12px;font-weight:700;">Event Details</p>
           ${lineItem('📅 Date', data.date)}
@@ -216,7 +218,7 @@ function buildTeamNotification(data: typeof SAMPLE): string {
           ${lineItem('📦 Package', data.packageName)}
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
         `),
-        row(`
+    row(`
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;">&nbsp;</td></tr></table>
           <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
@@ -232,13 +234,13 @@ function buildTeamNotification(data: typeof SAMPLE): string {
           </table>
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:16px;">&nbsp;</td></tr></table>
         `),
-        row(`
+    row(`
           ${divider(BRAND.gold)}
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:12px;">&nbsp;</td></tr></table>
           ${lineItem('Estimated Total', totalFormatted, true)}
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:12px;">&nbsp;</td></tr></table>
         `),
-        row(`
+    row(`
           <table class="button" width="100%" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
               <td align="center">
@@ -256,14 +258,14 @@ function buildTeamNotification(data: typeof SAMPLE): string {
           </table>
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:16px;">&nbsp;</td></tr></table>
         `),
-    ].join('');
+  ].join('');
 
-    return emailDocument(`New Inquiry: ${data.name}`, `New catering inquiry from ${data.name} for ${data.guests} guests`, body);
+  return emailDocument(`New Inquiry: ${data.name}`, `New catering inquiry from ${data.name} for ${data.guests} guests`, body);
 }
 
 /* ── Side-by-side preview shell ── */
 function buildBothPreview(): string {
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -401,23 +403,23 @@ function buildBothPreview(): string {
 
 /* ── GET handler: ?type=customer | ?type=team | ?type=both (default) ── */
 export async function GET(req: Request) {
-    const { searchParams } = new URL(req.url);
-    const type = searchParams.get('type') || 'both';
+  const { searchParams } = new URL(req.url);
+  const type = searchParams.get('type') || 'both';
 
-    if (type === 'customer') {
-        return new NextResponse(buildCustomerReceipt(SAMPLE), {
-            headers: { 'Content-Type': 'text/html; charset=utf-8' },
-        });
-    }
-
-    if (type === 'team') {
-        return new NextResponse(buildTeamNotification(SAMPLE), {
-            headers: { 'Content-Type': 'text/html; charset=utf-8' },
-        });
-    }
-
-    // Default: show both in a split-view shell
-    return new NextResponse(buildBothPreview(), {
-        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+  if (type === 'customer') {
+    return new NextResponse(buildCustomerReceipt(SAMPLE), {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
     });
+  }
+
+  if (type === 'team') {
+    return new NextResponse(buildTeamNotification(SAMPLE), {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    });
+  }
+
+  // Default: show both in a split-view shell
+  return new NextResponse(buildBothPreview(), {
+    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+  });
 }

@@ -3,12 +3,31 @@ import React, { useState, useMemo } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import styles from './dashboard.module.css';
 import { useRouter } from 'next/navigation';
+import { usePageTransition } from '@/components/PageTransition';
 
 function formatPhone(val: string) {
     const d = (val || '').replace(/\D/g, '');
     if (d.length < 4) return d;
-    if (d.length < 7) return `${d.slice(0,3)}-${d.slice(3)}`;
-    return `${d.slice(0,3)}-${d.slice(3,6)}-${d.slice(6,10)}`;
+    if (d.length < 7) return `${d.slice(0, 3)}-${d.slice(3)}`;
+    return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6, 10)}`;
+}
+
+function StoreBadge({ storeId }: { storeId?: string }) {
+    if (!storeId) return null;
+    const isDepot = storeId === 'depot';
+    return (
+        <span style={{
+            position: 'absolute', top: '-14px', left: '20px',
+            fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em',
+            padding: '3px 10px', borderRadius: '5px',
+            background: isDepot ? '#1e3a5f' : '#7a0000',
+            color: '#fff',
+            border: `1px solid ${isDepot ? '#2563eb' : '#b91c1c'}`,
+            textTransform: 'uppercase' as const, whiteSpace: 'nowrap' as const,
+        }}>
+            {isDepot ? '🏪 The Depot' : '🥩 Butcher Shop'}
+        </span>
+    );
 }
 
 export default function DashboardClient({
@@ -20,6 +39,7 @@ export default function DashboardClient({
     birthday?: string, newsletter?: boolean, preferredPickupTime?: string,
 }) {
     const router = useRouter();
+    const { navigateTo } = usePageTransition();
     const { update: updateSession } = useSession();
     const handleLogout = async () => { await signOut({ callbackUrl: '/' }); };
 
@@ -27,13 +47,13 @@ export default function DashboardClient({
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [editName, setEditName] = useState(userName);
-    const [editPhone, setEditPhone] = useState(formatPhone(phone));
+    const [editPhone, setEditPhone] = useState(() => formatPhone(phone));
     const [editAddress, setEditAddress] = useState(address);
     const [editBirthday, setEditBirthday] = useState(birthday);
     const [editNewsletter, setEditNewsletter] = useState(newsletter);
     const [editPickupTime, setEditPickupTime] = useState(preferredPickupTime);
     const [displayName, setDisplayName] = useState(userName);
-    const [displayPhone, setDisplayPhone] = useState(formatPhone(phone));
+    const [displayPhone, setDisplayPhone] = useState(() => formatPhone(phone));
     const [displayAddress, setDisplayAddress] = useState(address);
     const [displayBirthday, setDisplayBirthday] = useState(birthday);
     const [displayNewsletter, setDisplayNewsletter] = useState(newsletter);
@@ -92,15 +112,16 @@ export default function DashboardClient({
     // ── Handlers ──
     const formatDate = (dateStr: string) => {
         const d = new Date(dateStr);
-        return `${d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} at ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+        const iso = d.toISOString();
+        return `${iso.slice(0, 10)} at ${iso.slice(11, 16)} UTC`;
     };
     const formatDateShort = (dateStr: string) => {
         const d = new Date(dateStr);
-        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        return d.toISOString().slice(0, 10);
     };
 
     const handleCopyOrderId = (orderNumber: string) => {
-        navigator.clipboard.writeText(orderNumber).catch(() => {});
+        navigator.clipboard.writeText(orderNumber).catch(() => { });
         setCopiedOrderId(orderNumber);
         setTimeout(() => setCopiedOrderId(null), 2000);
     };
@@ -117,7 +138,7 @@ export default function DashboardClient({
         if (storeId === 'butcher') localStorage.setItem('hofherr_cart_butcher', JSON.stringify(cartItems));
         else if (storeId === 'depot') localStorage.setItem('hofherr_cart_depot', JSON.stringify(cartItems));
         else localStorage.setItem('hofherr_cart', JSON.stringify(cartItems));
-        router.push(`/online-orders?cart=open${storeId ? `&store=${storeId}` : ''}`);
+        navigateTo(`/online-orders?cart=open${storeId ? `&store=${storeId}` : ''}`);
     };
 
     const handleAddFavoriteToCart = () => {
@@ -128,7 +149,7 @@ export default function DashboardClient({
             qty: 1, note: '', desc: '',
         };
         localStorage.setItem(`hofherr_cart_${favoriteStore}`, JSON.stringify([cartItem]));
-        router.push(`/online-orders?cart=open&store=${favoriteStore}`);
+        navigateTo(`/online-orders?cart=open&store=${favoriteStore}`);
     };
 
     const handleSaveProfile = async () => {
@@ -158,38 +179,19 @@ export default function DashboardClient({
         setIsEditing(false);
     };
 
-    // Store badge component (shared)
-    const StoreBadge = ({ storeId }: { storeId?: string }) => {
-        if (!storeId) return null;
-        const isDepot = storeId === 'depot';
-        return (
-            <span style={{
-                position: 'absolute', top: '-14px', left: '20px',
-                fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em',
-                padding: '3px 10px', borderRadius: '5px',
-                background: isDepot ? '#1e3a5f' : '#7a0000',
-                color: '#fff',
-                border: `1px solid ${isDepot ? '#2563eb' : '#b91c1c'}`,
-                textTransform: 'uppercase' as const, whiteSpace: 'nowrap' as const,
-            }}>
-                {isDepot ? '🏪 The Depot' : '🥩 Butcher Shop'}
-            </span>
-        );
-    };
-
     return (
         <div className={styles.dashboardContainer}>
-            <main className={styles.mainCanvas}>
+            <main className={`container ${styles.mainCanvas}`}>
                 {/* ── Header ── */}
                 <header className={styles.header}>
                     <div className={styles.headerTop}>
                         <div>
                             {initialOrders.length > 0 ? (
                                 <><h1 className={styles.greeting}>Welcome Back, {userName}</h1>
-                                <p className={styles.dateSub}>We&apos;ve missed you! Here&apos;s your latest culinary summary.</p></>
+                                    <p className={styles.dateSub}>We&apos;ve missed you! Here&apos;s your latest culinary summary.</p></>
                             ) : (
                                 <><h1 className={styles.greeting}>Thanks for joining our community!</h1>
-                                <p className={styles.dateSub}>Hi there, {userName} — let&apos;s get you set up with your first order.</p></>
+                                    <p className={styles.dateSub}>Hi there, {userName} — let&apos;s get you set up with your first order.</p></>
                             )}
                         </div>
                         <div style={{ display: 'flex', gap: '16px' }}>
@@ -335,7 +337,7 @@ export default function DashboardClient({
                                     {displayBirthday && (
                                         <div className={styles.infoItem}>
                                             <p className={styles.infoLabel}>Birthday</p>
-                                            <p className={styles.infoValue}>{new Date(displayBirthday + 'T00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} 🎂</p>
+                                            <p className={styles.infoValue}>{displayBirthday} 🎂</p>
                                         </div>
                                     )}
                                     {displayPickupTime && (
@@ -401,71 +403,71 @@ export default function DashboardClient({
                                     </button>
                                 </div>
                                 <div className={styles.orderItems} style={{ marginTop: '16px', borderTop: '1px solid #e2e8f0', paddingTop: '16px', width: '100%' }}>
-                                    {lastOrder.items.map((item: any, i: number) => (
-                                        <span key={i} className={styles.orderItemBadge} style={{ color: '#333', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
-                                            {item.qty || item.quantity || 1}x {item.name}
-                                        </span>
-                                    ))}
-                                </div>
+                                            {lastOrder.items.map((item: any) => (
+                                                <span key={`${item.name}-${item.note || ''}`} className={styles.orderItemBadge} style={{ color: '#333', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                                                    {item.qty || item.quantity || 1}x {item.name}
+                                                </span>
+                                            ))}
+                                        </div>
                             </div>
                         )}
 
-                        {/* Order History header + filter */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
-                            <h2 className={styles.sectionTitle} style={{ margin: 0 }}>Order History ({initialOrders.length})</h2>
-                            {initialOrders.length > 0 && (
-                                <div style={{ display: 'flex', gap: '6px' }}>
-                                    {(['all', 'butcher', 'depot'] as const).map(f => (
-                                        <button key={f} onClick={() => setStoreFilter(f)} style={{
-                                            padding: '5px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600,
-                                            border: '1px solid #181818', cursor: 'pointer',
-                                            background: storeFilter === f ? 'var(--red)' : 'transparent',
-                                            color: storeFilter === f ? '#fff' : 'var(--text-muted)',
-                                            transition: 'all 0.15s ease', textTransform: 'uppercase', letterSpacing: '0.05em',
-                                        }}>
-                                            {f === 'all' ? 'All' : f === 'butcher' ? '🥩 Butcher' : '🏪 Depot'}
-                                        </button>
-                                    ))}
+                                {/* Order History header + filter */}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
+                                    <h2 className={styles.sectionTitle} style={{ margin: 0 }}>Order History ({initialOrders.length})</h2>
+                                    {initialOrders.length > 0 && (
+                                        <div style={{ display: 'flex', gap: '6px' }}>
+                                            {(['all', 'butcher', 'depot'] as const).map(f => (
+                                                <button key={f} onClick={() => setStoreFilter(f)} style={{
+                                                    padding: '5px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600,
+                                                    border: '1px solid #181818', cursor: 'pointer',
+                                                    background: storeFilter === f ? 'var(--red)' : 'transparent',
+                                                    color: storeFilter === f ? '#fff' : 'var(--text-muted)',
+                                                    transition: 'all 0.15s ease', textTransform: 'uppercase', letterSpacing: '0.05em',
+                                                }}>
+                                                    {f === 'all' ? 'All' : f === 'butcher' ? '🥩 Butcher' : '🏪 Depot'}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
 
-                        <div className={styles.orderList}>
-                            {filteredOrders.length > 0 ? (
-                                filteredOrders.map((order) => {
-                                    const isCopied = copiedOrderId === order.orderNumber;
-                                    return (
-                                        <div key={order._id} className={styles.orderCard} style={{ position: 'relative', paddingTop: '28px' }}>
-                                            <StoreBadge storeId={order.metadata?.store_id} />
-                                            <div className={styles.orderHeader}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                                                    <span className={styles.orderId}>Order #{order.orderNumber}</span>
-                                                    <button onClick={() => handleCopyOrderId(order.orderNumber)} title="Copy order #"
-                                                        style={{ background: 'none', border: '1px solid #333', color: isCopied ? 'var(--red)' : 'var(--text-muted)', borderRadius: '4px', padding: '2px 7px', fontSize: '11px', cursor: 'pointer', transition: 'all 0.15s', fontWeight: 600 }}>
-                                                        {isCopied ? '✓ Copied!' : '⎘ Copy'}
-                                                    </button>
-                                                </div>
-                                                <span className={`${styles.orderStatusPill} ${styles['status_' + (order.status || 'pending').toLowerCase().replace('-', '_')]}`}>
-                                                    {order.status || 'Processing'}
-                                                </span>
-                                            </div>
-                                            <div className={styles.orderBody}>
-                                                <div className={styles.orderItems}>
-                                                    {(order.items || []).map((item: any, i: number) => (
-                                                        <span key={i} className={styles.orderItemBadge}>{item.qty || item.quantity || 1}x {item.name}</span>
-                                                    ))}
-                                                </div>
-                                                <p className={styles.orderDate}>{formatDate(order.createdAt)}</p>
-                                                {order.metadata?.pickup && (
-                                                    <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
-                                                        <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Pickup: </span>
-                                                        <strong style={{ color: 'var(--text)' }}>{order.metadata.pickup}</strong>
-                                                    </p>
-                                                )}
-                                                {(order.items || []).some((i: any) => i.note) && (
+                                <div className={styles.orderList}>
+                                    {filteredOrders.length > 0 ? (
+                                        filteredOrders.map((order) => {
+                                            const isCopied = copiedOrderId === order.orderNumber;
+                                            return (
+                                                <div key={order._id} className={styles.orderCard} style={{ position: 'relative', paddingTop: '28px' }}>
+                                                    <StoreBadge storeId={order.metadata?.store_id} />
+                                                    <div className={styles.orderHeader}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                                            <span className={styles.orderId}>Order #{order.orderNumber}</span>
+                                                            <button onClick={() => handleCopyOrderId(order.orderNumber)} title="Copy order #"
+                                                                style={{ background: 'none', border: '1px solid #333', color: isCopied ? 'var(--red)' : 'var(--text-muted)', borderRadius: '4px', padding: '2px 7px', fontSize: '11px', cursor: 'pointer', transition: 'all 0.15s', fontWeight: 600 }}>
+                                                                {isCopied ? '✓ Copied!' : '⎘ Copy'}
+                                                            </button>
+                                                        </div>
+                                                        <span className={`${styles.orderStatusPill} ${styles['status_' + (order.status || 'pending').toLowerCase().replace('-', '_')]}`}>
+                                                            {order.status || 'Processing'}
+                                                        </span>
+                                                    </div>
+                                                    <div className={styles.orderBody}>
+                                                        <div className={styles.orderItems}>
+                                                    {(order.items || []).map((item: any) => (
+                                                                    <span key={`${item.name}-${item.note || ''}`} className={styles.orderItemBadge}>{item.qty || item.quantity || 1}x {item.name}</span>
+                                                                ))}
+                                                        </div>
+                                                        <p className={styles.orderDate}>{formatDate(order.createdAt)}</p>
+                                                        {order.metadata?.pickup && (
+                                                            <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                                                                <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Pickup: </span>
+                                                                <strong style={{ color: 'var(--text)' }}>{order.metadata.pickup}</strong>
+                                                            </p>
+                                                        )}
+                                                        {(order.items || []).some((i: any) => i.note) && (
                                                     <div style={{ marginTop: '8px' }}>
-                                                        {(order.items || []).filter((i: any) => i.note).map((item: any, i: number) => (
-                                                            <p key={i} style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '2px 0' }}>
+                                                        {(order.items || []).filter((i: any) => i.note).map((item: any) => (
+                                                            <p key={`${item.name}-${item.note}`} style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '2px 0' }}>
                                                                 <strong>{item.name}:</strong> {item.note}
                                                             </p>
                                                         ))}
@@ -479,48 +481,48 @@ export default function DashboardClient({
                                                 </button>
                                             </div>
                                         </div>
-                                    );
+                                                    );
                                 })
-                            ) : (
-                                <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', border: '1px solid #181818', borderRadius: '12px' }}>
-                                    {storeFilter === 'all' ? 'Your culinary journey begins with your first order.' : `No orders from ${storeFilter === 'butcher' ? 'the Butcher Shop' : 'The Depot'} yet.`}
-                                    {storeFilter === 'all' && (
-                                        <div style={{ marginTop: '16px' }}>
-                                            <button onClick={() => router.push('/online-orders')} className={styles.primaryActionBtn}>Shop the Collection</button>
-                                        </div>
-                                    )}
-                                </div>
+                                                    ) : (
+                                                    <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', border: '1px solid #181818', borderRadius: '12px' }}>
+                                                        {storeFilter === 'all' ? 'Your culinary journey begins with your first order.' : `No orders from ${storeFilter === 'butcher' ? 'the Butcher Shop' : 'The Depot'} yet.`}
+                                                        {storeFilter === 'all' && (
+                                                            <div style={{ marginTop: '16px' }}>
+                                                                <button onClick={() => navigateTo('/online-orders')} className={styles.primaryActionBtn}>Shop the Collection</button>
+                                                            </div>
+                                                        )}
+                                                    </div>
                             )}
-                        </div>
+                                                </div>
                     </div>
-                </div>
+                            </div>
 
                 {/* ── Member Specials ── */}
-                {specials.length > 0 && (
-                    <section className={styles.specialsSection}>
-                        <h2 className={styles.sectionTitle}>🔥 Member Specials</h2>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '24px' }}>Exclusive deals for logged-in members. Don&apos;t miss out!</p>
-                        <div className={styles.specialsGrid}>
-                            {specials.map((special: any) => (
-                                <div key={special._id} className={styles.specialCard}>
-                                    {special.badge && <span className={styles.specialBadge} data-badge={special.badge}>{special.badge.replace('-', ' ').toUpperCase()}</span>}
-                                    {special.image && <div className={styles.specialImageWrap}><img src={special.image} alt={special.title} className={styles.specialImage} /></div>}
-                                    <div className={styles.specialContent}>
-                                        <h3 className={styles.specialTitle}>{special.title}</h3>
-                                        {special.description && <p className={styles.specialDesc}>{special.description}</p>}
-                                        <div className={styles.specialPricing}>
-                                            {special.regularPrice && <span className={styles.specialRegular}>{special.regularPrice}</span>}
-                                            <span className={styles.specialSale}>{special.salePrice}</span>
+                        {specials.length > 0 && (
+                            <section className={styles.specialsSection}>
+                                <h2 className={styles.sectionTitle}>🔥 Member Specials</h2>
+                                <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '24px' }}>Exclusive deals for logged-in members. Don&apos;t miss out!</p>
+                                <div className={styles.specialsGrid}>
+                                    {specials.map((special: any) => (
+                                        <div key={special._id} className={styles.specialCard}>
+                                            {special.badge && <span className={styles.specialBadge} data-badge={special.badge}>{special.badge.replace('-', ' ').toUpperCase()}</span>}
+                                            {special.image && <div className={styles.specialImageWrap}><img src={special.image} alt={special.title} className={styles.specialImage} /></div>}
+                                            <div className={styles.specialContent}>
+                                                <h3 className={styles.specialTitle}>{special.title}</h3>
+                                                {special.description && <p className={styles.specialDesc}>{special.description}</p>}
+                                                <div className={styles.specialPricing}>
+                                                    {special.regularPrice && <span className={styles.specialRegular}>{special.regularPrice}</span>}
+                                                    <span className={styles.specialSale}>{special.salePrice}</span>
+                                                </div>
+                                                {special.savings && <span className={styles.specialSavings}>{special.savings}</span>}
+                                                <button onClick={() => navigateTo('/online-orders')} className={styles.primaryActionBtn} style={{ width: '100%', marginTop: '12px' }}>Shop Now</button>
+                                            </div>
                                         </div>
-                                        {special.savings && <span className={styles.specialSavings}>{special.savings}</span>}
-                                        <button onClick={() => router.push('/online-orders')} className={styles.primaryActionBtn} style={{ width: '100%', marginTop: '12px' }}>Shop Now</button>
-                                    </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
-                    </section>
-                )}
-            </main>
-        </div>
-    );
+                            </section>
+                        )}
+                    </main>
+                </div>
+                );
 }

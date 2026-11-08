@@ -1,48 +1,60 @@
 import { defineConfig, devices } from '@playwright/test';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 
-/**
- * Playwright configuration for Hofherr Meat Co.
- * This configuration sets up testing against the local development server.
- */
+const PORT = process.env.PORT || 2000;
+const BASE_URL = `http://localhost:${PORT}`;
+
+function resolveLocalChromium(): string | undefined {
+  if (process.env.CI) return undefined;
+  const cacheDir = path.join(os.homedir(), 'Library', 'Caches', 'ms-playwright');
+  const candidate = path.join(
+    cacheDir,
+    'chromium-1243',
+    'chrome-mac-arm64',
+    'Google Chrome for Testing.app',
+    'Contents',
+    'MacOS',
+    'Google Chrome for Testing'
+  );
+  return fs.existsSync(candidate) ? candidate : undefined;
+}
+
+const localChrome = resolveLocalChromium();
+
 export default defineConfig({
-  testDir: './tests/e2e',
-  /* Run tests in files in parallel */
+  testDir: './tests',
+  testMatch: '**/*.spec.ts',
   fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  reporter: 'list',
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:3000',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    baseURL: BASE_URL,
     trace: 'on-first-retry',
-    
-    /* Ensure the browser is headed during dev if needed, or leave to CLI */
-    screenshot: 'on',
-    video: 'on-first-retry',
+    ...(localChrome ? { launchOptions: { executablePath: localChrome } } : {}),
   },
-
-  /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    // We can add Firefox/WebKit if needed, but Chromium is standard for local E2E
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
+    {
+      name: 'iPhone 15',
+      use: { ...devices['iPhone 15'] },
+    },
+    {
+      name: 'iPhone SE',
+      use: { ...devices['iPhone SE'] },
+    },
   ],
-
-  /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    command: `npm run dev -- -p ${PORT}`,
+    url: BASE_URL,
+    reuseExistingServer: true,
+    timeout: 120 * 1000,
   },
 });

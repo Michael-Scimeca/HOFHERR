@@ -2,7 +2,7 @@
 .hero {
     background: var(--bg-2);
     border-bottom: 1px solid var(--border);
-    padding: 56px 40px 48px;
+    padding: 56px var(--container-px) 48px;
     text-align: center;
 }
 

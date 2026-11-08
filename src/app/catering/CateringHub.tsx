@@ -72,6 +72,7 @@ export default function CateringHub({ events, calendarPricing }: Props) {
 
     // Listen for package card clicks from the scroller buttons
     useEffect(() => {
+        let timerId: ReturnType<typeof setTimeout> | null = null;
         const handler = (e: Event) => {
             const d = (e as CustomEvent).detail;
             if (!d) return;
@@ -106,11 +107,15 @@ export default function CateringHub({ events, calendarPricing }: Props) {
 
             // Flash highlight on the type toggle
             setHighlightType(true);
-            setTimeout(() => setHighlightType(false), 1500);
+            if (timerId) clearTimeout(timerId);
+            timerId = setTimeout(() => setHighlightType(false), 1500);
         };
 
         window.addEventListener('select-catering-package', handler);
-        return () => window.removeEventListener('select-catering-package', handler);
+        return () => {
+            window.removeEventListener('select-catering-package', handler);
+            if (timerId) clearTimeout(timerId);
+        };
     }, []);
 
     // Pricing Constants
@@ -417,142 +422,142 @@ export default function CateringHub({ events, calendarPricing }: Props) {
                         {/* Pig Roast-specific: Package Selection */}
                         {eventType === 'pig' && (
                             <>
-                            <div className={calcStyles.inputGroup} style={{ marginTop: '20px' }}>
-                                <label className={calcStyles.label}>Catering Package</label>
-                                <div className={calcStyles.packageList}>
-                                    {PIG_PACKAGES.map(p => (
-                                        <label key={p.id} className={`${calcStyles.packageOption} ${pkgId === p.id ? calcStyles.packageOptionActive : ''}`}>
-                                            <input type="radio" value={p.id} checked={pkgId === p.id} onChange={() => setPkgId(p.id)} style={{ display: 'none' }} />
-                                            <span>{p.label}</span>
-                                            <span style={{ color: pkgId === p.id ? 'var(--red)' : '#fff', fontWeight: 600 }}>${p.price}/pp</span>
-                                        </label>
-                                    ))}
+                                <div className={calcStyles.inputGroup} style={{ marginTop: '20px' }}>
+                                    <label className={calcStyles.label}>Catering Package</label>
+                                    <div className={calcStyles.packageList}>
+                                        {PIG_PACKAGES.map(p => (
+                                            <label key={p.id} className={`${calcStyles.packageOption} ${pkgId === p.id ? calcStyles.packageOptionActive : ''}`}>
+                                                <input type="radio" name="pigCateringPackage" value={p.id} checked={pkgId === p.id} onChange={() => setPkgId(p.id)} style={{ display: 'none' }} />
+                                                <span>{p.label}</span>
+                                                <span style={{ color: pkgId === p.id ? 'var(--red)' : '#fff', fontWeight: 600 }}>${p.price}/pp</span>
+                                            </label>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Side picker for pig roast packages that include sides */}
-                            {(() => {
-                                const sideMatch = pkgId.match(/(\d+)s/);
-                                const sideCount = sideMatch ? parseInt(sideMatch[1]) : 0;
-                                const meatMatch = pkgId.match(/(\d+)m/);
-                                const meatCount = meatMatch ? parseInt(meatMatch[1]) : 0;
+                                {/* Side picker for pig roast packages that include sides */}
+                                {(() => {
+                                    const sideMatch = pkgId.match(/(\d+)s/);
+                                    const sideCount = sideMatch ? parseInt(sideMatch[1]) : 0;
+                                    const meatMatch = pkgId.match(/(\d+)m/);
+                                    const meatCount = meatMatch ? parseInt(meatMatch[1]) : 0;
 
-                                return (
-                                    <>
-                                        {sideCount > 0 && (
-                                            <div className={calcStyles.inputGroup} style={{ marginTop: '12px' }}>
-                                                <label className={calcStyles.label}>
-                                                    Pick Your Sides
-                                                    <span style={{ fontSize: 11, color: selectedSides.length >= sideCount ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
-                                                        {selectedSides.length}/{sideCount} selected
-                                                    </span>
-                                                </label>
-                                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                                                    {SIDE_OPTIONS.map(item => {
-                                                        const isSelected = selectedSides.includes(item);
-                                                        const atLimit = selectedSides.length >= sideCount && !isSelected;
-                                                        return (
-                                                            <button
-                                                                key={item}
-                                                                onClick={() => {
-                                                                    if (isSelected) {
-                                                                        setSelectedSides(prev => prev.filter(s => s !== item));
-                                                                    } else if (!atLimit) {
-                                                                        setSelectedSides(prev => [...prev, item]);
-                                                                    }
-                                                                }}
-                                                                disabled={atLimit}
-                                                                style={{
-                                                                    padding: '10px 16px',
-                                                                    borderRadius: '8px',
-                                                                    border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.12)',
-                                                                    background: isSelected ? 'rgba(204, 13, 29, 0.15)' : 'rgba(255,255,255,0.04)',
-                                                                    color: atLimit ? 'rgba(255,255,255,0.2)' : isSelected ? '#fff' : 'rgba(255,255,255,0.6)',
-                                                                    cursor: atLimit ? 'not-allowed' : 'pointer',
-                                                                    fontSize: '13px',
-                                                                    fontWeight: isSelected ? 700 : 500,
-                                                                    transition: 'all 0.2s',
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    gap: '6px',
-                                                                    opacity: atLimit ? 0.4 : 1,
-                                                                }}
-                                                            >
-                                                                <span style={{
-                                                                    width: '18px', height: '18px', borderRadius: '4px',
-                                                                    border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.25)',
-                                                                    background: isSelected ? 'var(--red)' : 'transparent',
-                                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                                    fontSize: '11px', flexShrink: 0, transition: 'all 0.2s',
-                                                                }}>
-                                                                    {isSelected && '✓'}
-                                                                </span>
-                                                                {item}
-                                                            </button>
-                                                        );
-                                                    })}
+                                    return (
+                                        <>
+                                            {sideCount > 0 && (
+                                                <div className={calcStyles.inputGroup} style={{ marginTop: '12px' }}>
+                                                    <label className={calcStyles.label}>
+                                                        Pick Your Sides
+                                                        <span style={{ fontSize: 11, color: selectedSides.length >= sideCount ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                                                            {selectedSides.length}/{sideCount} selected
+                                                        </span>
+                                                    </label>
+                                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                                        {SIDE_OPTIONS.map(item => {
+                                                            const isSelected = selectedSides.includes(item);
+                                                            const atLimit = selectedSides.length >= sideCount && !isSelected;
+                                                            return (
+                                                                <button
+                                                                    key={item}
+                                                                    onClick={() => {
+                                                                        if (isSelected) {
+                                                                            setSelectedSides(prev => prev.filter(s => s !== item));
+                                                                        } else if (!atLimit) {
+                                                                            setSelectedSides(prev => [...prev, item]);
+                                                                        }
+                                                                    }}
+                                                                    disabled={atLimit}
+                                                                    style={{
+                                                                        padding: '10px 16px',
+                                                                        borderRadius: '8px',
+                                                                        border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.12)',
+                                                                        background: isSelected ? 'rgba(204, 13, 29, 0.15)' : 'rgba(255,255,255,0.04)',
+                                                                        color: atLimit ? 'rgba(255,255,255,0.2)' : isSelected ? '#fff' : 'rgba(255,255,255,0.6)',
+                                                                        cursor: atLimit ? 'not-allowed' : 'pointer',
+                                                                        fontSize: '13px',
+                                                                        fontWeight: isSelected ? 700 : 500,
+                                                                        transition: 'all 0.2s',
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        gap: '6px',
+                                                                        opacity: atLimit ? 0.4 : 1,
+                                                                    }}
+                                                                >
+                                                                    <span style={{
+                                                                        width: '18px', height: '18px', borderRadius: '4px',
+                                                                        border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.25)',
+                                                                        background: isSelected ? 'var(--red)' : 'transparent',
+                                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                        fontSize: '11px', flexShrink: 0, transition: 'all 0.2s',
+                                                                    }}>
+                                                                        {isSelected && '✓'}
+                                                                    </span>
+                                                                    {item}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
 
-                                        {meatCount > 0 && (
-                                            <div className={calcStyles.inputGroup} style={{ marginTop: '12px' }}>
-                                                <label className={calcStyles.label}>
-                                                    Pick Your Add&apos;l Meat{meatCount > 1 ? 's' : ''}
-                                                    <span style={{ fontSize: 11, color: selectedMeats.length >= meatCount ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
-                                                        {selectedMeats.length}/{meatCount} selected
-                                                    </span>
-                                                </label>
-                                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                                                    {MEAT_OPTIONS.map(item => {
-                                                        const isSelected = selectedMeats.includes(item);
-                                                        const atLimit = selectedMeats.length >= meatCount && !isSelected;
-                                                        return (
-                                                            <button
-                                                                key={item}
-                                                                onClick={() => {
-                                                                    if (isSelected) {
-                                                                        setSelectedMeats(prev => prev.filter(m => m !== item));
-                                                                    } else if (!atLimit) {
-                                                                        setSelectedMeats(prev => [...prev, item]);
-                                                                    }
-                                                                }}
-                                                                disabled={atLimit}
-                                                                style={{
-                                                                    padding: '10px 16px',
-                                                                    borderRadius: '8px',
-                                                                    border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.12)',
-                                                                    background: isSelected ? 'rgba(204, 13, 29, 0.15)' : 'rgba(255,255,255,0.04)',
-                                                                    color: atLimit ? 'rgba(255,255,255,0.2)' : isSelected ? '#fff' : 'rgba(255,255,255,0.6)',
-                                                                    cursor: atLimit ? 'not-allowed' : 'pointer',
-                                                                    fontSize: '13px',
-                                                                    fontWeight: isSelected ? 700 : 500,
-                                                                    transition: 'all 0.2s',
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    gap: '6px',
-                                                                    opacity: atLimit ? 0.4 : 1,
-                                                                }}
-                                                            >
-                                                                <span style={{
-                                                                    width: '18px', height: '18px', borderRadius: '4px',
-                                                                    border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.25)',
-                                                                    background: isSelected ? 'var(--red)' : 'transparent',
-                                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                                    fontSize: '11px', flexShrink: 0, transition: 'all 0.2s',
-                                                                }}>
-                                                                    {isSelected && '✓'}
-                                                                </span>
-                                                                {item}
-                                                            </button>
-                                                        );
-                                                    })}
+                                            {meatCount > 0 && (
+                                                <div className={calcStyles.inputGroup} style={{ marginTop: '12px' }}>
+                                                    <label className={calcStyles.label}>
+                                                        Pick Your Add&apos;l Meat{meatCount > 1 ? 's' : ''}
+                                                        <span style={{ fontSize: 11, color: selectedMeats.length >= meatCount ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                                                            {selectedMeats.length}/{meatCount} selected
+                                                        </span>
+                                                    </label>
+                                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                                        {MEAT_OPTIONS.map(item => {
+                                                            const isSelected = selectedMeats.includes(item);
+                                                            const atLimit = selectedMeats.length >= meatCount && !isSelected;
+                                                            return (
+                                                                <button
+                                                                    key={item}
+                                                                    onClick={() => {
+                                                                        if (isSelected) {
+                                                                            setSelectedMeats(prev => prev.filter(m => m !== item));
+                                                                        } else if (!atLimit) {
+                                                                            setSelectedMeats(prev => [...prev, item]);
+                                                                        }
+                                                                    }}
+                                                                    disabled={atLimit}
+                                                                    style={{
+                                                                        padding: '10px 16px',
+                                                                        borderRadius: '8px',
+                                                                        border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.12)',
+                                                                        background: isSelected ? 'rgba(204, 13, 29, 0.15)' : 'rgba(255,255,255,0.04)',
+                                                                        color: atLimit ? 'rgba(255,255,255,0.2)' : isSelected ? '#fff' : 'rgba(255,255,255,0.6)',
+                                                                        cursor: atLimit ? 'not-allowed' : 'pointer',
+                                                                        fontSize: '13px',
+                                                                        fontWeight: isSelected ? 700 : 500,
+                                                                        transition: 'all 0.2s',
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        gap: '6px',
+                                                                        opacity: atLimit ? 0.4 : 1,
+                                                                    }}
+                                                                >
+                                                                    <span style={{
+                                                                        width: '18px', height: '18px', borderRadius: '4px',
+                                                                        border: isSelected ? '2px solid var(--red)' : '1px solid rgba(255,255,255,0.25)',
+                                                                        background: isSelected ? 'var(--red)' : 'transparent',
+                                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                        fontSize: '11px', flexShrink: 0, transition: 'all 0.2s',
+                                                                    }}>
+                                                                        {isSelected && '✓'}
+                                                                    </span>
+                                                                    {item}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
-                                    </>
-                                );
-                            })()}
+                                            )}
+                                        </>
+                                    );
+                                })()}
                             </>
                         )}
 
@@ -659,9 +664,9 @@ export default function CateringHub({ events, calendarPricing }: Props) {
 
                                     {/* Show selected meats in receipt */}
                                     {selectedMeats.length > 0 && (
-                                        <div style={{ 
-                                            background: 'rgba(255,255,255,0.03)', 
-                                            borderRadius: '8px', 
+                                        <div style={{
+                                            background: 'rgba(255,255,255,0.03)',
+                                            borderRadius: '8px',
                                             padding: '10px 12px',
                                             border: '1px solid rgba(255,255,255,0.06)',
                                         }}>
@@ -687,9 +692,9 @@ export default function CateringHub({ events, calendarPricing }: Props) {
 
                                     {/* Show selected sides in receipt */}
                                     {selectedSides.length > 0 && (
-                                        <div style={{ 
-                                            background: 'rgba(255,255,255,0.03)', 
-                                            borderRadius: '8px', 
+                                        <div style={{
+                                            background: 'rgba(255,255,255,0.03)',
+                                            borderRadius: '8px',
                                             padding: '10px 12px',
                                             border: '1px solid rgba(255,255,255,0.06)',
                                         }}>
@@ -776,9 +781,9 @@ export default function CateringHub({ events, calendarPricing }: Props) {
                                         <button type="button" onClick={() => setShowForm(false)} style={{ width: '100%', background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: '12px', marginTop: '10px', cursor: 'pointer' }}>Cancel</button>
                                     </form>
                                 ) : (
-                                    <button 
-                                        onClick={() => setShowForm(true)} 
-                                        className="btn btn-primary" 
+                                    <button
+                                        onClick={() => setShowForm(true)}
+                                        className="btn btn-primary"
                                         style={{ width: '100%' }}
                                         disabled={eventType !== 'pig' && (selectedMeats.length === 0 || selectedSides.length === 0)}
                                     >

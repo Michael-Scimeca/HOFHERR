@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 /**
  * global-error.tsx — Last-resort error boundary.
  * Catches errors that occur in the root layout itself.
@@ -59,7 +61,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
                             >
                                 ↻ Try Again
                             </button>
-                            <a
+                                <Link
                                 href="/"
                                 style={{
                                     padding: '13px 28px',
@@ -74,23 +76,23 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
                                 }}
                             >
                                 ← Home
-                            </a>
-                        </div>
-                        <p style={{
-                            fontSize: 13,
-                            color: '#666',
-                            marginTop: 32,
-                            borderTop: '1px solid #ffffff1a',
-                            paddingTop: 16,
-                        }}>
-                            Need help? Call{' '}
-                            <a href="tel:8474416328" style={{ color: '#CC0E1D', fontWeight: 700, textDecoration: 'none' }}>
-                                (847) 441-MEAT
-                            </a>
-                        </p>
+                        </Link>
                     </div>
+                    <p style={{
+                        fontSize: 13,
+                        color: '#666',
+                        marginTop: 32,
+                        borderTop: '1px solid #ffffff1a',
+                        paddingTop: 16,
+                    }}>
+                        Need help? Call{' '}
+                        <a href="tel:8474416328" style={{ color: '#CC0E1D', fontWeight: 700, textDecoration: 'none' }}>
+                            (847) 441-MEAT
+                        </a>
+                    </p>
                 </div>
-            </body>
-        </html>
+            </div>
+        </body>
+        </html >
     );
 }

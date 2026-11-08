@@ -2,12 +2,9 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import styles from './Footer.module.css';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
-
-/* Leaflet requires the browser — load client-only */
-const FooterMap = dynamic(() => import('./FooterMap'), { ssr: false });
+import FooterMap from './FooterMap';
 
 function phoneHref(phone: string) {
     return 'tel:' + phone.replace(/[^\d]/g, '');
@@ -25,7 +22,7 @@ export default function Footer() {
             {/* Interactive map with location toggle */}
             {!isAdmin && <FooterMap />}
 
-            <div className={styles.inner}>
+            <div className={`container ${styles.inner}`}>
                 <div className={styles.brand}>
                     <div className={styles.logo}>
                         <Image
@@ -78,7 +75,7 @@ export default function Footer() {
 
 
             <div className={styles.bottom}>
-                <div className={styles.bottomInner}>
+                <div className={`container ${styles.bottomInner}`}>
                     <div className={styles.contact}>
                         <span>📞 <a href={phoneHref(s.phone)}>{s.phone}</a></span>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>

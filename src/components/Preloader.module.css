@@ -1,0 +1,204 @@
+/* Full-screen preloader: solid black while loading, then the black drops away as the page
+   melts in, while the flame, embers and navbar hand-off finish on top. */
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background-color: #000;
+    /* quick drop so the page's own melt-in is clearly visible from frame 1 */
+    transition: background-color 140ms ease-out;
+}
+
+.revealed {
+    background-color: transparent;
+    pointer-events: none;
+}
+
+.interactive {
+    pointer-events: auto;
+}
+
+/* ─── Live Preloader Steps HUD (bottom-left) ─── */
+.stepsHud {
+    position: fixed;
+    left: max(16px, env(safe-area-inset-left, 0px));
+    bottom: max(16px, env(safe-area-inset-bottom, 0px));
+    z-index: 9999;
+    max-width: min(384px, calc(100vw - 32px));
+}
+
+.minimizedPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold);
+    color: var(--dark);
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font: 700 12px var(--font-body);
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    transition: transform 0.15s, background-color 0.2s;
+}
+.minimizedPill:hover {
+    transform: translateY(-1px);
+    background: var(--fg);
+}
+
+.pillNum {
+    opacity: 0.65;
+    font-variant-numeric: tabular-nums;
+}
+
+.pillLabel {
+    font-weight: 700;
+}
+
+.hudCard {
+    background: rgba(13, 10, 14, 0.92);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    display: grid;
+    gap: 12px;
+}
+
+.hudHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.hudTitleGroup {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.hudTitle {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--fg);
+}
+
+.hudPct {
+    font: 700 11px var(--font-body);
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+}
+
+.hudControls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hudBtn {
+    font: 600 10px var(--font-body);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.hudBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+.hudBtnActive {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--dark);
+}
+.hudBtnActive:hover {
+    color: var(--dark);
+}
+
+.stepsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.stepPill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 12px;
+    color: var(--fg-2);
+    font: 600 11px var(--font-body);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+}
+.stepPill:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.stepPillDone {
+    border-color: rgba(212, 168, 83, 0.35);
+    color: var(--fg);
+}
+
+.stepPillActive {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--dark);
+}
+.stepPillActive:hover {
+    color: var(--dark);
+}
+
+.stepNum {
+    font-weight: 700;
+    opacity: 0.65;
+    font-variant-numeric: tabular-nums;
+}
+
+.stepName {
+    font-weight: 700;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stepTime {
+    font-size: 9px;
+    opacity: 0.75;
+    font-variant-numeric: tabular-nums;
+}
+
+.activeDesc {
+    margin: 0;
+    font: 400 11px/1.45 var(--font-body);
+    color: var(--fg-3);
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+}
+.activeDesc strong {
+    color: var(--gold);
+    font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .overlay {
+        transition: none;
+    }
+}

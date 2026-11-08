@@ -3,8 +3,8 @@
     position: relative;
     overflow: hidden;
     background: var(--bg-2);
-    border-bottom: 1px solid var(--border);
-    padding: 120px 24px 100px;
+    margin-top: -88px;
+    padding: 208px 0 100px;
     text-align: center;
 }
 
@@ -14,7 +14,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.25;
+    opacity: var(--story-video-opacity, 0.25);
     pointer-events: none;
 }
 
@@ -28,7 +28,7 @@
 .heroInner {
     position: relative;
     z-index: 1;
-    max-width: 720px;
+    max-width: calc(720px + var(--container-px) * 2);
     margin: 0 auto;
 }
 
@@ -66,8 +66,11 @@
 
 /* ── Heritage Gallery ── */
 .heritage {
+    position: relative;
+    z-index: 2;
+    margin-top: var(--story-gallery-overlap, -30px);
     padding: 0 0 16px;
-    background: var(--bg-2);
+    background: transparent;
     border-bottom: 1px solid var(--border);
 }
 
@@ -84,7 +87,8 @@
 
 .heritageImg {
     width: 100%;
-    height: 300px;
+    aspect-ratio: 16 / 9;
+    height: auto;
     object-fit: cover;
     display: block;
     filter: grayscale(100%) contrast(1.05);
@@ -201,7 +205,7 @@
 /* ── Founder header ── */
 .founderHeader {
     text-align: center;
-    padding: 96px 24px 64px;
+    padding: 96px var(--container-px) 64px;
 }
 
 .founderTitle {
@@ -413,7 +417,7 @@
 .cta {
     background: linear-gradient(rgba(180, 20, 20, 0.85), rgba(140, 10, 10, 0.9)),
                 url('/BG-NEWSLETTER.jpg') center / 300px repeat;
-    padding: 64px 24px;
+    padding: 64px 0;
     text-align: center;
     color: #fff;
     position: relative;

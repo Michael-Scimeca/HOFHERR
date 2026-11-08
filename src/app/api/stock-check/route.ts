@@ -35,25 +35,25 @@ type Settings = {
  * Call this on a cron schedule (e.g. Vercel Cron) or manually.
  * Requires CRON_SECRET (via Authorization header) or admin session.
  */
-export async function GET(request: Request) {
-    // Verify authorization: Vercel cron sends Bearer token, or require admin session
-    const authHeader = request.headers.get('authorization');
-    const cronSecret = process.env.CRON_SECRET;
+    async function runStockCheck(request: Request, mutate: boolean) {
+        // Verify authorization: Vercel cron sends Bearer token, or require admin session
+        const authHeader = request.headers.get('authorization');
+        const cronSecret = process.env.CRON_SECRET;
 
-    if (cronSecret && authHeader === `Bearer ${cronSecret}`) {
-        // Valid cron request — proceed
-    } else {
-        // Fall back to admin session check
-        const { auth } = await import('@/auth');
-        const session = await auth();
-        if (!session?.user?.isAdmin) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        if (cronSecret && authHeader === `Bearer ${cronSecret}`) {
+            // Valid cron request — proceed
+        } else {
+            // Fall back to admin session check
+            const { auth } = await import('@/auth');
+            const session = await auth();
+            if (!session?.user?.isAdmin) {
+                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            }
         }
-    }
 
-    try {
-        // 1. Get settings
-        const settings: Settings = await client.fetch(`
+        try {
+            // 1. Get settings
+            const settings: Settings = await client.fetch(`
             *[_type == "siteSettings"][0] {
                 lowStockThreshold,
                 stockAlertEmail,
@@ -61,10 +61,10 @@ export async function GET(request: Request) {
             }
         `);
 
-        const threshold = settings?.lowStockThreshold ?? 3;
+            const threshold = settings?.lowStockThreshold ?? 3;
 
-        // 2. Get all products with stock info
-        const products: Product[] = await client.fetch(`
+            // 2. Get all products with stock info
+            const products: Product[] = await client.fetch(`
             *[_type == "product"] {
                 _id,
                 name,
@@ -74,79 +74,82 @@ export async function GET(request: Request) {
             }
         `);
 
-        const lowStock: Product[] = [];
-        const outOfStock: Product[] = [];
-        const statusUpdates: { id: string; name: string; oldStatus: string; newStatus: string }[] = [];
+            const lowStock: Product[] = [];
+            const outOfStock: Product[] = [];
+            const statusUpdates: { id: string; name: string; oldStatus: string; newStatus: string }[] = [];
 
-        for (const product of products) {
-            const qty = product.stockQuantity ?? 5; // default to 5 if not set
+            for (const product of products) {
+                const qty = product.stockQuantity ?? 5; // default to 5 if not set
 
-            // Determine correct status based on quantity
-            let correctStatus = product.stockStatus;
-            if (qty === 0) {
-                correctStatus = 'out-of-stock';
-            } else if (qty <= threshold) {
-                correctStatus = 'low-stock';
-            } else if (product.stockStatus === 'low-stock' || product.stockStatus === 'out-of-stock') {
-                // Stock was replenished — set back to in-stock
-                correctStatus = 'in-stock';
+                // Determine correct status based on quantity
+                let correctStatus = product.stockStatus;
+                if (qty === 0) {
+                    correctStatus = 'out-of-stock';
+                } else if (qty <= threshold) {
+                    correctStatus = 'low-stock';
+                } else if (product.stockStatus === 'low-stock' || product.stockStatus === 'out-of-stock') {
+                    // Stock was replenished — set back to in-stock
+                    correctStatus = 'in-stock';
+                }
+
+                // Auto-update status if it changed
+                if (correctStatus !== product.stockStatus) {
+                    if (mutate) {
+                        await client.patch(product._id, { set: { stockStatus: correctStatus } }).commit();
+                    }
+
+                    statusUpdates.push({
+                        id: product._id,
+                        name: product.name,
+                        oldStatus: product.stockStatus,
+                        newStatus: correctStatus,
+                    });
+                }
+
+                // Collect alerts
+                if (qty === 0) {
+                    outOfStock.push(product);
+                } else if (qty <= threshold) {
+                    lowStock.push(product);
+                }
             }
 
-            // Auto-update status if it changed
-            if (correctStatus !== product.stockStatus) {
-                await client
-                    .patch(product._id)
-                    .set({ stockStatus: correctStatus })
-                    .commit();
+            // 3. Build the alert summary
+            const alertItems = [
+                ...outOfStock.map((p) => `🔴 OUT: ${p.name} (${p.category ?? 'Uncategorized'}) — 0 units`),
+                ...lowStock.map((p) => `🔥 LOW: ${p.name} (${p.category ?? 'Uncategorized'}) — ${p.stockQuantity} units`),
+            ];
 
-                statusUpdates.push({
-                    id: product._id,
-                    name: product.name,
-                    oldStatus: product.stockStatus,
-                    newStatus: correctStatus,
-                });
+            // 4. If alerts enabled and there are low-stock items, log them
+            if (settings?.stockAlertsEnabled && alertItems.length > 0 && settings?.stockAlertEmail) {
+                console.log(`📧 Stock alert for ${settings.stockAlertEmail}:`);
+                alertItems.forEach((item) => console.log(`   ${item}`));
             }
 
-            // Collect alerts
-            if (qty === 0) {
-                outOfStock.push(product);
-            } else if (qty <= threshold) {
-                lowStock.push(product);
-            }
+            return NextResponse.json({
+                ok: true,
+                threshold,
+                totalProducts: products.length,
+                lowStockCount: lowStock.length,
+                outOfStockCount: outOfStock.length,
+                statusUpdated: mutate ? statusUpdates.length : 0,
+                alerts: alertItems,
+                statusChanges: statusUpdates,
+                timestamp: new Date().toISOString(),
+            });
+        } catch (error) {
+            console.error('Stock check error:', error);
+            return NextResponse.json(
+                { ok: false, error: 'Failed to check stock levels' },
+                { status: 500 },
+            );
         }
-
-        // 3. Build the alert summary
-        const alertItems = [
-            ...outOfStock.map((p) => `🔴 OUT: ${p.name} (${p.category ?? 'Uncategorized'}) — 0 units`),
-            ...lowStock.map((p) => `🔥 LOW: ${p.name} (${p.category ?? 'Uncategorized'}) — ${p.stockQuantity} units`),
-        ];
-
-        // 4. If alerts enabled and there are low-stock items, log them
-        //    (Email integration can be added here with SendGrid, Resend, etc.)
-        if (settings?.stockAlertsEnabled && alertItems.length > 0 && settings?.stockAlertEmail) {
-            // TODO: Integrate with an email service (SendGrid, Resend, Postmark)
-            // For now, the alert data is returned in the API response
-            // and can be consumed by Vercel Cron, Zapier, or any webhook
-            console.log(`📧 Stock alert for ${settings.stockAlertEmail}:`);
-            alertItems.forEach((item) => console.log(`   ${item}`));
-        }
-
-        return NextResponse.json({
-            ok: true,
-            threshold,
-            totalProducts: products.length,
-            lowStockCount: lowStock.length,
-            outOfStockCount: outOfStock.length,
-            statusUpdated: statusUpdates.length,
-            alerts: alertItems,
-            statusChanges: statusUpdates,
-            timestamp: new Date().toISOString(),
-        });
-    } catch (error) {
-        console.error('Stock check error:', error);
-        return NextResponse.json(
-            { ok: false, error: 'Failed to check stock levels' },
-            { status: 500 },
-        );
     }
-}
+
+    export async function GET(request: Request) {
+        return runStockCheck(request, false);
+    }
+
+    export async function POST(request: Request) {
+        return runStockCheck(request, true);
+    }

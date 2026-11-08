@@ -1,0 +1,34 @@
+<!-- SPECTEST:START -->
+# SpecTest Instructions
+
+These instructions are for AI assistants working in the **Hofherr Meat Co.** project.
+
+Always open `@/spectest/AGENTS.md` when the request:
+- Mentions planning or proposals (words like proposal, spec, change, plan, test)
+- Introduces new capabilities, breaking changes, architecture shifts, or significant automation work
+- Sounds ambiguous and you need the authoritative spec before coding tests
+
+Use `@/spectest/AGENTS.md` to learn:
+- How to create and apply change proposals
+- Spec format and conventions
+- Project structure and guidelines
+- Automation workflows (planning, generation, healing, coverage analysis)
+
+Keep this managed block so 'spectest update' can refresh the instructions.
+
+<!-- SPECTEST:END -->
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
+
+## Project Directives
+
+See [`.agents/AGENTS.md`](file:///Users/michaelscimeca/Desktop/HOFHERR/.agents/AGENTS.md) for all mandatory Hofherr Meat Co. engineering, UI/UX, and React Doctor (`100/100`) directives.
+

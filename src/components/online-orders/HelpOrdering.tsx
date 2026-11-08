@@ -1,14 +1,15 @@
 'use client';
+import Link from 'next/link';
 import styles from './HelpOrdering.module.css';
 
 export default function HelpOrdering() {
     return (
         <section className={styles.section}>
-            <div className={styles.inner}>
+            <div className={`container ${styles.inner}`}>
                 <div className={styles.textSide}>
                     <h2 className={styles.title}>Need Help Ordering?</h2>
                     <p className={styles.desc}>
-                        Can&apos;t find what you&apos;re looking for? Want to order a whole animal, custom cut, 
+                        Can&apos;t find what you&apos;re looking for? Want to order a whole animal, custom cut,
                         or bulk quantity? Just reach out — Sean handles these personally.
                     </p>
                 </div>
@@ -19,11 +20,11 @@ export default function HelpOrdering() {
                     <a href="mailto:butcher@hofherrmeatco.com" className={styles.btnSecondary}>
                         <span className={styles.icon}>✉️</span> EMAIL US
                     </a>
-                    <a href="/catering#get-a-quote" className={styles.btnSecondary}>
-                        CUSTOM & WHOLESALE
-                    </a>
-                </div>
+                        <Link href="/catering#get-a-quote" className={styles.btnSecondary}>
+                            CUSTOM & WHOLESALE
+                </Link>
             </div>
-        </section>
+        </div>
+        </section >
     );
 }

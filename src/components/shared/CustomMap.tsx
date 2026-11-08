@@ -44,9 +44,13 @@ function ensureLoaded(): Promise<void> {
             setOptions({ key: apiKey, v: 'weekly' });
             optionsSet = true;
         }
-        loadPromise = importLibrary('maps').then(() => {});
+        loadPromise = importLibrary('maps').then(() => { });
     }
     return loadPromise!;
+}
+
+function bindMarkerClick(marker: google.maps.Marker, info: google.maps.InfoWindow, map: google.maps.Map) {
+    return google.maps.event.addListener(marker, 'click', () => info.open({ anchor: marker, map }));
 }
 
 export default function CustomMap({
@@ -65,6 +69,13 @@ export default function CustomMap({
     const markerRef = useRef<google.maps.Marker | null>(null);
     const infoRef = useRef<google.maps.InfoWindow | null>(null);
 
+    const latestInitRef = useRef({ lat, lng, zoom, iconType, label, address });
+    useEffect(() => {
+        latestInitRef.current = { lat, lng, zoom, iconType, label, address };
+    }, [lat, lng, zoom, iconType, label, address]);
+
+    const clickListenerRef = useRef<google.maps.MapsEventListener | null>(null);
+
     /* ── Init map ── */
     useEffect(() => {
         if (!mapContainer.current || mapRef.current) return;
@@ -73,10 +84,11 @@ export default function CustomMap({
 
         ensureLoaded().then(() => {
             if (cancelled || !mapContainer.current) return;
+            const init = latestInitRef.current;
 
             const map = new google.maps.Map(mapContainer.current, {
-                center: { lat, lng },
-                zoom,
+                center: { lat: init.lat, lng: init.lng },
+                zoom: init.zoom,
                 styles: MAP_STYLES,
                 disableDefaultUI: true,
                 zoomControl: true,
@@ -84,13 +96,13 @@ export default function CustomMap({
                 scrollwheel: false,
             });
 
-            const sz = iconType === 'depot' ? 72 : 56;
+            const sz = init.iconType === 'depot' ? 72 : 56;
             const marker = new google.maps.Marker({
                 map,
-                position: { lat, lng },
-                title: label,
+                position: { lat: init.lat, lng: init.lng },
+                title: init.label,
                 icon: {
-                    url: iconType === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png',
+                    url: init.iconType === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png',
                     scaledSize: new google.maps.Size(sz, sz),
                     anchor: new google.maps.Point(sz / 2, sz),
                 },
@@ -98,12 +110,12 @@ export default function CustomMap({
 
             const info = new google.maps.InfoWindow({
                 content: `<div style="font-family:Inter,sans-serif;padding:8px 4px;">
-                    <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">${label}</div>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#c5a255;text-decoration:underline;">${address}</a>
+                    <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">${init.label}</div>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(init.address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#c5a255;text-decoration:underline;">${init.address}</a>
                 </div>`,
             });
 
-            marker.addListener('click', () => info.open({ anchor: marker, map }));
+            clickListenerRef.current = bindMarkerClick(marker, info, map);
 
             mapRef.current = map;
             markerRef.current = marker;
@@ -112,6 +124,7 @@ export default function CustomMap({
 
         return () => {
             cancelled = true;
+            if (clickListenerRef.current) google.maps.event.removeListener(clickListenerRef.current);
             if (markerRef.current) markerRef.current.setMap(null);
             mapRef.current = null;
             markerRef.current = null;

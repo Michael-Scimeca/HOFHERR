@@ -150,6 +150,7 @@ export default function PigRoastCalculator({
                         <label key={p.id} className={`${styles.packageOption} ${pkgId === p.id ? styles.packageOptionActive : ''}`}>
                             <input 
                                 type="radio" 
+                                name="pigRoastPackage"
                                 value={p.id} 
                                 checked={pkgId === p.id} 
                                 onChange={() => handlePkgChange(p.id)} 

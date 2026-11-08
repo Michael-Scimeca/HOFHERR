@@ -8,7 +8,7 @@
     background-image:
         radial-gradient(ellipse at 20% 50%, rgba(128, 0, 32, 0.15) 0%, transparent 60%),
         radial-gradient(ellipse at 80% 30%, rgba(128, 0, 32, 0.08) 0%, transparent 50%);
-    padding: 56px 24px 48px;
+    padding: 56px 0 48px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -98,7 +98,7 @@
 
 .menuSub {
     font-size: 14px;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255, 255, 255, 0.45);
     margin: 0;
 }
 
@@ -119,8 +119,13 @@
     border: 1px solid #ffffff1a;
 }
 
-.meatCategory { border-bottom: 1px solid #ffffff1a; }
-.stackedCategories { display: contents; }
+.meatCategory {
+    border-bottom: 1px solid #ffffff1a;
+}
+
+.stackedCategories {
+    display: contents;
+}
 
 /* ── Category Header ── */
 .catTitle {
@@ -157,7 +162,9 @@
     flex-shrink: 0;
 }
 
-.catDesc { display: none; }
+.catDesc {
+    display: none;
+}
 
 /* ── Meat Bento Grid (hero 2×2 + surrounding) ── */
 .menuList {
@@ -171,573 +178,611 @@
     margin: 0;
 }
 
-/* First item = hero spanning 2 rows */
-.menuList li:first-child {
-    grid-row: span 2;
-}
 
-/* ── Appetizer / Side even grid ── */
-.menuListDual {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 190px;
-    gap: 3px;
-    background: #0d0d0d;
-    list-style: none;
-    padding: 3px;
-    margin: 0;
-}
-
-/* ── All Bento Cards ── */
-.menuList li,
-.menuListDual li {
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    background: #111;
-    border-radius: 4px;
-}
-
-.menuList li::before,
-.menuListDual li::before { display: none; }
-
-.menuList li.hasThumb,
-.menuListDual li.hasThumb { padding: 0; }
-
-/* Photo fills the card — 130% tall for parallax travel room */
-.listThumb {
-    position: absolute;
-    left: 0;
-    top: -15%;
-    width: 100%;
-    height: 130%;
-    object-fit: cover;
-    border-radius: 0;
-    border: none;
-    cursor: crosshair;
-    will-change: transform;
-    filter: brightness(0.75);
-    /* Only transition filter — JS owns transform */
-    transition: filter 0.4s;
-}
-
-.menuList li:hover .listThumb,
-.menuListDual li:hover .listThumb {
-    filter: brightness(0.95);
-}
-
-/* Dark gradient overlay */
-.menuList li::after,
-.menuListDual li::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        to top,
-        rgba(0,0,0,0.88) 0%,
-        rgba(0,0,0,0.3) 45%,
-        transparent 100%
-    );
-    pointer-events: none;
-    border-radius: 4px;
-}
-
-/* Item name — overlaid bottom */
-.menuList li span:last-child,
-.menuListDual li span:last-child {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 12px 14px;
-    z-index: 2;
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(0.95rem, 1.6vw, 1.25rem);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #fff;
-    line-height: 1.1;
-    transition: color 0.2s;
-}
-
-/* Hero card — larger name */
-.menuList li:first-child span:last-child {
-    font-size: clamp(1.5rem, 2.5vw, 2.2rem);
-    padding: 20px 22px;
-}
-
-/* Category badge — top left */
-.menuList li span:first-child:not(span:last-child),
-.menuListDual li span:first-child:not(span:last-child) {
-    display: none; /* handled by catTitle above */
-}
-
-.menuList li:hover span:last-child,
-.menuListDual li:hover span:last-child {
-    color: #fff;
-}
-
-/* ── Build Your Plate Card ── */
-.buildYourPlate {
-    grid-column: span 2;
-    grid-row: span 2;
-    background: #0c0c0c;
-    border: 1px solid #ffffff1a;
-    border-radius: 4px;
-    padding: 24px 26px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: default;
-    transition: background 0.2s;
-    position: relative;
-}
-
-.buildYourPlate:hover {
-    background: #111;
-}
-
-/* Nullify the ::after gradient overlay for this card */
-.buildYourPlate::after {
-    display: none !important;
-}
-
-.buildHeader {
-    margin-bottom: 18px;
-}
-
-.buildTag {
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
-    display: block;
-    margin-bottom: 6px;
-}
-
-.buildTitle {
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(1.4rem, 2vw, 1.9rem);
-    font-weight: 700;
-    text-transform: uppercase;
-    color: #fff;
-    margin: 0;
-    line-height: 1;
-    letter-spacing: 0.04em;
-}
-
-.buildSteps {
-    display: flex;
-    flex-direction: column;
-    gap: 11px;
-    flex: 1;
-}
-
-.buildStep {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding-bottom: 11px;
-    border-bottom: 1px solid #ffffff1a;
-}
-
-.buildStep:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.buildStepNum {
-    font-family: monospace;
-    font-size: 10px;
-    font-weight: 900;
-    color: var(--red);
-    min-width: 18px;
-    padding-top: 2px;
-    flex-shrink: 0;
-}
-
-.buildStepTitle {
-    font-size: 12.5px;
-    font-weight: 700;
-    color: rgba(255,255,255,0.88);
-    line-height: 1.3;
-}
-
-.buildStepDesc {
-    font-size: 11px;
-    color: rgba(255,255,255,0.35);
-    margin-top: 2px;
-    line-height: 1.4;
-}
-
-.buildCta {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 18px;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--red);
-    text-decoration: none;
-    transition: color 0.2s, gap 0.2s;
-}
-
-.buildCta:hover {
-    color: #fff;
-    gap: 10px;
-}
-
-
-/* ── Cursor Follow Hover ── */
-.cursorThumbWrap {
-    position: fixed;
-    z-index: 9999;
-    pointer-events: none;
-    width: 320px;
-    height: 320px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255,255,255,0.08);
-    background: #000;
-    animation: thumbPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
-}
-
-.cursorThumbWrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-@keyframes thumbPop {
-    from { opacity: 0; transform: scale(0.8) translateY(10px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-@media (max-width: 900px) {
-    .cursorThumbWrap {
-        display: none !important;
+    /* First item & bottom-left item alongside Build Your Plate = span 2 rows */
+    .menuList li:first-child,
+    .menuList li:nth-child(6):nth-last-child(2) {
+        grid-row: span 2;
     }
-}
 
-/* ── Pricing Section ──────────────────────────────────── */
-.pricingSection {
-    background: var(--bg-2);
-    padding: 96px 0;
-    position: relative;
-    animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
-}
-
-
-
-.pricingHeader {
-    text-align: center;
-    margin-bottom: 36px;
-}
-
-.pricingTitle {
-    font-size: clamp(1.8rem, 3vw, 2.4rem);
-    color: var(--fg);
-    margin: 8px 0 8px;
-}
-
-.pricingNote {
-    font-size: 13px;
-    color: var(--fg-muted);
-    margin: 0;
-}
-
-.pricingCols {
-    display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: 24px;
-    align-items: start;
-}
-
-.pricingCard {
-    background: #000;
-    border-radius: 16px;
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    position: relative;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
-    border: 1px solid var(--border);
-}
-
-.pricingCardFeatured {
-    background: #000;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
-    border: 1px solid #ffffff1a;
-}
-
-.pricingCardBadge {
-    position: absolute;
-    top: -11px;
-    left: 24px;
-    background: var(--red);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 4px 12px;
-    border-radius: 100px;
-}
-
-.pricingCardTitle {
-    font-size: 1.2rem;
-    color: var(--fg);
-}
-
-.pricingCardFeatured .pricingCardTitle {
-    color: #fff;
-}
-
-.pricingCardSub {
-    font-size: 12px;
-    color: var(--fg-muted);
-    line-height: 1.6;
-}
-
-.pricingCardFeatured .pricingCardSub {
-    color: rgba(255, 255, 255, 0.45);
-}
-
-.pricingCardDesc {
-    font-size: 14px;
-    color: var(--fg-muted);
-    line-height: 1.7;
-    margin: 0;
-}
-
-.priceRows {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.priceRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    padding: 10px 14px;
-}
-
-.priceRow span {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.priceRow strong {
-    font-size: 13.5px;
-    color: #fff;
-    white-space: nowrap;
-    font-weight: 700;
-}
-
-/* ── Beyond BBQ Services ──────────────────────────────── */
-.servicesSection {
-    background: var(--bg);
-    padding: 96px 0;
-    animation: fadeInUp 0.6s 0.15s var(--ease-out) both;
-}
-
-.beyondBbqHeader {
-    margin-bottom: 48px;
-}
-
-.beyondBbqTitle {
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(2.6rem, 5vw, 4rem);
-    font-weight: 700;
-    text-transform: uppercase;
-    color: #fff;
-    margin: 0 0 8px;
-    line-height: 1;
-}
-
-.beyondBbqSub {
-    font-size: 15px;
-    color: rgba(255,255,255,0.45);
-    margin: 0;
-}
-
-.brutalistList {
-    border-top: 1px solid #ffffff1a;
-}
-
-.brutalistRow {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    padding: 24px 16px;
-    border-bottom: 1px solid #ffffff1a;
-    text-decoration: none;
-    color: #fff;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s ease, padding-left 0.3s ease;
-}
-
-.brutalistRow:hover {
-    background: rgba(204, 14, 29, 0.06);
-    padding-left: 28px;
-    border-bottom-color: rgba(204, 14, 29, 0.25);
-}
-
-.brutalistNum {
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 3rem;
-    font-weight: 700;
-    color: rgba(204, 14, 29, 0.3);
-    line-height: 1;
-    min-width: 72px;
-    transition: color 0.2s;
-}
-
-.brutalistRow:hover .brutalistNum {
-    color: var(--red, #cc0e1d);
-}
-
-.brutalistContent {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.brutalistEmoji {
-    font-size: 26px;
-    flex-shrink: 0;
-}
-
-.brutalistTitle {
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
-    font-weight: 700;
-    text-transform: uppercase;
-    line-height: 1;
-}
-
-.brutalistCta {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
-    white-space: nowrap;
-    transition: color 0.2s;
-}
-
-.brutalistRow:hover .brutalistCta {
-    color: var(--red, #cc0e1d);
-}
-
-/* ── CTA Section ──────────────────────────────────────── */
-.cta {
-    background: var(--bg);
-    background-image:
-        radial-gradient(ellipse at 50% 0%, rgba(128, 0, 32, 0.12) 0%, transparent 60%);
-    padding: 48px 24px;
-    text-align: center;
-}
-
-.ctaTitle {
-
-    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-    color: #fff;
-    margin: 0 0 12px;
-}
-
-.ctaSub {
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.55);
-    line-height: 1.7;
-    max-width: 480px;
-    margin: 0 auto 24px;
-}
-
-.ctaBtns {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-}
-
-.ctaNote {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.25);
-    margin: 0;
-}
-
-/* ── Responsive ────────────────────────────────────── */
-@media (max-width: 900px) {
-    .menuList {
-        grid-template-columns: 1fr 1fr;
-        grid-auto-rows: 180px;
-    }
-    .menuList li:first-child { grid-row: span 2; }
+    /* ── Appetizer / Side even grid ── */
     .menuListDual {
-        grid-template-columns: 1fr 1fr;
-        grid-auto-rows: 160px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: 190px;
+        gap: 3px;
+        background: #0d0d0d;
+        list-style: none;
+        padding: 3px;
+        margin: 0;
     }
-    .pricingCols { grid-template-columns: 1fr; }
-}
 
-@media (max-width: 600px) {
-    .menuList {
-        grid-template-columns: 1fr 1fr;
-        grid-auto-rows: 150px;
+    /* ── All Bento Cards ── */
+    .menuList li,
+    .menuListDual li {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        background: #111;
+        border-radius: 4px;
     }
-    .menuListDual {
-        grid-template-columns: 1fr 1fr;
-        grid-auto-rows: 130px;
+
+    .menuList li::before,
+    .menuListDual li::before {
+        display: none;
     }
-    .menuList li:first-child {
-        grid-column: span 2;
-        grid-row: span 1;
+
+    .menuList li.hasThumb,
+    .menuListDual li.hasThumb {
+        padding: 0;
     }
+
+    /* Photo fills the card — 130% tall for parallax travel room */
+    .listThumb {
+        position: absolute;
+        left: 0;
+        top: -15%;
+        width: 100%;
+        height: 130%;
+        object-fit: cover;
+        border-radius: 0;
+        border: none;
+        cursor: crosshair;
+        will-change: transform;
+        filter: brightness(0.75);
+        /* Only transition filter — JS owns transform */
+        transition: filter 0.4s;
+    }
+
+    .menuList li:hover .listThumb,
+    .menuListDual li:hover .listThumb {
+        filter: brightness(0.95);
+    }
+
+    /* Dark gradient overlay */
+    .menuList li::after,
+    .menuListDual li::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top,
+                rgba(0, 0, 0, 0.88) 0%,
+                rgba(0, 0, 0, 0.3) 45%,
+                transparent 100%);
+        pointer-events: none;
+        border-radius: 4px;
+    }
+
+    /* Item name — overlaid bottom */
     .menuList li span:last-child,
-    .menuListDual li span:last-child { font-size: 0.9rem; padding: 8px 10px; }
-    .menuList li:first-child span:last-child { font-size: 1.1rem; }
-}
-
-@media (max-width: 600px) {
-    .hero {
-        padding: 90px 16px 60px;
+    .menuListDual li span:last-child {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 12px 14px;
+        z-index: 2;
+        font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+        font-size: clamp(0.95rem, 1.6vw, 1.25rem);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #fff;
+        line-height: 1.1;
+        transition: color 0.2s;
     }
 
-    .menuSection {
-        padding: 40px 0 36px;
-    }
+    /* Hero card — larger name */
 
-    .pricingSection {
-        padding: 64px 0;
-    }
+        .menuList li:first-child span:last-child,
+        .menuList li:nth-child(6):nth-last-child(2) span:last-child {
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+            padding: 20px 22px;
+        }
 
-    .servicesSection {
-        padding: 64px 0;
-    }
+        /* Category badge — top left */
+        .menuList li span:first-child:not(span:last-child),
+        .menuListDual li span:first-child:not(span:last-child) {
+            display: none;
+            /* handled by catTitle above */
+        }
 
-    .servicesGrid {
-        grid-template-columns: 1fr;
-    }
+        .menuList li:hover span:last-child,
+        .menuListDual li:hover span:last-child {
+            color: #fff;
+        }
 
-    .menuCategory {
-        padding: 24px 20px;
-    }
+        /* ── Build Your Plate Card ── */
+        .buildYourPlate {
+            grid-column: span 2;
+            grid-row: span 2;
+            background: #0c0c0c;
+            border: 1px solid #ffffff1a;
+            border-radius: 4px;
+            padding: 24px 26px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: default;
+            transition: background 0.2s;
+            position: relative;
+        }
 
-    .cta {
-        padding: 48px 16px;
-    }
-}
+        .buildYourPlate:hover {
+            background: #111;
+        }
+
+        /* Nullify the ::after gradient overlay for this card */
+        .buildYourPlate::after {
+            display: none !important;
+        }
+
+        .buildHeader {
+            margin-bottom: 18px;
+        }
+
+        .buildTag {
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .buildTitle {
+            font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+            font-size: clamp(1.4rem, 2vw, 1.9rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #fff;
+            margin: 0;
+            line-height: 1;
+            letter-spacing: 0.04em;
+        }
+
+        .buildSteps {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+            flex: 1;
+        }
+
+        .buildStep {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding-bottom: 11px;
+            border-bottom: 1px solid #ffffff1a;
+        }
+
+        .buildStep:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .buildStepNum {
+            font-family: monospace;
+            font-size: 10px;
+            font-weight: 900;
+            color: var(--red);
+            min-width: 18px;
+            padding-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .buildStepTitle {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.88);
+            line-height: 1.3;
+        }
+
+        .buildStepDesc {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.35);
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .buildCta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 18px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--red);
+            text-decoration: none;
+            transition: color 0.2s, gap 0.2s;
+        }
+
+        .buildCta:hover {
+            color: #fff;
+            gap: 10px;
+        }
+
+
+        /* ── Cursor Follow Hover ── */
+        .cursorThumbWrap {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            width: 320px;
+            height: 320px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+            background: #000;
+            animation: thumbPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+        }
+
+        .cursorThumbWrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        @keyframes thumbPop {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .cursorThumbWrap {
+                display: none !important;
+            }
+        }
+
+        /* ── Pricing Section ──────────────────────────────────── */
+        .pricingSection {
+            background: var(--bg-2);
+            padding: 96px 0;
+            position: relative;
+            animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
+        }
+
+
+
+        .pricingHeader {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .pricingTitle {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            color: var(--fg);
+            margin: 8px 0 8px;
+        }
+
+        .pricingNote {
+            font-size: 13px;
+            color: var(--fg-muted);
+            margin: 0;
+        }
+
+        .pricingCols {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .pricingCard {
+            background: #000;
+            border-radius: 16px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border);
+        }
+
+        .pricingCardFeatured {
+            background: #000;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid #ffffff1a;
+        }
+
+        .pricingCardBadge {
+            position: absolute;
+            top: -11px;
+            left: 24px;
+            background: var(--red);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 100px;
+        }
+
+        .pricingCardTitle {
+            font-size: 1.2rem;
+            color: var(--fg);
+        }
+
+        .pricingCardFeatured .pricingCardTitle {
+            color: #fff;
+        }
+
+        .pricingCardSub {
+            font-size: 12px;
+            color: var(--fg-muted);
+            line-height: 1.6;
+        }
+
+        .pricingCardFeatured .pricingCardSub {
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .pricingCardDesc {
+            font-size: 14px;
+            color: var(--fg-muted);
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .priceRows {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .priceRow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+
+        .priceRow span {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .priceRow strong {
+            font-size: 13.5px;
+            color: #fff;
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        /* ── Beyond BBQ Services ──────────────────────────────── */
+        .servicesSection {
+            background: var(--bg);
+            padding: 96px 0;
+            animation: fadeInUp 0.6s 0.15s var(--ease-out) both;
+        }
+
+        .beyondBbqHeader {
+            margin-bottom: 48px;
+        }
+
+        .beyondBbqTitle {
+            font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+            font-size: clamp(2.6rem, 5vw, 4rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #fff;
+            margin: 0 0 8px;
+            line-height: 1;
+        }
+
+        .beyondBbqSub {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.45);
+            margin: 0;
+        }
+
+        .brutalistList {
+            border-top: 1px solid #ffffff1a;
+        }
+
+        .brutalistRow {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 24px 16px;
+            border-bottom: 1px solid #ffffff1a;
+            text-decoration: none;
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease, padding-left 0.3s ease;
+        }
+
+        .brutalistRow:hover {
+            background: rgba(204, 14, 29, 0.06);
+            padding-left: 28px;
+            border-bottom-color: rgba(204, 14, 29, 0.25);
+        }
+
+        .brutalistNum {
+            font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: rgba(204, 14, 29, 0.3);
+            line-height: 1;
+            min-width: 72px;
+            transition: color 0.2s;
+        }
+
+        .brutalistRow:hover .brutalistNum {
+            color: var(--red, #cc0e1d);
+        }
+
+        .brutalistContent {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brutalistEmoji {
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+
+        .brutalistTitle {
+            font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .brutalistCta {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
+            transition: color 0.2s;
+        }
+
+        .brutalistRow:hover .brutalistCta {
+            color: var(--red, #cc0e1d);
+        }
+
+        /* ── CTA Section ──────────────────────────────────────── */
+        .cta {
+            background: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 50% 0%, rgba(128, 0, 32, 0.12) 0%, transparent 60%);
+            padding: 48px 24px;
+            text-align: center;
+        }
+
+        .ctaTitle {
+
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            color: #fff;
+            margin: 0 0 12px;
+        }
+
+        .ctaSub {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.7;
+            max-width: 480px;
+            margin: 0 auto 24px;
+        }
+
+        .ctaBtns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .ctaNote {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.25);
+            margin: 0;
+        }
+
+        /* ── Responsive ────────────────────────────────────── */
+        @media (max-width: 900px) {
+            .menuList {
+                grid-template-columns: 1fr 1fr;
+                grid-auto-rows: 180px;
+            }
+
+            .menuList li:first-child {
+                grid-row: span 2;
+            }
+
+            .menuList li:nth-child(6):nth-last-child(2) {
+                grid-row: span 1;
+                grid-column: span 2;
+            }
+
+            .menuListDual {
+                grid-template-columns: 1fr 1fr;
+                grid-auto-rows: 160px;
+            }
+
+            .pricingCols {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .menuList {
+                grid-template-columns: 1fr 1fr;
+                grid-auto-rows: 150px;
+            }
+
+            .menuListDual {
+                grid-template-columns: 1fr 1fr;
+                grid-auto-rows: 130px;
+            }
+
+
+                .menuList li:first-child,
+                .menuList li:nth-child(6):nth-last-child(2) {
+                    grid-column: span 2;
+                    grid-row: span 1;
+                }
+
+                .menuList li span:last-child,
+                .menuListDual li span:last-child {
+                    font-size: 0.9rem;
+                    padding: 8px 10px;
+                }
+
+                .menuList li:first-child span:last-child,
+                .menuList li:nth-child(6):nth-last-child(2) span:last-child {
+                    font-size: 1.1rem;
+                }
+            }
+
+            @media (max-width: 600px) {
+                .hero {
+                    padding: 90px 16px 60px;
+                }
+
+                .menuSection {
+                    padding: 40px 0 36px;
+                }
+
+                .pricingSection {
+                    padding: 64px 0;
+                }
+
+                .servicesSection {
+                    padding: 64px 0;
+                }
+
+                .servicesGrid {
+                    grid-template-columns: 1fr;
+                }
+
+                .menuCategory {
+                    padding: 24px 20px;
+                }
+
+                .cta {
+                    padding: 48px 16px;
+                }
+            }

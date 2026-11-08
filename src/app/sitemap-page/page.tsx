@@ -79,7 +79,7 @@ const totalPages = SITE_MAP.reduce((sum, s) => sum + s.pages.length, 0) + 1; // 
 export default function SitemapPage() {
     return (
         <div className={styles.page}>
-            <div className={styles.container}>
+            <div className={`container ${styles.container}`}>
                 {/* Header */}
                 <header className={styles.header}>
                     <div className={styles.label}>Sitemap</div>

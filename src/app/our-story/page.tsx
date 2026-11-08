@@ -130,7 +130,7 @@ export default async function OurStoryPage() {
         <main className={styles.page}>
 
             {/* ── Hero ── */}
-            <section className={styles.hero}>
+            <section className={`${styles.hero} mask-fade-bottom`}>
                 <video
                     src="/video-clips/meat-truck.mp4"
                     autoPlay
@@ -140,7 +140,7 @@ export default async function OurStoryPage() {
                     className={styles.heroBgVideo}
                 />
                 <div className={styles.heroOverlay} />
-                <div className={styles.heroInner}>
+                <div className={`container ${styles.heroInner}`}>
                     <p className={styles.eyebrow}>Est. 2014 · Northfield &amp; Winnetka, IL</p>
                     <h1 className={styles.headline}>
                         Respect For the Past.<br />
@@ -168,7 +168,7 @@ export default async function OurStoryPage() {
             </section>
 
             {/* ── Section header: founder ── */}
-            <div className={styles.founderHeader}>
+            <div className={`container ${styles.founderHeader}`}>
                 <span className={styles.sectionLabelCentered}><span>—</span> Our Founder <span>—</span></span>
                 <h2 className={styles.founderTitle}>Meet Sean Hofherr</h2>
                 <p className={styles.founderSub}>Owner, head chef, and the driving force behind Hofherr Meat Co.</p>
@@ -176,31 +176,33 @@ export default async function OurStoryPage() {
 
             {/* ── The Man ── */}
             <section className={styles.bio}>
-                <div className={styles.seanCard}>
-                    <div className={styles.seanImagePart}>
-                        <img
-                            src="/team/sean.jpg"
-                            alt="Sean Hofherr"
-                            className={styles.avatarImg}
-                            data-parallax="inset"
-                        />
-                    </div>
-                    <div className={styles.seanContentPart}>
-                        <span className={styles.teamRole}>Owner &amp; Head Chef</span>
-                        <h2 className={styles.teamName}>Sean Hofherr</h2>
-                        <div className={styles.teamDivider} />
-                        <p className={styles.teamBio}>
-                            Sean honed his culinary and food preparation skills in numerous kitchens and cooking competitions over the years, winning a host of accolades for his many signature dishes. He began his career in the food industry at renowned steakhouse Keefer&apos;s Restaurant in Chicago&apos;s River North. He continued to nurture his passion at the cutting board during an apprenticeship at Zier&apos;s Prime Meats in Wilmette. Most recently, Sean served as kitchen director at Stormy&apos;s Tavern in Northfield, where his culinary creations garnered widespread acclaim from locals and the press alike.
-                        </p>
-                        <p className={styles.teamBio} style={{ marginTop: '16px' }}>
-                            In March 2014, he opened Hofherr Meat Co. at 300 Happ Rd, Northfield. The mission is simple: <strong>Quality meats. No compromise.</strong>
-                        </p>
-                        <p className={styles.teamBio} style={{ marginTop: '16px' }}>
-                            In 2024, Sean expanded the Hofherr footprint with <strong>The Depot</strong> — a second location inside the historic Winnetka Elm Street Metra Train Station.
-                        </p>
-                        <Link href="/visit" className="btn btn-primary" style={{ marginTop: '2rem', alignSelf: 'flex-start' }}>
-                            Come Visit Us
-                        </Link>
+                <div className="container">
+                    <div className={styles.seanCard}>
+                        <div className={styles.seanImagePart}>
+                            <img
+                                src="/team/sean.jpg"
+                                alt="Sean Hofherr"
+                                className={styles.avatarImg}
+                                data-parallax="inset"
+                            />
+                        </div>
+                        <div className={styles.seanContentPart}>
+                            <span className={styles.teamRole}>Owner &amp; Head Chef</span>
+                            <h2 className={styles.teamName}>Sean Hofherr</h2>
+                            <div className={styles.teamDivider} />
+                            <p className={styles.teamBio}>
+                                Sean honed his culinary and food preparation skills in numerous kitchens and cooking competitions over the years, winning a host of accolades for his many signature dishes. He began his career in the food industry at renowned steakhouse Keefer&apos;s Restaurant in Chicago&apos;s River North. He continued to nurture his passion at the cutting board during an apprenticeship at Zier&apos;s Prime Meats in Wilmette. Most recently, Sean served as kitchen director at Stormy&apos;s Tavern in Northfield, where his culinary creations garnered widespread acclaim from locals and the press alike.
+                            </p>
+                            <p className={styles.teamBio} style={{ marginTop: '16px' }}>
+                                In March 2014, he opened Hofherr Meat Co. at 300 Happ Rd, Northfield. The mission is simple: <strong>Quality meats. No compromise.</strong>
+                            </p>
+                            <p className={styles.teamBio} style={{ marginTop: '16px' }}>
+                                In 2024, Sean expanded the Hofherr footprint with <strong>The Depot</strong> — a second location inside the historic Winnetka Elm Street Metra Train Station.
+                            </p>
+                            <Link href="/visit" className="btn btn-primary" style={{ marginTop: '2rem', alignSelf: 'flex-start' }}>
+                                Come Visit Us
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>

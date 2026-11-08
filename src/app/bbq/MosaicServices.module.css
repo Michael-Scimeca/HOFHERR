@@ -14,14 +14,15 @@
 }
 
 .heroCard {
-    grid-row: 1 / 3; /* spans both rows */
+    grid-row: 1 / 3;
+    /* spans both rows */
 }
 
 /* ── Bottom grid: 3 equal columns ── */
 .bottomGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 220px;
+    grid-template-rows: 240px;
     gap: 4px;
 }
 
@@ -73,15 +74,15 @@
     justify-content: space-between;
     padding: 16px;
     background:
-        linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 40%),
-        linear-gradient(to top,    rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 55%);
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 40%),
+        linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 55%);
     transition: background 0.3s;
 }
 
 .card:hover .overlay {
     background:
-        linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 40%),
-        linear-gradient(to top,    rgba(0,0,0,0.92) 0%, rgba(0,0,0,0) 60%);
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 40%),
+        linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0) 60%);
 }
 
 /* Red tag — top left */
@@ -120,7 +121,7 @@
     color: #fff;
     line-height: 1.05;
     margin: 0;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 
 /* Hero card gets bigger title */
@@ -133,13 +134,62 @@
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0);
+    color: rgba(255, 255, 255, 0);
     transition: color 0.25s;
     white-space: nowrap;
 }
 
 .card:hover .cardCta {
-    color: rgba(255,255,255,0.75);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* ── Build Your Package Red CTA Card ── */
+.ctaCard {
+    background: var(--red, #cc0e1d);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px;
+    cursor: default;
+}
+
+.ctaOverlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.ctaTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(2.2rem, 2.8vw, 3.25rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0;
+    line-height: 1;
+}
+
+.ctaSub {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 8px 0;
+    font-weight: 500;
+}
+
+.ctaBtn {
+    background: #fff;
+    color: var(--red, #cc0e1d);
+    border-color: #ffffff1a;
+    padding: 10px 24px;
+}
+
+.ctaBtn:hover {
+    background: transparent;
+    color: #fff;
+    border-color: #ffffff1a;
 }
 
 /* ── Responsive ── */

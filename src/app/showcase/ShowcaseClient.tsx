@@ -342,9 +342,11 @@ export default function ShowcaseClient() {
                                 </div>
                                 <p className={styles.oppDesc}>{opp.desc}</p>
                                 <ul className={styles.oppBullets}>
-                                    {opp.bullets.map((b, i) => (
-                                        <li key={i}>{b}</li>
-                                    ))}
+                                    {
+                                            opp.bullets.map((b) => (
+                                                <li key={b}>{b}</li>
+                                            ))
+                                        }
                                 </ul>
                                 <div className={styles.compContext}>
                                     <span className={styles.compContextLabel}>Used by</span>

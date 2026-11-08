@@ -390,7 +390,7 @@ export default function RoadmapClient() {
 
     return (
         <main className={styles.page}>
-            <div className={styles.container}>
+            <div className={`container ${styles.container}`}>
 
                 {/* ── Header ── */}
                 <header className={styles.header}>
@@ -495,7 +495,12 @@ export default function RoadmapClient() {
                                     style={{ cursor: 'pointer' }}
                                     role="button"
                                     tabIndex={0}
-                                    onKeyDown={e => e.key === 'Enter' && toggleExpand(feature.id)}
+                                    onKeyDown={e => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            toggleExpand(feature.id);
+                                        }
+                                    }}
                                 >
                                     <div className={styles.featureLeft}>
                                         <div className={styles.featureEmoji}>{feature.emoji}</div>
@@ -540,9 +545,11 @@ export default function RoadmapClient() {
                                             <div className={styles.detailBlock}>
                                                 <h4>Examples & Ideas</h4>
                                                 <ul>
-                                                    {feature.examples.map((ex, i) => (
-                                                        <li key={i}>{ex}</li>
-                                                    ))}
+                                                    {
+                                                            feature.examples.map((ex) => (
+                                                                <li key={ex}>{ex}</li>
+                                                            ))
+                                                        }
                                                 </ul>
                                             </div>
                                         </div>
@@ -558,14 +565,18 @@ export default function RoadmapClient() {
 
                                         <div className={styles.techSpec}>
                                             <h4>🛠 Technical Implementation</h4>
-                                            {feature.techNotes.map((note, i) => (
-                                                <code key={i}>{note}</code>
-                                            ))}
-                                            {feature.route && (
-                                                <p style={{ marginTop: 8, fontSize: 12, color: 'var(--fg-muted)' }}>
-                                                    Target route: <code>{feature.route}</code>
-                                                </p>
-                                            )}
+                                            {
+                                                    feature.techNotes.map((note) => (
+                                                        <code key={note}>{note}</code>
+                                                    ))
+                                                }
+                                            {
+                                                    feature.route && (
+                                                        <p style={{ marginTop: 8, fontSize: 12, color: 'var(--fg-muted)' }}>
+                                                            Target route: <code>{feature.route}</code>
+                                                        </p>
+                                                    )
+                                                }
                                         </div>
                                     </div>
                                 )}

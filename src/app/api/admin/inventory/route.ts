@@ -342,7 +342,7 @@ export async function PUT(req: Request) {
             return NextResponse.json({ error: 'Category is required' }, { status: 400 });
         }
 
-        const doc: Record<string, any> = {
+        const doc: { _type: string; [key: string]: any } = {
             _type: 'product',
             name: name.trim(),
             price: price.trim(),

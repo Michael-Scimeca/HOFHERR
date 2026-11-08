@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { usePageTransition } from '@/components/PageTransition';
 
 export default function FeaturedUserOrder({ order, userEmail, userName }: { order: any, userEmail: string, userName: string }) {
-    const router = useRouter();
+    const { navigateTo } = usePageTransition();
 
     const handleReorder = () => {
         const cartItems = order.items.map((item: any) => ({
@@ -15,7 +15,7 @@ export default function FeaturedUserOrder({ order, userEmail, userName }: { orde
         }));
         const storeId = order.metadata?.store_id || 'butcher';
         localStorage.setItem(`hofherr_cart_${storeId}`, JSON.stringify(cartItems));
-        router.push(`/online-orders?cart=open&store=${storeId}`);
+        navigateTo(`/online-orders?cart=open&store=${storeId}`);
     };
 
     return (
@@ -41,7 +41,7 @@ export default function FeaturedUserOrder({ order, userEmail, userName }: { orde
                             <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--fg-muted)', fontWeight: 700 }}>Last Purchase</span>
                             <h4 style={{ fontSize: '1.1rem', margin: '4px 0 0', fontWeight: 600 }}>Order #{order.orderNumber}</h4>
                             <p style={{ color: 'var(--fg-muted)', fontSize: '0.85rem', margin: '2px 0 0' }}>
-                                {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                {new Date(order.createdAt).toISOString().slice(0, 10)}
                             </p>
                         </div>
                         <div style={{ textAlign: 'right' }}>
@@ -51,10 +51,10 @@ export default function FeaturedUserOrder({ order, userEmail, userName }: { orde
                             </div>
                         </div>
                     </div>
-                    
+
                     <div style={{ background: '#000', padding: '16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
                         {(order.items || []).map((item: any, i: number) => (
-                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: i === order.items.length - 1 ? 0 : '8px', fontSize: '0.95rem' }}>
+                            <div key={`${item.name}-${item.qty || item.quantity || 1}`} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: i === order.items.length - 1 ? 0 : '8px', fontSize: '0.95rem' }}>
                                 <span style={{ color: '#e2e8f0' }}>{item.qty || item.quantity || 1}x {item.name}</span>
                             </div>
                         ))}
@@ -83,6 +83,6 @@ export default function FeaturedUserOrder({ order, userEmail, userName }: { orde
                     </button>
                 </div>
             )}
-        </div>
-    );
+                </div>
+            );
 }

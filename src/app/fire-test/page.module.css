@@ -1,0 +1,369 @@
+/* ─── Fire test: full-bleed stage, gauge panel top-left, flare button bottom-center ─── */
+
+.page {
+    position: relative;
+    /* Fill the screen below the navbar (the navbar sits above <main> and takes 88px),
+       so the flare button lands above the fold. */
+    height: calc(100vh - 88px);
+    height: calc(100svh - 88px);
+    min-height: 560px;
+    /* Transparent so the site's background canvas (embers) shows through */
+    background: transparent;
+    overflow: hidden;
+}
+
+/* preloader mode: fills the fixed preloader overlay, logo centred on screen */
+.preloaderRoot {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+.preloaderRoot .headline {
+    top: 46%;
+}
+
+.stage {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+    cursor: grab;
+}
+.stage:active { cursor: grabbing; }
+
+/* Loader: the Hofherr logo burns in left to right on a canvas (see burner.ts).
+   --edge (0–1) fades the percent out once it's done; set from the render loop. */
+.headline {
+    position: absolute;
+    left: 50%;
+    top: 26%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    margin: 0;
+    pointer-events: none;
+    font-family: var(--font-heading);
+    font-size: clamp(40px, 5vw, 72px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 2px;
+    color: var(--red);
+    text-shadow: 0 0 24px rgba(var(--red-rgb), 0.45);
+    white-space: nowrap;
+    display: block;
+}
+.logo {
+    position: relative;
+    display: block;
+    pointer-events: none;
+}
+/* sizes the logo box; the visible logo is the burn canvas */
+.logoImg {
+    display: block;
+    width: auto;
+    height: clamp(96px, 10vw, 150px);
+    visibility: hidden;
+}
+.logo[hidden] {
+    display: none;
+}
+/* burning word canvas; sized and offset from the render loop to cover the word plus room for flames */
+.burn {
+    position: absolute;
+    pointer-events: none;
+    filter: drop-shadow(0 0 12px rgba(var(--red-rgb), 0.45));
+}
+/* small progress readout under the word */
+.percent {
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 8px);
+    transform: translateX(-50%);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: var(--fg-3);
+    text-shadow: none;
+    font-variant-numeric: tabular-nums;
+    opacity: var(--edge, 1);
+}
+.srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* 2D ember layer drawn over the WebGL fire; clicks pass through to the stage */
+.embers {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.panel {
+    position: absolute;
+    top: 24px;
+    left: max(16px, env(safe-area-inset-left, 0px));
+    width: min(272px, calc(100vw - 32px));
+    max-height: calc(100svh - 136px);
+    overflow-y: auto;
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    backdrop-filter: blur(8px);
+    display: grid;
+    gap: 12px;
+    z-index: 2;
+}
+
+.title {
+    font-family: var(--font-heading);
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin: 0;
+}
+.presets { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.modeRow { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.divider { height: 1px; background: var(--border); }
+.preset {
+    font: 600 11px var(--font-body);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--fg);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 0;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+.preset:hover { border-color: var(--gold); }
+.presetActive { background: var(--red); border-color: var(--red); }
+
+.resetBtn {
+    font: 600 11px var(--font-body);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 0;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+.resetBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.ctl { display: grid; gap: 8px; }
+.ctl label {
+    display: flex;
+    justify-content: space-between;
+    font: 600 11px var(--font-body);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+.ctl output { color: var(--fg); font-variant-numeric: tabular-nums; }
+.ctl input[type='range'] { width: 100%; accent-color: var(--gold); }
+
+.hint {
+    display: flex;
+    justify-content: space-between;
+    font: 400 10px var(--font-body);
+    color: var(--fg-3);
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    font-variant-numeric: tabular-nums;
+}
+
+.flare {
+    position: absolute;
+    left: 50%;
+    bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    z-index: 2;
+    font-family: var(--font-heading);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--fg);
+    background: var(--red);
+    border: 1px solid var(--red);
+    border-radius: var(--radius-sm);
+    padding: 16px 40px;
+    cursor: pointer;
+    box-shadow: var(--shadow-red);
+    transition: transform 0.15s var(--ease-out), background 0.2s;
+}
+.flare:hover { background: var(--red-light); }
+.flare:active { transform: translateX(-50%) scale(0.96); }
+.flare:focus-visible, .preset:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* ─── Preloader Steps UI Panel (top-right) ─── */
+.stepsPanel {
+    position: absolute;
+    top: 24px;
+    right: max(16px, env(safe-area-inset-right, 0px));
+    width: min(320px, calc(100vw - 32px));
+    max-height: calc(100svh - 136px);
+    overflow-y: auto;
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    backdrop-filter: blur(8px);
+    display: grid;
+    gap: 12px;
+    z-index: 2;
+}
+
+.stepsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.stepsTitle {
+    font-family: var(--font-heading);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin: 0;
+}
+
+.stepsActions {
+    display: flex;
+    gap: 8px;
+}
+
+.stepActionBtn {
+    font: 600 10px var(--font-body);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.stepActionBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+.stepActionActive {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--dark);
+}
+.stepActionActive:hover {
+    color: var(--dark);
+}
+
+.stepsList {
+    display: grid;
+    gap: 8px;
+}
+
+.stepCard {
+    display: grid;
+    gap: 6px;
+    width: 100%;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, transform 0.15s;
+}
+.stepCard:hover {
+    border-color: var(--gold);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.stepCardDone {
+    border-color: rgba(212, 168, 83, 0.35);
+}
+
+.stepCardActive {
+    border-color: var(--gold);
+    background: rgba(212, 168, 83, 0.14);
+}
+
+.stepTop {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stepBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font: 700 11px var(--font-body);
+    letter-spacing: 0.5px;
+    color: var(--fg-2);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-variant-numeric: tabular-nums;
+    transition: background-color 0.2s, color 0.2s;
+}
+.stepCardActive .stepBadge,
+.stepCardDone .stepBadge {
+    background: var(--gold);
+    color: var(--dark);
+}
+
+.stepLabel {
+    font: 700 12px var(--font-body);
+    letter-spacing: 0.4px;
+    color: var(--fg);
+    flex: 1;
+}
+
+.stepTiming {
+    font: 600 10px var(--font-body);
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+}
+
+.stepDesc {
+    font: 400 11px/1.4 var(--font-body);
+    color: var(--fg-3);
+}
+
+.error[hidden] { display: none; }
+.error {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--fg-3);
+    padding: 24px;
+    text-align: center;
+}

@@ -117,6 +117,7 @@ export default function ParallaxImages() {
     // ── 4. Cleanup ─────────────────────────────────────────────────────────
     return () => {
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
       if (lenis) lenis.off('scroll', onScroll);
       if (rafId !== null) cancelAnimationFrame(rafId);
 

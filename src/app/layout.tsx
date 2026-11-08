@@ -24,6 +24,7 @@ const EmbersBackground = dynamic(() => import("@/components/EmbersBackground"));
 const EmberFlare = dynamic(() => import("@/components/EmberFlare"));
 const ChatWidgetWrapper = dynamic(() => import("@/components/ChatWidgetWrapper"));
 const DevNav = dynamic(() => import("@/components/DevNav"));
+const Preloader = dynamic(() => import("@/components/Preloader"));
 
 const yanone = Yanone_Kaffeesatz({
   subsets: ["latin"],
@@ -112,7 +113,13 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${yanone.variable} ${inter.variable} ${outfit.variable}`} suppressHydrationWarning>
-      <head />
+      <head>
+        <link rel="preconnect" href="https://www.google.com" />
+        <link rel="preconnect" href="https://maps.googleapis.com" />
+        <link rel="preconnect" href="https://maps.gstatic.com" crossOrigin="anonymous" />
+        <link rel="prefetch" href="https://www.google.com/maps?q=300%20Happ%20Rd%2C%20Northfield%2C%20IL%2060093&output=embed" as="document" />
+        <link rel="prefetch" href="https://www.google.com/maps?q=780%20Elm%20St%2C%20Winnetka%2C%20IL%2060093&output=embed" as="document" />
+      </head>
       <body suppressHydrationWarning>
         <Script
           id="google-analytics"
@@ -141,11 +148,12 @@ export default async function RootLayout({
               <ScrollToTop />
               <Navbar />
               <PageTransition>
-                <div style={{ minHeight: '100vh' }}>
+                <div className="site-shell">
                   {children}
                 </div>
                 <Footer />
               </PageTransition>
+              <Preloader />
               <ChatWidgetWrapper />
               <DevNav />
               <ParallaxImages />

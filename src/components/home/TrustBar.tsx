@@ -10,17 +10,17 @@ const SIGNALS = [
 export default function TrustBar() {
     return (
         <div className={styles.bar}>
-            <div className={styles.inner}>
-                {SIGNALS.map((s, i) => (
-                    <div key={i} className={styles.signal}>
-                        <span className={styles.icon}>{s.icon}</span>
-                        <div>
-                            <div className={styles.label}>{s.label}</div>
-                            <div className={styles.desc}>{s.desc}</div>
-                        </div>
+            <div className={`container ${styles.inner}`}>
+                        {SIGNALS.map((s) => (
+                            <div key={s.label} className={styles.signal}>
+                                <span className={styles.icon}>{s.icon}</span>
+                                <div>
+                                    <div className={styles.label}>{s.label}</div>
+                                    <div className={styles.desc}>{s.desc}</div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
         </div>
-    );
+            );
 }

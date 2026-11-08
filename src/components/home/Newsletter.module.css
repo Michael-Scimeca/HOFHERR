@@ -2,7 +2,6 @@
 .section {
     position: relative;
     background: var(--bg);
-    border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     padding: 96px 0;
     overflow: hidden;

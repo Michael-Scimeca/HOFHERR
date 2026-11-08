@@ -35,7 +35,7 @@ function Trophy({ onLoaded }: { onLoaded: () => void }) {
 
             groupRef.current.scale.setScalar(Math.max(0, elasticScale));
             groupRef.current.rotation.y = (1 - expRot) * -(Math.PI * 2);
-        } 
+        }
         // 2. Scheduled 20-Second Recurring Spin
         else {
             if (state.clock.elapsedTime - lastSpinTime.current > 20) {
@@ -50,10 +50,10 @@ function Trophy({ onLoaded }: { onLoaded: () => void }) {
                 if (spinProgress.current > 1) spinProgress.current = 1;
 
                 const p = spinProgress.current;
-                
+
                 // High-performance Cubic Ease In-Out
                 const cubicEase = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
-                
+
                 // Sweep a pristine 360 degrees (2 PI)
                 groupRef.current.rotation.y = 0;
             } else {
@@ -94,13 +94,6 @@ function Trophy({ onLoaded }: { onLoaded: () => void }) {
 
 export default function TrophyCanvas({ className, style }: { className?: string, style?: React.CSSProperties }) {
     const [ready, setReady] = useState(false);
-    const [mounted, setMounted] = useState(false);
-
-    // Completely block the raw <Canvas> tag from being rendered on the Server (SSR)
-    // because un-hydrated HTML canvases default to a blinding white box in the browser!
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     return (
         <div
@@ -116,47 +109,45 @@ export default function TrophyCanvas({ className, style }: { className?: string,
                 ...style
             }}
         >
-            {mounted && (
-                <Canvas
-                    camera={{ position: [0, 0, 5], fov: 45 }}
-                    gl={{ alpha: true, antialias: true }}
-                    style={{ background: 'transparent' }}
-                >
-                    {/* Ambient light for base visibility */}
-                    <ambientLight intensity={0.8} />
+                    <Canvas
+                        camera={{ position: [0, 0, 5], fov: 45 }}
+                        gl={{ alpha: true, antialias: true }}
+                        style={{ background: 'transparent' }}
+                    >
+                        {/* Ambient light for base visibility */}
+                        <ambientLight intensity={0.8} />
 
-                    {/* Dramatic top spotlight */}
-                    <spotLight
-                        position={[0, 10, 0]}
-                        angle={0.5}
-                        penumbra={1}
-                        intensity={3}
-                        castShadow
-                        color="#ffffff"
-                    />
+                        {/* Dramatic top spotlight */}
+                        <spotLight
+                            position={[0, 10, 0]}
+                            angle={0.5}
+                            penumbra={1}
+                            intensity={3}
+                            castShadow
+                            color="#ffffff"
+                        />
 
-                    {/* Sexy red rim light from the side/back to match the brand */}
-                    <directionalLight
-                        position={[5, 2, -5]}
-                        intensity={2.5}
-                        color="#cc0e1d"
-                    />
+                        {/* Sexy red rim light from the side/back to match the brand */}
+                        <directionalLight
+                            position={[5, 2, -5]}
+                            intensity={2.5}
+                            color="#cc0e1d"
+                        />
 
-                    {/* Main front fill light */}
-                    <directionalLight
-                        position={[-5, 5, 5]}
-                        intensity={1.5}
-                        color="#f5e1c8" // slightly warm gold tint
-                    />
+                        {/* Main front fill light */}
+                        <directionalLight
+                            position={[-5, 5, 5]}
+                            intensity={1.5}
+                            color="#f5e1c8" // slightly warm gold tint
+                        />
 
                     {/* Combine Environment and Trophy into ONE Suspense boundary!
-                        This guarantees the model CANNOT fade in until the lighting map is compiled. */}
+                    This guarantees the model CANNOT fade in until the lighting map is compiled. */}
                     <Suspense fallback={null}>
                         <Environment preset="city" />
                         <Trophy onLoaded={() => setReady(true)} />
                     </Suspense>
                 </Canvas>
-            )}
         </div>
     );
 }

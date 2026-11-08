@@ -61,7 +61,7 @@ export default function JobsPage() {
 
     return (
         <main className={styles.main}>
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jobSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jobSchema).replace(/</g, '\\u003c') }} />
             <section className={cx(styles.hero)} style={{ padding: '120px 0 100px' }}>
                 <div className="container" style={{ maxWidth: '800px', textAlign: 'center' }}>
                     <div className="section-label">Join Our Team</div>
@@ -93,7 +93,7 @@ export default function JobsPage() {
                             </div>
                         ))}
                     </div>
-                    
+
                     <div className={styles.generalAppBox}>
                         <h3>Don't see your role?</h3>
                         <p>We're always looking for talented people. Send us your resume anyway!</p>

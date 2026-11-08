@@ -74,7 +74,7 @@ export default function ChatWidget() {
                     try {
                         const subject = decodeURIComponent(hash.split('?subject=')[1] || '');
                         if (subject) setMessage(`Hi! I'm interested in the ${subject} special. `);
-                    } catch (e) {}
+                    } catch (e) { }
                 }
 
                 // Wipe the hash so back button doesn't get cluttered and it can be clicked twice safely
@@ -131,7 +131,10 @@ export default function ChatWidget() {
         if (!open) return;
         if (inputRef.current) inputRef.current.focus();
         fetch('/api/chat')
-            .then(r => r.json())
+            .then(r => {
+                if (!r.ok) throw new Error('Chat fetch failed');
+                return r.json();
+            })
             .then(d => { if (d.count) setCount(d.count); })
             .catch(() => { });
     }, [open]);
@@ -149,18 +152,28 @@ export default function ChatWidget() {
         bubbleRef.current.style.pointerEvents = show ? 'auto' : 'none';
     };
 
+    const rotationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const scheduleBubbleSwap = () => {
+        if (rotationTimerRef.current) clearTimeout(rotationTimerRef.current);
+        rotationTimerRef.current = setTimeout(() => {
+            setBubbleIdx(i => (i + 1) % CTA_PHRASES.length);
+            rotationVis.current = true;
+            updateOpacity();
+        }, 400);
+    };
+
     useEffect(() => {
         if (open) return;
         const interval = setInterval(() => {
             rotationVis.current = false;
             updateOpacity();
-            setTimeout(() => {
-                setBubbleIdx(i => (i + 1) % CTA_PHRASES.length);
-                rotationVis.current = true;
-                updateOpacity();
-            }, 400);
+            scheduleBubbleSwap();
         }, 14000);
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+            if (rotationTimerRef.current) clearTimeout(rotationTimerRef.current);
+        };
     }, [open]);
 
     useEffect(() => {
@@ -231,6 +244,7 @@ export default function ChatWidget() {
 
             {/* ── Floating button ── */}
             <button
+                id="chat"
                 ref={fabRef}
                 className={`${styles.fab} ${open ? styles.fabOpen : ''}`}
                 onClick={() => { setOpen(o => !o); setStatus('idle'); }}

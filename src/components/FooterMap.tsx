@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import styles from './FooterMap.module.css';
+
+const GOOGLE_MAPS_SANDBOX = 'allow-scripts allow-same-origin allow-popups';
 
 /* ─── Location data ─── */
 const LOCATIONS = [
@@ -27,7 +29,16 @@ const LOCATIONS = [
 
 export default function FooterMap() {
     const [active, setActive] = useState(0);
+    const readySentRef = useRef(false);
     const loc = LOCATIONS[active];
+
+    const handleMapLoad = useCallback(() => {
+        if (!readySentRef.current && typeof window !== 'undefined') {
+            readySentRef.current = true;
+            (window as unknown as { __hofherrMapReady?: boolean }).__hofherrMapReady = true;
+            window.dispatchEvent(new CustomEvent('visit-map-ready'));
+        }
+    }, []);
 
     return (
         <div className={styles.mapSection}>
@@ -50,18 +61,21 @@ export default function FooterMap() {
                 <span className={styles.addressText}>{loc.address}</span>
             </a>
 
-            {/* Map container */}
+            {/* Map container — both locations preloaded eagerly for instant display & switching */}
             <div className={styles.mapWrap}>
-                <iframe
-                    src={`https://www.google.com/maps?q=${encodeURIComponent(loc.address)}&output=embed`}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) saturate(0.6) brightness(0.8)' }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title={`Map of ${loc.label}`}
-                />
+                {LOCATIONS.map((item, idx) => (
+                    <iframe
+                        key={item.id}
+                        src={`https://www.google.com/maps?q=${encodeURIComponent(item.address)}&output=embed`}
+                        className={`${styles.mapIframe} ${idx === active ? styles.mapIframeActive : styles.mapIframeHidden}`}
+                        allowFullScreen
+                        loading="eager"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        sandbox={GOOGLE_MAPS_SANDBOX}
+                        title={`Map of ${item.label}`}
+                        onLoad={idx === 0 ? handleMapLoad : undefined}
+                    />
+                ))}
 
                 {/* Directions CTA */}
                 <a

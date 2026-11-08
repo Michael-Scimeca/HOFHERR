@@ -6,9 +6,9 @@
 }
 
 .inner {
-    max-width: 1200px;
+    max-width: var(--max-w, 1800px);
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 0 var(--container-px);
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
@@ -37,7 +37,8 @@
     align-items: flex-end;
 }
 
-.btnPrimary, .btnSecondary {
+.btnPrimary,
+.btnSecondary {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -85,13 +86,17 @@
         text-align: center;
         gap: 40px;
     }
+
     .desc {
         margin: 0 auto;
     }
+
     .ctaSide {
         align-items: center;
     }
-    .btnPrimary, .btnSecondary {
+
+    .btnPrimary,
+    .btnSecondary {
         max-width: 100%;
     }
 }

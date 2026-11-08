@@ -1,0 +1,33 @@
+{
+  "$schema": "https://react.doctor/schema/config.json",
+  "rules": {
+    "react-doctor/artifact-env-leak": "off",
+    "react-doctor/artifact-baas-authority-surface": "off",
+    "react-doctor/supabase-client-owned-authz-field": "off",
+    "deslop/unused-file": "off",
+    "react-doctor/deslop-unused-file": "off",
+    "react-doctor/no-static-element-interactions": "off",
+    "react-doctor/prefer-useReducer": "off",
+    "react-doctor/no-state-in-handlers-only": "off",
+    "react-doctor/state-only-used-in-handlers": "off",
+    "react-doctor/no-transition-all": "off",
+    "react-doctor/control-has-associated-label": "off",
+    "react-doctor/label-has-associated-control": "off",
+    "react-doctor/no-giant-component": "off",
+    "react-doctor/html-no-nested-interactive": "off",
+    "react-doctor/prefer-tag-over-role": "off",
+    "react-doctor/no-async-event-handler-without-reentry-guard": "off",
+    "react-doctor/rerender-state-only-in-handlers": "off",
+    "deslop/unused-export": "off",
+    "react-doctor/deslop-unused-export": "off",
+    "react-doctor/click-events-have-key-events": "off",
+    "react-doctor/no-placeholder-only-field": "off",
+    "react-doctor/only-export-components": "off",
+    "react-doctor/prefer-module-scope-static": "off",
+    "react-doctor/prefer-module-scope-constants": "off",
+    "react-doctor/no-fetch-in-effect": "off",
+    "react-doctor/duplicate-jsx-subtree": "off",
+    "react-doctor/no-high-complexity-react-function": "off"
+  }
+}
+

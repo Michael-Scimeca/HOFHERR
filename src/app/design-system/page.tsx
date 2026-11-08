@@ -40,7 +40,7 @@ const textColors = [
 const spacingTokens = [
     { name: '--nav-h', value: '68px', desc: 'Navbar height' },
     { name: '--page-stem', value: '40px', desc: 'Page padding top' },
-    { name: '--max-w', value: '1200px', desc: 'Max content width' },
+    { name: '--max-w', value: '1800px', desc: 'Max content width' },
     { name: '--radius', value: '10px', desc: 'Default radius' },
     { name: '--radius-sm', value: '6px', desc: 'Small radius' },
     { name: '--radius-lg', value: '18px', desc: 'Large radius' },

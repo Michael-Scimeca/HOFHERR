@@ -32,8 +32,8 @@ interface Ember {
   sides: number
 }
 
-const EMBER_COUNT = 30
-const DURATION = 2.8
+const EMBER_COUNT = 14
+const DURATION = 3.0
 
 function between(a: number, b: number) {
   return Math.random() * (b - a) + a
@@ -74,22 +74,22 @@ export default function EmberFlare() {
         y: startY,
         px: startX,
         py: startY,
-        vx: between(-1.2, 1.2),
-        vy: between(-2.0, -5.5),
-        size: between(1.0, 3.5),
+        vx: between(-0.65, 0.65),
+        vy: between(-0.8, -2.2),
+        size: between(0.8, 2.2),
         alpha: 0,
-        maxAlpha: between(0.6, 1.0),
+        maxAlpha: between(0.45, 0.85),
         color: col,
         life: 0,
-        maxLife: between(1.2, DURATION),
+        maxLife: between(1.6, DURATION),
         wobble: Math.random() * Math.PI * 2,
-        wobbleSpeed: between(0.03, 0.08),
-        wobbleAmp: between(0.3, 1.0),
+        wobbleSpeed: between(0.025, 0.065),
+        wobbleAmp: between(0.35, 0.95),
         shape: Math.floor(Math.random() * 4),    // match EmbersBackground shapes
         rotation: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random() - 0.5) * 0.1,
-        scaleX: between(0.4, 1.0),
-        scaleY: between(0.7, 1.4),
+        rotSpeed: (Math.random() - 0.5) * 0.06,
+        scaleX: between(0.5, 1.0),
+        scaleY: between(0.7, 1.25),
         sides: Math.floor(between(3, 6)),
       })
     }
@@ -144,14 +144,17 @@ export default function EmberFlare() {
         ctx.globalAlpha = e.alpha
 
         if (e.shape === 0) {
-          // Streak — line from prev to current (same as EmbersBackground)
-          const stretch = len < 0.1 ? 1 : Math.min(4.5, 2.8 / len)
+          // Soft ember wisp — clamped so it never draws long firework lines
+          const maxTail = Math.max(1.2, e.size * 1.5)
+          const clamp = len > maxTail ? maxTail / len : 1
+          const tx = dx * clamp
+          const ty = dy * clamp
           ctx.strokeStyle = e.color
-          ctx.lineWidth = e.size
+          ctx.lineWidth = e.size * 1.1
           ctx.lineCap = 'round'
           ctx.beginPath()
-          ctx.moveTo(e.px - dx * stretch, e.py - dy * stretch)
-          ctx.lineTo(e.x + dx * 0.5, e.y + dy * 0.5)
+          ctx.moveTo(e.x - tx, e.y - ty)
+          ctx.lineTo(e.x + tx * 0.25, e.y + ty * 0.25)
           ctx.stroke()
         } else if (e.shape === 1) {
           // Oval / squashed ellipse

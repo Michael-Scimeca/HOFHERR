@@ -48,9 +48,9 @@ export default function AccoladesVariants({ accolades: _a }: { accolades?: strin
                     {/* ── Right: masonry ── */}
                     <div className={styles.right}>
                         <div className={styles.masonry}>
-                            {ACCOLADES.map((a, i) => (
+                            {ACCOLADES.map((a) => (
                                 <div
-                                    key={i}
+                                    key={`${a.text}-${a.year ?? a.category}`}
                                     className={`${styles.masonryCard} ${a.type === 'win' ? `${styles.masonryWin} ${styles.masonryTall}` : ''}`}
                                 >
                                     <span className={styles.masonryIcon}>{a.icon}</span>

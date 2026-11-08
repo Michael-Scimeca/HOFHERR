@@ -24,9 +24,9 @@
 /* ── Main Canvas ── */
 .mainCanvas {
     flex: 1;
-    padding: 64px 24px;
+    padding: 64px var(--container-px);
     overflow-y: auto;
-    max-width: 1200px;
+    max-width: var(--max-w, 1800px);
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
@@ -821,7 +821,7 @@
 /* ── Responsive Mobile ── */
 @media (max-width: 900px) {
     .mainCanvas {
-        padding: 24px;
+        padding: 24px var(--container-px);
     }
 
     .greeting {

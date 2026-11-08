@@ -31,7 +31,7 @@ const AWARDS = [
 export default function AwardsSection() {
     return (
         <section className={styles.awards}>
-            <div className={styles.container}>
+            <div className={`container ${styles.container}`}>
                 <div className={styles.header}>
                     <h2 className={styles.title}>
                         Award-Winning <em>Excellence</em>

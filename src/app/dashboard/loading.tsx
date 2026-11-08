@@ -1,8 +1,3 @@
 export default function DashboardLoading() {
-    return (
-        <div style={{
-            minHeight: 'calc(100vh - 80px)',
-            background: 'var(--bg)',
-        }} />
-    );
+    return <div className="route-loading" aria-busy="true" />;
 }

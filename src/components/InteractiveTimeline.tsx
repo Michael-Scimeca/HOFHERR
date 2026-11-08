@@ -9,8 +9,8 @@ type Props = { events: TimelineEvent[] };
 /* ── Layout constants (SVG coordinate space) ── */
 const SVG_W   = 1000;
 const STEP_H  = 300;
-const LEFT_X  = 80;    // outer edge of left card column
-const RIGHT_X = 920;   // outer edge of right card column
+const LEFT_X  = 36;    // outer edge of left card column (3.6%)
+const RIGHT_X = 964;   // outer edge of right card column (96.4%)
 const NODE_R  = 28;
 
 
@@ -143,153 +143,153 @@ export default function InteractiveTimeline({ events }: Props) {
 
     return (
         <section className={styles.root} ref={sectionRef}>
-            {/* ── Header ── */}
-            <div className={styles.header}>
-                <span className={styles.eyebrow}><span>—</span> Our History <span>—</span></span>
-                <h2 className={styles.title}>A Century of Craft</h2>
-            </div>
+            <div className="container">
+                {/* ── Header ── */}
+                <div className={styles.header}>
+                    <span className={styles.eyebrow}><span>—</span> Our History <span>—</span></span>
+                    <h2 className={styles.title}>A Century of Craft</h2>
+                </div>
 
-            {/* ── Canvas ── */}
-            <div ref={canvasRef} className={styles.canvas} style={{ height: totalH, maxWidth: SVG_W }}>
-
-                {/* Ambient glows */}
-                <div className={styles.glowRed} />
-                <div className={styles.glowGold} />
-
-                {/* SVG — path + nodes */}
-                <svg
-                    className={styles.svg}
-                    viewBox={`0 0 ${SVG_W} ${totalH}`}
-                    preserveAspectRatio="none"
-                    aria-hidden="true"
+                {/* ── Canvas ── */}
+                <div
+                    ref={canvasRef}
+                    className={styles.canvas}
+                    style={{ '--tl-h': `${totalH}px` } as React.CSSProperties}
                 >
-                    <defs>
-                        <linearGradient id="tlGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%"   stopColor="#cc0e1d" />
-                            <stop offset="50%"  stopColor="#c5a255" />
-                            <stop offset="100%" stopColor="#cc0e1d" />
-                        </linearGradient>
-                        <filter id="tlGlow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="5" result="blur" />
-                            <feMerge>
-                                <feMergeNode in="blur" />
-                                <feMergeNode in="SourceGraphic" />
-                            </feMerge>
-                        </filter>
-                    </defs>
 
-                    {/* Faint dotted guide */}
-                    <path
-                        d={pathD}
-                        fill="none"
-                        stroke="rgba(255,255,255,0.06)"
-                        strokeWidth="2"
-                        strokeDasharray="6 12"
-                    />
+                    {/* Ambient glows */}
+                    <div className={styles.glowRed} />
+                    <div className={styles.glowGold} />
 
-                    {/* Animated glowing stroke */}
-                    <path
-                        ref={pathRef}
-                        d={pathD}
-                        fill="none"
-                        stroke="url(#tlGrad)"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        filter="url(#tlGlow)"
-                    />
-
-                    {/* Node circles */}
-                    {nodes.map((node, i) => (
-                        <g
-                            key={i}
-                            ref={el => { nodeRefs.current[i] = el; }}
-                            style={{ opacity: 0 }}
-                        >
-                            <circle
-                                cx={node.x} cy={node.y} r={NODE_R + 14}
-                                fill="rgba(204,14,29,0.08)"
-                            />
-                            <circle
-                                cx={node.x} cy={node.y} r={NODE_R}
-                                fill="#111"
-                                stroke="#cc0e1d"
-                                strokeWidth="2"
-                                filter="url(#tlGlow)"
-                            />
-                        </g>
-                    ))}
-                </svg>
-
-                {/* HTML cards — positioned at each node */}
-                {nodes.map((node, i) => {
-                    const topPct = (node.y / totalH) * 100;
-                    return (
-                        <div
-                            key={i}
-                            className={styles.row}
-                            style={{ top: `${topPct}%` }}
-                        >
-                            {/* Left slot */}
-                            <div className={styles.slotLeft}>
-                                {node.isLeft && (
-                                    <div
-                                        ref={el => { cardRefs.current[i] = el; }}
-                                        className={`${styles.card} ${styles.cardLeft}`}
-                                        style={{ opacity: 0 }}
-                                    >
-                                        <div className={styles.cardEra}>{events[i].era}</div>
-                                        <h3 className={styles.cardTitle}>{events[i].title}</h3>
-                                        {events[i].body && <p className={styles.cardBody}>{events[i].body}</p>}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Center spacer */}
-                            <div className={styles.nodeCenter} />
-
-                            {/* Right slot */}
-                            <div className={styles.slotRight}>
-                                {!node.isLeft && (
-                                    <div
-                                        ref={el => { cardRefs.current[i] = el; }}
-                                        className={`${styles.card} ${styles.cardRight}`}
-                                        style={{ opacity: 0 }}
-                                    >
-                                        <div className={styles.cardEra}>{events[i].era}</div>
-                                        <h3 className={styles.cardTitle}>{events[i].title}</h3>
-                                        {events[i].body && <p className={styles.cardBody}>{events[i].body}</p>}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    );
-                })}
-
-                {/* Fire videos — absolutely positioned at each SVG node's exact coordinates */}
-                {nodes.map((node, i) => (
-                    <div
-                        key={`vid-${i}`}
-                        style={{
-                            position: 'absolute',
-                            left: `${(node.x / SVG_W) * 100}%`,
-                            top: `${(node.y / totalH) * 100}%`,
-                            transform: 'translate(-50%, -50%)',
-                            zIndex: 33,
-                            pointerEvents: 'none',
-                        }}
+                    {/* SVG — path + nodes */}
+                    <svg
+                        className={styles.svg}
+                        viewBox={`0 0 ${SVG_W} ${totalH}`}
+                        preserveAspectRatio="none"
+                        aria-hidden="true"
                     >
-                        <video
-                            ref={el => { videoRefs.current[i] = el; }}
-                            src={events[i].video ?? '/video-clips/stage-fire.mp4'}
-                            className={styles.nodeVideo}
-                            muted
-                            playsInline
-                            loop
-                            preload="none"
-                            style={{ opacity: 0 }}
+                        <defs>
+                            <linearGradient id="tlGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%"   stopColor="#cc0e1d" />
+                                <stop offset="50%"  stopColor="#c5a255" />
+                                <stop offset="100%" stopColor="#cc0e1d" />
+                            </linearGradient>
+                            <filter id="tlGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="5" result="blur" />
+                                <feMerge>
+                                    <feMergeNode in="blur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+
+                        {/* Faint dotted guide */}
+                        <path
+                            d={pathD}
+                            fill="none"
+                            stroke="rgba(255,255,255,0.06)"
+                            strokeWidth="2"
+                            strokeDasharray="6 12"
                         />
-                    </div>
-                ))}
+
+                        {/* Animated glowing stroke */}
+                        <path
+                            ref={pathRef}
+                            d={pathD}
+                            fill="none"
+                            stroke="url(#tlGrad)"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            filter="url(#tlGlow)"
+                        />
+
+                        {/* Node circles */}
+                        {nodes.map((node, i) => (
+                            <g
+                                key={events[i].title}
+                                ref={el => { nodeRefs.current[i] = el; }}
+                                className={styles.nodeGroup}
+                            >
+                                <circle
+                                    cx={node.x} cy={node.y} r={NODE_R + 14}
+                                    fill="rgba(204,14,29,0.08)"
+                                />
+                                <circle
+                                    cx={node.x} cy={node.y} r={NODE_R}
+                                    fill="#111"
+                                    stroke="#cc0e1d"
+                                    strokeWidth="2"
+                                    filter="url(#tlGlow)"
+                                />
+                            </g>
+                        ))}
+                    </svg>
+
+                    {/* HTML cards — positioned at each node */}
+                    {nodes.map((node, i) => {
+                        const topPct = (node.y / totalH) * 100;
+                        return (
+                            <div
+                                key={events[i].title}
+                                className={styles.row}
+                                style={{ '--row-top': `${topPct}%` } as React.CSSProperties}
+                            >
+                                {/* Left slot */}
+                                <div className={styles.slotLeft}>
+                                    {node.isLeft && (
+                                        <div
+                                            ref={el => { cardRefs.current[i] = el; }}
+                                            className={`${styles.card} ${styles.cardLeft}`}
+                                        >
+                                            <div className={styles.cardEra}>{events[i].era}</div>
+                                            <h3 className={styles.cardTitle}>{events[i].title}</h3>
+                                            {events[i].body && <p className={styles.cardBody}>{events[i].body}</p>}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Center spacer */}
+                                <div className={styles.nodeCenter} />
+
+                                {/* Right slot */}
+                                <div className={styles.slotRight}>
+                                    {!node.isLeft && (
+                                        <div
+                                            ref={el => { cardRefs.current[i] = el; }}
+                                            className={`${styles.card} ${styles.cardRight}`}
+                                        >
+                                            <div className={styles.cardEra}>{events[i].era}</div>
+                                            <h3 className={styles.cardTitle}>{events[i].title}</h3>
+                                            {events[i].body && <p className={styles.cardBody}>{events[i].body}</p>}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
+
+                    {/* Fire videos — absolutely positioned at each SVG node's exact coordinates */}
+                    {nodes.map((node, i) => (
+                        <div
+                            key={`vid-${events[i].title}`}
+                            className={styles.nodeVideoWrap}
+                            style={{
+                                '--node-x': `${(node.x / SVG_W) * 100}%`,
+                                '--node-y': `${(node.y / totalH) * 100}%`,
+                            } as React.CSSProperties}
+                        >
+                            <video
+                                ref={el => { videoRefs.current[i] = el; }}
+                                src={events[i].video ?? '/video-clips/stage-fire.mp4'}
+                                className={styles.nodeVideo}
+                                muted
+                                playsInline
+                                loop
+                                preload="none"
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
         </section>
     );

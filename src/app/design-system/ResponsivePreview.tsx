@@ -91,6 +91,7 @@ export default function ResponsivePreview() {
                         src={page.path}
                         className={styles.iframe}
                         title={`${page.label} at ${device.width}px`}
+                        sandbox="allow-scripts allow-forms allow-popups"
                         style={{
                             width: device.width,
                             height: 812,

@@ -11,12 +11,12 @@
     margin-top: -100px;
 }
 
-/* Wrapper matches navbar: 1200px, centered, 24px side padding */
+/* Full-bleed wrapper */
 .wrapper {
-    max-width: 1200px;
+    max-width: none;
     width: 100%;
-    margin: 0 auto;
-    padding: 0 24px;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -106,7 +106,7 @@
 
 /* ── Left: stat wall (fixed) ── */
 .statWall {
-    padding: 36px 48px 36px 0;
+    padding: 36px 48px 36px var(--container-px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -164,6 +164,7 @@
     overflow: hidden;
     position: relative;
     padding-left: 32px;
+    padding-right: var(--container-px);
 }
 
 /* ============================================================
@@ -416,8 +417,8 @@
 @media (max-width: 860px) {
     .section { height: auto; min-height: unset; padding-bottom: 64px; overflow: visible; }
     .splitLayout { grid-template-columns: 1fr; }
-    .statWall { border-right: none; padding-right: 0; border-bottom: 1px solid #ffffff1a; }
-    .right { padding-left: 0; padding-top: 24px; min-height: 380px; }
+    .statWall { border-right: none; padding-inline: var(--container-px); border-bottom: 1px solid #ffffff1a; }
+    .right { padding-inline: var(--container-px); padding-top: 24px; min-height: 380px; }
     .masonry { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 480px) {

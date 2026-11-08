@@ -38,7 +38,7 @@ export default function AccordionServices({ services }: Props) {
 
                 return (
                     <div
-                        key={i}
+                        key={svc.title}
                         className={`${styles.row} ${isActive ? styles.active : ''}`}
                     >
                         {/* ── Header strip — always visible ── */}

@@ -17,7 +17,7 @@ export default function VideoCallout({ image, video, alt, title, sub }: VideoCal
     useEffect(() => {
         const vid = videoRef.current;
         if (!vid) return;
-        vid.play().catch(() => {});
+        vid.play().catch(() => { });
     }, []);
 
     return (
@@ -44,9 +44,11 @@ export default function VideoCallout({ image, video, alt, title, sub }: VideoCal
                     {title && <div className={styles.title}>{title}</div>}
                     {sub && (
                         <div className={styles.sub}>
-                            {sub.split('\n').filter(Boolean).map((line, i) => (
-                                <span key={i} className={styles.subLine}>{line}</span>
-                            ))}
+                            {
+                                    sub.split('\n').filter(Boolean).map((line) => (
+                                        <span key={line} className={styles.subLine}>{line}</span>
+                                    ))
+                                }
                         </div>
                     )}
                 </div>

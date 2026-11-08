@@ -1,17 +1,13 @@
 import fs from 'fs';
 import path from 'path';
-import imagemin from 'imagemin';
-import mozjpeg from 'imagemin-mozjpeg';
-import pngquant from 'imagemin-pngquant';
-import webp from 'imagemin-webp';
-import avif from 'imagemin-avif';
+import sharp from 'sharp';
 
 // -------------------------------------------------------------------
 // Configuration – adjust to your needs
 // -------------------------------------------------------------------
 const SOURCE_DIR = path.resolve(__dirname, '..', 'public', 'assets'); // folder with original images
 const DEST_DIR = path.resolve(__dirname, '..', 'public', 'assets-compressed'); // temporary output folder
-const QUALITY = 80; // JPEG/PNG quality (0‑100)
+const QUALITY = 80; // JPEG/PNG/WebP quality (0‑100)
 const AVIF_QUALITY = 50; // AVIF quality (0‑100)
 // -------------------------------------------------------------------
 
@@ -20,26 +16,34 @@ async function compress() {
   // Ensure destination exists
   fs.mkdirSync(DEST_DIR, { recursive: true });
 
-  // Optimize JPEG & PNG (same format)
-  await imagemin([`${SOURCE_DIR}/*.{jpg,jpeg,png}`], {
-    destination: DEST_DIR,
-    plugins: [
-      mozjpeg({ quality: QUALITY, progressive: true }),
-      pngquant({ quality: [0.6, 0.8] })
-    ]
-  });
+  const files = fs.readdirSync(SOURCE_DIR).filter(file => /\.(jpe?g|png)$/i.test(file));
 
-  // Convert to WebP (lossy)
-  await imagemin([`${SOURCE_DIR}/*.{jpg,jpeg,png}`], {
-    destination: DEST_DIR,
-    plugins: [webp({ quality: QUALITY })]
-  });
+  for (const file of files) {
+    const inputPath = path.join(SOURCE_DIR, file);
+    const parsed = path.parse(file);
+    const ext = parsed.ext.toLowerCase();
 
-  // Convert to AVIF (lossy)
-  await imagemin([`${SOURCE_DIR}/*.{jpg,jpeg,png}`], {
-    destination: DEST_DIR,
-    plugins: [avif({ quality: AVIF_QUALITY })]
-  });
+    // Optimize JPEG & PNG (same format)
+    if (ext === '.jpg' || ext === '.jpeg') {
+      await sharp(inputPath)
+        .jpeg({ quality: QUALITY, progressive: true, mozjpeg: true })
+        .toFile(path.join(DEST_DIR, file));
+    } else if (ext === '.png') {
+      await sharp(inputPath)
+        .png({ quality: QUALITY, compressionLevel: 9 })
+        .toFile(path.join(DEST_DIR, file));
+    }
+
+    // Convert to WebP (lossy)
+    await sharp(inputPath)
+      .webp({ quality: QUALITY })
+      .toFile(path.join(DEST_DIR, `${parsed.name}.webp`));
+
+    // Convert to AVIF (lossy)
+    await sharp(inputPath)
+      .avif({ quality: AVIF_QUALITY })
+      .toFile(path.join(DEST_DIR, `${parsed.name}.avif`));
+  }
 
   console.log('✅ Compression complete. Files written to:', DEST_DIR);
 
@@ -63,7 +67,7 @@ async function compress() {
   }
 
   // 3️⃣ Remove the temporary folder
-  fs.rmdirSync(DEST_DIR, { recursive: true });
+  fs.rmSync(DEST_DIR, { recursive: true, force: true });
 
   console.log('🎉 Cleanup finished. All assets are now compressed in public/assets.');
 }

@@ -17,16 +17,13 @@ declare global {
 }
 
 export default function HeroVideo() {
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => setMounted(true), []);
-
     const containerRef = useRef<HTMLDivElement>(null);
     const wrapRef = useRef<HTMLDivElement>(null);
     const playerRef = useRef<YT.Player | null>(null);
 
     const [hasStarted, setHasStarted] = useState(false);
     const [uiIsDragging, setUiIsDragging] = useState(false);
-    
+
     // Draggable refs for 60fps performance
     const dragData = useRef({
         isDragging: false,
@@ -55,7 +52,7 @@ export default function HeroVideo() {
             playerRef.current = new window.YT.Player(containerRef.current, {
                 videoId: VIDEO_ID,
                 playerVars: {
-                    start: START_SEC, end: END_SEC, rel: 0, modestbranding: 1, 
+                    start: START_SEC, end: END_SEC, rel: 0, modestbranding: 1,
                     controls: 1, showinfo: 0, fs: 1, playsinline: 1, autoplay: 1,
                 },
                 events: {
@@ -78,16 +75,16 @@ export default function HeroVideo() {
 
     const handleMouseDown = (e: React.MouseEvent) => {
         if (hasStarted) return;
-        
+
         // Prevent default browser drag ghosting
-        e.preventDefault(); 
-        
+        e.preventDefault();
+
         dragData.current.isDragging = true;
         setUiIsDragging(true);
         dragData.current.startX = e.clientX - dragData.current.currentX;
         dragData.current.startY = e.clientY - dragData.current.currentY;
         dragData.current.moved = false;
-        
+
         if (wrapRef.current) wrapRef.current.style.transition = 'none';
         dragData.current.requestRef = requestAnimationFrame(animate);
     };
@@ -95,10 +92,10 @@ export default function HeroVideo() {
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
             if (!dragData.current.isDragging) return;
-            
+
             dragData.current.currentX = e.clientX - dragData.current.startX;
             dragData.current.currentY = e.clientY - dragData.current.startY;
-            
+
             if (Math.abs(dragData.current.currentX) > 10 || Math.abs(dragData.current.currentY) > 10) {
                 dragData.current.moved = true;
             }
@@ -109,7 +106,7 @@ export default function HeroVideo() {
             dragData.current.isDragging = false;
             setUiIsDragging(false);
             cancelAnimationFrame(dragData.current.requestRef);
-            
+
             if (wrapRef.current) {
                 wrapRef.current.style.transition = 'all 0.4s var(--ease-out)';
             }
@@ -133,7 +130,7 @@ export default function HeroVideo() {
     const handleClose = (e: React.MouseEvent) => {
         e.stopPropagation();
         if (playerRef.current) {
-            try { playerRef.current.destroy(); } catch (err) {}
+            try { playerRef.current.destroy(); } catch (err) { }
             playerRef.current = null;
         }
         setHasStarted(false);
@@ -151,23 +148,23 @@ export default function HeroVideo() {
                 className={`${styles.videoWrap} ${styles.circleBubble}`}
                 onMouseDown={handleMouseDown}
                 onClick={handlePlayAction}
-                style={{ 
+                style={{
                     cursor: hasStarted ? 'default' : (uiIsDragging ? 'grabbing' : 'grab'),
                     touchAction: 'none'
                 }}
             >
                 <div className={styles.bubbleInner}>
-                    <video 
-                        src="/video-clips/beef.mp4" 
-                        muted 
-                        playsInline 
-                        autoPlay 
+                    <video
+                        src="/video-clips/beef.mp4"
+                        muted
+                        playsInline
+                        autoPlay
                         loop
-                        className={styles.poster} 
+                        className={styles.poster}
                         draggable={false}
                     />
                 </div>
-                
+
                 {/* Elevated completely outside of the bubble mask so it doesn't get clipped */}
                 <div className={styles.playIconOverlay}>
                     <svg viewBox="0 0 24 24" fill="#fff" width="22" height="22" style={{ display: 'block' }}>
@@ -177,21 +174,21 @@ export default function HeroVideo() {
             </div>
 
             {/* Safe portal escape hatch for the full-screen fixed player */}
-            {mounted && hasStarted && createPortal(
-                <div className={styles.playing} onClick={handleClose}>
-                    {/* Inner wrapper simulating the scaled-up box */}
-                    <div 
-                        className={`${styles.videoWrap} ${styles.normalRect}`} 
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <div className={`${styles.playerWrapper} ${styles.visible}`}>
-                            <div ref={containerRef} className={styles.player} />
-                            <button className={styles.closeBtn} onClick={handleClose}>✕</button>
+                { hasStarted && typeof document !== 'undefined' && createPortal(
+                    <div className={styles.playing} onClick={handleClose}>
+                        {/* Inner wrapper simulating the scaled-up box */}
+                        <div
+                            className={`${styles.videoWrap} ${styles.normalRect}`}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className={`${styles.playerWrapper} ${styles.visible}`}>
+                                <div ref={containerRef} className={styles.player} />
+                                <button className={styles.closeBtn} onClick={handleClose}>✕</button>
+                            </div>
                         </div>
-                    </div>
-                </div>,
-                document.body
-            )}
+                    </div>,
+                    document.body
+                )}
         </div>
     );
 }

@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 
 export type CartItem = { name: string; price: string; qty: number; note: string; desc?: string };
 
@@ -64,9 +64,9 @@ function createFlyingDot(sx: number, sy: number) {
     const finalY = ty - 17;
 
     const anim = dot.animate([
-        { left: `${sx}px`, top: `${sy}px`, transform: 'scale(1.2)', opacity: '1' },
-        { left: `${sx + dx * 0.4}px`, top: `${sy + dy * 0.4 - 50}px`, transform: 'scale(1.4)', opacity: '1', offset: 0.4 },
-        { left: `${finalX}px`, top: `${finalY}px`, transform: 'scale(0.4)', opacity: '0.7' },
+        { transform: 'translate3d(0px, 0px, 0) scale(1.2)', opacity: '1' },
+        { transform: `translate3d(${dx * 0.4}px, ${dy * 0.4 - 50}px, 0) scale(1.4)`, opacity: '1', offset: 0.4 },
+        { transform: `translate3d(${finalX - sx}px, ${finalY - sy}px, 0) scale(0.4)`, opacity: '0.7' },
     ], {
         duration,
         easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
@@ -89,6 +89,7 @@ function createFlyingDot(sx: number, sy: number) {
 export function CartProvider({ children }: { children: React.ReactNode }) {
     const [count, setCount] = useState(0);
     const [items, setItems] = useState<CartItem[]>([]);
+    const itemsRef = useRef<CartItem[]>([]);
     const openerRef = useRef<(() => void) | null>(null);
 
     // Sync items from localStorage whenever count changes, and initialize on mount
@@ -96,35 +97,35 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
             const parsed: CartItem[] = saved ? JSON.parse(saved) : [];
+            itemsRef.current = parsed;
             setItems(parsed);
-            
+
             const actualCount = parsed.reduce((s, i) => s + i.qty, 0);
             if (actualCount !== count) {
                 setCount(actualCount);
             }
         } catch {
+            itemsRef.current = [];
             setItems([]);
         }
     }, [count]);
 
     const removeItem = useCallback((name: string) => {
-        setItems(prev => {
-            const updated = prev.filter(i => i.name !== name);
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch { }
-            setCount(updated.reduce((s, i) => s + i.qty, 0));
-            return updated;
-        });
+        const updated = itemsRef.current.filter(i => i.name !== name);
+        itemsRef.current = updated;
+        setItems(updated);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch { }
+        setCount(updated.reduce((s, i) => s + i.qty, 0));
     }, []);
 
     const changeQty = useCallback((name: string, delta: number) => {
-        setItems(prev => {
-            const updated = prev.map(i =>
-                i.name === name ? { ...i, qty: Math.max(1, i.qty + delta) } : i
-            );
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch { }
-            setCount(updated.reduce((s, i) => s + i.qty, 0));
-            return updated;
-        });
+        const updated = itemsRef.current.map(i =>
+            i.name === name ? { ...i, qty: Math.max(1, i.qty + delta) } : i
+        );
+        itemsRef.current = updated;
+        setItems(updated);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch { }
+        setCount(updated.reduce((s, i) => s + i.qty, 0));
     }, []);
 
     const registerCartOpener = useCallback((fn: () => void) => {
@@ -135,7 +136,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         if (openerRef.current) {
             openerRef.current();
         } else {
-            window.location.href = '/online-orders';
+            const nav = (window as unknown as { __hofherrNavigate?: (href: string) => void }).__hofherrNavigate;
+            if (nav) {
+                nav('/online-orders?cart=open');
+            } else {
+                window.location.href = '/online-orders?cart=open';
+            }
         }
     }, []);
 
@@ -143,11 +149,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         createFlyingDot(source.x, source.y);
     }, []);
 
+    const contextValue = useMemo(() => ({
+        count, setCount, items, removeItem, changeQty, openCart, registerCartOpener, triggerFlyAnimation
+    }), [count, items, removeItem, changeQty, openCart, registerCartOpener, triggerFlyAnimation]);
+
     return (
-        <CartContext.Provider value={{ count, setCount, items, removeItem, changeQty, openCart, registerCartOpener, triggerFlyAnimation }}>
-            {children}
-        </CartContext.Provider>
-    );
+            <CartContext.Provider value={contextValue}>
+                {children}
+            </CartContext.Provider>
+            );
 }
 
 export const useCartCount = () => useContext(CartContext);

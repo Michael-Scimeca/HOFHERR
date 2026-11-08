@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import styles from './TeamBentoGrid.module.css';
 import ParallaxImg from '@/app/bbq/ParallaxImg';
 
@@ -12,10 +13,10 @@ interface TeamMember {
 
 const ROLE_TAGS: Record<string, string> = {
     'Owner & Head Chef': 'Owner',
-    'Manager':           'Manager',
-    'Butcher':           'Butcher',
-    'Head Chef':         'Head Chef',
-    'Chef':              'Chef',
+    'Manager': 'Manager',
+    'Butcher': 'Butcher',
+    'Head Chef': 'Head Chef',
+    'Chef': 'Chef',
 };
 
 function TeamCard({
@@ -71,18 +72,18 @@ export default function TeamBentoGrid({ team }: { team: TeamMember[] }) {
             <div className={styles.bottomGrid}>
                 {m4 && <TeamCard member={m4} />}
                 {m5 && <TeamCard member={m5} />}
-                
+
                 {/* 6th Slot - Hiring CTA */}
                 <div className={`${styles.card} ${styles.hiringCard}`}>
                     <div className={styles.hiringOverlay}>
                         <h3 className={styles.hiringTitle}>We&apos;re Hiring</h3>
                         <p className={styles.hiringSub}>Think you have what it takes to join the Hofherr crew?</p>
-                        <a href="/jobs" className={`btn btn-secondary ${styles.hiringBtn}`}>
-                            View Open Positions
-                        </a>
-                    </div>
+                            <Link href="/jobs" className={`btn btn-secondary ${styles.hiringBtn}`}>
+                                View Open Positions
+                    </Link>
                 </div>
             </div>
         </div>
+        </div >
     );
 }

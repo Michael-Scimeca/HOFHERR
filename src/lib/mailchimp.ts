@@ -8,15 +8,8 @@
  *                        It's the "Audience ID" shown in that settings panel
  */
 
-import crypto from 'crypto';
-
-const API_KEY  = process.env.MAILCHIMP_API_KEY  || '';
-const LIST_ID  = process.env.MAILCHIMP_LIST_ID  || '';
-
-/** Mailchimp uses MD5(lowercase email) as the member identifier */
-function memberHash(email: string) {
-    return crypto.createHash('md5').update(email.toLowerCase()).digest('hex');
-}
+const API_KEY = process.env.MAILCHIMP_API_KEY || '';
+const LIST_ID = process.env.MAILCHIMP_LIST_ID || '';
 
 /** Extract datacenter prefix from API key, e.g. "abc123-us6" → "us6" */
 function datacenter() {
@@ -34,7 +27,7 @@ function authHeader() {
 
 /**
  * Subscribe or unsubscribe a contact from the configured Mailchimp audience.
- * Uses PUT so it's idempotent — safe to call even if the member already exists.
+ * Uses POST /lists/{list_id} batch upsert with update_existing: true so it's idempotent.
  *
  * @param email   The customer's email address
  * @param subscribe  true = subscribe, false = unsubscribe
@@ -45,28 +38,32 @@ export async function syncMailchimpSubscription(email: string, subscribe: boolea
         return;
     }
 
-    const url = `${baseUrl()}/lists/${LIST_ID}/members/${memberHash(email)}`;
+    const url = `${baseUrl()}/lists/${LIST_ID}`;
 
-    const body: Record<string, any> = {
-        email_address: email,
-        status_if_new: subscribe ? 'subscribed' : 'unsubscribed',
-        status:         subscribe ? 'subscribed' : 'unsubscribed',
-        merge_fields: name ? { FNAME: name } : {},
-    };
+        const body = {
+            members: [
+                {
+                    email_address: email.toLowerCase(),
+                    status: subscribe ? 'subscribed' : 'unsubscribed',
+                    merge_fields: name ? { FNAME: name } : {},
+                },
+            ],
+            update_existing: true,
+        };
 
-    const res = await fetch(url, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': authHeader(),
-        },
-        body: JSON.stringify(body),
-    });
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': authHeader(),
+            },
+            body: JSON.stringify(body),
+        });
 
-    if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        console.error('[Mailchimp] Sync failed:', res.status, data?.title, data?.detail);
-    } else {
-        console.log(`[Mailchimp] ${subscribe ? 'Subscribed' : 'Unsubscribed'} ${email}`);
-    }
+        if(!res.ok) {
+            const data = await res.json().catch(() => ({}));
+    console.error('[Mailchimp] Sync failed:', res.status, data?.title, data?.detail);
+} else {
+    console.log(`[Mailchimp] ${subscribe ? 'Subscribed' : 'Unsubscribed'} ${email}`);
+}
 }

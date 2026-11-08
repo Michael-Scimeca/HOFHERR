@@ -97,8 +97,9 @@
     position: relative;
     z-index: 5;
     width: 100%;
-    max-width: var(--max-w, 1200px);
-    padding: 70px 24px 50px;
+    max-width: var(--max-w, 1800px);
+    margin: 0 auto;
+    padding: 70px var(--container-px) 50px;
 }
 
 /* ─── Headline + bubble wrapper ─── */
@@ -347,7 +348,7 @@
 
 @media (max-width: 768px) {
     .content {
-        padding: 60px 16px 40px;
+        padding: 60px var(--container-px) 40px;
     }
 
     .stats {

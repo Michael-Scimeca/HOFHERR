@@ -35,7 +35,6 @@ const FALLBACK_MENU: { name: string; category: string; image?: string }[] = [
     { name: 'BBQ Pulled Chicken', category: 'meat', image: '/images/bbq/pulled_chicken.jpg' },
     { name: 'Rib Tips & Hot Links Combo', category: 'meat', image: '/images/bbq/rib_tips.jpg' },
     { name: 'Ribs', category: 'meat', image: '/images/bbq/ribs.jpg' },
-    { name: 'Smoked Ribs', category: 'meat', image: '/images/bbq/ribs.jpg' },
     { name: 'Any of our HMC Sausages', category: 'meat', image: '/images/bbq/sausage.jpg' },
     { name: 'Pimento Mac n Cheese', category: 'side', image: '/images/bbq/mac_cheese.jpg' },
     { name: 'HMCo.leslaw', category: 'side', image: '/images/bbq/coleslaw.jpg' },
@@ -97,7 +96,7 @@ export default async function BBQPage() {
         menuItems = rawMenu?.length ? rawMenu.map((m: MenuItem) => {
             const safeName = (m.name || '').toLowerCase();
             let matchedImage;
-            
+
             if (safeName.includes('brisket')) matchedImage = '/images/bbq/brisket.jpg';
             else if (safeName.includes('pulled pork')) matchedImage = '/images/bbq/pulled_pork.jpg';
             else if (safeName.includes('pulled chicken')) matchedImage = '/images/bbq/pulled_chicken.jpg';

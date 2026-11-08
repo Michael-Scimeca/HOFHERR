@@ -64,10 +64,10 @@ export default async function CateringPage() {
                 </div>
             </section>
 
-
             {/* ── How It Works ── */}
-            <section className={styles.processSection}>
-                <div className="container">
+            <section className={`${styles.processSection} ${styles.processWithBg}`}>
+                <div className={styles.sectionBgMedia} aria-hidden="true" />
+                <div className={`container ${styles.processContent}`}>
                     <div className={styles.sectionHeader}>
                         <h2 className={styles.sectionTitle}>How It Works</h2>
                     </div>
@@ -133,18 +133,6 @@ export default async function CateringPage() {
                     ))}
                 </div>
             </div>
-
-            {/* ── CTA ── */}
-            <section className={styles.cta}>
-                <div className="container">
-                    <h2 className={styles.ctaTitle}>Ready to Plan Your Event?</h2>
-                    <p className={styles.ctaSub}>Tell us about your event and Sean will put together a custom package — usually same day.</p>
-                    <div className={styles.ctaBtns}>
-                        <a href="mailto:catering@hofherrmeatco.com?subject=Catering Quote Request" className="btn btn-primary">Get a Free Quote</a>
-                        <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
-                    </div>
-                </div>
-            </section>
         </div>
     );
 }
