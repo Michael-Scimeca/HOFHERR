@@ -80,6 +80,7 @@
     "playwright": "^1.65.0",
     "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",
+    "proxy-agent": "^8.0.2",
     "react-doctor": "^0.9.22",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
