@@ -26,6 +26,18 @@ const nextConfig: NextConfig = {
     // loader: 'cloudinary', // uncomment if moving to Cloudinary later
   },
 
+  // Keep server functions small (Netlify rejects huge uploads). Routes that read files with
+  // path.join(process.cwd(), …) make Next trace whole folders — public/ alone is ~370MB.
+  // public/ is served from the CDN anyway, so exclude it and add back only what the social
+  // image renderer reads from disk.
+  outputFileTracingExcludes: {
+    '*': ['public/**/*', 'design-originals/**/*', '.git/**/*', '**/*.mp4', '**/*.mov', '**/*.glb', '**/*.gltf'],
+  },
+  outputFileTracingIncludes: {
+    '/api/social/**': ['public/assets/*.{jpg,png,svg}', 'src/lib/social/fonts/**/*', 'node_modules/dictionary-en/index.{aff,dic}'],
+    '/admin/social/**': ['public/assets/*.{jpg,png,svg}', 'src/lib/social/fonts/**/*', 'node_modules/dictionary-en/index.{aff,dic}'],
+  },
+
   // Compress all static assets
   compress: true,
 

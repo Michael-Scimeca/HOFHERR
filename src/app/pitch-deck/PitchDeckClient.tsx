@@ -20,7 +20,9 @@ type SlideData = {
     bottomTakeaway: string;
 };
 
-type BusinessPillar = {
+type BusinessDepartment = {
+    id: string;
+    deptCode: string;
     name: string;
     role: string;
     margin: string;
@@ -29,16 +31,184 @@ type BusinessPillar = {
     currentBottleneck: string;
     competitorPlay: string;
     hofherrUpgrade: string;
+    kpis: string[];
 };
 
 type CompetitorEntry = {
     name: string;
     tier: 'North Shore Local' | 'Chicago Heritage' | 'National DTC';
     locations: string;
+    pricePositioning: string;
     whatTheyDoWell: string[];
     theirWeakness: string;
     whatWeStealOrBeat: string;
 };
+
+type GrowthEngine = {
+    id: string;
+    title: string;
+    department: string;
+    unitMath: string;
+    annualRevenue: number;
+    grossMarginPct: number;
+    annualProfit: number;
+};
+
+type MatrixRow = {
+    capability: string;
+    hofherr: string;
+    grandSunset: string;
+    paulinaPqm: string;
+    nationalDtc: string;
+};
+
+const GROWTH_ENGINES: GrowthEngine[] = [
+    {
+        id: 'butcher-club',
+        title: '1. Hofherr Butcher Club Subscription ($149/mo)',
+        department: 'Recurring DTC & Retention',
+        unitMath: '100 local members × $149/mo × 12 mos (Prime cuts + sausages + priority holiday slot)',
+        annualRevenue: 178800,
+        grossMarginPct: 58,
+        annualProfit: 103704,
+    },
+    {
+        id: 'catering-bars',
+        title: '2. Turnkey "Italian Beef Catering Bars" ($375 avg)',
+        department: 'B2B, Events & Game Days',
+        unitMath: '3.5 catering bars/week × $375 avg × 52 weeks (graduations, offices, Bears/Cubs parties)',
+        annualRevenue: 68250,
+        grossMarginPct: 66,
+        annualProfit: 45045,
+    },
+    {
+        id: 'freezer-pass',
+        title: '3. "Stock Your Freezer" 5-for-$95 Meal Pass',
+        department: 'Gourmet Freezer & Zero-Waste Yield',
+        unitMath: '10 passes/week × $95 × 52 weeks (Chicken Pot Pie, Smoked Lamb Curry, 24-Hr Broth)',
+        annualRevenue: 49400,
+        grossMarginPct: 64,
+        annualProfit: 31616,
+    },
+    {
+        id: 'weeknight-bundles',
+        title: '4. $54 Weeknight Family Dinner Bundles',
+        department: 'Butcher Counter Merchandising',
+        unitMath: '16 bundles/week × $54 avg × 52 weeks (wins Tuesday–Thursday share from Grand & Sunset)',
+        annualRevenue: 44928,
+        grossMarginPct: 52,
+        annualProfit: 23362,
+    },
+    {
+        id: 'monday-classes',
+        title: '5. Monday Night "Butcher & Bourbon" Masterclasses',
+        department: 'Dark-Hours Real Estate Monetization',
+        unitMath: '2 Mondays/mo × 12 seats × $150/seat × 12 mos (monetizes Northfield when store is closed)',
+        annualRevenue: 43200,
+        grossMarginPct: 74,
+        annualProfit: 31968,
+    },
+    {
+        id: 'shabu-kits',
+        title: '6. 4-Pack DIY "Shabu Italian Beef" Home Kits ($58)',
+        department: 'Winnetka Depot & Northfield Cold Case',
+        unitMath: '14 kits/week × $58 × 52 weeks (shifts 30-min hot lunch line into zero-wait cold kits)',
+        annualRevenue: 42224,
+        grossMarginPct: 65,
+        annualProfit: 27445,
+    },
+    {
+        id: 'cpg-jars',
+        title: '7. Checkout CPG Wall (3-Yr Giardiniera, Jus, Tallow)',
+        department: 'Retail Pantry & Packaging',
+        unitMath: '40 jars/week × $14.50 avg × 52 weeks (high-margin impulse add-on at checkout)',
+        annualRevenue: 30160,
+        grossMarginPct: 72,
+        annualProfit: 21715,
+    },
+    {
+        id: 'corporate-gifting',
+        title: '8. Q4 North Shore Corporate Client Gift Crates ($225)',
+        department: 'B2B Corporate Gifting',
+        unitMath: '140 Q4 gift crates × $225 avg (North Shore wealth, law & real estate firms)',
+        annualRevenue: 31500,
+        grossMarginPct: 62,
+        annualProfit: 19530,
+    },
+];
+
+const FEATURE_MATRIX: MatrixRow[] = [
+    {
+        capability: '45-Day Custom Dry-Aged & Cut-to-Order Steaks',
+        hofherr: '✓ Core Flagship Moat (Northfield)',
+        grandSunset: 'Limited pre-cut case',
+        paulinaPqm: '✓ Yes (City drive required)',
+        nationalDtc: 'Vacuum-frozen only',
+    },
+    {
+        capability: 'Cult Hero Hot Sandwich (Shabu Italian Beef)',
+        hofherr: '✓ Kevin Pang / ATK Collab + 3-Yr Giardiniera',
+        grandSunset: 'Standard supermarket deli',
+        paulinaPqm: '✓ PQM sandwiches (West Loop)',
+        nationalDtc: '✕ None',
+    },
+    {
+        capability: 'Metra Train Station Commuter Outpost',
+        hofherr: '✓ Exclusive (Winnetka Elm St. Depot)',
+        grandSunset: '✕ None',
+        paulinaPqm: '✕ None',
+        nationalDtc: '✕ None',
+    },
+    {
+        capability: 'In-House Smoked Sausages & Gourmet Freezer',
+        hofherr: '✓ "Best in Show" Links + Pot Pie / Lamb Curry',
+        grandSunset: 'Mostly 3rd-party brands',
+        paulinaPqm: '✓ Paulina 40+ links & freezer case',
+        nationalDtc: 'Basic frozen add-ons',
+    },
+    {
+        capability: 'Interactive Cut Guide & Pig Roast / BBQ Calculators',
+        hofherr: '✓ Live on hofherrmeatco.com',
+        grandSunset: 'Static PDF menus',
+        paulinaPqm: 'Static web pages',
+        nationalDtc: '✓ Porter Road Cut Guide',
+    },
+    {
+        capability: 'One-Stop Weeknight Family Meal Bundles ($49–$65)',
+        hofherr: '★ Launching (Phase 1 Fix)',
+        grandSunset: '✓ Strong supermarket deli sides',
+        paulinaPqm: '✓ Carnivore Oak Park dinner packs',
+        nationalDtc: '✓ ButcherBox / SRF bundles',
+    },
+    {
+        capability: 'Zero-Line Curbside & Dual-Hub Holiday Pickup',
+        hofherr: '★ Launching (Happ Rd. Bays + Winnetka Hub)',
+        grandSunset: 'Large supermarket parking lots',
+        paulinaPqm: 'Crowded holiday ticket lines',
+        nationalDtc: 'FedEx dry-ice box delivery',
+    },
+    {
+        capability: 'Monthly Recurring Butcher Club Subscription',
+        hofherr: '★ Launching ($149/mo — Zero Freight Waste)',
+        grandSunset: '✕ None',
+        paulinaPqm: '✕ None',
+        nationalDtc: '✓ ButcherBox / Porter Road ($30 lost to shipping)',
+    },
+    {
+        capability: 'Ticketed Evening Butcher & Bourbon Classes',
+        hofherr: '★ Launching (Mon Dark-Hours @ $150/seat)',
+        grandSunset: '✕ None',
+        paulinaPqm: '✓ PQM West Loop classes',
+        nationalDtc: '✕ None',
+    },
+    {
+        capability: 'Bottled CPG Pantry Line (Aged Giardiniera / Tallow)',
+        hofherr: '★ Launching (Checkout Impulse Wall)',
+        grandSunset: 'Generic grocery shelves',
+        paulinaPqm: '✓ Gene\'s & Paulina specialty jars',
+        nationalDtc: 'Limited spice rubs',
+    },
+];
 
 const SLIDES: SlideData[] = [
     {
@@ -69,38 +239,38 @@ const SLIDES: SlideData[] = [
             'Northfield vs. Winnetka Depot Confusion: First-timers confuse which location serves hot lunches vs. custom butcher cuts.',
         ],
         bottomTakeaway:
-            'Core Thesis: Fixing logistics and price framing unlocks +25–35% higher throughput and AOV without changing a single recipe.',
+            'Core Thesis: Fixing logistics and price framing unlocks +$488k/yr in incremental revenue without changing a single recipe.',
     },
     {
         num: '02',
-        shortLabel: '02 · 6 Business Pillars',
-        category: '360° Business Architecture & Unit Economics',
-        title: 'Optimizing All 6 Revenue Engines',
+        shortLabel: '02 · 8 Business Sides',
+        category: '360° Business Architecture & Whole-Animal P&L',
+        title: 'Every Side of the Business Working as One Flywheel',
         summary:
-            'Hofherr is not just a retail meat counter—it is a 6-engine culinary ecosystem where each business line feeds margins, eliminates trim waste, and lowers customer acquisition cost.',
-        leftColTitle: 'Traffic & Acquisition Engines',
-        leftColTag: 'Foot Traffic & Brand',
+            'A craft butcher shop wins or loses on whole-carcass utilization, labor allocation, real estate hours, and basket-building. Here is how all 8 sides of Hofherr connect.',
+        leftColTitle: 'Supply Chain, Counter & Kitchen Sides',
+        leftColTag: 'Margin & Yield',
         leftColType: 'fix',
         leftBullets: [
-            '1. Custom Butcher Counter (Northfield): 38–45% gross margin. Primary trust builder; whole-animal trim feeds sausages, burger blends, tallow, and bone broth (zero waste).',
-            '2. Hot Lunch & The Depot (Winnetka Metra): 62–68% gross margin. High-frequency commuter touchpoint powered by the viral Italian Beef and coffee/grab-and-go.',
-            '3. Holiday Pre-Order Spikes (Thanksgiving / Xmas / Super Bowl): Highest single-week cash-flow events of the year (chargrilled turkeys, prime ribs, briskets).',
+            '1. Whole-Animal Yield & Trim Economics: Steaks sell at 38–45% margin; trim is converted into 65%-margin sausages, smashburgers, 24-hr marrow broth, jus, and smoked beef tallow (0% waste).',
+            '2. Labor & Counter Specialization: Separate custom butchery consultations from 30-second pre-paid online pickups so master butchers aren\'t stuck bagging orders.',
+            '3. Hot Line & Cold Case Synergy: When the hot Italian Beef line hits capacity, overflow converts into $58 4-Pack DIY Shabu Beef Home Kits from the cold case.',
         ],
-        rightColTitle: 'High-Margin & Recurring Engines',
-        rightColTag: '60–72% Gross Margin',
+        rightColTitle: 'Commercial, Real Estate & Digital Sides',
+        rightColTag: 'Scale & Retention',
         rightColType: 'fix',
         rightBullets: [
-            '4. House Sausages & Gourmet Freezer Wall: 58–68% gross margin. Zero spoilage; solves busy North Shore weeknight dinners (Pot Pie, Smoked Lamb Curry).',
-            '5. BBQ, Event & Corporate Catering: $450–$3,500+ AOV. Whole-hog roasts, backyard BBQ packages, and turnkey Office Italian Beef Bars.',
-            '6. Subscriptions, CPG Jars & Dark-Hours Classes: 65–75% margin. Hofherr Butcher Club ($149/mo), bottled 3-Yr Giardiniera, and Monday "Butcher & Bourbon" nights.',
+            '4. Real Estate & Dark-Hours Monetization: Turn closed Mondays at Northfield into $1,800/night "Butcher & Bourbon" classes; use Winnetka Metra Depot as an evening commuter pickup bridge.',
+            '5. Pricing Psychology & Basket Building: Reframe per-pound steak prices into $12.50/person Weeknight Family Bundles + $14 checkout CPG jars (Aged Giardiniera, Tallow, Rubs).',
+            '6. B2B, Corporate Gifting & Subscriptions: Lock in $149/mo Butcher Club recurring revenue + Q4 North Shore law/wealth-management gift crates.',
         ],
         bottomTakeaway:
-            'Whole-Animal Economics: Every pound of steak trim is converted into 65%-margin sausage, jus, tallow, or gourmet freezer entrees.',
+            'Blended Gross Margin Target: Shift company-wide gross margin from ~44% to 56%+ through Freezer, CPG, Catering, and Subscription mix.',
     },
     {
         num: '03',
         shortLabel: '03 · North Shore Rivals',
-        category: 'Competitor Intelligence · Local North Shore',
+        category: 'Competitor Intelligence · Local North Shore Supermarkets',
         title: 'Beating Grand Food Center & Sunset Foods',
         summary:
             'Our closest geographic rivals in Winnetka, Glencoe, and Northbrook are upscale neighborhood supermarkets. They win on parking and 1-stop grocery convenience—we win on craft, provenance, and culinary authority.',
@@ -110,7 +280,7 @@ const SLIDES: SlideData[] = [
         leftBullets: [
             'The Grand Food Center (Winnetka / Glencoe): Full grocery convenience, in-house smokehouse, daily hot lunch plates, sushi/guacamole, and easy party trays.',
             'Sunset Foods (Northbrook / Highland Park): Massive parking lots, dedicated catering portal (entertaining.sunsetfoods.com), corporate box lunches, and Slagel Farms poultry.',
-            'Why We Lose Casual Tuesday Shoppers: Families default to Grand or Sunset on weeknights because they want a fast, complete dinner in one stop.',
+            'Why We Lose Casual Tuesday Shoppers: Families default to Grand or Sunset on weeknights because they want protein + sides in one fast stop.',
         ],
         rightColTitle: 'How Hofherr Wins Back Weeknight Share',
         rightColTag: 'Hofherr Counter-Play',
@@ -377,7 +547,7 @@ const SLIDES: SlideData[] = [
             'QR "Cook It Right" Butcher Paper Tags: 45-second video of Sean on every wrapped steak so customers never overcook a $50 cut at home.',
         ],
         bottomTakeaway:
-            'Just two Monday classes/month + 100 Q4 corporate gift boxes adds $60,000+ in high-margin annual revenue.',
+            'Just two Monday classes/month + 140 Q4 corporate gift boxes adds $74,700+ in high-margin annual revenue.',
     },
     {
         num: '14',
@@ -390,7 +560,7 @@ const SLIDES: SlideData[] = [
         leftColTag: 'Days 1–90',
         leftColType: 'fix',
         leftBullets: [
-            'Days 1–30 (Friction Removal): Launch Northfield vs. Winnetka badges; 2-signature holiday/catering packing slip; $49 Weeknight Family Bundles; QR cooking tags.',
+            'Days 1–30 (Friction Removal): Launch Northfield vs. Winnetka badges; 2-signature holiday/catering packing slip; $54 Weeknight Family Bundles; QR cooking tags.',
             'Days 31–60 (Throughput & AOV): Roll out timed 10-min lunch slots + $58 DIY Italian Beef Home Kits; "Stock Your Freezer" 5-for-$95 pass; Friday SMS Sausage drops.',
             'Days 61–90 (Scale & Recurring): Launch Hofherr Butcher Club ($149/mo); Happ Rd. Curbside Express Bays + Winnetka Holiday Hub; Monday "Butcher & Bourbon" tickets.',
         ],
@@ -398,9 +568,9 @@ const SLIDES: SlideData[] = [
         rightColTag: 'Projected ROI',
         rightColType: 'fix',
         rightBullets: [
+            '+$488,462 Incremental Annual Revenue across all 8 growth engines (+$304,385 Incremental Gross Profit).',
             '+25% to +35% Average Order Value (AOV) via Freezer Passes, Weeknight Bundles, and CPG Jar cross-sells.',
             '2x Holiday Pre-Order Capacity with sub-5-minute Curbside & Winnetka Depot pickup.',
-            '$18,000–$30,000/mo in predictable recurring revenue from 125–200 Hofherr Butcher Club members.',
             '4.9★+ Review Trajectory by eliminating holiday line complaints and lunch wait surprises.',
         ],
         bottomTakeaway:
@@ -408,66 +578,110 @@ const SLIDES: SlideData[] = [
     },
 ];
 
-const BUSINESS_PILLARS: BusinessPillar[] = [
+const BUSINESS_DEPARTMENTS: BusinessDepartment[] = [
     {
-        name: '1. Custom Butcher Counter (Northfield Flagship)',
-        role: 'Brand Anchor & Whole-Animal Source',
-        margin: '38% – 45% Gross',
-        aov: '$65 – $140',
-        currentStrength: 'Cut-to-order USDA Prime & 45-day dry-aged steaks, heritage pork, Slagel/Midwest family farms.',
-        currentBottleneck: 'Per-pound "sticker shock" for casual shoppers; counter queue slows down pre-paid pickups.',
-        competitorPlay: 'Porter Road spotlights underutilized value cuts (denver, flat iron); Sunset bundles meal sides.',
-        hofherrUpgrade: 'Launch $49 Weeknight Family Bundles, QR "Cook It Right" video tags, and a Pre-Paid Express Counter Lane.',
+        id: 'supply-chain',
+        deptCode: 'SIDE 01 · SUPPLY CHAIN & YIELD',
+        name: 'Whole-Animal Butchery & Zero-Waste Trim Economics',
+        role: 'Gross Margin Foundation',
+        margin: '38% → 58% Blended',
+        aov: '$65 – $145',
+        currentStrength: 'Direct sourcing from Midwestern family farms (Slagel Farms, heritage pork, grass-fed grain-finished beef) and 45-day dry-aging.',
+        currentBottleneck: 'Selling primals (ribeye, strip, tenderloin) alone caps gross margin at ~40% if trim, fat, and bones aren\'t aggressively upcycled into branded CPG/freezer items.',
+        competitorPlay: 'Publican Quality Meats (PQM) and Paulina Market turn 100% of trim/fat/bones into high-margin charcuterie, tallow, bone broth, and 40+ sausage varieties.',
+        hofherrUpgrade: 'Convert every ounce of trim into $14 Smoked Beef Tallow jars, $16 24-Hr Marrow Bone Broth quarts, "Best in Show" sausages, and Prime Smashburger packs.',
+        kpis: ['0% Carcass Trim Waste', '+12% Blended Gross Margin Lift', '$14–$16/jar Upcycled CPG Revenue'],
     },
     {
-        name: '2. Hot Prepared Foods & The Depot (Winnetka Metra)',
-        role: 'High-Frequency Commuter Acquisition',
-        margin: '62% – 68% Gross',
-        aov: '$18 – $34',
-        currentStrength: 'Cult-famous Shabu-Style Italian Beef (Kevin Pang collab), weekend fried chicken, commuter coffee.',
-        currentBottleneck: '30–45 minute wait times during peak lunch rushes; early sell-outs; location confusion.',
-        competitorPlay: 'PQM runs rapid pre-ordered box lunches; Grand Food Center has grab-and-go hot cases.',
-        hofherrUpgrade: 'Timed 10-min online pickup windows, live daily batch counters, and $58 4-Pack DIY Shabu Beef Home Kits.',
+        id: 'store-ops',
+        deptCode: 'SIDE 02 · STORE OPERATIONS & LABOR',
+        name: 'Counter Workflow, Hot-Line Prep & Holiday Runners',
+        role: 'Throughput & Labor Efficiency',
+        margin: '28% Labor-to-Sales Target',
+        aov: '30-Sec Express Pickup',
+        currentStrength: 'Master Butcher Sean Hofherr and counter team deliver 5-star custom cutting and personal cooking advice.',
+        currentBottleneck: 'High-skill butcher labor gets bottlenecked handing out pre-paid online orders or packing holiday sides while walk-in customers wait in the same line.',
+        competitorPlay: 'Pat LaFrieda and Paulina separate custom counter ticket queues from pre-paid express pickup and use 2-person verification on holiday boxes.',
+        hofherrUpgrade: 'Dedicated "Pre-Paid Express Shelf" at Happ Rd., 2-Signature Holiday Packing Slips (Packer + Runner), and 10-minute throttled tickets for hot Italian Beef.',
+        kpis: ['< 5 Min Holiday Curbside Wait', '100.0% Side-Dish Order Accuracy', '< 10 Min Peak Hot Lunch Wait'],
     },
     {
-        name: '3. House Sausages & Gourmet Freezer Wall',
-        role: 'Zero-Spoilage Margin & Repeat-Visit Driver',
-        margin: '58% – 68% Gross',
-        aov: '$45 – $95',
-        currentStrength: '"Best in Show" Cheddar Jalapeño & breakfast sausages, Chicken Pot Pie, Smoked Lamb Curry, 24-hr broth.',
-        currentBottleneck: 'Purchased as single impulse items rather than multi-meal weeknight bundles.',
-        competitorPlay: 'Paulina Meat Market drives massive volume with 40+ sausage varieties & bulk freezer packs.',
-        hofherrUpgrade: '"Stock Your Freezer" 5-for-$95 Pass at steak checkout + Friday SMS "Sausage of the Month" limited drops.',
+        id: 'merchandising',
+        deptCode: 'SIDE 03 · PRICING & MERCHANDISING',
+        name: 'Price Framing, Case Architecture & Basket Building',
+        role: 'Overcoming "Sticker Shock" & Lifting AOV',
+        margin: '54% – 62% Bundle Margin',
+        aov: '$54 – $115 (+30% Lift)',
+        currentStrength: 'Unmatched USDA Prime & Dry-Aged quality that regulars gladly pay a premium for.',
+        currentBottleneck: 'First-time shoppers see $36–$48/lb steak tags and compare them to corporate supermarkets rather than per-person restaurant meals.',
+        competitorPlay: 'Porter Road champions "Butcher\'s Secret" cuts (flat iron, denver, hanger, picanha at $16–$24/lb); Grand Food Center & Sunset sell complete dinner trays.',
+        hofherrUpgrade: 'Frame $54 Weeknight Family Bundles as "$13.50/person for a family of 4," spotlight value butcher cuts, and place a $95 5-Meal Freezer Pass at checkout.',
+        kpis: ['+25–35% Average Order Value', '2x Tuesday–Thursday Foot Traffic', '+$18 Checkout Impulse Add-On'],
     },
     {
-        name: '4. Holiday Pre-Orders (Thanksgiving / Xmas / Super Bowl)',
-        role: '#1 Annual Cash-Flow Spikes',
-        margin: '48% – 55% Gross',
-        aov: '$165 – $380',
-        currentStrength: 'Rave-reviewed chargrilled pre-carved Thanksgiving turkeys, holiday briskets, and standing rib roasts.',
-        currentBottleneck: 'Long sidewalk lines at 300 S. Happ Rd., tight parking, and occasional missing side dishes under pressure.',
-        competitorPlay: 'Paulina & Pat LaFrieda use strict time-slot caps and multi-zone fulfillment.',
-        hofherrUpgrade: '3 Happ Rd. Curbside Express Bays (SMS runner) + Two-Signature Packing Slip + Winnetka Depot Pickup Hub.',
+        id: 'omnichannel',
+        deptCode: 'SIDE 04 · OMNICHANNEL & 2-STORE SYNC',
+        name: 'Northfield Flagship ↔ Winnetka Metra Depot Bridge',
+        role: 'Commuter Convenience Moat',
+        margin: '62% – 68% Depot Margin',
+        aov: '$22 – $85',
+        currentStrength: 'Only butcher on the North Shore with both a full production butcher shop (300 S. Happ Rd.) and a Metra train station outpost (754 Elm St., Winnetka).',
+        currentBottleneck: 'Reviewers occasionally confuse which location carries custom steaks vs. hot Italian Beef, or miss Northfield\'s 6:00 PM closing time.',
+        competitorPlay: 'No local competitor has a train-station depot; national DTCs rely on expensive FedEx dry-ice shipping.',
+        hofherrUpgrade: '"Order from Northfield Butcher by 1 PM → Grab Chilled at Winnetka Train at 5:30 PM," clear location badges on Yelp/FB, and Winnetka Holiday Pickup Hub.',
+        kpis: ['35% Holiday Traffic Shifted to Winnetka', 'Zero Location-Confusion Reviews', 'Same-Day Commuter Order Cutoff @ 1 PM'],
     },
     {
-        name: '5. BBQ, Whole-Hog & Corporate Catering',
+        id: 'marketing-crm',
+        deptCode: 'SIDE 05 · MARKETING, SEO & RETENTION',
+        name: 'Local Search Dominance, SMS Drops & Butcher Club',
+        role: 'Zero-CAC Repeat Revenue',
+        margin: '58% Subscription Margin',
+        aov: '$149/mo Recurring',
+        currentStrength: '4.7★–4.8★ ratings on Yelp/Facebook/Google and organic press from Kevin Pang / America\'s Test Kitchen / WTTW.',
+        currentBottleneck: 'No automated recurring membership box yet; weekend specials rely on passive social reach rather than direct SMS triggers.',
+        competitorPlay: 'Snake River Farms (Club SRF) & ButcherBox lock in monthly recurring revenue; Gene\'s & Carnivore use weekly email/SMS drops.',
+        hofherrUpgrade: 'Launch "Hofherr Butcher Club" ($149/mo with priority holiday slots), Friday 9 AM SMS "Sausage of the Month" drops, and QR review/recipe cards.',
+        kpis: ['100+ Butcher Club Subscribers ($178k/yr)', '98% Open Rate on Friday SMS Drops', '4.9★+ Google & Yelp Rating'],
+    },
+    {
+        id: 'b2b-catering',
+        deptCode: 'SIDE 06 · B2B, CATERING & CORPORATE',
+        name: 'Turnkey Event Catering, Country Clubs & Q4 Gifting',
         role: 'High-Ticket Volume Engine',
-        margin: '55% – 64% Gross',
-        aov: '$450 – $3,500+',
-        currentStrength: 'White-oak smoked brisket, pig roasts, and custom backyard/event catering.',
-        currentBottleneck: 'Under-penetrated in weekday North Shore corporate office lunches & turnkey graduation/game-day bars.',
-        competitorPlay: 'Sunset Foods (entertaining.sunsetfoods.com) & PQM dominate corporate box lunches and buffet trays.',
-        hofherrUpgrade: 'Launch turnkey $275–$550 "Italian Beef Catering Bars" + North Shore Executive Box Lunches.',
+        margin: '58% – 66% Gross',
+        aov: '$375 – $3,500+',
+        currentStrength: 'Interactive BBQ & Pig Roast Calculators already built on hofherrmeatco.com; acclaimed smoked brisket and whole-hog roasts.',
+        currentBottleneck: 'Sunset Foods (`entertaining.sunsetfoods.com`) and Omaha Steaks/SRF currently capture North Shore corporate office lunches and Q4 client gifting.',
+        competitorPlay: 'Sunset Foods runs corporate box lunches & chafing dish packages; Snake River Farms sells $200+ Q4 corporate steak boxes.',
+        hofherrUpgrade: 'Launch $375 Turnkey "Italian Beef Catering Bars" (warming trays + chuck eye + 3-yr giardiniera) and $225 Stamped Wood Q4 Corporate Gift Crates.',
+        kpis: ['+$68k/yr from Italian Beef Catering Bars', '140+ Q4 Corporate Gift Crates ($31.5k)', 'Local Country Club Sausage/Burger Accounts'],
     },
     {
-        name: '6. Subscriptions, CPG Pantry Jars & Dark-Hours Events',
-        role: 'Recurring Revenue & 70%+ Margin Expansion',
-        margin: '65% – 75% Gross',
-        aov: '$149 – $300',
-        currentStrength: 'High customer trust in Sean & Arielle; proprietary 3-year-aged giardiniera, jus, and tallow.',
-        currentBottleneck: 'Northfield shop sits dark on Mondays/evenings; no recurring monthly membership box yet.',
-        competitorPlay: 'ButcherBox & Snake River Farms lock in monthly recurring revenue; PQM hosts ticketed butcher classes.',
-        hofherrUpgrade: 'Hofherr Butcher Club ($149/mo), bottled CPG jar wall, Q4 Corporate Gift Crates, and Monday "Butcher & Bourbon" classes.',
+        id: 'cpg-packaging',
+        deptCode: 'SIDE 07 · CPG RETAIL & PACKAGING',
+        name: 'Bottled House Staples, Branded Wrap & Goldbelly',
+        role: '70%+ Margin Brand Extension',
+        margin: '68% – 75% Gross',
+        aov: '$14 – $129',
+        currentStrength: 'Custom woodcut-linocut butcher wrapping paper, 10 department flame stickers, rubber stamps, and 3-year-aged house giardiniera.',
+        currentBottleneck: 'House giardiniera, concentrated jus, and tallow are mostly used as sandwich condiments rather than merchandised as a flagship CPG retail wall.',
+        competitorPlay: 'Gene\'s Sausage Shop and PQM generate high-margin impulse sales from house-branded jars, rubs, and regional shipping.',
+        hofherrUpgrade: 'Checkout CPG Wall ($14 3-Yr Giardiniera, $16 Jus Concentrate, $14 Smoked Beef Tallow, $12 Truffle Steak Butter) + 8-Pack Goldbelly Shipping Boxes.',
+        kpis: ['40+ CPG Jars Sold/Week (+$30k/yr)', '72% Gross Margin on Jarred Goods', 'QR "Cook It Right" Tag on Every Parcel'],
+    },
+    {
+        id: 'real-estate',
+        deptCode: 'SIDE 08 · REAL ESTATE & DARK HOURS',
+        name: 'Monetizing Closed Mondays & Evening Storefront Hours',
+        role: 'Pure Profit on Fixed Rent',
+        margin: '74% Event Margin',
+        aov: '$150 / Ticket ($1,800/Night)',
+        currentStrength: 'Warm, authentic neighborhood butcher shop atmosphere in Northfield where customers love interacting with Sean and Arielle.',
+        currentBottleneck: 'Northfield is closed all day Monday and every evening after 6:00 PM—paying 100% of rent/overhead while the space sits dark ~65% of the week.',
+        competitorPlay: 'Publican Quality Meats (PQM) hosts sold-out evening butcher classes, tastings, and private dining in their shop after counter hours.',
+        hofherrUpgrade: 'Host twice-monthly Monday Night "Butcher & Bourbon" Masterclasses (12 guests × $150 = $1,800/night) + private corporate team-building cutting nights.',
+        kpis: ['$43,200/yr from 24 Monday Classes', '74% Gross Margin on Ticketed Nights', 'Every Attendee Leaves with $50+ in Cuts'],
     },
 ];
 
@@ -475,91 +689,119 @@ const COMPETITORS: CompetitorEntry[] = [
     {
         name: 'The Grand Food Center',
         tier: 'North Shore Local',
-        locations: 'Winnetka & Glencoe (Direct Local Rival)',
+        locations: 'Winnetka (606 Green Bay Rd) & Glencoe',
+        pricePositioning: '$$$ · Upscale Neighborhood Supermarket',
         whatTheyDoWell: [
-            'One-stop upscale grocery convenience with easy parking',
-            'In-house smokehouse (ribs, brisket) + full deli, sushi, salads & guacamole',
-            'High-volume game-day and holiday party trays',
+            'One-stop upscale grocery convenience with dedicated parking lots',
+            'In-house smokehouse (ribs, pulled pork, brisket) + full deli, sushi, salads & fresh guacamole',
+            'High-volume game-day wings, sandwich platters, and holiday party trays',
         ],
-        theirWeakness: 'Supermarket meat counter—lacks whole-animal dry-aging, master butcher authority, and cult hero sandwiches.',
+        theirWeakness:
+            'Supermarket meat counter—lacks 45-day custom dry-aging, whole-animal butcher authority, and a cult hero sandwich like Hofherr\'s Shabu Italian Beef.',
         whatWeStealOrBeat:
-            'Add grab-and-go sides/salads/potatoes to our $49 Weeknight Bundles so families don\'t default to Grand Food Center on Tuesday nights.',
+            'Add grab-and-go sides (charro beans, twice-baked potatoes, compound butters) to our $54 Weeknight Family Bundles so Winnetka/Northfield families don\'t default to Grand Food Center on Tuesday nights.',
     },
     {
         name: 'Sunset Foods',
         tier: 'North Shore Local',
-        locations: 'Northbrook, Highland Park, Lake Forest',
+        locations: 'Northbrook, Highland Park, Lake Forest, Libertyville',
+        pricePositioning: '$$$ · Multi-Store North Shore Grocer (Est. 1937)',
         whatTheyDoWell: [
-            'Dedicated catering portal (entertaining.sunsetfoods.com) with corporate box lunches & equipment rentals',
-            'Large parking lots and full grocery basket convenience',
-            'Strong local farm poultry & custom counter reputation',
+            'Dedicated catering website (entertaining.sunsetfoods.com) with corporate box lunches & chafing rentals',
+            'Massive parking lots and full household grocery basket under one roof',
+            'Strong local reputation ("freshness measured in hours") and Slagel Farms poultry',
         ],
-        theirWeakness: 'Corporate supermarket feel; cannot match Hofherr\'s small-batch sausages, 45-day dry-aged program, or Shabu Italian Beef.',
+        theirWeakness:
+            'Big-store supermarket experience; cannot match Hofherr\'s small-batch cheddar jalapeño sausages, hand-cut dry-aged steaks, or personal owner access.',
         whatWeStealOrBeat:
-            'Beat their catering portal with our interactive BBQ & Pig Roast Calculator + turnkey $275–$550 Italian Beef Catering Bars.',
+            'Beat their catering portal with our interactive BBQ/Pig Roast Calculator + turnkey $375 "Italian Beef Catering Bars" and 5-minute Happ Rd. Curbside Express bays.',
     },
     {
         name: 'Paulina Meat Market',
         tier: 'Chicago Heritage',
-        locations: 'Chicago (Lakeview — 75+ Year Icon)',
+        locations: 'Chicago — Lakeview (3501 N. Lincoln Ave · Est. 1949)',
+        pricePositioning: '$$–$$$ · Legendary Old-World German Butcher',
         whatTheyDoWell: [
-            '40+ house-made smoked sausages, brats, and bacons',
-            'Massive prepared frozen entree case (stroganoff, pot pies, smoked meats)',
-            'Regimented holiday pre-order system',
+            '40+ varieties of house-made smoked sausages, brats, frankfurters, and bacons',
+            'Enormous prepared frozen entree wall (beef stroganoff, chicken pot pies, smoked brisket)',
+            'Highly regimented holiday pre-order system for hams, turkeys, and standing rib roasts',
         ],
-        theirWeakness: '40–50 minute drive down to Lincoln Ave for North Shore residents; older web experience.',
+        theirWeakness:
+            '40–50 minute drive down to Lakeview for North Shore families; utilitarian website with no interactive cut guide or train-station pickup.',
         whatWeStealOrBeat:
-            'Replicate Paulina\'s frozen entree volume on the North Shore with our "Stock Your Freezer" 5-for-$95 Pass and monthly sausage drops.',
+            'Replicate Paulina\'s frozen entree volume on the North Shore via our "Stock Your Freezer" 5-for-$95 Pass and Friday SMS "Sausage of the Month" drops.',
     },
     {
         name: 'Publican Quality Meats (PQM)',
         tier: 'Chicago Heritage',
-        locations: 'Chicago (West Loop / Fulton Market)',
+        locations: 'Chicago — Fulton Market / West Loop (825 W. Fulton Market)',
+        pricePositioning: '$$$$ · Chef-Driven Butcher, Café & Bakery',
         whatTheyDoWell: [
-            'Chef-driven butcher + café hybrid with acclaimed sandwiches and charcuterie',
-            'Ticketed evening butcher classes, dinners, and whole-animal education',
-            'High-end artisan catering & box lunches',
+            'Acclaimed chef-driven sandwich café + whole-animal butcher counter + Slagel Farms provenance',
+            'Ticketed evening butcher classes, charcuterie workshops, and private dining events',
+            'High-end artisan corporate box lunches and charcuterie platters',
         ],
-        theirWeakness: 'West Loop congestion; not accessible for daily North Shore family shopping.',
+        theirWeakness:
+            'West Loop traffic and parking make it impossible for routine North Shore weeknight shopping.',
         whatWeStealOrBeat:
-            'Monetize Northfield\'s closed Mondays with $150/seat "Butcher & Bourbon" masterclasses and launch North Shore Executive Box Lunches.',
+            'Monetize Northfield\'s closed Mondays with $150/seat "Butcher & Bourbon" Masterclasses and launch North Shore Executive Box Lunches.',
     },
     {
-        name: "Gene's Sausage Shop & Carnivore",
+        name: "Gene's Sausage Shop & Delicatessen",
         tier: 'Chicago Heritage',
-        locations: 'Lincoln Square & Oak Park',
+        locations: 'Chicago — Lincoln Square (4750 N. Lincoln Ave)',
+        pricePositioning: '$$–$$$ · European Butcher, Gourmet Market & Rooftop',
         whatTheyDoWell: [
-            'High-margin specialty pantry cross-sells (mustards, jars, rubs, imported goods)',
-            'Prepared lunch counters and seasonal rooftop/event activations',
+            'High-margin specialty pantry cross-sells (mustards, pickled jars, rubs, European imports) that double basket size',
+            'Seasonal rooftop beer & bratwurst garden that turns the butcher brand into an experiential destination',
         ],
-        theirWeakness: 'Geographic distance from Northfield/Winnetka.',
+        theirWeakness:
+            'Located in Lincoln Square; no North Shore footprint or commuter train depot.',
         whatWeStealOrBeat:
-            'Build a high-margin CPG checkout wall (3-Yr-Aged Giardiniera, Concentrated Jus, Smoked Beef Tallow, Compound Butters) to lift AOV by +$18.',
+            'Build a high-margin CPG Checkout Wall (3-Yr-Aged Giardiniera, Concentrated Jus, Smoked Beef Tallow, Truffle Butter) to lift checkout AOV by +$18.',
+    },
+    {
+        name: 'Carnivore Oak Park',
+        tier: 'Chicago Heritage',
+        locations: 'Oak Park, IL (1042 Pleasant St)',
+        pricePositioning: '$$$ · Craft Whole-Animal Suburban Butcher',
+        whatTheyDoWell: [
+            'Strong suburban commuter dinner bundles, prepared lunch counter, and local farm storytelling',
+            'Seasonal CSA/meat shares and approachable weeknight meal kits',
+        ],
+        theirWeakness:
+            'Serves the western suburbs (Oak Park); single storefront without a secondary Metra depot.',
+        whatWeStealOrBeat:
+            'Adopt their commuter weeknight bundle cadence for our Winnetka Metra Depot ("Order by 1 PM, Grab at the Train at 5:30 PM").',
     },
     {
         name: 'Porter Road & Flannery Beef',
         tier: 'National DTC',
-        locations: 'Nationwide Online Shipping',
+        locations: 'Nationwide Online DTC Shipping',
+        pricePositioning: '$$$–$$$$ · Craft Online Butcher & Dry-Aged Specialist',
         whatTheyDoWell: [
-            'Best-in-class digital cut education and recipe-to-cart merchandising',
-            'Championing high-margin "butcher\'s secret" cuts (denver, flat iron, picanha, hanger)',
-            'Transparent dry-aging moisture-loss education',
+            'Industry-leading digital cut guides and recipe-to-cart cross-selling',
+            'Championing high-margin "butcher\'s secret" cuts (denver, flat iron, picanha, hanger, teres major)',
+            'Clear education on why 45-day dry-aging loses 25% moisture weight to concentrate flavor',
         ],
-        theirWeakness: '$25–$40 shipping/dry-ice overhead per box; meat arrives vacuum-packed from out of state rather than hand-cut today.',
+        theirWeakness:
+            '$25–$40 per box wasted on FedEx freight, dry ice, and insulation; cuts arrive vacuum-sealed days after cutting.',
         whatWeStealOrBeat:
-            'Pair our live Cut Guide (/cut-guide) with QR "Cook It Right" video stickers on every wrapped parcel.',
+            'Pair our live Cut Guide (/cut-guide) with QR "Cook It Right" video stickers on every parcel—giving customers fresh, hand-cut today quality with zero shipping markup.',
     },
     {
         name: 'Snake River Farms & ButcherBox',
         tier: 'National DTC',
-        locations: 'Nationwide Subscription & Gifting',
+        locations: 'Nationwide Subscription & Corporate Gifting',
+        pricePositioning: '$$$–$$$$ · Subscription Box & Wagyu Gifting Giants',
         whatTheyDoWell: [
-            'Recurring monthly subscription boxes ("skip, swap, or pause anytime")',
-            'Tiered loyalty points (Club SRF) and high-ticket Q4 corporate gifting crates',
+            'Predictable monthly recurring revenue via customizable subscription boxes ("skip, swap, or pause")',
+            'Tiered loyalty points (Club SRF) and massive Q4 corporate holiday gifting catalogs',
         ],
-        theirWeakness: 'Mass-market frozen fulfillment; impersonal customer service; high packaging waste.',
+        theirWeakness:
+            'Rock-hard frozen warehouse fulfillment; zero local personal relationship or hot prepared foods.',
         whatWeStealOrBeat:
-            'Launch "Hofherr Butcher Club" ($149/mo local pickup/delivery) with priority holiday pickup slots + Q4 North Shore Corporate Gift Crates.',
+            'Launch "Hofherr Butcher Club" ($149/mo local pickup/delivery) with priority Thanksgiving/Christmas pickup slots + Q4 North Shore Corporate Gift Crates.',
     },
 ];
 
@@ -579,7 +821,7 @@ const PAIN_VS_FIX_SUMMARY = [
     {
         pain: 'Price "Sticker Shock" for Casual Shoppers',
         quote: 'Higher price point than standard grocery stores for everyday shopping.',
-        fix: '$49 Weeknight Family Dinner Bundles (~$12/person) + Butcher\'s Secret Value Cuts + Butcher Club.',
+        fix: '$54 Weeknight Family Dinner Bundles (~$13.50/person) + Butcher\'s Secret Value Cuts + Butcher Club.',
         impact: 'Converts casual browsers into weekly family dinner buyers.',
     },
     {
@@ -607,7 +849,7 @@ const ROADMAP_PHASES = [
         phase: 'Phase 1 · Friction Removal & Merchandising',
         timeline: 'Days 1–30',
         actions:
-            '1) Add Northfield vs. Winnetka badges across Yelp/FB/Google/Web; 2) Implement 2-Signature Packing Slip for catering & holiday orders; 3) Launch $49 Weeknight Family Bundles & QR "Cook It Right" steak tags; 4) Set up Pre-Paid Express Pickup Shelf at 300 S. Happ Rd.',
+            '1) Add Northfield vs. Winnetka badges across Yelp/FB/Google/Web; 2) Implement 2-Signature Packing Slip for catering & holiday orders; 3) Launch $54 Weeknight Family Bundles & QR "Cook It Right" steak tags; 4) Set up Pre-Paid Express Pickup Shelf at 300 S. Happ Rd.',
         impact: 'Eliminates order mix-ups, location confusion & casual price objections immediately.',
     },
     {
@@ -621,8 +863,8 @@ const ROADMAP_PHASES = [
         phase: 'Phase 3 · Recurring Revenue, B2B & Holiday Scale',
         timeline: 'Days 61–90',
         actions:
-            '1) Launch Hofherr Butcher Club monthly subscription ($149/mo); 2) Deploy Happ Rd. Curbside Express Bays + Winnetka Depot Holiday Pickup Hub; 3) Launch $275–$550 Italian Beef Catering Bars & Q4 Corporate Gift Crates; 4) Host first Monday night "Butcher & Bourbon" Masterclass ($150/seat).',
-        impact: '2x holiday order capacity with zero sidewalk bottlenecks + $20k–$30k/mo recurring revenue.',
+            '1) Launch Hofherr Butcher Club monthly subscription ($149/mo); 2) Deploy Happ Rd. Curbside Express Bays + Winnetka Depot Holiday Pickup Hub; 3) Launch $375 Italian Beef Catering Bars & $225 Q4 Corporate Gift Crates; 4) Host first Monday night "Butcher & Bourbon" Masterclass ($150/seat).',
+        impact: '2x holiday order capacity with zero sidewalk bottlenecks + $488k/yr incremental revenue run-rate.',
     },
 ];
 
@@ -630,6 +872,9 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
     const [activeSlide, setActiveSlide] = useState(0);
     const [viewMode, setViewMode] = useState<'slides' | 'full'>('slides');
     const [compFilter, setCompFilter] = useState<'All' | 'North Shore Local' | 'Chicago Heritage' | 'National DTC'>('All');
+    const [selectedEngines, setSelectedEngines] = useState<Set<string>>(
+        () => new Set(GROWTH_ENGINES.map((e) => e.id))
+    );
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -644,9 +889,23 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [viewMode]);
 
+    const toggleEngine = (id: string) => {
+        setSelectedEngines((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    };
+
     const currentSlide = SLIDES[activeSlide];
     const filteredCompetitors =
         compFilter === 'All' ? COMPETITORS : COMPETITORS.filter((c) => c.tier === compFilter);
+
+    const activeEnginesList = GROWTH_ENGINES.filter((e) => selectedEngines.has(e.id));
+    const totalAnnualRev = activeEnginesList.reduce((sum, e) => sum + e.annualRevenue, 0);
+    const totalAnnualProfit = activeEnginesList.reduce((sum, e) => sum + e.annualProfit, 0);
+    const blendedMargin = totalAnnualRev > 0 ? Math.round((totalAnnualProfit / totalAnnualRev) * 100) : 0;
 
     const deckBody = (
         <>
@@ -660,9 +919,9 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
                                 : 'Interactive 14-Slide Strategy Deck'}
                         </h2>
                         <p className={styles.sectionDesc}>
-                            Covering every side of the business—unit economics, North Shore &amp; Chicago competitor
-                            playbooks, Yelp/Facebook operational fixes, CPG &amp; freezer expansion, B2B catering, and
-                            dark-hours monetization.
+                            Covering every side of the business—whole-animal unit economics, North Shore &amp; Chicago
+                            competitor playbooks, Yelp/Facebook operational fixes, CPG &amp; freezer expansion, B2B
+                            catering, and dark-hours monetization.
                         </p>
                     </div>
 
@@ -866,72 +1125,187 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
                 </div>
             </section>
 
-            {/* ── Section 2: All 6 Business Sides & Unit Economics ── */}
+            {/* ── Section 2: Interactive Revenue & Profit Simulator ── */}
+            <section id="roi-simulator" aria-labelledby="roi-simulator-heading" className="section">
+                <div className={`container ${styles.sectionBlock}`}>
+                    <div className={styles.sectionHeader}>
+                        <h2 id="roi-simulator-heading" className={styles.sectionTitle}>
+                            Interactive Revenue &amp; Margin Model (8 Growth Plays)
+                        </h2>
+                        <p className={styles.sectionDesc}>
+                            Click any of the 8 strategic initiatives below to toggle them on or off and model their
+                            incremental annual revenue and gross profit contribution.
+                        </p>
+                    </div>
+
+                    <div className={styles.roiSummaryBanner}>
+                        <div className={styles.roiBannerLeft}>
+                            <h3 className={styles.roiBannerTitle}>
+                                Projected Incremental Impact ({activeEnginesList.length} of {GROWTH_ENGINES.length}{' '}
+                                Plays Active)
+                            </h3>
+                            <p className={styles.roiBannerDesc}>
+                                Conservative unit math across Northfield (300 S. Happ Rd.) and The Depot (Winnetka
+                                Metra) with zero store expansion required.
+                            </p>
+                        </div>
+
+                        <div className={styles.roiMetricsGroup}>
+                            <div className={styles.roiMetricBox}>
+                                <span className={styles.roiMetricNum}>
+                                    +${totalAnnualRev.toLocaleString()}
+                                </span>
+                                <span className={styles.roiMetricLabel}>Incremental Annual Revenue</span>
+                            </div>
+                            <div className={styles.roiMetricBox}>
+                                <span className={styles.roiMetricNum}>
+                                    +${totalAnnualProfit.toLocaleString()}
+                                </span>
+                                <span className={styles.roiMetricLabel}>Incremental Gross Profit</span>
+                            </div>
+                            <div className={styles.roiMetricBox}>
+                                <span className={styles.roiMetricNum}>{blendedMargin}%</span>
+                                <span className={styles.roiMetricLabel}>Blended Gross Margin</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={styles.twoColGrid}>
+                        {GROWTH_ENGINES.map((engine) => {
+                            const isActive = selectedEngines.has(engine.id);
+                            return (
+                                <button
+                                    key={engine.id}
+                                    type="button"
+                                    onClick={() => toggleEngine(engine.id)}
+                                    className={`${styles.engineSelectCard} ${
+                                        isActive ? styles.engineSelectCardActive : ''
+                                    }`}
+                                >
+                                    <div className={styles.cardHead}>
+                                        <div>
+                                            <span className={styles.cardSub}>{engine.department}</span>
+                                            <h3 className={styles.cardTitle}>{engine.title}</h3>
+                                        </div>
+                                        <span className={`${styles.tag} ${isActive ? styles.tagGold : styles.tagPain}`}>
+                                            {isActive ? '✓ Included' : 'Excluded'}
+                                        </span>
+                                    </div>
+                                    <p className={styles.cardBody}>{engine.unitMath}</p>
+                                    <div className={styles.metricRow}>
+                                        <div className={styles.metricPill}>
+                                            <span className={styles.metricKey}>Annual Revenue</span>
+                                            <span className={styles.metricVal}>
+                                                +${engine.annualRevenue.toLocaleString()}/yr
+                                            </span>
+                                        </div>
+                                        <div className={styles.metricPill}>
+                                            <span className={styles.metricKey}>Gross Margin</span>
+                                            <span className={styles.metricVal}>{engine.grossMarginPct}%</span>
+                                        </div>
+                                        <div className={styles.metricPill}>
+                                            <span className={styles.metricKey}>Annual Gross Profit</span>
+                                            <span className={styles.metricVal}>
+                                                +${engine.annualProfit.toLocaleString()}/yr
+                                            </span>
+                                        </div>
+                                    </div>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            {/* ── Section 3: All 8 Operational & Business Departments ── */}
             <section id="business-pillars" aria-labelledby="business-pillars-heading" className="section">
                 <div className={`container ${styles.sectionBlock}`}>
                     <div className={styles.sectionHeader}>
                         <h2 id="business-pillars-heading" className={styles.sectionTitle}>
-                            All 6 Sides of the Business (Unit Economics &amp; Upgrades)
+                            All 8 Sides of the Business (Operational &amp; Financial Deep-Dive)
                         </h2>
                         <p className={styles.sectionDesc}>
-                            How every revenue stream at Hofherr Meat Co. works together—from whole-animal butcher yield
-                            and commuter lunch traffic to high-margin freezer passes, holiday spikes, B2B catering, and
-                            dark-hours masterclasses.
+                            A complete breakdown of how Supply Chain, Store Labor, Pricing Psychology, Omnichannel
+                            Sync, Marketing/CRM, B2B Catering, CPG Packaging, and Real Estate Dark-Hours work together.
                         </p>
                     </div>
 
                     <div className={styles.twoColGrid}>
-                        {BUSINESS_PILLARS.map((pillar) => (
-                            <div key={pillar.name} className={`${styles.card} ${styles.cardFix}`}>
+                        {BUSINESS_DEPARTMENTS.map((dept) => (
+                            <div key={dept.id} className={`${styles.card} ${styles.cardFix}`}>
                                 <div className={styles.cardHead}>
                                     <div>
-                                        <span className={styles.cardSub}>{pillar.role}</span>
-                                        <h3 className={styles.cardTitle}>{pillar.name}</h3>
+                                        <span className={styles.cardSub}>{dept.deptCode}</span>
+                                        <h3 className={styles.cardTitle}>{dept.name}</h3>
                                     </div>
-                                    <span className={`${styles.tag} ${styles.tagGold}`}>{pillar.margin}</span>
+                                    <span className={`${styles.tag} ${styles.tagGold}`}>{dept.margin}</span>
                                 </div>
 
                                 <p className={styles.cardBody}>
-                                    <strong>Current Strength:</strong> {pillar.currentStrength}
+                                    <strong>Current Strength:</strong> {dept.currentStrength}
                                 </p>
                                 <p className={styles.cardBody}>
-                                    <strong>Current Friction / Bottleneck:</strong> {pillar.currentBottleneck}
+                                    <strong>Current Friction / Bottleneck:</strong> {dept.currentBottleneck}
                                 </p>
                                 <p className={styles.cardBody}>
-                                    <strong>What Competitors Do:</strong> {pillar.competitorPlay}
+                                    <strong>What Competitors Do:</strong> {dept.competitorPlay}
                                 </p>
                                 <p className={styles.cardBody}>
-                                    <strong>Strategic Upgrade:</strong> {pillar.hofherrUpgrade}
+                                    <strong>Hofherr Strategic Upgrade:</strong> {dept.hofherrUpgrade}
                                 </p>
 
-                                <div className={styles.metricRow}>
-                                    <div className={styles.metricPill}>
-                                        <span className={styles.metricKey}>Target Gross Margin</span>
-                                        <span className={styles.metricVal}>{pillar.margin}</span>
-                                    </div>
-                                    <div className={styles.metricPill}>
-                                        <span className={styles.metricKey}>Target Ticket / AOV</span>
-                                        <span className={styles.metricVal}>{pillar.aov}</span>
-                                    </div>
-                                </div>
+                                <ul className={styles.bulletList}>
+                                    {dept.kpis.map((kpi) => (
+                                        <li key={kpi} className={styles.bulletItem}>
+                                            <strong>Target KPI:</strong> {kpi}
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* ── Section 3: Competitor Intelligence Matrix ── */}
+            {/* ── Section 4: Competitor Intelligence & Feature Matrix ── */}
             <section id="competitors" aria-labelledby="competitors-heading" className="section">
                 <div className={`container ${styles.sectionBlock}`}>
                     <div className={styles.sectionHeader}>
                         <h2 id="competitors-heading" className={styles.sectionTitle}>
-                            What Competitors Are Doing (And How Hofherr Wins)
+                            Competitor Teardowns &amp; 10-Capability Comparison Matrix
                         </h2>
                         <p className={styles.sectionDesc}>
-                            Benchmarking direct North Shore grocers (Grand Food Center, Sunset Foods), Chicago butcher
-                            legends (Paulina Market, Publican Quality Meats, Gene&apos;s), and National DTC leaders
-                            (Porter Road, Snake River Farms, ButcherBox).
+                            How Hofherr Meat Co. stacks up against North Shore grocers (Grand Food Center, Sunset
+                            Foods), Chicago butcher legends (Paulina Market, Publican Quality Meats, Gene&apos;s,
+                            Carnivore), and National DTC giants (Porter Road, Snake River Farms, ButcherBox).
                         </p>
+                    </div>
+
+                    <div className={styles.tableWrap}>
+                        <table className={styles.roadmapTable}>
+                            <thead>
+                                <tr>
+                                    <th>Capability / Business Line</th>
+                                    <th>Hofherr Meat Co.</th>
+                                    <th>Grand Food &amp; Sunset Foods</th>
+                                    <th>Paulina Market &amp; PQM</th>
+                                    <th>Porter Road / SRF / ButcherBox</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {FEATURE_MATRIX.map((row) => (
+                                    <tr key={row.capability}>
+                                        <td>
+                                            <strong>{row.capability}</strong>
+                                        </td>
+                                        <td className={styles.cellWin}>{row.hofherr}</td>
+                                        <td>{row.grandSunset}</td>
+                                        <td>{row.paulinaPqm}</td>
+                                        <td className={styles.cellMuted}>{row.nationalDtc}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
 
                     <div className={styles.modeTabs}>
@@ -958,6 +1332,10 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
                                     <span className={`${styles.tag} ${styles.tagGold}`}>{comp.tier}</span>
                                 </div>
 
+                                <p className={styles.cardBody}>
+                                    <strong>Positioning:</strong> {comp.pricePositioning}
+                                </p>
+
                                 <ul className={styles.bulletList}>
                                     {comp.whatTheyDoWell.map((point) => (
                                         <li key={point} className={styles.bulletItem}>
@@ -978,7 +1356,7 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
                 </div>
             </section>
 
-            {/* ── Section 4: Pain Point to Solution Matrix ── */}
+            {/* ── Section 5: Pain Point to Solution Matrix ── */}
             <section id="pain-matrix" aria-labelledby="pain-matrix-heading" className="section">
                 <div className={`container ${styles.sectionBlock}`}>
                     <div className={styles.sectionHeader}>
@@ -1013,7 +1391,7 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
                 </div>
             </section>
 
-            {/* ── Section 5: 90-Day Execution Roadmap ── */}
+            {/* ── Section 6: 90-Day Execution Roadmap ── */}
             <section id="rollout-plan" aria-labelledby="rollout-plan-heading" className="section">
                 <div className={`container ${styles.sectionBlock}`}>
                     <div className={styles.sectionHeader}>
@@ -1070,8 +1448,9 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
                         </h1>
                         <p className={styles.subtitle}>
                             A complete strategic growth plan for Hofherr Meat Co. — synthesizing every Yelp and Facebook
-                            review, analyzing North Shore, Chicago, and National DTC competitors, and optimizing all 6
-                            revenue engines across Northfield (300 S. Happ Rd.) and The Depot (Winnetka Metra).
+                            review, tearing down 8 North Shore, Chicago, and National DTC competitors across 10
+                            capabilities, and modeling +$488k/yr in incremental revenue across all 8 sides of the
+                            business.
                         </p>
                         <div className={styles.heroStats}>
                             <div className={styles.statItem}>
@@ -1079,33 +1458,36 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
                                 <span className={styles.statLabel}>360° Strategy Deck</span>
                             </div>
                             <div className={styles.statItem}>
-                                <span className={styles.statValue}>6 Engines</span>
-                                <span className={styles.statLabel}>Business Pillars Analyzed</span>
+                                <span className={styles.statValue}>8 Sides</span>
+                                <span className={styles.statLabel}>Business Departments Modeled</span>
                             </div>
                             <div className={styles.statItem}>
-                                <span className={styles.statValue}>8 Rivals</span>
-                                <span className={styles.statLabel}>Local &amp; National Benchmarks</span>
+                                <span className={styles.statValue}>+$488k/yr</span>
+                                <span className={styles.statLabel}>Incremental Revenue Model</span>
                             </div>
                             <div className={styles.statItem}>
-                                <span className={styles.statValue}>+30% AOV</span>
-                                <span className={styles.statLabel}>Target Revenue &amp; Margin Lift</span>
+                                <span className={styles.statValue}>+$304k/yr</span>
+                                <span className={styles.statLabel}>Incremental Gross Profit (62%)</span>
                             </div>
                         </div>
                         <nav className={styles.quickJumpNav} aria-label="Pitch deck sections">
                             <a href="#pitch-deck" className={styles.jumpLink}>
                                 01 · 14-Slide Interactive Deck
                             </a>
+                            <a href="#roi-simulator" className={styles.jumpLink}>
+                                02 · Interactive Revenue &amp; ROI Simulator
+                            </a>
                             <a href="#business-pillars" className={styles.jumpLink}>
-                                02 · All 6 Business Sides &amp; Margins
+                                03 · All 8 Business Sides Deep-Dive
                             </a>
                             <a href="#competitors" className={styles.jumpLink}>
-                                03 · Competitor Intelligence
+                                04 · Competitor Matrix &amp; Teardowns
                             </a>
                             <a href="#pain-matrix" className={styles.jumpLink}>
-                                04 · Review Pain-Point Fixes
+                                05 · Review Pain-Point Fixes
                             </a>
                             <a href="#rollout-plan" className={styles.jumpLink}>
-                                05 · 90-Day Execution Plan
+                                06 · 90-Day Execution Plan
                             </a>
                         </nav>
                     </div>

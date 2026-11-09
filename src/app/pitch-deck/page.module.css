@@ -1,4 +1,4 @@
-/* ─── 360° Business, Review Audit & Competitive Strategy Pitch Deck ─── */
+/* ─── 360° Business, Competitor & Review Strategy Pitch Deck ─── */
 
 .page {
     min-height: 100vh;
@@ -15,7 +15,7 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
-    max-width: 1040px;
+    max-width: 1080px;
 }
 
 .title {
@@ -32,7 +32,7 @@
     font-size: clamp(1rem, 1.6vw, 1.2rem);
     color: var(--fg-2);
     line-height: 1.7;
-    max-width: 860px;
+    max-width: 880px;
 }
 
 .heroStats {
@@ -270,7 +270,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-width: 840px;
+    max-width: 860px;
 }
 
 .sectionTitle {
@@ -328,9 +328,9 @@
 }
 
 .cardSub {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     color: var(--gold);
 }
@@ -370,8 +370,8 @@
 .metricRow {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
-    padding-top: 8px;
+    gap: 24px;
+    padding-top: 12px;
     border-top: 1px solid var(--border);
 }
 
@@ -390,7 +390,7 @@
 }
 
 .metricVal {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--gold);
 }
@@ -421,6 +421,89 @@
     color: var(--fg);
 }
 
+/* ── Interactive Revenue Simulator Banner ── */
+.roiSummaryBanner {
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.roiBannerLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 640px;
+}
+
+.roiBannerTitle {
+    font-size: 1.8rem;
+    color: var(--fg);
+}
+
+.roiBannerDesc {
+    font-size: 14px;
+    color: var(--fg-3);
+    line-height: 1.6;
+}
+
+.roiMetricsGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+}
+
+.roiMetricBox {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.roiMetricNum {
+    font-family: "Yanone Kaffeesatz", sans-serif;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+}
+
+.roiMetricLabel {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+}
+
+.engineSelectCard {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+}
+
+.engineSelectCard:hover {
+    border-color: var(--gold);
+}
+
+.engineSelectCardActive {
+    border-color: var(--red);
+    border-left: 4px solid var(--red);
+    background: var(--bg-4);
+}
+
 /* ── Tables ── */
 .tableWrap {
     overflow-x: auto;
@@ -436,10 +519,10 @@
 
 .roadmapTable th,
 .roadmapTable td {
-    padding: 16px 24px;
+    padding: 16px 20px;
     text-align: left;
     border-bottom: 1px solid var(--border);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.6;
     vertical-align: top;
 }
@@ -460,6 +543,15 @@
 
 .roadmapTable td strong {
     color: var(--fg);
+}
+
+.cellWin {
+    color: var(--gold-light);
+    font-weight: 700;
+}
+
+.cellMuted {
+    color: var(--fg-muted);
 }
 
 @media (max-width: 1080px) {
