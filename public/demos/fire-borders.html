@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fire Border Options</title>
+  <style>
+    /* Hofherr brand system */
+    :root {
+      --oxblood: #8b0a10;
+      /* PMS 7622 C */
+      --red: #cc0e1d;
+      /* PMS 186 C */
+      --amber: #f59b1a;
+      /* PMS 1375 C */
+      --charcoal: #1c1614;
+      /* PMS Black 7 C */
+      --cream: #f3ead8;
+      /* PMS 7527 C tint */
+      --kraft: #c8a47e;
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0d0a09;
+      color: var(--cream);
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+    }
+
+    header {
+      text-align: center;
+      padding: 56px 16px 8px;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: -0.01em;
+    }
+
+    header p {
+      margin: 0 auto;
+      max-width: 62ch;
+      color: #b5a796;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .swatches {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .swatches span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #b5a796;
+    }
+
+    .swatches i {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      display: inline-block;
+      border: 1px solid rgba(243, 234, 216, .2);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 72px 48px;
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: 72px 32px 120px;
+    }
+
+    .cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .label {
+      text-align: center;
+    }
+
+    .label b {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .label span {
+      font-size: 13px;
+      color: #9a8c7e;
+      line-height: 1.5;
+    }
+
+    /* ── card shell shared by every option ── */
+    .card {
+      position: relative;
+      width: 260px;
+      aspect-ratio: 7 / 10;
+      border-radius: var(--radius);
+      isolation: isolate;
+    }
+
+    .card>.fx {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      pointer-events: none;
+    }
+
+    .body {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      z-index: 0;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(180deg, #171210, var(--charcoal));
+    }
+
+    .tag {
+      align-self: flex-start;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(245, 155, 26, .5);
+      background: rgba(245, 155, 26, .12);
+    }
+
+    .body h2 {
+      margin: 0 0 6px;
+      font-size: 24px;
+      line-height: 1.05;
+    }
+
+    .body p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #b5a796;
+    }
+
+    /* flame layers: an outline pushed through an SVG fire filter */
+    .flames {
+      border: 5px solid #fff;
+      mix-blend-mode: screen;
+      z-index: 2;
+    }
+
+    .flames.wide {
+      border-width: 11px;
+      opacity: .75;
+      z-index: 1;
+    }
+
+    .core {
+      border: 1.5px solid var(--amber);
+      z-index: 3;
+      box-shadow: 0 0 5px 1px rgba(245, 155, 26, .7), 0 0 16px 3px rgba(204, 14, 29, .45), inset 0 0 12px 2px rgba(139, 10, 16, .4);
+    }
+
+    .heat {
+      inset: -36px !important;
+      border-radius: calc(var(--radius) + 36px) !important;
+      z-index: -1;
+      filter: blur(22px);
+      background: radial-gradient(closest-side, rgba(204, 14, 29, .32), rgba(139, 10, 16, .14) 60%, transparent);
+      animation: breathe 2.6s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+
+      0%,
+      100% {
+        opacity: .8;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.03);
+      }
+    }
+
+    /* 1 · Inferno */
+    .inferno .flames {
+      filter: url(#f-inferno);
+    }
+
+    .inferno .flames.wide {
+      filter: url(#f-inferno-wide);
+    }
+
+    /* 2 · Smoulder — no tall flames, a live ember edge that pulses */
+    .smoulder .flames {
+      border-width: 4px;
+      filter: url(#f-smoulder);
+    }
+
+    .smoulder .core {
+      border-color: var(--oxblood);
+      box-shadow: 0 0 10px 2px rgba(139, 10, 16, .8), 0 0 28px 6px rgba(204, 14, 29, .25);
+      animation: ember 3.2s ease-in-out infinite;
+    }
+
+    @keyframes ember {
+
+      0%,
+      100% {
+        box-shadow: 0 0 8px 1px rgba(139, 10, 16, .7), 0 0 22px 4px rgba(204, 14, 29, .2);
+      }
+
+      50% {
+        box-shadow: 0 0 14px 3px rgba(204, 14, 29, .9), 0 0 34px 8px rgba(245, 155, 26, .25);
+      }
+    }
+
+    /* 3 · Grill — flames only climb from the bottom edge; the rest glows */
+    .grill .flames {
+      border-width: 0 0 9px 0;
+      filter: url(#f-grill);
+    }
+
+    .grill .flames.wide {
+      border-width: 0 0 16px 0;
+      filter: url(#f-inferno-wide);
+    }
+
+    .grill .body {
+      padding-bottom: 78px;
+    }
+
+    .grill .core {
+      box-shadow: 0 0 4px 1px rgba(245, 155, 26, .5), 0 0 14px 3px rgba(139, 10, 16, .5);
+    }
+
+    /* 4 · Two-spot linocut — only Oxblood + Amber, hard-edged like the printed wrap */
+    .spot .flames {
+      border-width: 6px;
+      mix-blend-mode: normal;
+      filter: url(#f-spot);
+    }
+
+    .spot .core {
+      border: 2px solid var(--oxblood);
+      box-shadow: none;
+    }
+
+    .spot .body {
+      background: var(--charcoal);
+    }
+
+    /* 5 · Scorched paper — a Cream card whose edge is charring */
+    .paper .body {
+      background: radial-gradient(130% 110% at 50% 45%, var(--cream) 55%, #e2cba6 78%, var(--kraft) 92%);
+      color: var(--charcoal);
+    }
+
+    .paper .body p {
+      color: #5b4d43;
+    }
+
+    .paper .tag {
+      color: var(--oxblood);
+      border-color: rgba(139, 10, 16, .45);
+      background: rgba(139, 10, 16, .06);
+    }
+
+    .paper .char {
+      border: 14px solid var(--charcoal);
+      filter: url(#f-char);
+      z-index: 1;
+    }
+
+    .paper .flames {
+      border-width: 4px;
+      filter: url(#f-paperflame);
+      z-index: 2;
+    }
+
+    /* 6 · Corner torches — fire bursts from the four corners only */
+    .torches .flames {
+      filter: url(#f-inferno);
+      -webkit-mask: radial-gradient(circle at 0 0, #000 0 11%, transparent 22%), radial-gradient(circle at 100% 0, #000 0 11%, transparent 22%),
+        radial-gradient(circle at 0 100%, #000 0 11%, transparent 22%), radial-gradient(circle at 100% 100%, #000 0 11%, transparent 22%);
+      mask: radial-gradient(circle at 0 0, #000 0 11%, transparent 22%), radial-gradient(circle at 100% 0, #000 0 11%, transparent 22%),
+        radial-gradient(circle at 0 100%, #000 0 11%, transparent 22%), radial-gradient(circle at 100% 100%, #000 0 11%, transparent 22%);
+    }
+
+    .torches .core {
+      border-color: rgba(204, 14, 29, .6);
+      box-shadow: 0 0 10px 1px rgba(139, 10, 16, .6);
+    }
+
+    /* 7 · Ignite on hover — calm ember line until the pointer arrives */
+    .ignite .flames,
+    .ignite .flames.wide,
+    .ignite .heat {
+      opacity: 0;
+      transition: opacity .6s ease, transform .6s ease;
+      transform: translateY(8px);
+    }
+
+    .ignite .flames {
+      filter: url(#f-inferno);
+    }
+
+    .ignite .flames.wide {
+      filter: url(#f-inferno-wide);
+    }
+
+    .ignite .core {
+      border-color: var(--oxblood);
+      box-shadow: 0 0 6px 1px rgba(139, 10, 16, .6);
+      transition: box-shadow .6s ease, border-color .6s ease;
+    }
+
+    .ignite:hover .flames,
+    .ignite:focus-within .flames,
+    .ignite.lit .flames {
+      opacity: 1;
+      transform: none;
+    }
+
+    .ignite:hover .flames.wide,
+    .ignite.lit .flames.wide {
+      opacity: .75;
+      transform: none;
+    }
+
+    .ignite:hover .heat,
+    .ignite.lit .heat {
+      opacity: 1;
+      transform: none;
+    }
+
+    .ignite:hover .core,
+    .ignite.lit .core {
+      border-color: var(--amber);
+      box-shadow: 0 0 6px 1px rgba(245, 155, 26, .7), 0 0 18px 4px rgba(204, 14, 29, .5);
+    }
+
+    /* 8 · Blue-hot core — Hofherr Red outer flame with a Cream-hot inner line (no off-brand colors) */
+    .whitehot .flames {
+      filter: url(#f-hot);
+      border-width: 4px;
+    }
+
+    .whitehot .flames.wide {
+      filter: url(#f-red-wide);
+    }
+
+    .whitehot .core {
+      border: 2px solid var(--cream);
+      box-shadow: 0 0 6px 2px rgba(243, 234, 216, .8), 0 0 18px 5px rgba(245, 155, 26, .6), 0 0 34px 10px rgba(204, 14, 29, .4);
+    }
+
+    /* embers */
+    .embers {
+      position: absolute;
+      inset: -20px;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .ember {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 6px 2px rgba(204, 14, 29, .85);
+      opacity: 0;
+      animation: rise var(--d, 3s) linear infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    .ignite:not(:hover):not(.lit) .ember {
+      animation-play-state: paused;
+      opacity: 0;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(var(--drift, 10px), -120px) scale(.2);
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .heat,
+      .ember,
+      .smoulder .core {
+        animation: none;
+      }
+
+      .ember {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs id="defs"></defs>
+  </svg>
+
+  <header>
+    <h1>Fire border options</h1>
+    <p>Eight treatments, all burning through the Hofherr palette only — Charcoal → Oxblood → Hofherr Red → Smokehouse
+      Amber, with Counter Cream as the hottest core. Hover the “Ignite” card.</p>
+    <div class="swatches">
+      <span><i style="background:#8B0A10"></i>Oxblood #8B0A10</span>
+      <span><i style="background:#CC0E1D"></i>Hofherr Red #CC0E1D</span>
+      <span><i style="background:#F59B1A"></i>Amber #F59B1A</span>
+      <span><i style="background:#1C1614"></i>Charcoal #1C1614</span>
+      <span><i style="background:#F3EAD8"></i>Cream #F3EAD8</span>
+      <span><i style="background:#C8A47E"></i>Kraft #C8A47E</span>
+    </div>
+  </header>
+
+  <main class="grid" id="grid"></main>
+
+  <script>
+    /* ── palette → filter color ramps (0–1 channels) ─────────────────────── */
+    const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+    const P = { charcoal: hex('#1C1614'), oxblood: hex('#8B0A10'), red: hex('#CC0E1D'), amber: hex('#F59B1A'), cream: hex('#F3EAD8') };
+    const ramp = (stops, alpha, type = 'table') => ({ stops, alpha, type });
+    const RAMPS = {
+      full: ramp([P.charcoal, P.oxblood, P.red, P.amber, P.amber, P.cream], [0, .55, .85, 1, 1, 1]),
+      warm: ramp([P.charcoal, P.oxblood, P.red, P.red, P.amber], [0, .45, .8, .95, 1]),
+      ember: ramp([P.charcoal, P.oxblood, P.oxblood, P.red, P.amber], [0, .5, .8, .95, 1]),
+      red: ramp([P.charcoal, P.oxblood, P.red, P.red], [0, .4, .8, .95]),
+      hot: ramp([P.charcoal, P.oxblood, P.red, P.amber, P.cream, P.cream], [0, .5, .8, 1, 1, 1]),
+      spot: ramp([P.charcoal, P.oxblood, P.amber], [0, 1, 1], 'discrete'),   // two-spot, hard edges
+      char: ramp([P.charcoal, P.charcoal, P.charcoal], [0, .7, .95]),
+    };
+    const fn = (ch, r) => `<feFunc${ch} type="${r.type}" tableValues="${ch === 'A' ? r.alpha.join(' ') : r.stops.map((s) => s['RGB'.indexOf(ch)].toFixed(3)).join(' ')}" />`;
+
+    /* ── fire filter generator: seamless rising noise → displacement → upward smear → flicker → palette ramp ── */
+    const TILE = 320;
+    const filters = [];
+    function fire(id, o) {
+      const { fx = .07, fy = .016, oct = 3, seed = 3, blur = 3, scale = 26, rise = [7, 15, 25, 37], fade = [.75, .5, .3, .14],
+        k1 = 2.2, k4 = -.08, r = RAMPS.full, glow = [1.2, 7], speed = 70, sway = 8 } = o;
+      filters.push({ id, speed, sway });
+      const ups = rise.map((d, i) => `<feOffset in="lick" dy="${-d}" result="u${i}"/><feComponentTransfer in="u${i}" result="uf${i}"><feFuncA type="linear" slope="${fade[i]}"/></feComponentTransfer>`).join('');
+      const merge = [...rise.map((_, i) => `<feMergeNode in="uf${rise.length - 1 - i}"/>`), '<feMergeNode in="lick"/>'].join('');
+      return `
+  <filter id="${id}" x="-35%" y="-50%" width="170%" height="185%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="${fx} ${fy}" numOctaves="${oct}" seed="${seed}" stitchTiles="stitch" x="0" y="0" width="${TILE}" height="${TILE}" result="raw"/>
+    <feColorMatrix in="raw" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0 1" result="op"/>
+    <feTile in="op" result="tiled"/>
+    <feOffset id="${id}-a" in="tiled" result="n1"/><feOffset id="${id}-b" in="tiled" result="n2"/>
+    <feMerge result="noise"><feMergeNode in="n2"/><feMergeNode in="n1"/></feMerge>
+    <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  1.5 0 0 0 -.25" result="fl"/>
+    <feGaussianBlur in="SourceGraphic" stdDeviation="${blur}" result="soft"/>
+    <feDisplacementMap in="soft" in2="noise" scale="${scale}" xChannelSelector="R" yChannelSelector="G" result="lick"/>
+    ${ups}
+    <feMerge result="body">${merge}</feMerge>
+    <feComposite in="body" in2="fl" operator="arithmetic" k1="${k1}" k2="0" k3="0" k4="${k4}" result="flick"/>
+    <feColorMatrix in="flick" type="matrix" values="0 0 0 1 0  0 0 0 1 0  0 0 0 1 0  0 0 0 1 0" result="lum"/>
+    <feComponentTransfer in="lum" result="col">${fn('R', r)}${fn('G', r)}${fn('B', r)}${fn('A', r)}</feComponentTransfer>
+    ${glow.length ? `${glow.map((g, i) => `<feGaussianBlur in="col" stdDeviation="${g}" result="g${i}"/>`).join('')}<feMerge>${glow.map((_, i) => `<feMergeNode in="g${glow.length - 1 - i}"/>`).join('')}<feMergeNode in="col"/></feMerge>` : ''}
+  </filter>`;
+    }
+
+    document.getElementById('defs').innerHTML = [
+      fire('f-inferno', {}),
+      fire('f-inferno-wide', { fx: .045, fy: .011, oct: 2, seed: 7, blur: 6, scale: 44, rise: [20, 42], fade: [.55, .25], k1: 1.7, k4: -.1, r: RAMPS.warm, glow: [4], speed: 45, sway: 12 }),
+      fire('f-smoulder', { fx: .09, fy: .05, seed: 13, blur: 2, scale: 10, rise: [3], fade: [.5], k1: 2.6, k4: -.18, r: RAMPS.ember, glow: [2, 9], speed: 18, sway: 2 }),
+      fire('f-grill', { fx: .06, fy: .014, seed: 5, blur: 3, scale: 30, rise: [10, 22, 36, 52, 70], fade: [.8, .6, .4, .22, .1], k1: 2.3, k4: -.08, r: RAMPS.full, speed: 85 }),
+      fire('f-spot', { fx: .08, fy: .02, seed: 9, blur: 2.5, scale: 24, rise: [6, 14, 24], fade: [.8, .55, .3], k1: 2.4, k4: -.1, r: RAMPS.spot, glow: [], speed: 60 }),
+      fire('f-char', { fx: .05, fy: .05, oct: 3, seed: 21, blur: 4, scale: 22, rise: [], fade: [], k1: 2.4, k4: -.05, r: RAMPS.char, glow: [], speed: 0, sway: 0 }),
+      fire('f-paperflame', { fx: .08, fy: .02, seed: 4, blur: 2, scale: 16, rise: [5, 11], fade: [.6, .3], k1: 2.2, k4: -.12, r: RAMPS.warm, glow: [1, 5], speed: 55 }),
+      fire('f-hot', { seed: 17, r: RAMPS.hot, speed: 80 }),
+      fire('f-red-wide', { fx: .04, fy: .01, oct: 2, seed: 19, blur: 6, scale: 48, rise: [22, 46], fade: [.55, .25], k1: 1.7, k4: -.1, r: RAMPS.red, glow: [5], speed: 40, sway: 12 }),
+    ].join('');
+
+    /* ── the cards ── */
+    const OPTIONS = [
+      ['inferno', 'Inferno', 'Full flames climbing off every edge. The loudest option — hero sections, holiday promos.', 'Fresh off the fire', ['heat', 'flames wide', 'flames', 'core'], 22],
+      ['smoulder', 'Smoulder', 'No tall flames — a live ember edge that pulses. Calm enough for product cards and lists.', 'Dry-aged 45 days', ['flames', 'core'], 6],
+      ['grill', 'Grill line', 'Flames rise only from the bottom edge, like cooking over coals. Great for BBQ and catering.', 'Whole hog BBQ', ['heat', 'flames wide', 'flames', 'core'], 14],
+      ['spot', 'Two-spot linocut', 'Only Oxblood + Amber with hard edges — matches the printed wrap, stickers and stamps.', 'Est. 2014', ['flames', 'core'], 0],
+      ['paper', 'Scorched paper', 'A Counter Cream card whose edge is charring and catching. Perfect for menus and recipes.', 'House recipe', ['char', 'flames'], 8],
+      ['torches', 'Corner torches', 'Fire bursts from the four corners only — frames content without crowding it.', 'Gift cards', ['heat', 'flames', 'core'], 10],
+      ['ignite', 'Ignite on hover', 'A quiet Oxblood line that bursts into flame when you hover or tap. Best for clickable cards.', 'Hover me', ['heat', 'flames wide', 'flames', 'core'], 16],
+      ['whitehot', 'Red-hot', 'Hofherr Red outer flame around a Counter Cream-hot inner line. Intense, for featured offers.', 'Weekly special', ['heat', 'flames wide', 'flames', 'core'], 18],
+    ];
+    const grid = document.getElementById('grid');
+    for (const [cls, title, desc, tag, layers, emberCount] of OPTIONS) {
+      const cell = document.createElement('section');
+      cell.className = 'cell';
+      cell.innerHTML = `
+    <div class="card ${cls}" tabindex="0" aria-label="${title} fire border">
+      ${layers.includes('heat') ? '<div class="fx heat"></div>' : ''}
+      <div class="body"><span class="tag">${tag}</span><div><h2>${title}</h2><p>Hofherr Meat Co. · Northfield</p></div></div>
+      ${layers.filter((l) => l !== 'heat').map((l) => `<div class="fx ${l}"></div>`).join('')}
+      <div class="embers"></div>
+    </div>
+    <div class="label"><b>${title}</b><span>${desc}</span></div>`;
+      grid.appendChild(cell);
+      const emb = cell.querySelector('.embers');
+      for (let i = 0; i < emberCount; i++) {
+        const e = document.createElement('span');
+        e.className = 'ember';
+        const bottom = cls === 'grill';
+        e.style.left = `${8 + Math.random() * 84}%`;
+        e.style.top = bottom ? `${82 + Math.random() * 10}%` : `${10 + Math.random() * 30}%`;
+        e.style.setProperty('--d', `${2 + Math.random() * 2.5}s`);
+        e.style.setProperty('--delay', `${-Math.random() * 4}s`);
+        e.style.setProperty('--drift', `${(Math.random() - .5) * 40}px`);
+        emb.appendChild(e);
+      }
+    }
+
+    /* ── animate: scroll each seamless noise tile upward; two copies one tile apart hide the seam ── */
+        function startFireBorders() {
+          if (typeof window === 'undefined' || typeof matchMedia === 'undefined') return;
+          const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          const anim = filters.map((f) => ({ ...f, a: document.getElementById(`${f.id}-a`), b: document.getElementById(`${f.id}-b`) }));
+          const t0 = performance.now();
+          function tick(now) {
+            const t = (now - t0) / 1000;
+            for (const f of anim) {
+              const d = (t * f.speed) % TILE, dx = Math.sin(t * .8 + f.speed) * f.sway;
+              f.a.setAttribute('dy', -d); f.b.setAttribute('dy', TILE - d);
+              f.a.setAttribute('dx', dx); f.b.setAttribute('dx', dx);
+            }
+            requestAnimationFrame(tick);
+          }
+          if (!reduce) requestAnimationFrame(tick);
+          // touch devices: tap the Ignite card to light it
+          document.querySelectorAll('.ignite').forEach((c) => c.addEventListener('click', () => c.classList.toggle('lit')));
+        }
+        if (typeof window !== 'undefined') startFireBorders();
+  </script>
+</body>
+
+</html>

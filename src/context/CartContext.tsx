@@ -39,11 +39,11 @@ function createFlyingDot(sx: number, sy: number) {
     const ty = cartRect.top + cartRect.height / 2;
 
     const dot = document.createElement('div');
-    dot.innerHTML = `<img src="/assets/item.png" alt="" width="40" height="40" style="width:40px;height:40px;object-fit:contain;" />`;
+    dot.innerHTML = `<img src="/assets/item.png?v=2" alt="" width="80" height="80" style="width:80px;height:80px;object-fit:contain;" />`;
     dot.style.cssText = `
         position: fixed;
         left: ${sx}px; top: ${sy}px;
-        width: 40px; height: 40px;
+        width: 80px; height: 80px;
         z-index: 99999;
         pointer-events: none;
         filter: drop-shadow(0 3px 8px rgba(0,0,0,0.3));
@@ -60,8 +60,8 @@ function createFlyingDot(sx: number, sy: number) {
     const duration = Math.min(900, Math.max(700, dist * 0.9));
 
     // Final position: center the icon on the cart bag (offset by half the icon size)
-    const finalX = tx - 20;
-    const finalY = ty - 17;
+    const finalX = tx - 40;
+    const finalY = ty - 34;
 
     const anim = dot.animate([
         { transform: 'translate3d(0px, 0px, 0) scale(1.2)', opacity: '1' },

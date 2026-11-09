@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Yanone_Kaffeesatz, Inter, Outfit } from "next/font/google";
+import { Yanone_Kaffeesatz, Inter } from "next/font/google";
 import { draftMode } from "next/headers";
 import Script from "next/script";
 import dynamic from "next/dynamic";
@@ -37,10 +37,6 @@ const inter = Inter({
   variable: "--font-body",
 });
 
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-outfit",
-});
 
 export const metadata: Metadata = {
   title: "Hofherr Meat Co. | Northfield's Premier Craft Butcher",
@@ -112,13 +108,8 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" className={`${yanone.variable} ${inter.variable} ${outfit.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${yanone.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://www.google.com" />
-        <link rel="preconnect" href="https://maps.googleapis.com" />
-        <link rel="preconnect" href="https://maps.gstatic.com" crossOrigin="anonymous" />
-        <link rel="prefetch" href="https://www.google.com/maps?q=300%20Happ%20Rd%2C%20Northfield%2C%20IL%2060093&output=embed" as="document" />
-        <link rel="prefetch" href="https://www.google.com/maps?q=780%20Elm%20St%2C%20Winnetka%2C%20IL%2060093&output=embed" as="document" />
       </head>
       <body suppressHydrationWarning>
         <Script

@@ -47,6 +47,7 @@ const SITE_MAP: SiteSection[] = [
         icon: '🧭',
         pages: [
             { name: 'Our Story', path: '/our-story', icon: '📖' },
+            { name: 'Product Identity', path: '/product-identity', icon: '🏷️', badge: 'new' },
             { name: 'Visit Us', path: '/visit', icon: '📍' },
             { name: 'Cut Guide', path: '/cut-guide', icon: '🔪' },
             { name: 'FAQ', path: '/faq', icon: '❓' },
@@ -68,6 +69,7 @@ const SITE_MAP: SiteSection[] = [
             { name: 'Privacy Policy', path: '/privacy', icon: '🔒' },
             { name: 'Terms of Service', path: '/terms', icon: '📄' },
             { name: 'Admin Panel', path: '/admin', icon: '⚙️', badge: 'internal' },
+            { name: 'Review & Growth Pitch Deck', path: '/pitch-deck', icon: '📊', badge: 'new' },
         ],
     },
 ];

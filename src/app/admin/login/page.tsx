@@ -76,8 +76,8 @@ return (
         {/* ── Left: Illustration panel ─────────────────────────────── */}
         <div className={styles.illustrationPanel}>
             <Image
-                src="/assets/admin-bg.jpg"
-                alt="Hofherr Meats illustration"
+                src="/assets/identity/hofherr-wrapping-paper-print-hd.jpg"
+                alt="Hofherr Meat Co. printed butcher wrapping paper"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 style={{ objectFit: 'cover' }}
@@ -93,7 +93,10 @@ return (
         <div className={styles.formPanel}>
             <div className={styles.loginCard}>
                 <div className={styles.header}>
-                    <div className={styles.wordmark}>HOFHERR</div>
+                    <div className={styles.wordmark}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/assets/logo.svg" alt="Hofherr Meat Co." />
+                    </div>
                     <div className={styles.subtitle}>Admin Dashboard Access</div>
                     <div className={styles.divider} />
                 </div>
@@ -103,8 +106,8 @@ return (
                 {forgotMode ? (
                     forgotSuccess ? (
                         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                            <h3 style={{ color: '#ef4444', marginBottom: '12px' }}>Check Your Email</h3>
-                            <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '24px', lineHeight: '1.5' }}>
+                            <h3 className={styles.successTitle}>Check Your Email</h3>
+                            <p className={styles.successText}>
                                 If an account exists for {email}, we've sent a password reset link.<br />
                                 Please check your inbox and spam folder.
                             </p>
@@ -119,7 +122,7 @@ return (
                         </div>
                     ) : (
                         <form className={styles.form} onSubmit={handleForgot}>
-                            <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '8px' }}>
+                            <p className={styles.successText} style={{ marginBottom: '8px' }}>
                                 Enter your email and we'll send a secure reset link.
                             </p>
                             <div className={styles.inputGroup}>

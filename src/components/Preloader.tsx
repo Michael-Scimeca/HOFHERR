@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import styles from './Preloader.module.css';
@@ -11,6 +11,7 @@ const FireTestClient = dynamic(() => import('@/app/fire-test/FireTestClient'), {
 
 /** Routes that skip the automatic initial preloader (CMS, admin, and the fire test page). */
 const SKIP = ['/studio', '/admin', '/fire-test'];
+const PRELOADER_SYNC_VERSION = 6;
 
 /**
  * Site preloader, shown on every full page load and controllable on-demand from the
@@ -25,6 +26,14 @@ export default function Preloader() {
     const [initialPaused, setInitialPaused] = useState(false);
     const [interactiveDrag, setInteractiveDrag] = useState(false);
     const [runKey, setRunKey] = useState(0);
+    const syncVerRef = useRef(PRELOADER_SYNC_VERSION);
+
+    useEffect(() => {
+        if (syncVerRef.current !== PRELOADER_SYNC_VERSION) {
+            syncVerRef.current = PRELOADER_SYNC_VERSION;
+            window.dispatchEvent(new CustomEvent('preloader-hud-command', { detail: { replay: true } }));
+        }
+    });
 
     const handleReveal = useCallback(() => setRevealed(true), []);
     const handleDone = useCallback(() => {
@@ -74,16 +83,12 @@ export default function Preloader() {
                 setInitialPaused(false);
                 setInteractiveDrag(false);
                 setRevealed(false);
-                if (done) {
-                    setInitialStep(1);
-                    setDone(false);
-                    setRunKey(k => k + 1);
-                } else {
-                    window.dispatchEvent(new CustomEvent('preloader-step-control', { detail: { replay: true } }));
-                }
+                setInitialStep(1);
+                setDone(false);
+                setRunKey(k => k + 1);
             } else if (typeof detail.step === 'number') {
                 const stepId = detail.step;
-                setRevealed(stepId >= 5);
+                setRevealed(stepId >= 4);
                 if (done) {
                     setInitialStep(stepId);
                     setDone(false);

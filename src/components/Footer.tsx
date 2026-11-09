@@ -61,6 +61,7 @@ export default function Footer() {
                         <Link href="/cut-guide">Cut Guide</Link>
                         <Link href="/faq">FAQ</Link>
                         <Link href="/our-story">Our Story</Link>
+                        <Link href="/product-identity">Product Identity</Link>
                         <Link href="/jobs">Jobs</Link>
                         <Link href="/gift-cards">Gift Cards</Link>
                     </div>

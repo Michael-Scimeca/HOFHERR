@@ -142,6 +142,67 @@
     line-height: 1.7;
 }
 
+.featureCalloutColored {
+    background: var(--callout-bg, var(--bg-2));
+    color: #fff;
+}
+
+.featureCalloutColored .calloutTitle {
+    color: #fff;
+}
+
+.featureCalloutColored .calloutSub {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.highlightWhite {
+    color: #fff;
+}
+
+.stockBadgeLive {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--badge-bg, #475569);
+    border: 1px solid var(--badge-border, #334155);
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.3;
+}
+
+.stockBadgeEmoji {
+    font-size: 18px;
+}
+
+.pigMenuWrap {
+    margin-bottom: 32px;
+}
+
+.appetizerTitleSpaced {
+    margin-top: 48px;
+}
+
+.pigRoastCtaWrap {
+    text-align: center;
+    margin: 40px 0 20px;
+}
+
+.pigRoastCtaBtn {
+    font-size: 16px;
+    padding: 16px 32px;
+}
+
+.pigRoastCtaSub {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 12px;
+}
+
 .videoCalloutWrap {
     width: 100%;
 }
@@ -652,13 +713,28 @@
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
 }
 
-/* ── Newsletter ── */
+/* ── Newsletter — Hofherr Butcher Wrapping Paper Theme ── */
 .newsletter {
-    background: linear-gradient(rgba(180, 20, 20, 0.85), rgba(140, 10, 10, 0.9)),
-                url('/BG-NEWSLETTER.jpg') center / 300px repeat;
-    padding: 64px 24px;
-    border-top: 1px solid var(--border);
-    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5), 0 8px 30px rgba(0, 0, 0, 0.5);
+    background-color: #c8a47e;
+    background-image:
+        radial-gradient(
+            ellipse 62% 85% at 50% 50%,
+            rgba(200, 164, 126, 0.94) 0%,
+            rgba(200, 164, 126, 0.82) 52%,
+            rgba(200, 164, 126, 0.14) 100%
+        ),
+        url('/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg');
+    background-position: center, center;
+    background-size: 100% 100%, 380px auto;
+    background-repeat: no-repeat, repeat;
+    padding: 72px 24px;
+    border-top: 3px solid #8b0a10;
+    border-bottom: 3px solid #8b0a10;
+    box-shadow:
+        inset 0 2px 0 rgba(245, 155, 26, 0.5),
+        inset 0 -2px 0 rgba(245, 155, 26, 0.5),
+        0 -8px 30px rgba(0, 0, 0, 0.45),
+        0 8px 30px rgba(0, 0, 0, 0.45);
 }
 
 .newsletterInner {
@@ -672,20 +748,25 @@
 
 .nlTitle {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    color: #fff;
+    font-size: clamp(1.9rem, 3.2vw, 2.6rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #8b0a10;
+    text-shadow: 0 1px 0 rgba(243, 234, 216, 0.7);
     margin: 10px 0 14px;
 }
 
 .nlSub {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.65);
+    font-size: 15px;
+    font-weight: 600;
+    color: #1c1614;
     line-height: 1.7;
     margin: 0;
 }
 
 .nlLeft .section-label {
-    color: rgba(255, 255, 255, 0.5);
+    color: #8b0a10;
 }
 
 /* ── Responsive ── */

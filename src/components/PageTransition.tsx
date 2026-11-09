@@ -227,10 +227,12 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
                 }, 40);
             } else {
                 if (safetyRef.current) clearTimeout(safetyRef.current);
+                // Last-resort safety only: the pathname effect normally reveals once the real page
+                // (not the blank loading.tsx shell) and its assets are ready.
                 safetyRef.current = setTimeout(() => {
                     pendingHref.current = null;
                     runRevealSequence();
-                }, 2000);
+                }, 6000);
             }
         };
 
@@ -240,6 +242,21 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
 
         window.dispatchEvent(new CustomEvent('page-transition-exit'));
     }, [router, forceScrollTop, runRevealSequence]);
+
+    // Warm the busiest destination so "Order Online" doesn't wait on the server.
+    useEffect(() => {
+        const warm = () => router.prefetch('/online-orders');
+        const w = window as unknown as {
+            requestIdleCallback?: (cb: () => void) => number;
+            cancelIdleCallback?: (id: number) => void;
+        };
+        if (w.requestIdleCallback) {
+            const idleId = w.requestIdleCallback(warm);
+            return () => w.cancelIdleCallback?.(idleId);
+        }
+        const timerId = setTimeout(warm, 1500);
+        return () => clearTimeout(timerId);
+    }, [router]);
 
     useEffect(() => {
         (window as unknown as { __hofherrNavigate?: (href: string) => void }).__hofherrNavigate = navigateTo;
@@ -319,11 +336,27 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
             })
             : Promise.resolve();
 
-        void Promise.all([waitForPageAssets(1500), mapPromise]).then(() => {
-            revealPage();
+        // Dynamic routes (e.g. /online-orders fetching Sanity) first render the blank root
+        // loading.tsx placeholder. Wait for the real page to replace it, THEN wait for its assets,
+        // so the melt-in never starts on an empty shell and content never pops in mid-animation.
+        const waitForRouteContent = (maxMs: number) => new Promise<void>(res => {
+            const start = performance.now();
+            const check = () => {
+                if (cancelled) return res();
+                if (!document.querySelector('.route-loading') || performance.now() - start > maxMs) return res();
+                requestAnimationFrame(check);
+            };
+            check();
         });
 
-        const tFallback = setTimeout(revealPage, 1600);
+        void waitForRouteContent(4000)
+            .then(() => new Promise<void>(r => requestAnimationFrame(() => r())))
+            .then(() => Promise.all([waitForPageAssets(1500), mapPromise]))
+            .then(() => {
+                revealPage();
+            });
+
+        const tFallback = setTimeout(revealPage, 5600);
 
         return () => {
             cancelled = true;
@@ -572,6 +605,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
         let blurRem = 0;
         let contrastVal = 1;
+        let brightnessVal = 1;
         let opacityVal = 1;
         let scaleVal = 1;
         let translateY = 0;
@@ -587,21 +621,33 @@ export default function PageTransition({ children }: { children: React.ReactNode
             scaleVal = 1 + scaleDelta * (p * p);
             translateY = -yPx * (p * p);
         } else {
-            // Melt In: opacity rises quickly in first 40% while blur & contrast remain rich & molten,
-            // then blur & contrast smoothly coalesce into crisp 100% focus
+            // Melt In: synchronized 0..1 with the center logo burn-out so the real page
+            // visibly melts in from molten blur to 100% crisp focus at the exact same time the logo burns away
             const p = Math.min(1, Math.max(0, progress01));
-            const easeOut = 1 - Math.pow(1 - p, 2.5);
-            const meltRem = Math.pow(1 - p, 1.65);
-            blurRem = meltRem * mBlur;
-            contrastVal = 1 + meltRem * (mCon - 1);
-            opacityVal = includeHeader ? 1 : Math.min(1, Math.pow(p, 0.5));
-            scaleVal = (1 - scaleDelta) + scaleDelta * easeOut;
-            translateY = (1 - easeOut) * yPx;
+            if (includeHeader) {
+                const easeOut = 1 - Math.pow(1 - p, 2.2);
+                const meltRem = Math.pow(1 - p, 1.8);
+                blurRem = meltRem * Math.max(0.45, mBlur * 0.75);
+                contrastVal = 1 + meltRem * 0.35;
+                brightnessVal = 1 + meltRem * 0.1;
+                opacityVal = Math.min(1, Math.pow(p, 0.35));
+                scaleVal = (1 - scaleDelta) + scaleDelta * easeOut;
+                translateY = (1 - easeOut) * yPx;
+            } else {
+                const easeOut = 1 - Math.pow(1 - p, 2.6);
+                const meltRem = Math.pow(1 - p, 2.2);
+                blurRem = meltRem * mBlur;
+                contrastVal = 1 + meltRem * Math.min(2.8, (mCon - 1) * 0.28);
+                brightnessVal = 0.85 + 0.15 * easeOut;
+                opacityVal = Math.min(1, Math.pow(p, 0.35));
+                scaleVal = (1 - scaleDelta) + scaleDelta * easeOut;
+                translateY = (1 - easeOut) * yPx;
+            }
         }
 
-        const filterStr = blurRem <= 0.004 && contrastVal <= 1.02
+        const filterStr = blurRem <= 0.004 && contrastVal <= 1.02 && Math.abs(brightnessVal - 1) <= 0.015
             ? 'none'
-            : `blur(${blurRem.toFixed(3)}rem) contrast(${contrastVal.toFixed(2)})`;
+            : `blur(${blurRem.toFixed(3)}rem) contrast(${contrastVal.toFixed(2)}) brightness(${brightnessVal.toFixed(2)})`;
         const opacityStr = opacityVal.toFixed(3);
         const transformStr = Math.abs(scaleVal - 1) <= 0.0005 && Math.abs(translateY) <= 0.05
             ? 'none'
@@ -618,9 +664,9 @@ export default function PageTransition({ children }: { children: React.ReactNode
         });
 
         if (siteHeader) {
-            siteHeader.style.filter = filterStr === 'none' ? '' : filterStr;
+            siteHeader.style.filter = '';
             siteHeader.style.opacity = opacityStr;
-            siteHeader.style.transform = transformStr === 'none' ? '' : transformStr;
+            siteHeader.style.transform = '';
         }
     }, []);
 
@@ -752,9 +798,14 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
         const handleEnter = (e: Event) => {
             cancelLoop();
-            const detail = (e as CustomEvent<{ includeHeader?: boolean }>).detail;
+            const detail = (e as CustomEvent<{ includeHeader?: boolean; durationMs?: number }>).detail;
             const includeHeader = Boolean(detail?.includeHeader);
-            const { exitMs: ex, enterMs: dur } = paramsRef.current;
+            const { exitMs: ex, enterMs: cfgDur } = paramsRef.current;
+            const dur = typeof detail?.durationMs === 'number'
+                ? detail.durationMs
+                : includeHeader
+                    ? Math.min(560, cfgDur)
+                    : cfgDur;
             const split = Math.round((ex / (ex + dur)) * 100);
 
             // Apply initial 0% melted styles BEFORE removing .pt-waiting so there is zero flash
@@ -797,15 +848,38 @@ export default function PageTransition({ children }: { children: React.ReactNode
             animRafRef.current = requestAnimationFrame(tick);
         };
 
+        const handlePreloaderProgress = (e: Event) => {
+            cancelLoop();
+            const detail = (e as CustomEvent<{ progress?: number }>).detail;
+            const p = Math.min(1, Math.max(0, detail?.progress ?? 0));
+            const { exitMs: ex, enterMs: cfgDur } = paramsRef.current;
+            const split = Math.round((ex / (ex + cfgDur)) * 100);
+            el.classList.remove('pt-exit', 'pt-waiting');
+            if (p < 1) {
+                el.classList.add('pt-enter');
+                paintMeltStyle('enter', p, true);
+                syncScrubberDom(Math.round(split + p * (100 - split)));
+            } else {
+                el.classList.remove('pt-enter');
+                paintMeltStyle('clear', 1, true);
+                setMeltStep(4);
+                setPhaseLabel('READY');
+                setScrubPct(100);
+                syncScrubberDom(100);
+            }
+        };
+
         window.addEventListener('page-transition-exit', handleExit);
         window.addEventListener('page-transition-waiting', handleWaiting);
         window.addEventListener('page-transition-enter', handleEnter);
+        window.addEventListener('page-transition-preloader-progress', handlePreloaderProgress);
 
         return () => {
             cancelLoop();
             window.removeEventListener('page-transition-exit', handleExit);
             window.removeEventListener('page-transition-waiting', handleWaiting);
             window.removeEventListener('page-transition-enter', handleEnter);
+            window.removeEventListener('page-transition-preloader-progress', handlePreloaderProgress);
         };
     }, [paintMeltStyle, syncScrubberDom]);
 
@@ -878,7 +952,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
                 {children}
             </div>
 
-                {/* Left HUD: Dedicated Page Melt & Preloader Timeline UI */}
+                {/* Left HUD: Dedicated Page Melt & Preloader Timeline UI (hidden) */}
+                {false && (
                 <aside className={styles.hud} aria-label="Page transition and preloader timeline controls">
                     {minimized ? (
                         <button
@@ -1222,8 +1297,10 @@ export default function PageTransition({ children }: { children: React.ReactNode
                     </div>
                 )}
             </aside>
+                )}
 
-            {/* Right HUD: Standalone Flame Control Studio UI (In Its Own Dedicated Window) */}
+            {/* Right HUD: Standalone Flame Control Studio UI (hidden) */}
+            {false && (
             <aside className={styles.flameHud} aria-label="Flame Studio Controls">
                 {flameHudMinimized ? (
                     <button
@@ -1355,7 +1432,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
                                     if (!flameVisibleOnPage && pathname !== '/fire-test') showFlameForEditing(true);
                                     const selIdx = flameSettings.selectedIndex ?? 0;
                                     const def = FIVE_FLAME_DEFAULTS[selIdx] ?? FIVE_FLAME_DEFAULTS[0];
-                                    updateFlame({ ...def, posX: 0, posY: -1.54 }, def.presetId, true, false);
+                                    updateFlame({ ...def, posX: 0, posY: -1.66 }, def.presetId, true, false);
                                 }}
                                 title="Reset active flame to factory default"
                             >
@@ -1637,6 +1714,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
                     </div>
                 )}
             </aside>
+            )}
         </>
     );
 }

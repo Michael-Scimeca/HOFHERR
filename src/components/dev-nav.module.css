@@ -37,6 +37,10 @@
     letter-spacing: 0.12em;
 }
 
+.toggleIcon {
+    font-size: 16px;
+}
+
 .panel {
     background: rgba(15, 20, 30, 0.97);
     backdrop-filter: blur(12px);

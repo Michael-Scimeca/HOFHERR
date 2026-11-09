@@ -21,6 +21,9 @@ import { cateringCalendarPricingType } from './cateringCalendarPricing';
 import { cateringLeadType } from './cateringLead';
 import { rotisserieStatusType } from './rotisserieStatus';
 import restockRequest from './restockRequest';
+import { socialContentType } from './socialContent';
+import { socialWeekType } from './socialWeek';
+import { socialSettingsType } from './socialSettings';
 
 export const schemaTypes = [
     // Site-wide
@@ -57,4 +60,8 @@ export const schemaTypes = [
     rotisserieStatusType,
     // Restock
     restockRequest,
+    // Social media
+    socialContentType,
+    socialWeekType,
+    socialSettingsType,
 ];

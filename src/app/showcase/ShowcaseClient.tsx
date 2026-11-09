@@ -1,7 +1,84 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import styles from './page.module.css';
+
+/* ── Customer Review Audit: Pain Points & Fixes ── */
+const REVIEW_FIXES = [
+    {
+        emoji: '🦃',
+        title: 'Fix #1: Holiday Pickup Chaos & Missing Sides',
+        impact: 'Cuts Happ Rd. lines by 60% & eliminates packing errors',
+        desc: 'Yelp & Facebook reviewers rave about our chargrilled turkeys and briskets, but cite long Thanksgiving/Christmas pickup lines and occasional forgotten sides under rush pressure.',
+        bullets: [
+            '5-Minute Curbside Express Bays on Happ Rd. via SMS runner',
+            'Two-Signature Side Checklist (Packer + Runner) before sealing boxes',
+            'Winnetka Depot satellite holiday pickup hub to split foot traffic',
+        ],
+        competitors: ['Yelp & FB Review Fix', 'Holiday Logistics'],
+    },
+    {
+        emoji: '🥪',
+        title: 'Fix #2: 30–45 Min Lunch Waits on Italian Beef',
+        impact: 'Cuts walk-in wait under 10 mins + adds $58 kit AOV',
+        desc: 'Cooking chuck eye shabu-shabu style per sandwich makes our Italian Beef legendary—but peak lunch waits (30–45 mins) and unexpected sell-outs frustrate busy customers.',
+        bullets: [
+            'Timed 10-minute online pickup slots + live walk-in wait quotes',
+            'Live daily batch counter online ("85 Beefs today—reserve by 11:15 AM")',
+            '4-Pack DIY "Shabu Beef" Take-Home Kits (sliced chuck eye, jus, rolls, giardiniera)',
+        ],
+        competitors: ['Yelp & FB Review Fix', 'Throughput'],
+    },
+    {
+        emoji: '🥩',
+        title: 'Fix #3: Reframing Price "Sticker Shock"',
+        impact: 'Converts casual browsers into weekly family buyers',
+        desc: 'Casual shoppers occasionally compare Prime dry-aged per-pound prices to corporate supermarkets. We reframe price into complete family meal value and farm transparency.',
+        bullets: [
+            '$49 Weeknight Family Dinner Bundles (~$12/person for 4)',
+            '"Why Hofherr" farm-lineage & dry-age yield cards in every bag',
+            'Hofherr Butcher Club ($149/mo) with priority holiday pickup slots',
+        ],
+        competitors: ['Yelp & FB Review Fix', 'Value Framing'],
+    },
+    {
+        emoji: '🚆',
+        title: 'Fix #4: Northfield vs. Winnetka Depot Clarity',
+        impact: 'Turns 2 locations into a commuter superpower',
+        desc: 'First-time visitors sometimes confuse which location has the full custom butcher counter (Northfield) vs. hot commuter lunches (Winnetka Metra Depot).',
+        bullets: [
+            'Clear two-location badges across Yelp, Facebook, Google & web',
+            '"Order from Northfield Butcher by 1 PM, Grab at Winnetka Train" bridge',
+            'After-hours smart refrigerated pickup lockers for late commuters',
+        ],
+        competitors: ['Yelp & FB Review Fix', 'Dual-Location'],
+    },
+    {
+        emoji: '🔥',
+        title: 'Strength Multiplier #1: Scale the Famous Italian Beef',
+        impact: '20x ticket size via catering bars & retail jars',
+        desc: 'Our Kevin Pang / America\'s Test Kitchen Italian Beef collaboration is a viral regional moat. We monetize it beyond single lunch sandwiches.',
+        bullets: [
+            'Bottle & retail our 3-Year-Aged House Giardiniera & Concentrated Jus',
+            'Turnkey $275–$550 "Italian Beef Catering Bars" for events & game days',
+            'Nationwide 8-pack frozen shipping boxes for Chicago expats',
+        ],
+        competitors: ['Core Strength Moat', 'High Margin'],
+    },
+    {
+        emoji: '🌭',
+        title: 'Strength Multiplier #2: Sausages, Freezer & QR Craft',
+        impact: '+25–35% Average Order Value (AOV) lift',
+        desc: 'Reviewers call our house sausages "best in show," love the Chicken Pot Pie & Smoked Lamb Curry, and praise Sean & Arielle\'s cooking advice by name.',
+        bullets: [
+            '"Sausage of the Month" Friday SMS drops to drive weekend foot traffic',
+            '"Stock Your Freezer" 5-for-$95 entree/soup pass at steak checkout',
+            'QR "Cook It Right" video tags on butcher paper + Monday "Butcher & Bourbon" classes',
+        ],
+        competitors: ['Core Strength Moat', 'Repeat Visits'],
+    },
+];
 
 /* ────────────────────────────────────────────────────────────
    Client Showcase — sales-pitch presentation page
@@ -361,6 +438,52 @@ export default function ShowcaseClient() {
             </section>
 
             {/* ════════════════════════════════════════════
+                REVIEW AUDIT & PITCH DECK
+               ════════════════════════════════════════════ */}
+            <div className={styles.divider}><div className={styles.dividerLine} /></div>
+
+            <section className={styles.sectionWrap}>
+                <div className={styles.sectionInner}>
+                    <div className={styles.sectionEyebrow}>
+                        Yelp &amp; Facebook Review Audit
+                        <span className={styles.sectionEyebrowLine} />
+                    </div>
+                    <h2 className={styles.sectionTitle}>Fixing Every Pain Point &amp; Scaling Our Strengths</h2>
+                    <p className={styles.sectionSub}>
+                        Hofherr holds a ~4.8★ reputation with zero culinary complaints. Every friction point in
+                        customer reviews is operational—and each one maps directly to a high-ROI fix.
+                    </p>
+
+                    <div className={styles.oppGrid}>
+                        {REVIEW_FIXES.map(item => (
+                            <div key={item.title} className={styles.oppCard}>
+                                <span className={styles.oppNewBadge}>Pitch Deck</span>
+                                <div className={styles.oppHeader}>
+                                    <div className={styles.oppEmoji}>{item.emoji}</div>
+                                    <div>
+                                        <h3 className={styles.oppTitle}>{item.title}</h3>
+                                        <div className={styles.oppImpact}>▲ {item.impact}</div>
+                                    </div>
+                                </div>
+                                <p className={styles.oppDesc}>{item.desc}</p>
+                                <ul className={styles.oppBullets}>
+                                    {item.bullets.map(b => (
+                                        <li key={b}>{b}</li>
+                                    ))}
+                                </ul>
+                                <div className={styles.compContext}>
+                                    <span className={styles.compContextLabel}>Focus Area</span>
+                                    {item.competitors.map(c => (
+                                        <span key={c} className={styles.compContextTag}>{c}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ════════════════════════════════════════════
                 CTA
                ════════════════════════════════════════════ */}
             <div className={styles.divider}><div className={styles.dividerLine} /></div>
@@ -374,12 +497,12 @@ export default function ShowcaseClient() {
                     </h2>
                     <p className={styles.ctaSub}>
                         Every feature above has been researched against the best butcher shops
-                        in the country and is ready for implementation. Let&apos;s talk about
-                        priorities and timeline.
+                        in the country and is ready for implementation. Open the interactive
+                        slide deck or let&apos;s talk about priorities and timeline.
                     </p>
-                    <a href="mailto:michael@scimeca.dev" className={styles.ctaBtn}>
-                        Let&apos;s Talk →
-                    </a>
+                    <Link href="/pitch-deck" className={styles.ctaBtn}>
+                        Open Interactive Pitch Deck →
+                    </Link>
                 </div>
             </section>
 

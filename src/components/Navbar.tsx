@@ -240,6 +240,7 @@ export default function Navbar() {
                         width={180}
                         style={{ objectFit: 'contain', width: 'auto', height: '56px' }}
                         priority
+                        fetchPriority="high"
                     />
                 </TransitionLink>
 

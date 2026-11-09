@@ -56,6 +56,7 @@ const SECTIONS = [
             { href: '/verify-email', icon: '✅', label: 'Verify Email' },
             { href: '/roadmap', icon: '🗺️', label: 'Roadmap' },
             { href: '/showcase', icon: '🎯', label: 'Showcase' },
+            { href: '/pitch-deck', icon: '📊', label: 'Pitch Deck' },
         ],
     },
     {
@@ -79,7 +80,7 @@ const DevNav = () => {
                 onClick={() => setOpen(o => !o)}
                 title="Dev Nav"
             >
-                <span style={{ fontSize: '16px' }}>{open ? '✕' : '🧭'}</span>
+                <span className={styles.toggleIcon}>{open ? '✕' : '🧭'}</span>
                 <span className={styles.toggleLabel}>DEV</span>
             </button>
 

@@ -1,0 +1,132 @@
+/* Testimonial wall — uses the site design tokens from globals.css
+   (--red, --red-dark, --gold, --light, --fg-*, --radius, --shadow-*, --ease-out, --font-heading/--font-body) */
+
+.block {
+    position: relative;
+    padding-top: clamp(64px, 10vw, 120px);
+    color: var(--fg);
+    overflow: hidden;
+}
+
+.intro { text-align: center; padding: 0 16px 20px; }
+.kicker { margin: 0 0 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.8rem; }
+.title { margin: 0; font-family: var(--font-heading); text-transform: uppercase; font-size: clamp(2.4rem, 6vw, 4.5rem); line-height: 0.95; color: var(--fg); }
+
+/* ── the wall ───────────────────────────── */
+.wall {
+    position: relative;
+    padding: 150px 0 190px;
+}
+
+/* scroll-linked drift (set from JS) */
+.track {
+    --drift: 0px;
+    transform: translateX(var(--drift));
+    will-change: transform;
+}
+
+/* endless conveyor: two identical copies, slide exactly one copy's width, repeat */
+.row {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: conveyor 70s linear infinite;
+}
+
+.wall:hover .row { animation-play-state: paused; }
+
+@keyframes conveyor {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+.row > .red { z-index: 2; }
+.row > .light { z-index: 1; }
+
+.card {
+    position: relative;
+    flex: none;
+    width: clamp(280px, 28vw, 400px);
+    min-height: 260px;
+    margin-right: -5.5vw;
+    padding: 44px 40px 52px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+    text-align: center;
+    transform: translateY(var(--offset)) rotate(var(--tilt));
+    box-shadow: var(--shadow-lg);
+    /* gentle bob, offset per card so they never move in step */
+    animation: bob 6.5s ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+    transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+}
+
+@keyframes bob {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -10px; }
+}
+
+.card:hover {
+    z-index: 5;
+    transform: translateY(calc(var(--offset) - 14px)) rotate(0deg) scale(1.04);
+    box-shadow: var(--shadow-lg), var(--shadow-red);
+}
+
+.red { background: var(--red); color: var(--light); }
+/* charcoal cards — lifted off the black page with a hairline border */
+.light { background: #1c1614; color: var(--light); border: 1px solid var(--border); }
+.light .who b { color: var(--red-light); }
+
+.quote {
+    margin: 0;
+    font-family: var(--font-body), sans-serif;
+    font-size: clamp(1rem, 1.35vw, 1.2rem);
+    line-height: 1.45;
+}
+
+.who { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; }
+.who b { font-weight: 700; }
+.red .who span { color: rgba(242, 242, 242, 0.8); }
+.light .who span { color: var(--fg-3); }
+
+.mark {
+    position: absolute;
+    font-family: var(--font-heading), Georgia, serif;
+    font-weight: 700;
+    font-size: 72px;
+    line-height: 1;
+    pointer-events: none;
+}
+.markTop { top: 14px; right: 22px; }
+.markBottom { bottom: -10px; left: 22px; }
+.red .mark { color: var(--gold-light); }
+.light .mark { color: var(--gold); }
+
+@media (max-width: 700px) {
+    .card { width: 74vw; margin-right: -30vw; padding: 36px 28px 44px; }
+    .wall { padding: 110px 0 150px; }
+    .row { animation-duration: 50s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .track { transform: none; }
+    .row, .card { animation: none; }
+    .card { transition: none; }
+}
+
+/* ── stars + rating summary ── */
+.stars { font-size: 1.05rem; letter-spacing: 2px; color: var(--gold-light); line-height: 1; }
+.light .stars { color: var(--gold); }
+.nameLink { color: inherit; text-decoration: none; }
+.nameLink:hover { text-decoration: underline; }
+.summary { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; padding: 8px 16px; border: 1px solid var(--border); border-radius: 999px; color: var(--fg-2); text-decoration: none; font-size: 0.9rem; }
+.summary b { color: var(--fg); font-size: 1.05rem; }
+.summaryStars { color: var(--gold); letter-spacing: 2px; }
+.summary:hover { border-color: var(--gold); }
+
+/* few reviews: no conveyor, no duplicates — one centered, still row */
+.still .row { animation: none; width: auto; justify-content: center; flex-wrap: wrap; row-gap: 40px; padding: 0 24px; }
+.still .card:last-child { margin-right: 0; }

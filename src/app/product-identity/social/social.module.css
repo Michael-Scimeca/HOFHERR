@@ -1,0 +1,215 @@
+.shell { padding-top: calc(var(--nav-h, 80px) + 24px); padding-bottom: 100px; color: var(--fg); }
+.embeddedShell { padding-top: 40px; padding-bottom: 80px; color: var(--fg); border-top: 1px solid var(--border); }
+.top { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
+.h1 { font-family: var(--font-heading); text-transform: uppercase; font-size: clamp(2rem, 5vw, 3.4rem); margin: 0; }
+.h2 { font-family: var(--font-heading); text-transform: uppercase; font-size: clamp(1.4rem, 3vw, 2rem); margin: 24px 0 8px; }
+.lead, .note { color: var(--fg-2); line-height: 1.6; max-width: 80ch; margin: 0; }
+.note { color: var(--fg-3); font-size: .9rem; }
+.controls { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; padding: 16px; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.ctl { display: flex; flex-direction: column; gap: 8px; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--gold); }
+.ctl select, .ctl input { font: inherit; text-transform: none; letter-spacing: 0; padding: 8px 10px; background: var(--bg-2); color: var(--fg); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.iconRow { display: flex; flex-wrap: wrap; gap: 6px; }
+.iconBtn { width: 44px; height: 44px; padding: 2px; border-radius: 50%; border: 2px solid transparent; background: none; cursor: pointer; }
+.iconBtn img { width: 100%; height: 100%; object-fit: contain; }
+.iconOn { border-color: var(--red); }
+.jump { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.jump a { font-size: .85rem; padding: 7px 12px; border: 1px solid var(--border); border-radius: 999px; color: var(--fg-2); text-decoration: none; transition: border-color 0.2s ease, color 0.2s ease; }
+.jump a:hover { border-color: var(--gold); color: var(--fg); }
+.jumpAdmin { border-color: var(--gold) !important; background: rgba(245, 155, 26, 0.14); color: var(--gold) !important; font-weight: 700; }
+
+/* ── Admin & Auto-Post Verification Studio Bar ── */
+.adminPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(139, 10, 16, 0.24) 0%, rgba(23, 18, 16, 0.96) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.5);
+    border-radius: var(--radius-lg);
+}
+.adminHead {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+}
+.adminTitle {
+    font-family: var(--font-heading);
+    font-size: 1.45rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--gold);
+    margin: 0;
+}
+.adminSub {
+    font-size: 0.86rem;
+    color: var(--fg-2);
+    margin: 2px 0 0;
+}
+.adminControlsRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+.horizonTabs {
+    display: inline-flex;
+    padding: 4px;
+    border-radius: 8px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    gap: 4px;
+}
+.horizonBtn, .horizonBtnOn {
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: var(--fg-2);
+}
+.horizonBtnOn {
+    background: var(--red);
+    color: #fff;
+}
+.scheduleStrip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+}
+.scheduleCard {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    font-size: 0.82rem;
+}
+.scheduleCardVerified {
+    border-color: #3fb950;
+    background: rgba(46, 160, 67, 0.1);
+}
+.scheduleTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+}
+.scheduleDay {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    color: var(--gold);
+    text-transform: uppercase;
+}
+.badgeVerified, .badgePending {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+.badgeVerified {
+    background: rgba(46, 160, 67, 0.22);
+    color: #7ee787;
+}
+.badgePending {
+    background: rgba(245, 155, 26, 0.16);
+    color: var(--gold);
+}
+
+/* ── Live Animal Cuts Editor Drawer ── */
+.cutEditorBox {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+    background: var(--bg-3);
+    border: 1px solid var(--gold);
+    border-radius: var(--radius-lg);
+    margin-bottom: 12px;
+}
+.cutEditorTabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+.cutEditorGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+}
+.cutEditorCol {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.cutEditorCol label {
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    font-weight: 700;
+}
+.cutEditorCol textarea, .cutEditorCol input {
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--fg);
+}
+
+.group { display: flex; flex-direction: column; gap: 18px; padding-top: 40px; scroll-margin-top: 90px; }
+.groupHead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; }
+.groupActions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.grid { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+.asset { margin: 0; display: flex; flex-direction: column; gap: 8px; max-width: 100%; padding: 10px; border-radius: 10px; background: rgba(23, 18, 16, 0.55); border: 1px solid var(--border); }
+.assetVerified { border-color: #3fb950; box-shadow: 0 0 0 1px rgba(63, 185, 80, 0.3); }
+.previewBox { overflow: hidden; border: 1px solid var(--border); border-radius: 6px; max-width: 100%; }
+.cap { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: .78rem; }
+.capName { text-transform: capitalize; color: var(--fg); flex: 1 1 100%; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+.capSize { color: var(--fg-3); font-family: ui-monospace, monospace; margin-right: auto; }
+.dl, .dlAll, .dlVerify, .dlVerified, .dlPost { font: inherit; font-size: .72rem; cursor: pointer; padding: 5px 9px; border-radius: var(--radius-sm); border: 1px solid var(--gold); background: rgba(var(--gold-rgb), .14); color: var(--fg); text-decoration: none; transition: border-color 0.2s ease; }
+.dlAll { background: var(--red); border-color: var(--red); padding: 9px 14px; font-size: .8rem; font-weight: 600; color: #fff; }
+.dlVerify { border-color: #3fb950; background: rgba(46, 160, 67, 0.16); color: #7ee787; }
+.dlVerified { border-color: #3fb950; background: #2ea043; color: #fff; font-weight: 700; }
+.dlPost { border-color: var(--red); background: rgba(204, 14, 29, 0.22); color: #ff9a9a; }
+.dl:hover { border-color: var(--red); }
+.edit { outline: none; cursor: text; transition: box-shadow 0.2s ease; }
+.edit:hover { box-shadow: 0 0 0 4px rgba(245,155,26,.6); }
+.toastMsg { font-size: 0.78rem; color: #7ee787; margin: 0; font-weight: 600; }
+.fullSvgCanvas { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.copyGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.copyCard { display: flex; flex-direction: column; gap: 8px; padding: 14px; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.copyHead { display: flex; align-items: center; gap: 10px; }
+.copyHead b { flex: 1; font-family: var(--font-heading); text-transform: uppercase; letter-spacing: .04em; }
+.count { font-size: .75rem; color: var(--fg-3); }
+.over { font-size: .75rem; color: var(--red); }
+.copyText { margin: 0; white-space: pre-wrap; font-family: inherit; font-size: .85rem; color: var(--fg-2); line-height: 1.55; }
+.cadence { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.day { display: flex; flex-direction: column; gap: 4px; padding: 12px; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius); font-size: .85rem; }
+.day b { font-family: var(--font-heading); font-size: 1.2rem; color: var(--gold); }
+.day em { color: var(--fg-3); font-style: normal; font-size: .75rem; }
+
+@media print {
+    .controls, .jump, .adminPanel, .cutEditorBox, .groupActions, .dl, .dlAll, .dlVerify, .dlVerified, .dlPost {
+        display: none !important;
+    }
+    .shell {
+        padding-top: 0;
+    }
+    .asset {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}

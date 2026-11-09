@@ -143,162 +143,161 @@ export default async function BBQPage() {
     const categories = ['appetizer', 'meat', 'side'].filter((c) => grouped[c]?.length);
 
     return (
-        <div>
+            <main>
 
-            {/* ── Hero ── */}
-            <section className={styles.hero}>
-                <div className={`container ${styles.heroInner}`}>
-                    <div className="section-label">Catering · Min. 4 Days Notice</div>
-                    <h1 className={styles.headline}>BBQ <em>Catering</em></h1>
-                    <p className={styles.sub}>
-                        Authentic low-and-slow BBQ from the same butchers who cut your steaks. We bring the smoke, the meat, and everything you need to feed a crowd.
-                    </p>
-                    <div className={styles.heroBadges}>
-                        <span className={styles.badge}>🍖 20–500+ Guests</span>
-                        <span className={styles.badge}>📦 Pickup or Delivery</span>
-                        <span className={styles.badge}>⏱ Min. 4 Days Notice</span>
-                    </div>
-                </div>
-            </section>
+                {/* ── Hero ── */}
+                    <section id="bbq-hero" aria-labelledby="bbq-hero-heading" className={styles.hero}>
+                        <div className={`container ${styles.heroInner}`}>
+                            <h1 id="bbq-hero-heading" className={styles.headline}>BBQ <em>Catering</em></h1>
+                            <p className={styles.sub}>
+                                Authentic low-and-slow BBQ from the same butchers who cut your steaks. We bring the smoke, the meat, and everything you need to feed a crowd.
+                            </p>
+                            <div className={styles.heroBadges}>
+                                <span className={styles.badge}>🍖 20–500+ Guests</span>
+                                <span className={styles.badge}>📦 Pickup or Delivery</span>
+                                <span className={styles.badge}>⏱ Min. 4 Days Notice</span>
+                            </div>
+                        </div>
+                    </section>
 
-            {/* ── Menu ── */}
-            <section className={`section ${styles.menuSection}`}>
-                <div className="container">
+                    {/* ── Menu ── */}
+                        <section id="bbq-menu" aria-labelledby="bbq-menu-heading" className={`section ${styles.menuSection}`}>
+                            <div className="container">
 
-                    <div className={styles.menuHeader}>
-                        <div className="section-label">Catering · Min. 4 Days Notice</div>
-                        <h2 className={styles.menuTitle}>What&apos;s On The Menu</h2>
-                        <p className={styles.menuSub}>All smoked low-and-slow in-house. Choose your meats, sides, and add-ons — we handle the rest.</p>
-                    </div>
+                                <div className={styles.menuHeader}>
+                                    <div className="section-label">Catering · Min. 4 Days Notice</div>
+                                    <h2 id="bbq-menu-heading" className={styles.menuTitle}>What&apos;s On The Menu</h2>
+                                    <p className={styles.menuSub}>All smoked low-and-slow in-house. Choose your meats, sides, and add-ons — we handle the rest.</p>
+                                </div>
 
-                    <div className={styles.menuBoard}>
+                                <div className={styles.menuBoard}>
 
-                        {/* Meats */}
-                        {(grouped['meat']?.length > 0) && (
-                            <div className={`${styles.menuCategory} ${styles.meatCategory}`}>
-                                <h2 className={styles.catTitle}>{CATEGORY_META['meat'].emoji} {CATEGORY_META['meat'].label}</h2>
-                                <ul className={styles.menuList}>
-                                    {grouped['meat'].map((item) => (
-                                        <li key={item.name} className={item.image ? styles.hasThumb : ''}>
-                                            {item.image && <ParallaxImg src={item.image} alt={item.name} className={styles.listThumb} />}
-                                            <span>{item.name}</span>
-                                        </li>
-                                    ))}
-                                    {/* Build Your Plate — fills empty bottom-right cells */}
-                                    <li className={styles.buildYourPlate}>
-                                        <div className={styles.buildHeader}>
-                                            <span className={styles.buildTag}>— How It Works —</span>
-                                            <h3 className={styles.buildTitle}>Build Your Plate</h3>
+                                    {/* Meats */}
+                                    {(grouped['meat']?.length > 0) && (
+                                        <div className={`${styles.menuCategory} ${styles.meatCategory}`}>
+                                            <h3 className={styles.catTitle}>{CATEGORY_META['meat'].emoji} {CATEGORY_META['meat'].label}</h3>
+                                            <ul className={styles.menuList}>
+                                                {grouped['meat'].map((item) => (
+                                                    <li key={item.name} className={item.image ? styles.hasThumb : ''}>
+                                                        {item.image && <ParallaxImg src={item.image} alt={item.name} className={styles.listThumb} />}
+                                                        <span>{item.name}</span>
+                                                    </li>
+                                                ))}
+                                                {/* Build Your Plate — fills empty bottom-right cells */}
+                                                <li className={styles.buildYourPlate}>
+                                                    <div className={styles.buildHeader}>
+                                                        <span className={styles.buildTag}>— How It Works —</span>
+                                                        <h4 className={styles.buildTitle}>Build Your Plate</h4>
+                                                    </div>
+                                                    <div className={styles.buildSteps}>
+                                                        <div className={styles.buildStep}>
+                                                            <span className={styles.buildStepNum}>01</span>
+                                                            <div>
+                                                                <div className={styles.buildStepTitle}>Choose Your Meat</div>
+                                                                <div className={styles.buildStepDesc}>1 meat + 1 side — from $16/person</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className={styles.buildStep}>
+                                                            <span className={styles.buildStepNum}>+</span>
+                                                            <div>
+                                                                <div className={styles.buildStepTitle}>Add More Proteins</div>
+                                                                <div className={styles.buildStepDesc}>+$4/person per extra meat</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className={styles.buildStep}>
+                                                            <span className={styles.buildStepNum}>+</span>
+                                                            <div>
+                                                                <div className={styles.buildStepTitle}>Stack Your Sides</div>
+                                                                <div className={styles.buildStepDesc}>+$2/person per additional side</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className={styles.buildStep}>
+                                                            <span className={styles.buildStepNum}>+</span>
+                                                            <div>
+                                                                <div className={styles.buildStepTitle}>Add Appetizers</div>
+                                                                <div className={styles.buildStepDesc}>Charcuterie board +$4/person</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <a href="#quote" className={styles.buildCta}>See Full Pricing →</a>
+                                                </li>
+                                            </ul>
                                         </div>
-                                        <div className={styles.buildSteps}>
-                                            <div className={styles.buildStep}>
-                                                <span className={styles.buildStepNum}>01</span>
-                                                <div>
-                                                    <div className={styles.buildStepTitle}>Choose Your Meat</div>
-                                                    <div className={styles.buildStepDesc}>1 meat + 1 side — from $16/person</div>
-                                                </div>
-                                            </div>
-                                            <div className={styles.buildStep}>
-                                                <span className={styles.buildStepNum}>+</span>
-                                                <div>
-                                                    <div className={styles.buildStepTitle}>Add More Proteins</div>
-                                                    <div className={styles.buildStepDesc}>+$4/person per extra meat</div>
-                                                </div>
-                                            </div>
-                                            <div className={styles.buildStep}>
-                                                <span className={styles.buildStepNum}>+</span>
-                                                <div>
-                                                    <div className={styles.buildStepTitle}>Stack Your Sides</div>
-                                                    <div className={styles.buildStepDesc}>+$2/person per additional side</div>
-                                                </div>
-                                            </div>
-                                            <div className={styles.buildStep}>
-                                                <span className={styles.buildStepNum}>+</span>
-                                                <div>
-                                                    <div className={styles.buildStepTitle}>Add Appetizers</div>
-                                                    <div className={styles.buildStepDesc}>Charcuterie board +$4/person</div>
-                                                </div>
-                                            </div>
+                                    )}
+
+                                    {/* Appetizers */}
+                                    {(grouped['appetizer']?.length > 0) && (
+                                        <div className={styles.menuCategory}>
+                                            <h3 className={styles.catTitle}>{CATEGORY_META['appetizer'].emoji} {CATEGORY_META['appetizer'].label}</h3>
+                                            <ul className={styles.menuListDual}>
+                                                {grouped['appetizer'].map((item) => (
+                                                    <li key={item.name} className={item.image ? styles.hasThumb : ''}>
+                                                        {item.image && <ParallaxImg src={item.image} alt={item.name} className={styles.listThumb} />}
+                                                        <span>{item.name}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         </div>
-                                        <a href="#quote" className={styles.buildCta}>See Full Pricing →</a>
-                                    </li>
-                                </ul>
+                                    )}
+
+                                    {/* Sides */}
+                                    {(grouped['side']?.length > 0) && (
+                                        <div className={styles.menuCategory}>
+                                            <h3 className={styles.catTitle}>{CATEGORY_META['side'].emoji} {CATEGORY_META['side'].label}</h3>
+                                            <ul className={styles.menuListDual}>
+                                                {grouped['side'].map((item) => (
+                                                    <li key={item.name} className={item.image ? styles.hasThumb : ''}>
+                                                        {item.image && <ParallaxImg src={item.image} alt={item.name} className={styles.listThumb} />}
+                                                        <span>{item.name}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+
+                                </div>
                             </div>
-                        )}
-
-                        {/* Appetizers */}
-                        {(grouped['appetizer']?.length > 0) && (
-                            <div className={styles.menuCategory}>
-                                <h2 className={styles.catTitle}>{CATEGORY_META['appetizer'].emoji} {CATEGORY_META['appetizer'].label}</h2>
-                                <ul className={styles.menuListDual}>
-                                    {grouped['appetizer'].map((item) => (
-                                        <li key={item.name} className={item.image ? styles.hasThumb : ''}>
-                                            {item.image && <ParallaxImg src={item.image} alt={item.name} className={styles.listThumb} />}
-                                            <span>{item.name}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-
-                        {/* Sides */}
-                        {(grouped['side']?.length > 0) && (
-                            <div className={styles.menuCategory}>
-                                <h2 className={styles.catTitle}>{CATEGORY_META['side'].emoji} {CATEGORY_META['side'].label}</h2>
-                                <ul className={styles.menuListDual}>
-                                    {grouped['side'].map((item) => (
-                                        <li key={item.name} className={item.image ? styles.hasThumb : ''}>
-                                            {item.image && <ParallaxImg src={item.image} alt={item.name} className={styles.listThumb} />}
-                                            <span>{item.name}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-
-                    </div>
-                </div>
-            </section>
+                        </section>
 
 
-            {/* ── BBQ Calculator + Calendar ── */}
-            <section id="quote" className={`section ${styles.pricingSection}`}>
-                <div className="container">
-                    <div id="bbq-hub">
-                        <BBQHub events={cateringEvents} calendarPricing={calendarPricing} />
-                    </div>
-                </div>
-            </section>
+                        {/* ── BBQ Calculator + Calendar ── */}
+                            <section id="quote" aria-label="BBQ Catering Calculator and Availability Calendar" className={`section ${styles.pricingSection}`}>
+                                <div className="container">
+                                    <div id="bbq-hub">
+                                        <BBQHub events={cateringEvents} calendarPricing={calendarPricing} />
+                                    </div>
+                                </div>
+                            </section>
 
-            {/* ── Beyond BBQ ── */}
-            <section className={`section ${styles.servicesSection}`}>
-                <div className="container">
-                    <div className={styles.beyondBbqHeader}>
-                        <div className="section-label">— Beyond BBQ —</div>
-                        <h2 className={styles.beyondBbqTitle}>What Else We Do</h2>
-                        <p className={styles.beyondBbqSub}>From backyard pig roasts to corporate buffets — we handle it all.</p>
-                    </div>
-                    <MosaicServices services={services} />
-                </div>
-            </section>
+                            {/* ── Beyond BBQ ── */}
+                                <section id="beyond-bbq" aria-labelledby="beyond-bbq-heading" className={`section ${styles.servicesSection}`}>
+                                    <div className="container">
+                                        <div className={styles.beyondBbqHeader}>
+                                            <div className="section-label">— Beyond BBQ —</div>
+                                            <h2 id="beyond-bbq-heading" className={styles.beyondBbqTitle}>What Else We Do</h2>
+                                            <p className={styles.beyondBbqSub}>From backyard pig roasts to corporate buffets — we handle it all.</p>
+                                        </div>
+                                        <MosaicServices services={services} />
+                                    </div>
+                                </section>
 
-            {/* ── CTA ── */}
-            <section className={styles.cta}>
-                <div className="container">
-                    <h2 className={styles.ctaTitle}>Ready to Book?</h2>
-                    <p className={styles.ctaSub}>
-                        Email us your event date, estimated headcount, and preferred menu items — we&apos;ll get back to you within 24 hours.
-                    </p>
-                    <div className={styles.ctaBtns}>
-                        <a href="mailto:catering@hofherrmeatco.com?subject=BBQ Catering Quote" className="btn btn-primary">
-                            ✉️ catering@hofherrmeatco.com
-                        </a>
-                        <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
-                    </div>
-                    <p className={styles.ctaNote}>Minimum 4 days notice required. Subject to availability.</p>
-                </div>
-            </section>
+                                {/* ── CTA ── */}
+                                    <section id="bbq-cta" aria-labelledby="bbq-cta-heading" className={styles.cta}>
+                                        <div className="container">
+                                            <h2 id="bbq-cta-heading" className={styles.ctaTitle}>Ready to Book?</h2>
+                                            <p className={styles.ctaSub}>
+                                                Email us your event date, estimated headcount, and preferred menu items — we&apos;ll get back to you within 24 hours.
+                                            </p>
+                                            <div className={styles.ctaBtns}>
+                                                <a href="mailto:catering@hofherrmeatco.com?subject=BBQ Catering Quote" className="btn btn-primary">
+                                                    ✉️ catering@hofherrmeatco.com
+                                                </a>
+                                                <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
+                                            </div>
+                                            <p className={styles.ctaNote}>Minimum 4 days notice required. Subject to availability.</p>
+                                        </div>
+                                    </section>
 
-        </div>
-    );
+                            </main>
+                            );
 }

@@ -1,0 +1,521 @@
+/* ---------- screen shell ---------- */
+.shell { padding-top: calc(var(--nav-h, 80px) + 24px); padding-bottom: 80px; color: var(--fg); }
+.toolbar { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
+.h1 { font-family: var(--font-heading); text-transform: uppercase; font-size: clamp(2rem, 5vw, 3.2rem); margin: 0; }
+.lead { color: var(--fg-2); max-width: 80ch; line-height: 1.6; margin: 0; }
+.btnRow { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn, .btnPrimary {
+    font: inherit; font-size: 0.85rem; cursor: pointer; padding: 9px 14px; text-decoration: none;
+    border-radius: var(--radius-sm); border: 1px solid var(--gold); background: rgba(var(--gold-rgb), 0.14); color: var(--fg);
+    transition: background-color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+}
+.btnPrimary { background: var(--red); border-color: var(--red); }
+.btn:hover, .btnPrimary:hover { border-color: var(--red); background: rgba(var(--red-rgb), 0.28); }
+.btnActive { border-color: var(--red); background: rgba(var(--red-rgb), 0.32); }
+
+.root { display: flex; flex-direction: column; align-items: center; gap: 48px; overflow-x: auto; padding: 0 16px; }
+.sheetBlock { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.sheetHead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; width: 8.5in; max-width: 100%; }
+.sheetHead h2 { font-family: var(--font-heading); text-transform: uppercase; margin: 0; font-size: 1.4rem; }
+.sheetHead span { color: var(--fg-3); font-size: 0.85rem; flex: 1; }
+
+/* ---------- physical page (8.5in x 11in US Letter at 100% scale) ---------- */
+.page {
+    position: relative; width: 8.5in; height: 11in; flex: none; box-sizing: border-box;
+    background: #fff; color: #1c1614; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.5);
+    font-family: var(--font-body), Arial, sans-serif;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.page + .page { margin-top: 32px; }
+
+/* ---------- Press-Sheet Registration Frame (CMYK Bars, Grayscale Wedges, Targets & Crop Marks) ---------- */
+.pressFrameSvg {
+    position: absolute;
+    inset: 0;
+    width: 8.5in;
+    height: 11in;
+    pointer-events: none;
+    z-index: 4;
+}
+
+/* Footer + 1-inch physical verification ruler */
+.pageFoot {
+    position: absolute; left: 0.38in; right: 0.38in; bottom: 0.22in;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.1in;
+    font-size: 6pt; color: #1c1614; font-weight: 700; letter-spacing: .03em;
+    background: rgba(255, 255, 255, 0.92); padding: 1.5pt 4pt; border-radius: 2pt;
+    z-index: 5;
+}
+.pageFootLeft {
+    display: flex; align-items: center; gap: 6pt; flex-wrap: wrap;
+}
+.sheetDimPill {
+    background: #1c1614; color: #f59b1a; padding: 1pt 5pt; border-radius: 2pt;
+    font-family: var(--font-heading), sans-serif; font-size: 7pt; letter-spacing: 0.05em;
+}
+.rulerBox {
+    display: flex; align-items: center; gap: 0.06in; flex: none;
+}
+.rulerBar {
+    width: 1in; height: 0.11in; box-sizing: border-box;
+    border: 1pt solid #1c1614;
+    background: linear-gradient(
+        90deg,
+        #1c1614 0, #1c1614 1pt, transparent 1pt,
+        transparent calc(0.25in - 0.5pt), #1c1614 calc(0.25in - 0.5pt), #1c1614 calc(0.25in + 0.5pt), transparent calc(0.25in + 0.5pt),
+        transparent calc(0.5in - 0.75pt), #8b0a10 calc(0.5in - 0.75pt), #8b0a10 calc(0.5in + 0.75pt), transparent calc(0.5in + 0.75pt),
+        transparent calc(0.75in - 0.5pt), #1c1614 calc(0.75in - 0.5pt), #1c1614 calc(0.75in + 0.5pt), transparent calc(0.75in + 0.5pt)
+    );
+}
+.rulerText { font-weight: 800; font-size: 5.8pt; color: #8b0a10; text-transform: uppercase; }
+
+/* ---------- Architectural Inch Dimension Callout Badges ---------- */
+.dimBadge {
+    position: absolute;
+    bottom: 2pt;
+    right: 3pt;
+    background: #1c1614;
+    color: #f59b1a;
+    border: 0.6pt solid #f59b1a;
+    border-radius: 2pt;
+    padding: 0.5pt 4pt;
+    font-family: var(--font-heading), 'Arial Narrow', sans-serif;
+    font-size: 6.5pt;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    text-transform: uppercase;
+    z-index: 3;
+    pointer-events: none;
+    white-space: nowrap;
+}
+.dimBadgeTop {
+    bottom: auto;
+    top: 2pt;
+    right: 3pt;
+}
+.dimBadgeCenter {
+    right: 50%;
+    transform: translateX(50%);
+}
+.dimPillInline {
+    display: inline-block;
+    background: #1c1614;
+    color: #f59b1a;
+    border: 0.6pt solid #f59b1a;
+    border-radius: 2pt;
+    padding: 1pt 5pt;
+    font-family: var(--font-heading), 'Arial Narrow', sans-serif;
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.cut { outline: 0.75pt dashed #e0007a; outline-offset: 0; box-sizing: border-box; position: relative; overflow: hidden; }
+.wordmark { font-family: var(--font-heading), 'Arial Black', sans-serif; font-weight: 700; font-size: 16pt; letter-spacing: .03em; color: #8b0a10; }
+.wordmarkSm { font-family: var(--font-heading), 'Arial Black', sans-serif; font-weight: 700; font-size: 12pt; letter-spacing: .03em; color: #8b0a10; }
+.micro { font-size: 5.5pt; letter-spacing: .05em; color: #4a403b; }
+
+/* 1. stickers: 2 × 3 of 3.0" circles */
+.stickerGrid { display: grid; grid-template-columns: repeat(2, 3in); grid-auto-rows: 3in; gap: 0.42in 0.6in; padding: 0.52in 0 0 0.95in; }
+.stickerCut { position: relative; width: 3in; height: 3in; border-radius: 50%; outline: 0.75pt dashed #e0007a; display: grid; place-items: center; overflow: visible; }
+.stickerArt { width: 3in; height: 3in; object-fit: contain; display: block; border-radius: 50%; overflow: hidden; }
+.stickerDimTag {
+    position: absolute;
+    bottom: -0.16in;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1c1614;
+    color: #f59b1a;
+    border: 0.6pt solid #f59b1a;
+    border-radius: 2pt;
+    padding: 0.5pt 5pt;
+    font-family: var(--font-heading), sans-serif;
+    font-size: 6.5pt;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+/* 2. scale labels: 2 × 3 of 4.0" × 3.0" */
+.labelGrid { display: grid; grid-template-columns: repeat(2, 4in); grid-auto-rows: 3in; gap: 0.2in 0.1in; padding: 0.52in 0 0 0.2in; }
+.scaleLabel { width: 4in; height: 3in; padding: 0.14in; display: flex; flex-direction: column; gap: 0.06in; background: #fbf7ee; border-top: 0.12in solid #8b0a10; }
+.scaleHead { display: flex; justify-content: space-between; align-items: center; border-bottom: 1pt solid #1c1614; padding-bottom: 0.05in; }
+.scaleSeal { width: 0.68in; height: 0.68in; object-fit: contain; }
+.fieldFull, .fieldRow div { display: flex; flex-direction: column; }
+.fieldFull span, .fieldRow span { font-size: 5.5pt; letter-spacing: .08em; color: #8b0a10; font-weight: 700; }
+.fieldFull b { font-size: 10.5pt; line-height: 1.15; }
+.fieldRow { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 0.06in; }
+.fieldRow b { font-size: 9pt; }
+.scaleFoot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; gap: 4pt; font-size: 5.2pt; border-top: 0.5pt solid #1c1614; padding-top: 0.04in; }
+
+/* 3. case-ready tray overwrap labels: 3 × 2 of 2.5" × 3.5" */
+.trayGrid { display: grid; grid-template-columns: repeat(3, 2.5in); grid-auto-rows: 3.5in; gap: 0.35in 0.15in; padding: 0.58in 0 0 0.35in; }
+.trayLabel { width: 2.5in; height: 3.5in; background: #f3ead8; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
+.trayHeader { width: 100%; background: #8b0a10; color: #f3ead8; text-align: center; padding: 0.08in 0.06in; font-family: var(--font-heading), sans-serif; font-weight: 700; font-size: 15pt; line-height: 0.95; letter-spacing: 0.04em; }
+.traySticker { width: 1.15in; height: 1.15in; object-fit: contain; margin: 0.05in auto 0.03in; }
+.trayCutName { font-family: var(--font-heading), sans-serif; font-weight: 700; font-size: 13pt; line-height: 1; text-transform: uppercase; text-align: center; color: #1c1614; padding: 0 0.08in; }
+.trayDataBox { width: 2.26in; border: 1pt solid #1c1614; margin-top: 0.05in; display: flex; flex-direction: column; font-size: 6pt; }
+.trayDataRow { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1pt solid #1c1614; }
+.trayDataCell { padding: 0.03in 0.04in; text-align: center; border-right: 1pt solid #1c1614; display: flex; flex-direction: column; }
+.trayDataCell:last-child { border-right: none; }
+.trayDataCell span { font-size: 5pt; font-weight: 700; color: #8b0a10; }
+.trayDataCell b { font-family: var(--font-heading), sans-serif; font-size: 10pt; color: #1c1614; }
+.trayPackedRow { padding: 0.03in 0.05in; font-weight: 700; font-size: 5.5pt; display: flex; justify-content: space-between; }
+.barcodeBars {
+    width: 1.85in; height: 0.28in; margin-top: auto; margin-bottom: 0.16in;
+    background: repeating-linear-gradient(90deg, #1c1614 0, #1c1614 1.5pt, transparent 1.5pt, transparent 3pt, #1c1614 3pt, #1c1614 4pt, transparent 4pt, transparent 6.5pt);
+}
+
+/* 4. vacuum-pack labels: Front 4.0" × 3.0", Back 4.0" × 4.0" */
+.vacGrid { display: grid; grid-template-columns: 4in 4in; gap: 0.32in 0.1in; padding: 0.52in 0 0 0.2in; align-items: start; }
+.vacFront {
+    width: 4in; height: 3in; background: #f3ead8;
+    border: 0.08in solid #8b0a10; box-shadow: inset 0 0 0 2pt #f59b1a;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 0.1in 0.12in 0.18in;
+}
+.vacFrontHeader { font-family: var(--font-heading), sans-serif; font-weight: 700; font-size: 12.5pt; letter-spacing: 0.04em; color: #1c1614; text-transform: uppercase; }
+.vacSeal { width: 1.1in; height: 1.1in; object-fit: contain; flex: none; }
+.vacCut { font-family: var(--font-heading), sans-serif; font-weight: 700; font-size: 15.5pt; line-height: 0.96; text-transform: uppercase; text-align: center; color: #1c1614; }
+.vacBottomTable { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1pt solid #1c1614; padding-top: 0.04in; font-size: 5.5pt; text-align: center; }
+.vacBottomCell { border-right: 0.75pt solid #1c1614; padding: 0 2pt; display: flex; flex-direction: column; gap: 2pt; }
+.vacBottomCell:last-child { border-right: none; }
+.vacBottomCell span { font-weight: 800; color: #1c1614; }
+.vacBottomCell b { font-size: 8pt; color: #8b0a10; }
+
+.vacBack { width: 4in; height: 4in; padding: 0.1in 0.12in 0.18in; display: flex; flex-direction: column; gap: 0.06in; background: #f3ead8; border: 1.5pt solid #8b0a10; }
+.safeBox { border: 1.5pt solid #1c1614; border-radius: 3pt; padding: 0.05in 0.08in; color: #1c1614; }
+.safeTitle { font-family: var(--font-heading), sans-serif; font-weight: 800; font-size: 11pt; letter-spacing: 0.04em; text-align: center; border-bottom: 1pt solid #1c1614; padding-bottom: 2pt; margin-bottom: 3pt; }
+.safeIntro { font-size: 5.1pt; line-height: 1.22; margin: 0 0 3pt; text-align: center; font-weight: 600; }
+.safeRow { display: grid; grid-template-columns: 1fr 1fr; gap: 6pt; font-size: 5.2pt; line-height: 1.22; border-top: 0.5pt solid #1c1614; padding: 2pt 0; }
+.nutriBox { border: 1.5pt solid #1c1614; padding: 0.05in 0.08in; display: grid; grid-template-columns: 1.15in 1fr; gap: 0.08in; font-size: 5.5pt; color: #1c1614; }
+.nutriLeft { display: flex; flex-direction: column; border-right: 1pt solid #1c1614; padding-right: 0.06in; }
+.nutriHeading { font-weight: 900; font-size: 11pt; line-height: 0.95; }
+.nutriCals { display: flex; justify-content: space-between; align-items: baseline; border-top: 2pt solid #1c1614; margin-top: 3pt; padding-top: 2pt; font-weight: 900; font-size: 8pt; }
+.nutriCals b { font-size: 13pt; }
+.nutriRight { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5pt 8pt; align-content: center; }
+.nutriLine { display: flex; justify-content: space-between; border-bottom: 0.5pt solid #1c1614; padding-bottom: 1pt; }
+.vacBackFoot { font-family: var(--font-heading), sans-serif; font-weight: 700; font-size: 7.2pt; letter-spacing: 0.03em; text-align: center; color: #1c1614; margin-top: auto; }
+
+/* 5. jar / tub wraparound labels: 4-up of 5.0" × 2.125" */
+.jarGrid { display: flex; flex-direction: column; align-items: center; gap: 0.24in; padding-top: 0.52in; }
+.jarLabel {
+    width: 5in; height: 2.125in; background: #f3ead8;
+    border-top: 0.06in solid #f59b1a; display: flex; flex-direction: column; justify-content: space-between;
+}
+.jarMain { flex: 1; display: grid; grid-template-columns: 1.25in 1fr 1.35in; align-items: center; padding: 0.08in 0.14in; gap: 0.1in; }
+.jarEmblem { width: 1.1in; height: 1.1in; object-fit: contain; }
+.jarCenter { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2pt; }
+.jarTitle { font-family: var(--font-heading), sans-serif; font-weight: 700; font-size: 18pt; line-height: 0.92; text-transform: uppercase; color: #1c1614; }
+.jarSpec { font-size: 5.6pt; line-height: 1.3; text-align: center; color: #1c1614; border-left: 0.75pt solid #8b0a10; padding-left: 0.08in; }
+.jarSpecHead { font-family: var(--font-heading), sans-serif; font-weight: 700; font-size: 7.5pt; color: #8b0a10; border-bottom: 0.75pt solid #8b0a10; margin-bottom: 2pt; display: block; }
+.jarFootBand { height: 0.44in; background: #8b0a10; border-top: 1.5pt solid #f59b1a; color: #f3ead8; display: flex; align-items: center; justify-content: space-between; padding: 0 0.16in; }
+.jarNetWt { font-family: var(--font-heading), sans-serif; font-size: 8.5pt; letter-spacing: 0.04em; }
+.jarBrand { font-family: var(--font-heading), sans-serif; font-size: 13pt; font-weight: 700; letter-spacing: 0.06em; text-align: center; line-height: 0.95; }
+.jarBarcodeBox { width: 0.95in; height: 0.3in; background: #fff; padding: 2pt 4pt; display: flex; align-items: center; }
+.jarBarcodeBars { width: 100%; height: 100%; background: repeating-linear-gradient(90deg, #000 0, #000 1pt, transparent 1pt, transparent 2.5pt, #000 2.5pt, #000 4pt, transparent 4pt, transparent 5.5pt); }
+
+/* 6. meat case slate price tags: 2 × 3 of 3.5" × 2.25" */
+.priceTagGrid { display: grid; grid-template-columns: repeat(2, 3.5in); grid-auto-rows: 2.25in; gap: 0.35in 0.35in; padding: 0.72in 0 0 0.575in; }
+.priceTag { width: 3.5in; height: 2.25in; background: #1c1614; color: #f3ead8; padding: 0.14in 0.16in 0.2in; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
+.priceTagSub { font-family: var(--font-heading), sans-serif; font-size: 9.5pt; letter-spacing: 0.08em; color: #f3ead8; }
+.priceTagCut { font-family: var(--font-heading), sans-serif; font-size: 20pt; font-weight: 700; line-height: 0.92; letter-spacing: 0.03em; color: #f3ead8; }
+.priceTagMid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.08in; margin: 0.03in 0; }
+.priceTagGrade { font-family: var(--font-heading), sans-serif; font-size: 8.5pt; font-weight: 700; letter-spacing: 0.06em; border-top: 0.75pt solid #8b0a10; border-bottom: 0.75pt solid #8b0a10; padding: 3pt 0; }
+.priceTagBadge { width: 0.74in; height: 0.74in; object-fit: contain; }
+.priceTagPrice { font-family: var(--font-heading), sans-serif; font-size: 18pt; font-weight: 700; color: #f59b1a; border-top: 0.75pt solid #8b0a10; border-bottom: 0.75pt solid #8b0a10; padding: 1pt 0; }
+.priceTagFarm { font-size: 7.5pt; font-style: italic; color: #f3ead8; }
+
+/* 7. custom-cut order pad: exact 5.5" × 8.5" Half-Letter centered on 8.5" × 11" */
+.orderPadPage { display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 0.3in; }
+.orderTicket {
+    width: 5.5in; height: 8.5in; background: #f3ead8; color: #1c1614;
+    padding: 0.22in 0.25in 0.26in; display: flex; flex-direction: column; gap: 0.1in;
+}
+.orderHeader { background: #8b0a10; color: #f3ead8; font-family: var(--font-heading), sans-serif; font-weight: 700; font-size: 14.5pt; letter-spacing: 0.04em; text-align: center; padding: 0.07in 0.08in; }
+.orderMetaRow { display: grid; grid-template-columns: 1.4fr 1fr; gap: 0.08in; }
+.orderMetaBox { border: 1.25pt solid #1c1614; padding: 0.05in 0.08in; font-size: 7.5pt; font-weight: 700; }
+.orderSecTitle { font-family: var(--font-heading), sans-serif; font-weight: 700; font-size: 11pt; letter-spacing: 0.05em; text-align: center; margin-top: 0.02in; }
+.orderDeptGrid { display: grid; grid-template-columns: repeat(5, 1fr); border: 1.25pt solid #1c1614; }
+.orderDeptCell { border-right: 0.75pt solid #1c1614; border-bottom: 0.75pt solid #1c1614; padding: 0.05in 0.03in; display: flex; flex-direction: column; align-items: center; gap: 2pt; position: relative; }
+.orderDeptCell:nth-child(5n) { border-right: none; }
+.orderDeptCell:nth-child(n+6) { border-bottom: none; }
+.orderCheck { position: absolute; left: 0.04in; top: 0.04in; width: 0.11in; height: 0.11in; border: 1pt solid #1c1614; }
+.orderDeptIcon { width: 0.56in; height: 0.56in; object-fit: contain; margin-top: 0.04in; }
+.orderDeptName { font-family: var(--font-heading), sans-serif; font-weight: 700; font-size: 6.5pt; text-align: center; line-height: 1; text-transform: uppercase; }
+.orderTable { width: 100%; border: 1.25pt solid #1c1614; border-collapse: collapse; font-size: 6.5pt; flex: 1; }
+.orderTable th { border: 0.75pt solid #1c1614; padding: 3pt 2pt; font-weight: 800; background: rgba(28, 22, 20, 0.05); }
+.orderTable td { border: 0.75pt solid #1c1614; height: 0.24in; }
+.orderFootRow { display: flex; justify-content: space-between; align-items: center; margin-top: 0.04in; }
+.orderNotes { font-size: 6.5pt; color: #4a403b; max-width: 3.4in; line-height: 1.35; }
+.orderStamp { width: 1.05in; height: 1.05in; object-fit: contain; }
+
+/* 8. cards: Business (3.5" × 2.0"), Gift (3.375" × 2.125"), Loyalty (3.5" × 2.0") */
+.cardGrid { display: grid; grid-template-columns: 3.5in 3.5in; grid-auto-rows: auto; gap: 0.42in 0.45in; padding: 0.62in 0 0 0.52in; align-items: start; }
+.bizFront {
+    width: 3.5in; height: 2in; background: #f3ead8; color: #1c1614;
+    padding: 0.18in 0.2in 0.22in; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 0.08in solid #8b0a10;
+}
+.bizLeft { display: flex; flex-direction: column; gap: 2pt; }
+.bizName { font-family: var(--font-heading), sans-serif; font-size: 16pt; font-weight: 700; color: #8b0a10; line-height: 1; }
+.bizRole { font-family: var(--font-heading), sans-serif; font-size: 7.5pt; letter-spacing: 0.08em; color: #1c1614; }
+.bizContact { margin-top: 0.12in; font-size: 6.6pt; line-height: 1.35; font-weight: 600; color: #1c1614; }
+.bizSeal { width: 1.02in; height: 1.02in; object-fit: contain; }
+
+.bizBack {
+    width: 3.5in; height: 2in; background: #8b0a10; color: #f3ead8;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.06in;
+}
+.bizBackSticker { width: 1.1in; height: 1.1in; object-fit: contain; }
+.bizLine { font-family: var(--font-heading), sans-serif; font-size: 8.5pt; letter-spacing: .14em; color: #f3ead8; }
+
+.giftFront { width: 3.375in; height: 2.125in; background: #8b0a10; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 0.14in 0.18in 0.2in; border-radius: 0.125in; color: #f3ead8; }
+.giftHeader { font-family: var(--font-heading), sans-serif; font-size: 16pt; font-weight: 700; letter-spacing: 0.05em; line-height: 0.95; text-align: center; }
+.giftSeal { width: 0.84in; height: 0.84in; object-fit: contain; }
+.giftFootRow { width: 100%; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-heading), sans-serif; font-size: 10pt; letter-spacing: 0.08em; }
+.giftValBox { background: #f3ead8; color: #1c1614; padding: 2pt 8pt; border-radius: 2pt; font-size: 8.5pt; font-weight: 700; }
+
+.giftBack { width: 3.375in; height: 2.125in; background: #f3ead8; padding: 0 0 0.14in; display: flex; flex-direction: column; justify-content: space-between; font-size: 6.2pt; border-radius: 0.125in; overflow: hidden; }
+.magStripe { width: 100%; height: 0.36in; background: #1c1614; margin-top: 0.14in; }
+.giftBackBody { padding: 0.1in 0.18in; display: flex; flex-direction: column; align-items: center; gap: 4pt; text-align: center; }
+
+.loyaltyFront { width: 3.5in; height: 2in; background: #c8a47e; color: #1c1614; display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0.14in; }
+.loyaltyHeader { background: #8b0a10; color: #f3ead8; font-family: var(--font-heading), sans-serif; font-size: 7.5pt; font-weight: 700; letter-spacing: 0.06em; text-align: center; padding: 0.05in; }
+.punchGrid { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; justify-items: center; padding: 0.04in 0.12in; }
+.punch { width: 0.48in; height: 0.48in; border-radius: 50%; border: 1pt dashed #1c1614; display: grid; place-items: center; padding: 0.03in; box-sizing: border-box; }
+.punchIcon { width: 100%; height: 100%; object-fit: contain; }
+
+.loyaltyBack { width: 3.5in; height: 2in; background: #c8a47e; color: #1c1614; display: flex; flex-direction: column; justify-content: space-between; padding: 0.12in 0.16in 0.2in; }
+.loyaltyBackTop { display: flex; align-items: center; gap: 0.12in; }
+.loyaltyStamp { width: 0.8in; height: 0.8in; object-fit: contain; flex: none; }
+.loyaltyMember { font-family: var(--font-heading), sans-serif; font-size: 9pt; font-weight: 700; flex: 1; border-bottom: 1pt solid #1c1614; padding-bottom: 2pt; }
+.loyaltyReward { font-family: var(--font-heading), sans-serif; font-size: 9.5pt; font-weight: 700; color: #8b0a10; text-align: center; line-height: 1.05; }
+.loyaltyTerms { font-size: 4.8pt; text-align: center; line-height: 1.25; color: #1c1614; }
+
+/* 9. official 8.5" × 11" letterhead */
+.letterheadPage { background: #f8f3e6; display: flex; flex-direction: column; justify-content: space-between; padding: 0.55in 0.65in 0.6in; }
+.lhTop { display: flex; flex-direction: column; align-items: center; gap: 0.08in; border-bottom: 1.5pt solid #8b0a10; padding-bottom: 0.14in; position: relative; }
+.lhSeal { width: 1.15in; height: 1.15in; object-fit: contain; }
+.lhAddr { font-family: var(--font-heading), sans-serif; font-size: 10pt; font-weight: 700; letter-spacing: 0.08em; color: #8b0a10; }
+.lhBottom { border: 1.5pt solid #8b0a10; padding: 0.08in 0.12in; display: flex; justify-content: space-between; align-items: center; position: relative; }
+.lhMiniIcon { width: 0.48in; height: 0.48in; object-fit: contain; }
+
+/* 10. 3.0" embroidered patches & 3.5" primary chest patch */
+.patchPage { display: flex; flex-direction: column; align-items: center; padding-top: 0.48in; gap: 0.25in; }
+.primaryPatchRow { display: flex; align-items: center; gap: 0.35in; }
+.primaryPatchCut {
+    position: relative; width: 3.5in; height: 3.5in; border-radius: 50%;
+    outline: 0.75pt dashed #e0007a; border: 0.08in solid #8b0a10;
+    background: #f3ead8; display: grid; place-items: center; box-sizing: border-box;
+}
+.primaryPatchImg { width: 3.2in; height: 3.2in; object-fit: contain; }
+.patchSpecText { max-width: 3.2in; font-size: 8pt; line-height: 1.45; }
+.patchSpecTitle { font-family: var(--font-heading), sans-serif; font-size: 16pt; font-weight: 700; color: #8b0a10; text-transform: uppercase; margin-bottom: 4pt; }
+.patchGrid4 { display: grid; grid-template-columns: repeat(2, 3in); gap: 0.28in 0.6in; }
+.patchCell { display: flex; flex-direction: column; align-items: center; gap: 3pt; }
+.patchCircle3 {
+    position: relative; width: 3in; height: 3in; border-radius: 50%;
+    outline: 0.75pt dashed #e0007a; border: 0.07in solid #8b0a10;
+    display: grid; place-items: center; box-sizing: border-box; overflow: hidden;
+}
+.patchLabel { font-family: var(--font-heading), sans-serif; font-size: 8.5pt; font-weight: 700; letter-spacing: 0.05em; }
+
+/* 11. rubber stamps: 2.0" & 3.0" exact dies */
+.stampGrid { display: grid; grid-template-columns: repeat(2, 3.2in); gap: 0.32in 0.5in; padding: 0.52in 0 0 0.8in; align-items: center; justify-items: center; }
+.stampCell { display: flex; flex-direction: column; align-items: center; gap: 4pt; text-align: center; }
+.stampSvg2 { width: 2in; height: 2in; object-fit: contain; outline: 0.5pt dashed #e0007a; }
+.stampSvg3 { width: 3in; height: 3in; object-fit: contain; outline: 0.5pt dashed #e0007a; }
+.stampSvgRect { width: 2.5in; height: 1.09375in; object-fit: contain; outline: 0.5pt dashed #e0007a; }
+.stampBlack { filter: grayscale(1) brightness(0); }
+.stampLabel { font-size: 7pt; font-weight: 700; color: #1c1614; }
+
+/* 12. freezer paper bundle plate (7.5" × 4.4") + wrapping paper 1:1 swatch (7.5" × 4.8") */
+.wrapPage { padding: 0.45in 0.5in; display: flex; flex-direction: column; gap: 0.22in; }
+.freezerPlate {
+    width: 7.5in; height: 4.4in; border: 1.5pt solid #8b0a10; padding: 0.16in 0.22in 0.22in;
+    display: flex; flex-direction: column; justify-content: space-between; color: #8b0a10; box-sizing: border-box;
+}
+.freezerTop { display: flex; align-items: center; justify-content: space-between; gap: 0.12in; }
+.freezerSeal { width: 0.9in; height: 0.9in; object-fit: contain; }
+.freezerBrand { flex: 1; text-align: center; font-family: var(--font-heading), sans-serif; font-size: 16pt; font-weight: 700; letter-spacing: 0.04em; border-top: 2pt solid #8b0a10; border-bottom: 2pt solid #8b0a10; padding: 4pt 0; }
+.freezerChecks { display: flex; justify-content: space-between; font-family: var(--font-heading), sans-serif; font-size: 13pt; font-weight: 700; padding: 0 0.2in; }
+.freezerWriteRow { display: flex; justify-content: space-between; font-family: var(--font-heading), sans-serif; font-size: 12pt; font-weight: 700; border-bottom: 1pt solid #8b0a10; padding-bottom: 4pt; }
+.freezerHero { font-family: var(--font-heading), sans-serif; font-size: 38pt; font-weight: 700; text-align: center; line-height: 0.9; letter-spacing: 0.02em; }
+.freezerSub { font-family: var(--font-heading), sans-serif; font-size: 12pt; font-weight: 700; text-align: center; letter-spacing: 0.06em; }
+.wrapSwatch {
+    position: relative;
+    width: 7.5in; height: 4.75in; background-color: #c8a47e;
+    background-image: url('/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg');
+    background-size: 5in 6in; background-repeat: repeat;
+    outline: 0.75pt dashed #e0007a;
+}
+
+/* 12b. Catering Foil-Pan Belly-Band Straps (3.25" W × 9.50" H, 2-Up Cross-Wrap) */
+.bellyBandPage {
+    padding: 0.48in 0.55in 0.52in;
+    display: grid;
+    grid-template-columns: repeat(2, 3.25in);
+    justify-content: space-between;
+    align-items: start;
+}
+.bellyStrap {
+    width: 3.25in;
+    height: 9.5in;
+    background: #f59b1a;
+    border: 1.5pt solid #8b0a10;
+    border-radius: 0.18in;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    box-sizing: border-box;
+    color: #8b0a10;
+}
+.bellyTab {
+    height: 0.55in;
+    border-bottom: 1pt dashed #8b0a10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading), sans-serif;
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    background: rgba(139, 10, 16, 0.08);
+}
+.bellyTabBottom {
+    border-bottom: none;
+    border-top: 1pt dashed #8b0a10;
+}
+.bellyIconZone {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.08in 0.14in;
+    padding: 0.12in 0.22in;
+    align-items: center;
+    justify-items: center;
+}
+.bellyPatternIcon {
+    width: 0.86in;
+    height: 0.86in;
+}
+.bellyCenterBox {
+    margin: 0 0.16in;
+    padding: 0.12in 0.14in;
+    border: 2pt solid #8b0a10;
+    border-radius: 6pt;
+    background: #f59b1a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3pt;
+    text-align: center;
+}
+.bellyCrestIcon {
+    width: 0.92in;
+    height: 0.92in;
+}
+.bellyTitle {
+    font-family: var(--font-heading), sans-serif;
+    font-size: 20pt;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: 0.95;
+    color: #8b0a10;
+}
+.bellySub {
+    font-family: var(--font-heading), sans-serif;
+    font-size: 9.5pt;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: #8b0a10;
+    border-top: 1pt solid #8b0a10;
+    border-bottom: 1pt solid #8b0a10;
+    padding: 1.5pt 8pt;
+}
+.bellyWriteBox {
+    width: 100%;
+    background: #f3ead8;
+    border: 1pt solid #8b0a10;
+    border-radius: 4pt;
+    padding: 4pt 6pt;
+    text-align: left;
+    font-size: 6.5pt;
+    font-weight: 800;
+    color: #1c1614;
+    line-height: 1.45;
+    box-sizing: border-box;
+}
+
+/* 13. Full-sheet 300 DPI print master proof & Press Dieline Sheets */
+.masterPage {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.14in;
+    padding: 0.42in 0.42in 0.55in;
+}
+.masterImg {
+    width: var(--master-w, 7.5in);
+    height: var(--master-h, 9.6in);
+    max-width: 7.65in;
+    max-height: 9.75in;
+    object-fit: contain;
+    display: block;
+    outline: 0.75pt dashed #e0007a;
+}
+.vectorSpecBanner {
+    width: 7.5in;
+    background: #1c1614;
+    color: #f3ead8;
+    border: 1pt solid #f59b1a;
+    border-radius: 3pt;
+    padding: 0.08in 0.14in;
+    font-size: 6.8pt;
+    line-height: 1.4;
+    box-sizing: border-box;
+    text-align: center;
+}
+.vectorSpecBanner b {
+    color: #f59b1a;
+    letter-spacing: 0.04em;
+}
+
+.socialExamplesGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 3.6in);
+    gap: 0.25in;
+    justify-content: center;
+    align-items: start;
+}
+.socialExampleCell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.08in;
+}
+.socialFeedImg {
+    width: 3.6in;
+    height: 4.5in;
+    object-fit: contain;
+    display: block;
+    outline: 0.75pt dashed #e0007a;
+}
+.socialStoryImg {
+    width: 3.6in;
+    height: 6.4in;
+    object-fit: contain;
+    display: block;
+    outline: 0.75pt dashed #e0007a;
+}
+
+/* ---------- print ---------- */
+.printHidden { }
+@media print {
+    @page { size: 8.5in 11in; margin: 0; }
+    .noPrint { display: none !important; }
+    .printHidden { display: none !important; }
+    .shell { padding: 0 !important; }
+    .root { display: block; padding: 0; gap: 0; overflow: visible; }
+    .sheetBlock { display: block; }
+    .page { box-shadow: none; margin: 0 !important; break-after: page; page-break-after: always; }
+}

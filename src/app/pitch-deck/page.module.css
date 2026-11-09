@@ -1,0 +1,480 @@
+/* ─── 360° Business, Review Audit & Competitive Strategy Pitch Deck ─── */
+
+.page {
+    min-height: 100vh;
+    padding: calc(var(--nav-h) + 48px) 0 96px;
+    background: var(--bg);
+}
+
+.hero {
+    padding: 48px 0 64px;
+    border-bottom: 1px solid var(--border);
+}
+
+.heroInner {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 1040px;
+}
+
+.title {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    color: var(--fg);
+    line-height: 0.96;
+}
+
+.titleAccent {
+    color: var(--red);
+}
+
+.subtitle {
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    color: var(--fg-2);
+    line-height: 1.7;
+    max-width: 860px;
+}
+
+.heroStats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    padding-top: 8px;
+}
+
+.statItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.statValue {
+    font-family: "Yanone Kaffeesatz", sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+}
+
+.statLabel {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+}
+
+.quickJumpNav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 8px;
+}
+
+.jumpLink {
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    color: var(--fg-2);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: border-color 0.2s var(--ease-out), color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+}
+
+.jumpLink:hover {
+    border-color: var(--red);
+    color: var(--fg);
+    background: color-mix(in srgb, var(--red) 15%, transparent);
+}
+
+/* ── View Mode Controls & Slide Deck Player ── */
+.deckToolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px 24px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.modeTabs {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.modeBtn {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--fg-2);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease-out), background 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+
+.modeBtn:hover {
+    border-color: var(--red);
+    color: var(--fg);
+}
+
+.modeBtnActive {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--fg);
+}
+
+.slideControls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.slideCount {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.navBtn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+}
+
+.navBtn:hover {
+    background: var(--red);
+    border-color: var(--red);
+}
+
+.slidePills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.slidePill {
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--fg-3);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease-out), color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+}
+
+.slidePill:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.slidePillActive {
+    background: color-mix(in srgb, var(--red) 20%, transparent);
+    border-color: var(--red);
+    color: var(--fg);
+}
+
+/* ── Active Slide Stage ── */
+.slideStage {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.slideHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+}
+
+.slideMeta {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.slideTitle {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    color: var(--fg);
+}
+
+.slideSummary {
+    font-size: 15px;
+    color: var(--fg-2);
+    line-height: 1.7;
+    max-width: 880px;
+}
+
+.slideBottomCallout {
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius-sm);
+    padding: 16px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.calloutText {
+    font-size: 14px;
+    color: var(--fg-2);
+    line-height: 1.6;
+}
+
+.calloutText strong {
+    color: var(--gold);
+}
+
+/* ── Section Layout ── */
+.sectionBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.sectionHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 840px;
+}
+
+.sectionTitle {
+    font-size: clamp(2rem, 4.5vw, 3.4rem);
+    color: var(--fg);
+}
+
+.sectionDesc {
+    font-size: 15px;
+    color: var(--fg-3);
+    line-height: 1.7;
+}
+
+/* ── Grids & Cards ── */
+.twoColGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.threeColGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.card {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cardPain {
+    border-left: 4px solid var(--red);
+}
+
+.cardFix {
+    border-left: 4px solid var(--gold);
+}
+
+.cardHead {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.cardTitle {
+    font-size: 1.5rem;
+    color: var(--fg);
+}
+
+.cardSub {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.tag {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.tagPain {
+    background: color-mix(in srgb, var(--red) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--red) 35%, transparent);
+    color: var(--red-light);
+}
+
+.tagGold {
+    background: color-mix(in srgb, var(--gold) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
+    color: var(--gold-light);
+}
+
+.cardBody {
+    font-size: 14px;
+    color: var(--fg-2);
+    line-height: 1.7;
+}
+
+.cardBody strong {
+    color: var(--fg);
+}
+
+.metricRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+}
+
+.metricPill {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.metricKey {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+}
+
+.metricVal {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.bulletList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bulletItem {
+    font-size: 14px;
+    color: var(--fg-2);
+    line-height: 1.6;
+    padding-left: 18px;
+    position: relative;
+}
+
+.bulletItem::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-weight: 700;
+}
+
+.bulletItem strong {
+    color: var(--fg);
+}
+
+/* ── Tables ── */
+.tableWrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-3);
+}
+
+.roadmapTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.roadmapTable th,
+.roadmapTable td {
+    padding: 16px 24px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.6;
+    vertical-align: top;
+}
+
+.roadmapTable th {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--bg-4);
+    white-space: nowrap;
+}
+
+.roadmapTable td {
+    color: var(--fg-2);
+}
+
+.roadmapTable td strong {
+    color: var(--fg);
+}
+
+@media (max-width: 1080px) {
+    .threeColGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 820px) {
+    .twoColGrid,
+    .threeColGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .slideStage {
+        padding: 24px;
+    }
+}

@@ -61,7 +61,7 @@ export default function FooterMap() {
                 <span className={styles.addressText}>{loc.address}</span>
             </a>
 
-            {/* Map container — both locations preloaded eagerly for instant display & switching */}
+            {/* Map container — both load lazily when the footer nears the viewport */}
             <div className={styles.mapWrap}>
                 {LOCATIONS.map((item, idx) => (
                     <iframe
@@ -69,7 +69,7 @@ export default function FooterMap() {
                         src={`https://www.google.com/maps?q=${encodeURIComponent(item.address)}&output=embed`}
                         className={`${styles.mapIframe} ${idx === active ? styles.mapIframeActive : styles.mapIframeHidden}`}
                         allowFullScreen
-                        loading="eager"
+                        loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"
                         sandbox={GOOGLE_MAPS_SANDBOX}
                         title={`Map of ${item.label}`}

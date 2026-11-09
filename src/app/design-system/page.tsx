@@ -100,17 +100,6 @@ export default function DesignSystemPage() {
                                     <span className={styles.fontWeights}>Weights: 100–900 (variable)</span>
                                 </div>
                             </div>
-                            <div className={styles.fontCard}>
-                                <span className={styles.fontPreview} style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 500, fontSize: 36 }}>
-                                    Aa
-                                </span>
-                                <div className={styles.fontMeta}>
-                                    <strong>Outfit</strong>
-                                    <code>var(--font-outfit)</code>
-                                    <span className={styles.fontUsage}>Alternative body, UI elements</span>
-                                    <span className={styles.fontWeights}>Weights: 100–900 (variable)</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
 

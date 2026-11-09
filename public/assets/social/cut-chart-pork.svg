@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1160" width="1000" height="1160">
+  <rect width="1000" height="1160" fill="#F3EAD8" />
+  <rect x="24" y="24" width="952" height="1112" fill="none" stroke="#8B0A10" stroke-width="5" />
+  <rect x="36" y="36" width="928" height="1088" fill="none" stroke="#F59B1A" stroke-width="2" />
+
+  <!-- Header -->
+  <text x="500" y="106" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="54" fill="#8B0A10" letter-spacing="4">HOFHERR MEAT CO.</text>
+  <text x="500" y="148" text-anchor="middle" font-family="Arial Black, sans-serif" font-weight="800" font-size="24" fill="#1C1614" letter-spacing="5">· KNOW YOUR CUTS: HERITAGE PORK ·</text>
+  <line x1="80" y1="172" x2="920" y2="172" stroke="#8B0A10" stroke-width="3" />
+
+  <!-- Animal Silhouette -->
+  <g transform="translate(0, 30)">
+    <path d="M 110,470 L 155,415 L 185,360 L 235,385 L 300,345 L 745,345 C 835,345 875,405 875,495 L 855,635 L 820,735 L 775,735 L 780,620 L 365,625 L 345,735 L 300,735 L 305,615 L 210,585 L 115,525 Z" fill="#F59B1A" fill-opacity="0.16" stroke="#1C1614" stroke-width="7" stroke-linejoin="round" />
+    
+    <g>
+      <rect x="245" y="360" width="165" height="120" rx="8" fill="#F59B1A" fill-opacity="0.22" stroke="#8B0A10" stroke-width="4" stroke-dasharray="10 6" />
+      <text x="327.5" y="414" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="22" fill="#8B0A10" letter-spacing="2">BOSTON BUTT</text>
+      <text x="327.5" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="15" fill="#1C1614" letter-spacing="1">UPPER SHOULDER</text>
+    </g>
+  
+    <g>
+      <rect x="245" y="488" width="165" height="118" rx="8" fill="#F59B1A" fill-opacity="0.22" stroke="#8B0A10" stroke-width="4" stroke-dasharray="10 6" />
+      <text x="327.5" y="541" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="26" fill="#8B0A10" letter-spacing="2">PICNIC</text>
+      <text x="327.5" y="567" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="15" fill="#1C1614" letter-spacing="1">LOWER SHOULDER</text>
+    </g>
+  
+    <g>
+      <rect x="418" y="360" width="285" height="125" rx="8" fill="#F59B1A" fill-opacity="0.22" stroke="#8B0A10" stroke-width="4" stroke-dasharray="10 6" />
+      <text x="560.5" y="416.5" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="30" fill="#8B0A10" letter-spacing="2">PORK LOIN</text>
+      <text x="560.5" y="442.5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="15" fill="#1C1614" letter-spacing="1">CHOPS · BABY BACKS · TENDERLOIN</text>
+    </g>
+  
+    <g>
+      <rect x="418" y="493" width="285" height="115" rx="8" fill="#F59B1A" fill-opacity="0.22" stroke="#8B0A10" stroke-width="4" stroke-dasharray="10 6" />
+      <text x="560.5" y="544.5" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="30" fill="#8B0A10" letter-spacing="2">BELLY &amp; RIBS</text>
+      <text x="560.5" y="570.5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="15" fill="#1C1614" letter-spacing="1">BACON · ST. LOUIS SPARE RIBS</text>
+    </g>
+  
+    <g>
+      <rect x="711" y="360" width="150" height="248" rx="8" fill="#F59B1A" fill-opacity="0.22" stroke="#8B0A10" stroke-width="4" stroke-dasharray="10 6" />
+      <text x="786" y="478" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="24" fill="#8B0A10" letter-spacing="2">LEG / HAM</text>
+      <text x="786" y="504" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="15" fill="#1C1614" letter-spacing="1">FRESH OR CURED</text>
+    </g>
+  
+    
+    <g>
+      <line x1="325" y1="380" x2="265" y2="245" stroke="#8B0A10" stroke-width="3" />
+      <circle cx="325" cy="380" r="6" fill="#F59B1A" stroke="#8B0A10" stroke-width="3" />
+      <rect x="155" y="205" width="220" height="42" rx="6" fill="#1C1614" stroke="#F59B1A" stroke-width="2.5" />
+      <text x="265" y="232" text-anchor="middle" font-family="Arial Black, sans-serif" font-weight="800" font-size="18" fill="#F3EAD8" letter-spacing="1.5">PULLED PORK BUTT</text>
+    </g>
+  
+    <g>
+      <line x1="560" y1="380" x2="560" y2="245" stroke="#8B0A10" stroke-width="3" />
+      <circle cx="560" cy="380" r="6" fill="#F59B1A" stroke="#8B0A10" stroke-width="3" />
+      <rect x="445" y="205" width="230" height="42" rx="6" fill="#1C1614" stroke="#F59B1A" stroke-width="2.5" />
+      <text x="560" y="232" text-anchor="middle" font-family="Arial Black, sans-serif" font-weight="800" font-size="18" fill="#F3EAD8" letter-spacing="1.5">BONE-IN CHOPS</text>
+    </g>
+  
+    <g>
+      <line x1="560" y1="565" x2="520" y2="800" stroke="#8B0A10" stroke-width="3" />
+      <circle cx="560" cy="565" r="6" fill="#F59B1A" stroke="#8B0A10" stroke-width="3" />
+      <rect x="395" y="800" width="250" height="42" rx="6" fill="#1C1614" stroke="#F59B1A" stroke-width="2.5" />
+      <text x="520" y="827" text-anchor="middle" font-family="Arial Black, sans-serif" font-weight="800" font-size="18" fill="#F3EAD8" letter-spacing="1.5">HOUSE SMOKED BACON</text>
+    </g>
+  
+    <g>
+      <line x1="785" y1="500" x2="795" y2="800" stroke="#8B0A10" stroke-width="3" />
+      <circle cx="785" cy="500" r="6" fill="#F59B1A" stroke="#8B0A10" stroke-width="3" />
+      <rect x="685" y="800" width="220" height="42" rx="6" fill="#1C1614" stroke="#F59B1A" stroke-width="2.5" />
+      <text x="795" y="827" text-anchor="middle" font-family="Arial Black, sans-serif" font-weight="800" font-size="18" fill="#F3EAD8" letter-spacing="1.5">HERITAGE HAM</text>
+    </g>
+  
+  </g>
+
+  <!-- Bottom Reference Legend -->
+  <rect x="64" y="950" width="872" height="140" rx="10" fill="#1C1614" stroke="#8B0A10" stroke-width="3" />
+  <text x="500" y="992" text-anchor="middle" font-family="Arial Black, sans-serif" font-weight="800" font-size="22" fill="#F59B1A" letter-spacing="3">PRIMAL BREAKDOWN: BOSTON BUTT · PICNIC SHOULDER · LOIN · BELLY / SPARE RIBS · HAM</text>
+  <text x="500" y="1028" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#F3EAD8" letter-spacing="1">CUSTOM CUT TO ORDER · WHOLE-ANIMAL BUTCHERY · USDA PRIME &amp; HERITAGE FARMS</text>
+  <text x="500" y="1064" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="16" fill="#cdbfa8" letter-spacing="2">300 HAPP RD, NORTHFIELD · WINNETKA DEPOT · (847) 441-MEAT</text>
+</svg>

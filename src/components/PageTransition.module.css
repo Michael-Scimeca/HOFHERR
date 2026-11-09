@@ -1,6 +1,7 @@
 /* ─── Page Transition & Timeline Controller HUD (Bottom-Left) ─── */
 
 .hud {
+    display: none !important;
     position: fixed;
     left: max(16px, env(safe-area-inset-left, 0px));
     bottom: max(64px, env(safe-area-inset-bottom, 0px));
@@ -12,13 +13,13 @@
 /* ─── Standalone 5-Flame Control Studio UI (Top-Right, In Its Own UI) ─── */
 
 .flameHud {
+    display: none !important;
     position: fixed;
     right: max(16px, env(safe-area-inset-right, 0px));
     top: 88px;
     z-index: 9999;
     width: min(440px, calc(100vw - 32px));
     font-family: var(--font-body);
-    display: flex;
     flex-direction: column;
     align-items: flex-end;
 }

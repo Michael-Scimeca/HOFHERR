@@ -149,7 +149,7 @@ export type FlameSettings = FlameSlot & {
     flames: FlameSlot[];
 };
 
-export const FLAME_STORAGE_KEY = 'hofherr_flame_settings_v9';
+export const FLAME_STORAGE_KEY = 'hofherr_flame_settings_v11';
 
 export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
     {
@@ -157,7 +157,7 @@ export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
         presetId: 'gas_whoosh',
         label: '01 Gas Whoosh',
         posX: 0,
-        posY: -1.54,
+        posY: -1.66,
         scale: 0.62,
         magnitude: 2.8,
         lacunarity: 3.1,
@@ -187,10 +187,10 @@ export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
         posX: 0,
         posY: -1.54,
         scale: 0.56,
-        magnitude: 3.4,
-        lacunarity: 3.6,
+        magnitude: 4.0,
+        lacunarity: 2.7,
         gain: 0.56,
-        hue: 50,
+        hue: 21,
         hueBase: 14,
         intensity: 12.5,
         width: 0.78,
@@ -205,7 +205,7 @@ export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
         flareSpeedBoost: 3.2,
         flareDelay: 0,
         emberRate: 2.2,
-        emberLift: 1.25,
+        emberLift: 1.3,
         emberSize: 0.9,
     },
     {
@@ -213,7 +213,7 @@ export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
         presetId: 'pit_roar',
         label: '03 Pit Roar',
         posX: 0,
-        posY: -1.54,
+        posY: -1.66,
         scale: 0.60,
         magnitude: 3.2,
         lacunarity: 3.5,
@@ -241,7 +241,7 @@ export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
         presetId: 'torch_jet',
         label: '04 Torch Jet',
         posX: 0,
-        posY: -1.54,
+        posY: -1.66,
         scale: 0.56,
         magnitude: 1.6,
         lacunarity: 2.9,
@@ -269,7 +269,7 @@ export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
         presetId: 'hearth_swell',
         label: '05 Hearth Swell',
         posX: 0,
-        posY: -1.54,
+        posY: -1.66,
         scale: 0.56,
         magnitude: 2.1,
         lacunarity: 2.3,
@@ -295,9 +295,9 @@ export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
 ];
 
 export const DEFAULT_FLAME_SETTINGS: FlameSettings = {
-    ...FIVE_FLAME_DEFAULTS[0],
+    ...FIVE_FLAME_DEFAULTS[1],
     showAll5: false,
-    selectedIndex: 0,
+    selectedIndex: 1,
     flames: FIVE_FLAME_DEFAULTS.map(f => ({ ...f })),
 };
 
@@ -357,7 +357,7 @@ export const POSITION_SLIDERS: { key: 'posX' | 'posY' | 'scale'; label: string; 
     { key: 'scale', label: 'Flame Size', min: 0.3, max: 2.5, step: 0.05, fmt: v => `${v.toFixed(2)}×` },
 ];
 
-const LOAD_SECONDS = 3.2; // how long the word takes to burn from left to right
+const LOAD_SECONDS = 2.8; // 2.8s (2800ms) for the logo to burn in 0%->100%, then burn-out + page melt start immediately
 const ORBIT_COUNT = 16; // embers rising off the headline; kept sparse on purpose
 
 const IDLE_HEIGHT = 0.38;
@@ -463,10 +463,11 @@ export default function FireTestClient({
     const [alwaysShowFlame, setAlwaysShowFlame] = useState<boolean>(!preloader || alwaysShowFlameProp);
     const errorRef = useRef<HTMLDivElement>(null);
     const textRef = useRef<HTMLParagraphElement>(null);
-    const percentRef = useRef<HTMLSpanElement>(null);
     const logoRef = useRef<HTMLSpanElement>(null);
     const logoImgRef = useRef<HTMLImageElement>(null);
     const logoBurnRef = useRef<HTMLCanvasElement>(null);
+    const navBurnWrapRef = useRef<HTMLSpanElement>(null);
+    const navBurnRef = useRef<HTMLCanvasElement>(null);
     const loadStartRef = useRef(0);
     const pausedRef = useRef(initialPaused);
     const alwaysShowFlameRef = useRef(!preloader || alwaysShowFlameProp);
@@ -1064,7 +1065,6 @@ export default function FireTestClient({
         /* Loop */
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         loadStartRef.current = performance.now();
-        let lastPercent = -1;
         let flaredForLoad = -1; // loadStartRef value we've already flared for
         /* Burn-in progress: eased 0→1 with a couple of small stalls, like a real loader */
         const loadCurve = (sec: number) => {
@@ -1077,21 +1077,54 @@ export default function FireTestClient({
            Both are drawn per-pixel by a burner (see ./burner.ts) and burn in together: the
            headline settles to Hofherr red, the logo to white. The percent counts both. */
         const logoBurner: Burner | null = logoBurnRef.current ? createBurner(logoBurnRef.current, [255, 255, 255]) : null;
+        const navLogoBurner: Burner | null = navBurnRef.current ? createBurner(navBurnRef.current, [255, 255, 255]) : null;
 
         const logoSvg = new window.Image();
         let logoSvgReady = false;
-        const buildLogoBurn = () => {
+        const buildCenterLogoBurn = () => {
             const img = logoImgRef.current;
-            if (!logoBurner || !img || !logoSvgReady) return;
-            const rect = img.getBoundingClientRect();
-            logoBurner.build({
-                width: rect.width,
-                height: rect.height,
-                padX: Math.max(24, rect.height * 0.35),
-                padTop: rect.height * 0.7,
-                padBottom: Math.max(12, rect.height * 0.2),
-                paint: (c, x, y, w, h) => c.drawImage(logoSvg, x, y, w, h),
-            });
+            if (logoBurner && img && logoSvgReady) {
+                const rect = img.getBoundingClientRect();
+                if (rect.width > 4 && rect.height > 4) {
+                    logoBurner.build({
+                        width: rect.width,
+                        height: rect.height,
+                        padX: Math.max(24, rect.height * 0.35),
+                        padTop: rect.height * 0.7,
+                        padBottom: Math.max(12, rect.height * 0.2),
+                        paint: (c, x, y, w, h) => c.drawImage(logoSvg, x, y, w, h),
+                    });
+                }
+            }
+        };
+        const buildNavLogoBurn = () => {
+            const navEl = document.querySelector<HTMLImageElement>('header a[href="/"] img');
+            const navWrap = navBurnWrapRef.current;
+            if (navLogoBurner && navEl && navWrap && logoSvgReady) {
+                const hdr = document.querySelector<HTMLElement>('header');
+                const prevTransform = hdr ? hdr.style.transform : '';
+                if (hdr && prevTransform) hdr.style.transform = '';
+                const nRect = navEl.getBoundingClientRect();
+                if (hdr && prevTransform) hdr.style.transform = prevTransform;
+                if (nRect.width > 4 && nRect.height > 4) {
+                    navWrap.style.setProperty('--nav-logo-x', `${nRect.left}px`);
+                    navWrap.style.setProperty('--nav-logo-y', `${nRect.top}px`);
+                    navWrap.style.setProperty('--nav-logo-w', `${nRect.width}px`);
+                    navWrap.style.setProperty('--nav-logo-h', `${nRect.height}px`);
+                    navLogoBurner.build({
+                        width: nRect.width,
+                        height: nRect.height,
+                        padX: Math.max(18, nRect.height * 0.4),
+                        padTop: Math.max(24, nRect.height * 0.8),
+                        padBottom: Math.max(12, nRect.height * 0.25),
+                        paint: (c, x, y, w, h) => c.drawImage(logoSvg, x, y, w, h),
+                    });
+                }
+            }
+        };
+        const buildLogoBurn = () => {
+            buildCenterLogoBurn();
+            buildNavLogoBurn();
         };
         logoSvg.onload = () => { logoSvgReady = true; buildLogoBurn(); };
         logoSvg.src = '/assets/logo.svg';
@@ -1102,13 +1135,14 @@ export default function FireTestClient({
         document.fonts?.ready.then(buildBurn).catch(() => { });
 
         /* Logo hand-off: during the preloader the whole navbar is hidden and only the big burning
-           logo shows. Once it is fully lit (and the flame flares), the big logo burns away, and then
-           the navbar logo, the navbar, and the page itself all melt in at the exact same time.
-           Timeline, in seconds after 100%: */
-        const OUT_START = 0.4; // big logo starts burning away
-        const OUT_DUR = 0.85;
-        const MELT_START = 1.1; // page, navbar, and navbar logo all melt in together
-        const DONE_AT = 1.95; // melt-in complete, safe to finish
+           logo shows. Once it is fully lit (at 2.8s), the big logo burns away while
+           the navbar logo burns in, and once the logo is 2/3 burned through, the page melts in.
+           Timeline, in seconds after 100% (2.8s): */
+        const OUT_START = 0.05; // at 2.85s (50ms after 100%), center logo burn-out + nav logo burn-in start
+        const OUT_DUR = 0.95; // 950ms burn-out duration
+        const MELT_START = OUT_START + OUT_DUR * (2 / 3); // page starts melting in once the logo is 2/3 burned through
+        const MELT_DUR = 0.55; // page melt-in duration from 0% -> 100% starting at the 2/3 mark
+        const DONE_AT = Math.max(OUT_START + OUT_DUR, MELT_START + MELT_DUR) + 0.12; // burn-out, nav hand-off, and melt-in complete
         const easeInOut = (p: number) => (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2);
         const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
@@ -1143,11 +1177,13 @@ export default function FireTestClient({
             if (alwaysShowFlameRef.current) {
                 setNavLogoVisible(true);
                 setHeaderVisible(true, true);
+                if (navBurnWrapRef.current) navBurnWrapRef.current.hidden = true;
                 handedOff = true;
                 return;
             }
             setNavLogoVisible(false);
             setHeaderVisible(false, true);
+            if (navBurnWrapRef.current) navBurnWrapRef.current.hidden = true;
             if (preloaderRef.current) {
                 window.dispatchEvent(new CustomEvent('page-transition-waiting'));
             }
@@ -1166,22 +1202,48 @@ export default function FireTestClient({
                 setNavLogoVisible(true);
                 setHeaderVisible(true, true);
                 if (logoRef.current) logoRef.current.hidden = true;
+                if (navBurnWrapRef.current) navBurnWrapRef.current.hidden = true;
                 handedOff = true;
                 return true;
             }
+            const TOP_HANDOFF_AT = Math.max(OUT_START + OUT_DUR + 0.08, MELT_START + MELT_DUR);
             if (since >= OUT_START) {
-                // big logo burns away
-                if (!outWoken) { logoBurner?.wake(); outWoken = true; }
+                // As the center preloader logo burns out ('out'), the top navbar logo burns in ('in') in 1:1 sync;
+                // once the logo is 2/3 burned through (since >= MELT_START), the real page melts in from 0% -> 100%.
+                if (!outWoken) {
+                    if (navBurnWrapRef.current) navBurnWrapRef.current.hidden = false;
+                    buildNavLogoBurn();
+                    logoBurner?.wake();
+                    navLogoBurner?.wake();
+                    outWoken = true;
+                }
                 const p = clamp01((since - OUT_START) / OUT_DUR);
+                const ep = easeInOut(p);
+                if (since >= MELT_START && preloaderRef.current && !reduceMotion) {
+                    const meltP = clamp01((since - MELT_START) / MELT_DUR);
+                    window.dispatchEvent(new CustomEvent('page-transition-preloader-progress', { detail: { progress: meltP } }));
+                }
                 if (logoBurner) {
-                    const front = logoBurner.frontFor(easeInOut(p)) + Math.max(0, since - OUT_START - OUT_DUR) * 0.35;
-                    logoBurner.draw(front, time, since > OUT_START + OUT_DUR + 0.4, 'out');
+                    // Scale progress slightly (1.1x) so by p=1.0 the rightmost 'S' has completely crumbled away
+                    const frontOut = logoBurner.frontFor(ep * 1.1);
+                    logoBurner.draw(frontOut, time, p >= 1, 'out');
+                }
+                if (p >= 1 && logoRef.current) {
+                    logoRef.current.hidden = true;
+                }
+                if (navLogoBurner && !handedOff) {
+                    const frontIn = navLogoBurner.frontFor(ep * 1.1);
+                    navLogoBurner.draw(frontIn, time, p >= 1, 'in');
                 }
             }
-            if (since >= MELT_START && !handedOff) {
-                // Nav logo, Navbar, and page all melt in at the same time (driven by PageTransition's frame-clamped loop)
+            if (since >= MELT_START && siteHeader) {
+                siteHeader.style.pointerEvents = '';
+            }
+            if (since >= TOP_HANDOFF_AT && !handedOff) {
+                // Once the top navbar logo has finished burning in and cooled to crisp white, hand off in-place to the real <img>
                 setNavLogoVisible(true);
-                if (siteHeader) siteHeader.style.pointerEvents = '';
+                setHeaderVisible(true, true);
+                if (navBurnWrapRef.current) navBurnWrapRef.current.hidden = true;
                 handedOff = true;
             }
             return since >= OUT_START;
@@ -1204,6 +1266,8 @@ export default function FireTestClient({
         const onExternalStepEvent = (e: Event) => {
             const detail = (e as CustomEvent<{ step?: number; replay?: boolean; togglePause?: boolean }>).detail;
             if (detail?.replay) {
+                setAlwaysShowFlame(false);
+                alwaysShowFlameRef.current = false;
                 setPaused(false);
                 pausedRef.current = false;
                 stepJumpRef.current = 1;
@@ -1241,22 +1305,22 @@ export default function FireTestClient({
                 } else if (target === 3) {
                     loadStartRef.current = now - (LOAD_SECONDS + 1.0) * 1000;
                     flaredForLoad = loadStartRef.current;
-                    completeAt = now - 150;
-                    flareStartRef.current = now - 150;
+                    completeAt = now - 40;
+                    flareStartRef.current = now - 40;
                     burstRef.current += 16;
                     revealFired = false;
                     doneFired = false;
                 } else if (target === 4) {
                     loadStartRef.current = now - (LOAD_SECONDS + 1.5) * 1000;
                     flaredForLoad = loadStartRef.current;
-                    completeAt = now - (OUT_START + 0.3) * 1000;
+                    completeAt = now - (OUT_START + 0.25) * 1000;
                     flareStartRef.current = completeAt;
                     revealFired = false;
                     doneFired = false;
                 } else if (target === 5) {
                     loadStartRef.current = now - (LOAD_SECONDS + 2.5) * 1000;
                     flaredForLoad = loadStartRef.current;
-                    completeAt = now - (MELT_START + 0.05) * 1000;
+                    completeAt = now - (OUT_START + OUT_DUR * 0.6) * 1000;
                     flareStartRef.current = completeAt;
                     revealFired = false;
                     doneFired = false;
@@ -1267,12 +1331,16 @@ export default function FireTestClient({
                     revealFired = true;
                     doneFired = false;
                     onRevealRef.current?.();
+                    if (preloaderRef.current) {
+                        window.dispatchEvent(new CustomEvent('page-transition-preloader-progress', { detail: { progress: 1 } }));
+                    }
                 }
             }
 
             if (pausedRef.current && lastLoaderNow > 0) {
                 const delta = now - lastLoaderNow;
                 loadStartRef.current += delta;
+                if (flaredForLoad >= 0) flaredForLoad += delta;
                 if (completeAt >= 0) completeAt += delta;
                 if (flareStartRef.current > -Infinity) flareStartRef.current += delta;
             }
@@ -1307,7 +1375,7 @@ export default function FireTestClient({
             const total = lTotals?.total ?? 0;
             const burnt = burningAway ? 1 : total > 0 ? (lTotals?.burnt ?? 0) / total : loadProgress;
             currentLogoBurn = Math.min(1, Math.max(loadProgress, burnt));
-            const done = burnt >= 0.999;
+            const done = loadProgress >= 0.999 || burnt >= 0.999;
 
             // word fully lit: flare the flame and release rising embers, once per load
             if (done && flaredForLoad !== loadStartRef.current) {
@@ -1343,13 +1411,12 @@ export default function FireTestClient({
                     : Math.max(0, preloaderFade * meltCutoff);
             text.style.setProperty('--edge', glow.toFixed(3));
             updateLogo(since, time);
-            // Reveal the page at the exact same moment (MELT_START) that the navbar + nav logo melt in
+            // Drop the black overlay curtain once the logo is 2/3 burned through (MELT_START) so the page melts in from 0%->100%
             if (!revealFired && since >= 0 && (reduceMotion || since >= MELT_START)) {
                 revealFired = true;
                 onRevealRef.current?.();
-                // as the preloader, melt the page + navbar in together using the frame-clamped melt engine
-                if (preloaderRef.current && !reduceMotion) {
-                    window.dispatchEvent(new CustomEvent('page-transition-enter', { detail: { includeHeader: true } }));
+                if (preloaderRef.current && reduceMotion) {
+                    window.dispatchEvent(new CustomEvent('page-transition-preloader-progress', { detail: { progress: 1 } }));
                 }
             }
             if (!doneFired && since >= 0 && (reduceMotion || (handedOff && since >= DONE_AT))) {
@@ -1358,10 +1425,6 @@ export default function FireTestClient({
             }
 
             const pct = done ? 100 : Math.min(99, Math.floor(burnt * 100));
-            if (pct !== lastPercent && percentRef.current) {
-                percentRef.current.textContent = `${pct}%`;
-                lastPercent = pct;
-            }
 
             // Compute active UI step (1..6)
             let curStep = 1;
@@ -1369,7 +1432,7 @@ export default function FireTestClient({
                 curStep = pct < 5 ? 1 : 2;
             } else if (since < OUT_START) {
                 curStep = 3;
-            } else if (since < MELT_START) {
+            } else if (since < OUT_START + OUT_DUR * 0.55) {
                 curStep = 4;
             } else if (since < DONE_AT) {
                 curStep = 5;
@@ -1489,7 +1552,7 @@ export default function FireTestClient({
                 }
 
                 const currentHeight = Math.min(1.0, edgeUHeight + effectiveReach * (1 - edgeUHeight));
-                const jumpOffsetY = (-0.04 * (1 - Math.min(1, effectiveReach * 4)) + effectiveReach * 0.14) * slot.scale;
+                const jumpOffsetY = -0.04 * (1 - Math.min(1, effectiveReach * 4)) * slot.scale;
                 const extraScaleY = 1 + Math.max(0, effectiveReach - 1.0) * 0.45;
 
                 const speedBoost = 1 + swell * (slot.flareSpeedBoost ?? 2.4);
@@ -1561,7 +1624,7 @@ export default function FireTestClient({
             });
             renderer.dispose();
         };
-    }, []);
+    }, [preloader]);
 
     const updateActiveSlot = (patch: Partial<FlameSlot>) => {
         setSettings(prev => {
@@ -1618,7 +1681,7 @@ export default function FireTestClient({
             <canvas ref={overlayRef} className={styles.embers} aria-hidden="true" />
 
             <p ref={textRef} className={styles.headline}>
-                {/* the burning logo is the loader; percent sits under it */}
+                {/* the burning logo is the loader */}
                 <span ref={logoRef} className={styles.logo}>
                     {/* invisible image sets the logo's size; the burning logo is drawn on the canvas */}
                     <Image
@@ -1632,8 +1695,10 @@ export default function FireTestClient({
                     />
                     <canvas ref={logoBurnRef} className={styles.burn} aria-hidden="true" />
                 </span>
-                <span ref={percentRef} className={styles.percent} aria-hidden="true">0%</span>
             </p>
+            <span ref={navBurnWrapRef} className={styles.navBurnWrap} aria-hidden="true" hidden>
+                <canvas ref={navBurnRef} className={styles.burn} aria-hidden="true" />
+            </span>
 
             {!preloader && (<>
                 <section id="fire-controls" aria-labelledby="fire-controls-heading" className={styles.panel}>

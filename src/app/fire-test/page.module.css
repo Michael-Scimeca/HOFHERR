@@ -74,6 +74,20 @@
     pointer-events: none;
     filter: drop-shadow(0 0 12px rgba(var(--red-rgb), 0.45));
 }
+/* top navbar logo burn-in target: mirrors exact viewport rect of header logo during hand-off */
+.navBurnWrap {
+    position: fixed;
+    left: var(--nav-logo-x, 81px);
+    top: var(--nav-logo-y, 16px);
+    width: var(--nav-logo-w, 117px);
+    height: var(--nav-logo-h, 56px);
+    z-index: 10;
+    pointer-events: none;
+    display: block;
+}
+.navBurnWrap[hidden] {
+    display: none;
+}
 /* small progress readout under the word */
 .percent {
     position: absolute;

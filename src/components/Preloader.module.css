@@ -5,13 +5,12 @@
     inset: 0;
     z-index: 9998;
     background-color: #000;
-    /* quick drop so the page's own melt-in is clearly visible from frame 1 */
-    transition: background-color 140ms ease-out;
 }
 
 .revealed {
     background-color: transparent;
     pointer-events: none;
+    transition: none;
 }
 
 .interactive {

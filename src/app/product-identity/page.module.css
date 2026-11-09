@@ -1,0 +1,710 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-top: var(--nav-h);
+    color: var(--fg);
+}
+
+/* ── Hero Header (Open Backdrop, No Content-Boxing, No Eyebrow Pills) ── */
+.hero {
+    position: relative;
+    min-height: 480px;
+    display: flex;
+    align-items: flex-end;
+    padding: 64px 0 48px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+}
+
+.heroBackdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.heroBackdropImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+    filter: brightness(0.42) contrast(1.08);
+    display: block;
+}
+
+.heroScrim {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.68) 52%, rgba(0, 0, 0, 0.28) 100%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, transparent 40%, rgba(0, 0, 0, 0.92) 100%);
+}
+
+.heroInner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.heroTitle {
+    font-family: var(--font-heading);
+    font-size: clamp(2.75rem, 6vw, 4.75rem);
+    font-weight: 700;
+    line-height: 0.96;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--fg);
+    max-width: 16ch;
+}
+
+.heroTitleAccent {
+    color: var(--red);
+}
+
+.heroLead {
+    font-size: clamp(1rem, 1.25vw, 1.125rem);
+    line-height: 1.65;
+    color: var(--fg-2);
+    max-width: 64ch;
+}
+
+.heroNav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-top: 8px;
+}
+
+.heroNavLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-3);
+    color: var(--fg);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.2s var(--ease-out), background-color 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+.heroNavLink:hover {
+    border-color: var(--red);
+    background: var(--bg-4);
+    transform: translateY(-2px);
+}
+
+.heroNavLinkPrimary {
+    border-color: var(--red);
+}
+
+.heroNavIndex {
+    color: var(--gold);
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+}
+
+/* ── Shared Section Layout ── */
+.sectionStack {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.sectionHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 68ch;
+}
+
+.sectionTitle {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 3.8vw, 3rem);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--fg);
+}
+
+.sectionDesc {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--fg-2);
+}
+
+.splitGrid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 32px;
+    align-items: start;
+}
+
+/* ── Studio Photography Frame ── */
+.studioBoard {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+}
+
+.studioImageWrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.studioImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s var(--ease-out);
+}
+
+.studioBoard:hover .studioImage {
+    transform: scale(1.02);
+}
+
+.studioMeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.studioLabel {
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.studioCaption {
+    font-size: 0.875rem;
+    color: var(--fg-3);
+}
+
+/* ── Interactive Control Bar ── */
+.controlPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+}
+
+.controlGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.controlHeading {
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg);
+}
+
+.buttonRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.pillBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--fg-2);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease-out), background-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+
+.pillBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.pillBtnActive {
+    border-color: var(--red);
+    background: rgba(var(--red-rgb), 0.22);
+    color: var(--fg);
+}
+
+.swatchDot {
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: var(--swatch-bg, var(--gold));
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    flex-shrink: 0;
+}
+
+/* ── 01 / Live Butcher Wrapping Paper Sheet Simulator ── */
+.paperSheetStage {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--paper-bg, #c8a47e);
+    aspect-ratio: 3 / 2;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+    transition: background-color 0.3s var(--ease-out);
+}
+
+.paperVectorSheet {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.downloadRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.downloadBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gold);
+    background: rgba(var(--gold-rgb), 0.14);
+    color: var(--fg);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.2s var(--ease-out), border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+.downloadBtn:hover {
+    background: rgba(var(--red-rgb), 0.28);
+    border-color: var(--red);
+    transform: translateY(-2px);
+}
+
+/* Twine Cross Overlay on Wrapping Paper */
+.twineHorizontal {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 8px;
+    background: repeating-linear-gradient(
+        45deg,
+        #c59b6d 0px,
+        #c59b6d 6px,
+        #9e7348 6px,
+        #9e7348 12px
+    );
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+}
+
+.twineVertical {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 8px;
+    background: repeating-linear-gradient(
+        -45deg,
+        #c59b6d 0px,
+        #c59b6d 6px,
+        #9e7348 6px,
+        #9e7348 12px
+    );
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+}
+
+.twineSealBadge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 96px;
+    height: 96px;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 4px solid #8b0a10;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    z-index: 2;
+}
+
+/* ── 02 / Die-Cut Stickers & Deli Seal Grid ── */
+.stickerCatalogGrid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.stickerCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out), background-color 0.2s var(--ease-out);
+}
+
+.stickerCard:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    background: var(--bg-4);
+}
+
+.stickerCardActive {
+    border-color: var(--red);
+    background: rgba(var(--red-rgb), 0.16);
+}
+
+.dieCutPreview {
+    width: 112px;
+    height: 112px;
+    border-radius: var(--sticker-radius, 999px);
+    overflow: hidden;
+    border: 4px solid #f3ead8;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    transition: transform 0.25s var(--ease-out), border-radius 0.25s var(--ease-out);
+}
+
+.stickerCard:hover .dieCutPreview {
+    transform: rotate(-3deg) scale(1.04);
+}
+
+.dieCutImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.stickerName {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg);
+}
+
+.stickerDept {
+    font-size: 0.75rem;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* Live Counter Scale / Tamper-Evident Deli Label */
+.deliLabelCard {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    background: #f5eedc;
+    color: #1c1614;
+    border-radius: var(--radius);
+    border: 2px solid #8b0a10;
+    box-shadow: var(--shadow-lg);
+}
+
+.deliLabelHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #8b0a10;
+}
+
+.deliLabelBrand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.deliLabelShop {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #8b0a10;
+    line-height: 1;
+}
+
+.deliLabelLoc {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #4a352f;
+}
+
+.deliLabelSeal {
+    width: 64px;
+    height: 64px;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 2px solid #8b0a10;
+    flex-shrink: 0;
+}
+
+.deliLabelFields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.deliField {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 12px;
+    border: 1px solid rgba(139, 10, 16, 0.35);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.deliFieldFull {
+    grid-column: 1 / -1;
+}
+
+.deliFieldKey {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8b0a10;
+}
+
+.deliFieldVal {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #1c1614;
+}
+
+.deliLabelFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(139, 10, 16, 0.45);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #8b0a10;
+}
+
+/* ── 03 / Interactive Rubber Stamp Press ── */
+.stampCanvasStage {
+    position: relative;
+    min-height: 384px;
+    padding: 32px;
+    border-radius: var(--radius-lg);
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08), transparent 60%),
+        #c89d6c;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.stampVectorCircle {
+    width: 368px;
+    height: 368px;
+    max-width: 100%;
+    transform: rotate(-3deg);
+    opacity: 0.92;
+    mix-blend-mode: multiply;
+    transition: transform 0.25s var(--ease-out);
+}
+
+.stampVectorCircle:hover {
+    transform: rotate(0deg) scale(1.03);
+}
+
+.stampVectorRect {
+    width: 100%;
+    max-width: 440px;
+    height: auto;
+    transform: rotate(-2deg);
+    opacity: 0.92;
+    mix-blend-mode: multiply;
+    transition: transform 0.25s var(--ease-out);
+}
+
+.stampVectorRect:hover {
+    transform: rotate(0deg) scale(1.02);
+}
+
+.stampSvgArcText {
+    font-family: Arial-BoldMT, Arial, var(--font-heading), sans-serif;
+    font-size: 128px;
+    font-weight: 700;
+    stroke: var(--stamp-ink, #8b0a10);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+    text-transform: uppercase;
+}
+
+.stampSvgArcBottomText {
+    font-family: Arial-BoldMT, Arial, var(--font-heading), sans-serif;
+    font-size: 127px;
+    font-weight: 700;
+    stroke: var(--stamp-ink, #8b0a10);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+    text-transform: uppercase;
+}
+
+.stampSvgFlankText {
+    font-family: Arial-BoldMT, Arial, var(--font-heading), sans-serif;
+    font-size: 84px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    stroke: var(--stamp-ink, #8b0a10);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+    text-transform: uppercase;
+}
+
+.stampRectTopText {
+    font-family: var(--font-heading);
+    font-size: 68px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.stampRectMidText {
+    font-family: var(--font-heading);
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.stampRectBotText {
+    font-family: var(--font-heading);
+    font-size: 46px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.stampSpecList {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.specCard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 24px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.specCode {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.specName {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--fg);
+}
+
+.specDetail {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--fg-2);
+}
+
+@media (max-width: 1024px) {
+    .splitGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .stickerCatalogGrid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .stampSpecList {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .paperPatternGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stickerCatalogGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .deliLabelFields {
+        grid-template-columns: 1fr;
+    }
+}

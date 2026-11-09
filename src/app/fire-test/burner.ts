@@ -122,7 +122,9 @@ export function createBurner(canvas: HTMLCanvasElement, cooled: RGB): Burner {
         if (!ctx || o.width < 2 || o.height < 2) return;
         const cssW = o.width + o.padX * 2;
         const cssH = o.height + o.padTop + o.padBottom;
-        const scale = Math.min(window.devicePixelRatio || 1, 1.5);
+        const scale = o.height < 80
+            ? 1.75
+            : Math.min(window.devicePixelRatio || 1, 1.5);
         bw = Math.round(cssW * scale);
         bh = Math.round(cssH * scale);
         canvas.width = bw;

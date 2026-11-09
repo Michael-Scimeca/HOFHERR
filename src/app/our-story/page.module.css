@@ -21,7 +21,7 @@
 .heroOverlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.75) 100%);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.75) 100%);
     pointer-events: none;
 }
 
@@ -197,7 +197,7 @@
 
 .featuredVideoCaption p {
     font-size: 14px;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255, 255, 255, 0.45);
     margin: 0;
     font-style: italic;
 }
@@ -305,7 +305,7 @@
     direction: rtl;
 }
 
-.teamCard:nth-child(even) > * {
+.teamCard:nth-child(even)>* {
     direction: ltr;
 }
 
@@ -413,27 +413,64 @@
     line-height: 1.5;
 }
 
-/* ── CTA ── */
+/* ── CTA — Hofherr Butcher Wrapping Paper Theme ── */
 .cta {
-    background: linear-gradient(rgba(180, 20, 20, 0.85), rgba(140, 10, 10, 0.9)),
-                url('/BG-NEWSLETTER.jpg') center / 300px repeat;
-    padding: 64px 0;
+    background-color: #c8a47e;
+    background-image:
+        radial-gradient(ellipse 44% 78% at 50% 50%,
+            rgba(200, 164, 126, 0.94) 0%,
+            rgba(200, 164, 126, 0.82) 48%,
+            rgba(200, 164, 126, 0.12) 100%),
+        url('/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg');
+    background-position: center, center;
+    background-size: 100% 100%, 380px auto;
+    background-repeat: no-repeat, repeat;
+    padding: 72px 0;
     text-align: center;
-    color: #fff;
+    color: #1c1614;
     position: relative;
+    border-top: 3px solid #8b0a10;
+    border-bottom: 3px solid #8b0a10;
+    box-shadow:
+        inset 0 2px 0 rgba(245, 155, 26, 0.5),
+        inset 0 -2px 0 rgba(245, 155, 26, 0.5),
+        0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
 .cta h2 {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     margin-bottom: 12px;
-    color: #fff;
+    color: #8b0a10;
+    text-shadow: 0 1px 0 rgba(243, 234, 216, 0.7);
 }
 
 .cta p {
-    color: rgba(255, 255, 255, 0.8);
+    color: #1c1614;
     font-size: 15px;
+    font-weight: 600;
     margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ctaPinIcon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.ctaDividerDot {
+    color: #8b0a10;
+    font-weight: 800;
+    margin: 0 6px;
 }
 
 .ctaBtns {
@@ -443,28 +480,42 @@
     flex-wrap: wrap;
 }
 
-/* Invert primary button on red background */
 .ctaBtns :global(.btn-primary) {
-    background: #fff;
-    color: var(--red);
-    border-color: #fff;
+    background: #8b0a10;
+    color: #f3ead8;
+    border: 2px solid #8b0a10;
+    box-shadow: 0 4px 14px rgba(139, 10, 16, 0.28);
 }
 
 .ctaBtns :global(.btn-primary:hover) {
-    background: rgba(255, 255, 255, 0.9);
+    background: #1c1614;
+    border-color: #1c1614;
+    color: #f59b1a;
     transform: translateY(-2px);
 }
 
 .ctaBtns :global(.btn-secondary) {
-    border: none !important;
+    background: #1c1614;
+    border: 2px solid #1c1614 !important;
     outline: none !important;
-    box-shadow: none !important;
-    color: #fff;
+    box-shadow: 0 4px 14px rgba(28, 22, 20, 0.24) !important;
+    color: #f3ead8;
 }
 
 .ctaBtns :global(.btn-secondary:hover) {
-    background: rgba(255, 255, 255, 0.15);
+    background: #2b211e;
+    border-color: #8b0a10 !important;
+    color: #f59b1a;
     transform: translateY(-2px);
+}
+
+.teamBioSpaced {
+    margin-top: 16px;
+}
+
+.seanVisitBtn {
+    margin-top: 32px;
+    align-self: flex-start;
 }
 
 /* ── Responsive ── */
@@ -473,6 +524,7 @@
     .seanCard {
         grid-template-columns: 1fr;
     }
+
     .seanCard::after {
         left: 0;
         top: auto;
@@ -481,27 +533,33 @@
         width: 100%;
         transform: none;
     }
+
     .seanImagePart {
         min-height: 300px;
         height: 300px;
         position: relative;
     }
+
     .accoladeList {
         grid-template-columns: 1fr;
     }
+
     .team {
         padding: 64px 0 0;
     }
+
     .accolades {
         padding: 64px 0;
     }
+
     .timelineHeader {
         margin-bottom: 40px;
     }
 }
 
 @media (max-width: 700px) {
-    .teamCard, 
+
+    .teamCard,
     .teamCard:nth-child(even) {
         grid-template-columns: 1fr;
         direction: ltr;
@@ -520,13 +578,13 @@
         width: 100%;
         transform: none;
     }
-    
+
     .teamImagePart {
         width: 100%;
         height: 280px;
         min-height: auto;
     }
-    
+
     .teamContentPart {
         padding: 28px 20px 32px;
         justify-content: flex-start;

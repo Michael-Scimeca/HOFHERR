@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fire Border</title>
+  <style>
+    :root {
+      --bg: #0e0b0a;
+      --card: #1c1614;
+      --cream: #f3ead8;
+      --muted: #a8998c;
+      --ember: #f59b1a;
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      background: radial-gradient(ellipse at 50% 70%, #1d1310 0%, var(--bg) 60%);
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      color: var(--cream);
+      overflow: hidden;
+    }
+
+    .svg-defs {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+
+    /* ── the burning card ─────────────────────────────── */
+    .fire-card {
+      position: relative;
+      width: min(340px, 82vw);
+      aspect-ratio: 7 / 10;
+      border-radius: var(--radius);
+      isolation: isolate;
+    }
+
+    /* layers share the card's shape */
+    .fire-card>.layer {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      pointer-events: none;
+    }
+
+    /* 1 · wide, soft heat haze behind everything */
+    .heat {
+      inset: -40px !important;
+      border-radius: calc(var(--radius) + 40px) !important;
+      background: radial-gradient(closest-side, rgba(245, 120, 20, 0.28), rgba(204, 14, 29, 0.12) 60%, transparent 100%);
+      filter: blur(24px);
+      animation: breathe 2.4s ease-in-out infinite;
+      z-index: -2;
+    }
+
+    /* 2 · the flames: a thick bright outline pushed through the fire filter */
+    .flames {
+      border: 5px solid #fff;
+      filter: url(#fire);
+      z-index: 2;
+      mix-blend-mode: screen;
+    }
+
+    /* 3 · a second, wider, softer flame layer for big lazy tongues */
+    .flames-wide {
+      border: 12px solid #fff;
+      filter: url(#fire-wide);
+      opacity: 0.75;
+      z-index: 1;
+      mix-blend-mode: screen;
+    }
+
+    /* 4 · the hot core line that keeps the card's shape readable */
+    .core {
+      border: 1.5px solid #ffb347;
+      box-shadow:
+        0 0 5px 1px rgba(255, 170, 60, 0.75),
+        0 0 16px 3px rgba(230, 90, 20, 0.45),
+        inset 0 0 12px 2px rgba(204, 60, 20, 0.3);
+      filter: url(#fire-core);
+      z-index: 3;
+    }
+
+    /* card body */
+    .content {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      background:
+        radial-gradient(120% 70% at 50% 110%, rgba(204, 14, 29, 0.28), transparent 60%),
+        linear-gradient(180deg, #171210 0%, var(--card) 100%);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .tag {
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 7px 14px;
+      border-radius: 999px;
+      color: var(--cream);
+      background: rgba(245, 155, 26, 0.12);
+      border: 1px solid rgba(245, 155, 26, 0.45);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    /* floating embers */
+    .embers {
+      position: absolute;
+      inset: -20px;
+      z-index: 4;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .ember {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: #ffcf6a;
+      box-shadow: 0 0 6px 2px rgba(255, 140, 30, 0.9);
+      opacity: 0;
+      animation: rise var(--d, 3s) linear infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(var(--drift, 10px), -140px) scale(0.2);
+        opacity: 0;
+      }
+    }
+
+    @keyframes breathe {
+
+      0%,
+      100% {
+        opacity: 0.85;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.03);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .heat,
+      .ember {
+        animation: none;
+      }
+
+      .ember {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SVG filters: rising noise displaces the outline, then intensity is mapped to a fire color ramp -->
+  <svg class="svg-defs" aria-hidden="true">
+    <defs>
+      <!-- main flames -->
+      <filter id="fire" x="-30%" y="-45%" width="160%" height="175%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.07 0.016" numOctaves="3" seed="3" stitchTiles="stitch" x="0"
+          y="0" width="320" height="320" result="noiseARaw" />
+        <feColorMatrix in="noiseARaw" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0 1"
+          result="noiseAOp" />
+        <feTile in="noiseAOp" result="noiseATiled" />
+        <feOffset id="fireRiseA" in="noiseATiled" dx="0" dy="0" result="riseA1" />
+        <feOffset id="fireRiseA2" in="noiseATiled" dx="0" dy="0" result="riseA2" />
+        <feMerge result="riseA">
+          <feMergeNode in="riseA2" />
+          <feMergeNode in="riseA1" />
+        </feMerge>
+        <feTurbulence type="fractalNoise" baseFrequency="0.12 0.03" numOctaves="2" seed="11" stitchTiles="stitch" x="0"
+          y="0" width="320" height="320" result="noiseBRaw" />
+        <feColorMatrix in="noiseBRaw" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0 1"
+          result="noiseBOp" />
+        <feTile in="noiseBOp" result="noiseBTiled" />
+        <feOffset id="fireRiseB" in="noiseBTiled" dx="0" dy="0" result="riseB1" />
+        <feOffset id="fireRiseB2" in="noiseBTiled" dx="0" dy="0" result="riseB2" />
+        <feMerge result="riseB">
+          <feMergeNode in="riseB2" />
+          <feMergeNode in="riseB1" />
+        </feMerge>
+        <feComposite in="riseA" in2="riseB" operator="arithmetic" k1="0" k2="0.6" k3="0.4" k4="0" result="noise" />
+
+        <!-- soften the outline, then let the rising noise pull it into tongues -->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="soft" />
+        <feDisplacementMap in="soft" in2="noise" scale="26" xChannelSelector="R" yChannelSelector="G" result="licked" />
+
+        <!-- smear upward so flames climb off the line -->
+        <feOffset in="licked" dy="-7" result="up1" />
+        <feOffset in="licked" dy="-15" result="up2" />
+        <feOffset in="licked" dy="-25" result="up3" />
+        <feOffset in="licked" dy="-37" result="up4" />
+        <feComponentTransfer in="up4" result="up4f">
+          <feFuncA type="linear" slope="0.14" />
+        </feComponentTransfer>
+        <feComponentTransfer in="up1" result="up1f">
+          <feFuncA type="linear" slope="0.75" />
+        </feComponentTransfer>
+        <feComponentTransfer in="up2" result="up2f">
+          <feFuncA type="linear" slope="0.5" />
+        </feComponentTransfer>
+        <feComponentTransfer in="up3" result="up3f">
+          <feFuncA type="linear" slope="0.3" />
+        </feComponentTransfer>
+        <feMerge result="body">
+          <feMergeNode in="up4f" />
+          <feMergeNode in="up3f" />
+          <feMergeNode in="up2f" />
+          <feMergeNode in="up1f" />
+          <feMergeNode in="licked" />
+        </feMerge>
+
+        <!-- break the flame up with the noise so it flickers instead of glowing evenly -->
+        <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  1.5 0 0 0 -0.25"
+          result="flickNoise" />
+        <feComposite in="body" in2="flickNoise" operator="arithmetic" k1="2.2" k2="0" k3="0" k4="-0.08"
+          result="flicker" />
+
+        <!-- intensity → fire colors (alpha drives a dark-red → orange → yellow → white ramp) -->
+        <feColorMatrix in="flicker" type="matrix" values="0 0 0 1 0
+                0 0 0 1 0
+                0 0 0 1 0
+                0 0 0 1 0" result="lum" />
+        <feComponentTransfer in="lum" result="colored">
+          <feFuncR type="table" tableValues="0 0.55 0.95 1 1 1" />
+          <feFuncG type="table" tableValues="0 0.03 0.18 0.42 0.68 0.9" />
+          <feFuncB type="table" tableValues="0 0.01 0.02 0.05 0.16 0.5" />
+          <feFuncA type="table" tableValues="0 0.55 0.85 1 1 1" />
+        </feComponentTransfer>
+        <feGaussianBlur in="colored" stdDeviation="1.2" result="glow1" />
+        <feGaussianBlur in="colored" stdDeviation="7" result="glow2" />
+        <feMerge>
+          <feMergeNode in="glow2" />
+          <feMergeNode in="glow1" />
+          <feMergeNode in="colored" />
+        </feMerge>
+      </filter>
+
+      <!-- slower, bigger tongues -->
+      <filter id="fire-wide" x="-35%" y="-50%" width="170%" height="185%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.045 0.011" numOctaves="2" seed="7" stitchTiles="stitch" x="0"
+          y="0" width="320" height="320" result="nRaw" />
+        <feColorMatrix in="nRaw" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0 1" result="nOp" />
+        <feTile in="nOp" result="nTiled" />
+        <feOffset id="fireRiseW" in="nTiled" dx="0" dy="0" result="noise1" />
+        <feOffset id="fireRiseW2" in="nTiled" dx="0" dy="0" result="noise2" />
+        <feMerge result="noise">
+          <feMergeNode in="noise2" />
+          <feMergeNode in="noise1" />
+        </feMerge>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="soft" />
+        <feDisplacementMap in="soft" in2="noise" scale="44" xChannelSelector="R" yChannelSelector="G" result="licked" />
+        <feOffset in="licked" dy="-20" result="up" />
+        <feOffset in="licked" dy="-42" result="upb" />
+        <feComponentTransfer in="upb" result="upbf">
+          <feFuncA type="linear" slope="0.25" />
+        </feComponentTransfer>
+        <feComponentTransfer in="up" result="upf">
+          <feFuncA type="linear" slope="0.5" />
+        </feComponentTransfer>
+        <feMerge result="body">
+          <feMergeNode in="upbf" />
+          <feMergeNode in="upf" />
+          <feMergeNode in="licked" />
+        </feMerge>
+        <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  1.5 0 0 0 -0.25"
+          result="flickNoise" />
+        <feComposite in="body" in2="flickNoise" operator="arithmetic" k1="1.7" k2="0" k3="0" k4="-0.1"
+          result="flicker" />
+        <feColorMatrix in="flicker" type="matrix" values="0 0 0 1 0  0 0 0 1 0  0 0 0 1 0  0 0 0 1 0" result="lum" />
+        <feComponentTransfer in="lum" result="colored">
+          <feFuncR type="table" tableValues="0 0.6 0.9 1" />
+          <feFuncG type="table" tableValues="0 0.04 0.2 0.5" />
+          <feFuncB type="table" tableValues="0 0.02 0.03 0.06" />
+          <feFuncA type="table" tableValues="0 0.45 0.8 0.95" />
+        </feComponentTransfer>
+        <feGaussianBlur in="colored" stdDeviation="4" />
+      </filter>
+
+      <!-- tiny wobble on the hot core line -->
+      <filter id="fire-core" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.04 0.08" numOctaves="2" seed="5" stitchTiles="stitch" x="0"
+          y="0" width="320" height="320" result="nRaw" />
+        <feColorMatrix in="nRaw" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0 1" result="nOp" />
+        <feTile in="nOp" result="nTiled" />
+        <feOffset id="fireRiseC" in="nTiled" dx="0" dy="0" result="noise1" />
+        <feOffset id="fireRiseC2" in="nTiled" dx="0" dy="0" result="noise2" />
+        <feMerge result="noise">
+          <feMergeNode in="noise2" />
+          <feMergeNode in="noise1" />
+        </feMerge>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+  </svg>
+
+  <main class="fire-card" aria-label="Fire border card">
+    <div class="layer heat"></div>
+    <div class="content">
+      <span class="tag">Fresh off the fire</span>
+      <div>
+        <h1>Fire Border</h1>
+        <p>For when something needs to look like it came straight off the grill.</p>
+      </div>
+    </div>
+    <div class="layer flames-wide"></div>
+    <div class="layer flames"></div>
+    <div class="layer core"></div>
+    <div class="embers" aria-hidden="true"></div>
+  </main>
+
+  <script>
+    (() => {
+      if (typeof window === 'undefined' || typeof document === 'undefined') return;
+      // Scroll each noise field upward at its own speed → flames rise; the wide layer drifts slower.
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const layers = [
+        ['fireRiseA', 70], ['fireRiseB', 120], ['fireRiseW', 45], ['fireRiseC', 90],
+      ].map(([id, speed]) => { const el = document.getElementById(id); el.twin = document.getElementById(id + '2'); return [el, speed]; });
+      const sway = [[layers[0][0], 8, 0.9, 0], [layers[2][0], 12, 0.6, 1]];
+
+          let start = performance.now();
+          function tick(now) {
+            const t = (now - start) / 1000;
+            // Noise is a seamless 320px tile: two copies one tile apart cover each other's gap, so the scroll never shows a seam.
+            for (const [el, speed] of layers) {
+              const d = (t * speed) % 320;
+              el.setAttribute('dy', -d);
+              el.twin.setAttribute('dy', 320 - d);
+            }
+            // a little side-to-side breeze
+            for (const [el, amp, f, ph] of sway) { const dx = Math.sin(t * f + ph) * amp; el.setAttribute('dx', dx); el.twin.setAttribute('dx', dx); }
+            requestAnimationFrame(tick);
+          }
+        if (!reduce) requestAnimationFrame(tick);
+
+            // Embers drifting up from the top half of the border
+            const embers = document.querySelector('.embers');
+            if (!reduce && embers) {
+              for (let i = 0; i < 22; i++) {
+                const e = document.createElement('span');
+                e.className = 'ember';
+                const side = Math.random();
+                // spawn along the top edge and upper sides
+                const x = side < 0.6 ? 20 + Math.random() * 100 : (side < 0.8 ? 18 : 102);
+                const y = side < 0.6 ? 20 : 20 + Math.random() * 45;
+                e.style.left = `calc(${x}% - ${x * 0.4}px)`;
+                e.style.top = `${y}%`;
+                e.style.setProperty('--d', `${2 + Math.random() * 2.5}s`);
+                e.style.setProperty('--delay', `${-Math.random() * 4}s`);
+                e.style.setProperty('--drift', `${(Math.random() - 0.5) * 40}px`);
+                embers.appendChild(e);
+              }
+            }
+        }) ();
+  </script>
+</body>
+
+</html>

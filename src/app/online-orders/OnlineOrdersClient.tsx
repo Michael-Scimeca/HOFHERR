@@ -1063,761 +1063,761 @@ export default function CustomOrdersPage({
 
     const selectedDateObj = availableDates[selectedDateIdx];
     useEffect(() => {
-if (!selectedDateObj) return;
-const prefix = selectedDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-setForm(f => {
-    if (f.pickup.startsWith(prefix)) return f;
-    return { ...f, pickup: `${prefix} at ${f.pickup.split(' at ')[1] || ''}` };
-});
+        if (!selectedDateObj) return;
+        const prefix = selectedDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        setForm(f => {
+            if (f.pickup.startsWith(prefix)) return f;
+            return { ...f, pickup: `${prefix} at ${f.pickup.split(' at ')[1] || ''}` };
+        });
     }, [selectedDateObj]);
 
-// ── Session Sync ─────────────────────────────────────────────────────────
-const { data: session } = useSession();
-const authUser = session?.user;
-const isLoggedIn = Boolean(authUser);
+    // ── Session Sync ─────────────────────────────────────────────────────────
+    const { data: session } = useSession();
+    const authUser = session?.user;
+    const isLoggedIn = Boolean(authUser);
 
-useEffect(() => {
-    if (authUser) {
-        setUser(authUser as any);
-        setForm(f => ({ ...f, name: authUser.name!, email: authUser.email!, phone: authUser.phone || f.phone }));
-    } else {
-        setUser(null);
-    }
-}, [authUser]);
-
-useEffect(() => {
-    const login = searchParams.get('login') === 'true';
-    const signup = searchParams.get('signup') === 'true';
-    const openCart = searchParams.get('cart') === 'open';
-
-    if ((login || signup) && !isLoggedIn) {
-        setCheckoutOpen(true);
-        setAuthMode(signup ? 'register' : 'login');
-        setAuthIntent('browse');
-    } else if (!login && !signup && authIntent === 'browse') {
-        setCheckoutOpen(false);
-    }
-
-    if (openCart) {
-        setDrawerOpen(true);
-    }
-}, [searchParams, isLoggedIn, authIntent]);
-
-const handleForgotSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthError('');
-    setForgotSuccess(false);
-
-    if (!forgotEmail) {
-        setAuthError('Email is required.');
-        return;
-    }
-
-    setAuthLoading(true);
-    try {
-        const res = await fetch('/api/auth/forgot-password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: forgotEmail })
-        });
-
-        const data = await res.json();
-        if (!res.ok) {
-            setAuthError(data.error || 'Failed to send reset link.');
+    useEffect(() => {
+        if (authUser) {
+            setUser(authUser as any);
+            setForm(f => ({ ...f, name: authUser.name!, email: authUser.email!, phone: authUser.phone || f.phone }));
         } else {
-            setForgotSuccess(true);
-            setAuthError('');
+            setUser(null);
         }
-    } catch (err) {
-        setAuthError('An unexpected error occurred. Please try again.');
-    } finally {
-        setAuthLoading(false);
-    }
-};
+    }, [authUser]);
 
-const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthError('');
-    setAuthLoading(true);
-    try {
-        const res = await signIn('credentials', {
-            email: loginData.email,
-            password: loginData.password,
-            redirect: false,
-        });
-        if (res?.error) throw new Error("Invalid email or password");
+    useEffect(() => {
+        const login = searchParams.get('login') === 'true';
+        const signup = searchParams.get('signup') === 'true';
+        const openCart = searchParams.get('cart') === 'open';
 
-        if (authIntent === 'browse' || cart.length === 0) {
+        if ((login || signup) && !isLoggedIn) {
+            setCheckoutOpen(true);
+            setAuthMode(signup ? 'register' : 'login');
+            setAuthIntent('browse');
+        } else if (!login && !signup && authIntent === 'browse') {
             setCheckoutOpen(false);
-            navigateTo('/dashboard');
-        } else {
-            setCheckoutStep('form');
         }
-    } catch (err: any) {
-        setAuthError(err.message);
-    } finally {
-        setAuthLoading(false);
-    }
-};
 
-const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthError('');
-    setAuthLoading(true);
-    try {
-        // Create user in backend
-        const res = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(registerData),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Registration failed');
+        if (openCart) {
+            setDrawerOpen(true);
+        }
+    }, [searchParams, isLoggedIn, authIntent]);
 
-        // If email verification is required, show message instead of auto-login
-        if (data.requiresVerification) {
-            setAuthError('');
-            setAuthLoading(false);
-            alert('✅ Account created! Please check your email to verify your account before signing in.');
-            setAuthMode('login');
+    const handleForgotSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setAuthError('');
+        setForgotSuccess(false);
+
+        if (!forgotEmail) {
+            setAuthError('Email is required.');
             return;
         }
 
-        // Fallback: Sign in immediately via NextAuth (if verification not required)
-        const signInRes = await signIn('credentials', {
-            email: registerData.email,
-            password: registerData.password,
-            redirect: false,
-        });
-
-        if (signInRes?.error) throw new Error("Could not automatically log in");
-
-        if (authIntent === 'browse' || cart.length === 0) {
-            setCheckoutOpen(false);
-            navigateTo('/dashboard');
-        } else {
-            setCheckoutStep('form');
-        }
-    } catch (err: any) {
-        setAuthError(err.message);
-    } finally {
-        setAuthLoading(false);
-    }
-};
-
-const handleLogout = async () => {
-    await signOut({ redirect: false });
-    setForm({ name: '', phone: '', email: '', pickup: '' });
-};
-
-const handleApplyCoupon = async () => {
-    if (!couponCode.trim()) return;
-    setCouponError('');
-    setCouponLoading(true);
-    try {
-        const res = await fetch('/api/coupons/validate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: couponCode }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Invalid coupon');
-
-        setAppliedCoupon({
-            code: couponCode.toUpperCase(),
-            type: data.discountType,
-            value: data.discountValue
-        });
-        setCouponCode('');
-    } catch (err: any) {
-        setCouponError(err.message);
-    } finally {
-        setCouponLoading(false);
-    }
-};
-
-const removeCoupon = () => {
-    setAppliedCoupon(null);
-    setCouponError('');
-};
-
-// ── Custom scrollbar state ──────────────────────────────────────────────
-const summaryRowsRef = useRef<HTMLDivElement>(null);
-const [thumbTop, setThumbTop] = useState(0);
-const [thumbHeight, setThumbHeight] = useState(0);
-
-const updateThumb = useCallback(() => {
-    const el = summaryRowsRef.current;
-    if (!el) return;
-    const { scrollTop, scrollHeight, clientHeight } = el;
-    if (scrollHeight <= clientHeight) { setThumbHeight(0); return; }
-    const ratio = clientHeight / scrollHeight;
-    setThumbHeight(Math.max(ratio * clientHeight, 24));
-    setThumbTop((scrollTop / (scrollHeight - clientHeight)) * (clientHeight - Math.max(ratio * clientHeight, 24)));
-}, []);
-
-// ── Sidebar custom scrollbar state ──
-const sidebarScrollRef = useRef<HTMLDivElement>(null);
-const sideThumbRef = useRef<HTMLDivElement>(null);
-
-const updateSideThumb = useCallback(() => {
-    const el = sidebarScrollRef.current;
-    const thumb = sideThumbRef.current;
-    if (!el || !thumb) return;
-    const { scrollTop, scrollHeight, clientHeight } = el;
-    if (scrollHeight <= clientHeight) {
-        thumb.style.display = 'none';
-        return;
-    }
-    thumb.style.display = 'block';
-    const ratio = clientHeight / scrollHeight;
-    const thumbH = Math.max(ratio * clientHeight, 24);
-    const thumbTop = (scrollTop / (scrollHeight - clientHeight)) * (clientHeight - thumbH);
-    thumb.style.height = thumbH + 'px';
-    thumb.style.top = thumbTop + 'px';
-}, []);
-
-// ── Horizontal custom scrollbar state (mobile category nav) ──
-const hScrollRef = useRef<HTMLDivElement>(null);
-const [hThumbLeft, setHThumbLeft] = useState(0);
-const [hThumbWidth, setHThumbWidth] = useState(0);
-
-// ── Horizontal custom scrollbar state (pickup dates in modal) ──
-const dateScrollRef = useRef<HTMLDivElement>(null);
-const dateThumbRef = useRef<HTMLDivElement>(null);
-const [dateThumbLeft, setDateThumbLeft] = useState(0);
-const [dateThumbWidth, setDateThumbWidth] = useState(0);
-const [isCatSticky, setIsCatSticky] = useState(false);
-const [navbarHeight, setNavbarHeight] = useState(0);
-const [headerHeight, setHeaderHeight] = useState(0);
-const [stickyOffset, setStickyOffset] = useState(0);
-const catSentinelRef = useRef<HTMLDivElement>(null);
-const searchRowRef = useRef<HTMLDivElement>(null);
-const mobileHeaderRef = useRef<HTMLDivElement>(null);
-
-useEffect(() => {
-    const sentinel = catSentinelRef.current;
-    if (!sentinel) return;
-    // Measure navbar height
-    const nav = document.querySelector('header');
-    const navH = nav ? nav.getBoundingClientRect().height : 0;
-    setNavbarHeight(navH);
-    // Measure search row height for category bar offset
-    const searchEl = searchRowRef.current;
-    const searchH = searchEl ? searchEl.getBoundingClientRect().height + 16 : 52; // 16px for padding
-    setStickyOffset(navH + searchH);
-    // Measure mobileHeader height for spacer
-    const headerEl = mobileHeaderRef.current;
-    if (headerEl) setHeaderHeight(headerEl.getBoundingClientRect().height);
-    const observer = new IntersectionObserver(
-        ([entry]) => setIsCatSticky(!entry.isIntersecting),
-        { threshold: 0, rootMargin: `-${navH}px 0px 0px 0px` }
-    );
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-}, []);
-
-const updateHThumb = useCallback(() => {
-    const el = hScrollRef.current;
-    if (!el) return;
-    const { scrollLeft, scrollWidth, clientWidth } = el;
-    if (scrollWidth <= clientWidth) { setHThumbWidth(0); return; }
-    const ratio = clientWidth / scrollWidth;
-    const thumbW = Math.max(ratio * clientWidth, 30);
-    setHThumbWidth(thumbW);
-    setHThumbLeft((scrollLeft / (scrollWidth - clientWidth)) * (clientWidth - thumbW));
-}, []);
-
-const updateDateThumb = useCallback(() => {
-    const el = dateScrollRef.current;
-    if (!el) return;
-    const { scrollLeft, scrollWidth, clientWidth } = el;
-    if (scrollWidth <= clientWidth) { setDateThumbWidth(0); return; }
-    const ratio = clientWidth / scrollWidth;
-    const thumbW = Math.max(ratio * clientWidth, 30);
-    setDateThumbWidth(thumbW);
-    setDateThumbLeft((scrollLeft / (scrollWidth - clientWidth)) * (clientWidth - thumbW));
-}, []);
-
-// Update horizontal thumb on mount & resize
-useEffect(() => {
-    updateHThumb();
-    updateDateThumb();
-    window.addEventListener('resize', updateHThumb);
-    window.addEventListener('resize', updateDateThumb);
-    return () => {
-        window.removeEventListener('resize', updateHThumb);
-        window.removeEventListener('resize', updateDateThumb);
-    };
-}, [updateHThumb, updateDateThumb]);
-
-const { setCount, registerCartOpener, triggerFlyAnimation } = useCartCount();
-
-
-// ── Load cart from localStorage on first render (per-store) ──
-const [cart, setCart] = useState<CartItem[]>(() => {
-    if (typeof window === 'undefined') return [];
-    try {
-        // Use storeParam from top level of component
-        const targetStore = storeParam === 'depot' ? 'depot' : 'butcher';
-        const key = targetStore === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
-        const saved = localStorage.getItem(key);
-        if (!saved) {
-            const legacy = localStorage.getItem('hofherr_cart');
-            if (legacy && targetStore === 'butcher') return JSON.parse(legacy);
-        }
-        return saved ? JSON.parse(saved) : [];
-    } catch {
-        return [];
-    }
-});
-
-// ── Save cart to localStorage whenever it changes (per-store) ──
-useEffect(() => {
-    try {
-        const key = activeStore === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
-        localStorage.setItem(key, JSON.stringify(cart));
-        // Keep legacy key in sync for the global count context
-        localStorage.setItem('hofherr_cart', JSON.stringify(cart));
-    } catch { /* storage full or unavailable */ }
-}, [cart, activeStore]);
-
-// ── Tip Amount (computed after cart is declared) ─────────────────────
-const tipAmount = useMemo(() => {
-    const subtotal = cart.reduce((s: number, i: CartItem) => s + parseItemPrice(i.price) * i.qty, 0);
-    if (showTipCustom && tipCustom) return parseFloat(tipCustom) || 0;
-    if (tipPercent !== null) return Math.round(subtotal * tipPercent) / 100;
-    return 0;
-}, [cart, tipPercent, tipCustom, showTipCustom]);
-
-// ── Load restock submissions from localStorage after hydration ──
-useEffect(() => {
-    try {
-        const saved = localStorage.getItem('hofherr_restock_requests');
-        if (saved) {
-            const parsed = JSON.parse(saved) as { item: string }[];
-            setRestockSubmitted(new Set(parsed.map(r => r.item)));
-        }
-    } catch { }
-}, []);
-
-// ── Register drawer opener so navbar cart icon can open it ──
-useEffect(() => {
-    registerCartOpener(() => setDrawerOpen(true));
-    return () => registerCartOpener(() => { navigateTo('/online-orders?cart=open'); });
-}, [registerCartOpener, navigateTo]);
-
-useEffect(() => {
-    setCount(cart.reduce((s, i) => s + i.qty, 0));
-}, [cart, setCount]);
-
-// Recompute custom scrollbar whenever modal opens or cart changes
-useEffect(() => {
-if (!checkoutOpen) return;
-const timers = [100, 300, 600].map(ms => setTimeout(updateThumb, ms));
-return () => timers.forEach(t => clearTimeout(t));
-}, [checkoutOpen, updateThumb]);
-
-// ── Scroll-synced sidebar via IntersectionObserver ──
-const isScrollingTo = useRef(false);
-const categories = activeStore === 'butcher' ? butcherCategories : depotCategories;
-
-const activeCatRef = useRef(activeCategory);
-
-useEffect(() => {
-    const ids = categories.map(c => c.id);
-
-    const handleScroll = () => {
-        if (isScrollingTo.current) return;
-
-        const sections = ids.map(id => document.getElementById(id)).filter(Boolean) as HTMLElement[];
-        if (!sections.length) return;
-
-        // Calculate top offset: navbar + sticky mobile header
-        const navEl = document.querySelector('header');
-        const navH = navEl?.getBoundingClientRect().height ?? 0;
-        const mobileH = mobileHeaderRef.current?.getBoundingClientRect().height ?? 0;
-        const topOffset = navH + mobileH + 40;
-
-        // Find the last section whose top has scrolled past the offset
-        let active = ids[0];
-        for (let i = 0; i < sections.length; i++) {
-            const rect = sections[i].getBoundingClientRect();
-            if (rect.top <= topOffset) {
-                active = sections[i].id;
-            }
-        }
-        // Only update if changed
-        if (active !== activeCatRef.current) {
-            activeCatRef.current = active;
-            setActiveCategory(active);
-        }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // set initial state
-
-    return () => window.removeEventListener('scroll', handleScroll);
-}, [categories, activeStore, searchQuery]);
-
-// Auto-scroll active category button into view (horizontal bar on mobile)
-useEffect(() => {
-    const wrap = hScrollRef.current;
-    if (!wrap) return;
-    const btn = wrap.querySelector(`.${styles.sideLinkActive}`) as HTMLElement;
-    if (btn) {
-        // Only scroll the horizontal bar, not the page
-        const btnLeft = btn.offsetLeft;
-        const btnWidth = btn.offsetWidth;
-        const wrapWidth = wrap.offsetWidth;
-        const scrollTarget = btnLeft - (wrapWidth / 2) + (btnWidth / 2);
-        wrap.scrollTo({ left: scrollTarget, behavior: 'smooth' });
-    }
-}, [activeCategory]);
-
-const scrollTo = (id: string) => {
-    activeCatRef.current = id;
-    setActiveCategory(id);
-    isScrollingTo.current = true;
-    const el = document.getElementById(id);
-    if (el) {
-        const navEl = document.querySelector('header');
-        const navH = navEl?.getBoundingClientRect().height ?? 0;
-        const isMobile = window.innerWidth < 769;
-        const headerEl = mobileHeaderRef.current;
-        const mobileH = isMobile && headerEl ? headerEl.getBoundingClientRect().height : 0;
-        const offset = navH + mobileH + 24;
-        const top = el.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top, behavior: 'smooth' });
-    }
-    // Re-enable observer after scroll completes
-    const onEnd = () => { isScrollingTo.current = false; window.removeEventListener('scrollend', onEnd); };
-    window.addEventListener('scrollend', onEnd, { once: true });
-    // Fallback timeout in case scrollend isn't supported
-    setTimeout(() => { isScrollingTo.current = false; }, 1500);
-};
-
-const openModal = (item: Item) => {
-    setModal(item);
-    setModalQty(1);
-    setModalNote('');
-};
-
-const confirmAdd = useCallback((e?: React.MouseEvent) => {
-    if (!modal) return;
-    setCart(prev => {
-        const existing = prev.findIndex(i => i.name === modal.name);
-        if (existing >= 0) {
-            const updated = [...prev];
-            updated[existing] = { ...updated[existing], qty: updated[existing].qty + modalQty, note: modalNote || updated[existing].note };
-            return updated;
-        }
-        return [...prev, { ...modal, qty: modalQty, note: modalNote }];
-    });
-    setModal(null);
-    // Fire fly-to-cart animation from the button position
-    if (e) {
-        const btn = e.currentTarget as HTMLElement;
-        const rect = btn.getBoundingClientRect();
-        triggerFlyAnimation({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
-    }
-}, [modal, modalQty, modalNote, triggerFlyAnimation]);
-
-const removeItem = (name: string) => setCart(prev => prev.filter(i => i.name !== name));
-const changeQty = (name: string, delta: number) => setCart(prev =>
-    prev.map(i => i.name === name ? { ...i, qty: Math.max(1, i.qty + delta) } : i)
-);
-
-const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setStripeError('');
-    startTransition(async () => {
+        setAuthLoading(true);
         try {
-            const res = await fetch('/api/checkout', {
+            const res = await fetch('/api/auth/forgot-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    items: cart,
-                    contact: form,
-                    orderNote,
-                    customerId: user?.id,
-                    coupon: appliedCoupon,
-                    storeId: activeStore,
-                    paymentMethod,
-                    tipAmount: tipAmount,
-                }),
+                body: JSON.stringify({ email: forgotEmail })
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                setAuthError(data.error || 'Failed to send reset link.');
+            } else {
+                setForgotSuccess(true);
+                setAuthError('');
+            }
+        } catch (err) {
+            setAuthError('An unexpected error occurred. Please try again.');
+        } finally {
+            setAuthLoading(false);
+        }
+    };
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setAuthError('');
+        setAuthLoading(true);
+        try {
+            const res = await signIn('credentials', {
+                email: loginData.email,
+                password: loginData.password,
+                redirect: false,
+            });
+            if (res?.error) throw new Error("Invalid email or password");
+
+            if (authIntent === 'browse' || cart.length === 0) {
+                setCheckoutOpen(false);
+                navigateTo('/dashboard');
+            } else {
+                setCheckoutStep('form');
+            }
+        } catch (err: any) {
+            setAuthError(err.message);
+        } finally {
+            setAuthLoading(false);
+        }
+    };
+
+    const handleRegister = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setAuthError('');
+        setAuthLoading(true);
+        try {
+            // Create user in backend
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(registerData),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error ?? 'Checkout failed');
+            if (!res.ok) throw new Error(data.error || 'Registration failed');
 
-            // Save order to history for "Recently Ordered" feature
-            try {
-                const historyKey = 'hofherr_order_history';
-                const saved = localStorage.getItem(historyKey);
-                const history = saved ? JSON.parse(saved) : [];
-                history.unshift({
-                    items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
-                    date: new Date().toISOString(),
-                    store: activeStore,
-                });
-                // Keep only last 10 orders
-                localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
-            } catch { /* ignore */ }
+            // If email verification is required, show message instead of auto-login
+            if (data.requiresVerification) {
+                setAuthError('');
+                setAuthLoading(false);
+                alert('✅ Account created! Please check your email to verify your account before signing in.');
+                setAuthMode('login');
+                return;
+            }
 
-            // Clear cart from localStorage on successful checkout
-            try {
-                const cartKey = activeStore === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
-                localStorage.removeItem(cartKey);
-                localStorage.removeItem('hofherr_cart');
-            } catch { /* ignore */ }
+            // Fallback: Sign in immediately via NextAuth (if verification not required)
+            const signInRes = await signIn('credentials', {
+                email: registerData.email,
+                password: registerData.password,
+                redirect: false,
+            });
 
-            // Send order confirmation email
+            if (signInRes?.error) throw new Error("Could not automatically log in");
+
+            if (authIntent === 'browse' || cart.length === 0) {
+                setCheckoutOpen(false);
+                navigateTo('/dashboard');
+            } else {
+                setCheckoutStep('form');
+            }
+        } catch (err: any) {
+            setAuthError(err.message);
+        } finally {
+            setAuthLoading(false);
+        }
+    };
+
+    const handleLogout = async () => {
+        await signOut({ redirect: false });
+        setForm({ name: '', phone: '', email: '', pickup: '' });
+    };
+
+    const handleApplyCoupon = async () => {
+        if (!couponCode.trim()) return;
+        setCouponError('');
+        setCouponLoading(true);
+        try {
+            const res = await fetch('/api/coupons/validate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: couponCode }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Invalid coupon');
+
+            setAppliedCoupon({
+                code: couponCode.toUpperCase(),
+                type: data.discountType,
+                value: data.discountValue
+            });
+            setCouponCode('');
+        } catch (err: any) {
+            setCouponError(err.message);
+        } finally {
+            setCouponLoading(false);
+        }
+    };
+
+    const removeCoupon = () => {
+        setAppliedCoupon(null);
+        setCouponError('');
+    };
+
+    // ── Custom scrollbar state ──────────────────────────────────────────────
+    const summaryRowsRef = useRef<HTMLDivElement>(null);
+    const [thumbTop, setThumbTop] = useState(0);
+    const [thumbHeight, setThumbHeight] = useState(0);
+
+    const updateThumb = useCallback(() => {
+        const el = summaryRowsRef.current;
+        if (!el) return;
+        const { scrollTop, scrollHeight, clientHeight } = el;
+        if (scrollHeight <= clientHeight) { setThumbHeight(0); return; }
+        const ratio = clientHeight / scrollHeight;
+        setThumbHeight(Math.max(ratio * clientHeight, 24));
+        setThumbTop((scrollTop / (scrollHeight - clientHeight)) * (clientHeight - Math.max(ratio * clientHeight, 24)));
+    }, []);
+
+    // ── Sidebar custom scrollbar state ──
+    const sidebarScrollRef = useRef<HTMLDivElement>(null);
+    const sideThumbRef = useRef<HTMLDivElement>(null);
+
+    const updateSideThumb = useCallback(() => {
+        const el = sidebarScrollRef.current;
+        const thumb = sideThumbRef.current;
+        if (!el || !thumb) return;
+        const { scrollTop, scrollHeight, clientHeight } = el;
+        if (scrollHeight <= clientHeight) {
+            thumb.style.display = 'none';
+            return;
+        }
+        thumb.style.display = 'block';
+        const ratio = clientHeight / scrollHeight;
+        const thumbH = Math.max(ratio * clientHeight, 24);
+        const thumbTop = (scrollTop / (scrollHeight - clientHeight)) * (clientHeight - thumbH);
+        thumb.style.height = thumbH + 'px';
+        thumb.style.top = thumbTop + 'px';
+    }, []);
+
+    // ── Horizontal custom scrollbar state (mobile category nav) ──
+    const hScrollRef = useRef<HTMLDivElement>(null);
+    const [hThumbLeft, setHThumbLeft] = useState(0);
+    const [hThumbWidth, setHThumbWidth] = useState(0);
+
+    // ── Horizontal custom scrollbar state (pickup dates in modal) ──
+    const dateScrollRef = useRef<HTMLDivElement>(null);
+    const dateThumbRef = useRef<HTMLDivElement>(null);
+    const [dateThumbLeft, setDateThumbLeft] = useState(0);
+    const [dateThumbWidth, setDateThumbWidth] = useState(0);
+    const [isCatSticky, setIsCatSticky] = useState(false);
+    const [navbarHeight, setNavbarHeight] = useState(0);
+    const [headerHeight, setHeaderHeight] = useState(0);
+    const [stickyOffset, setStickyOffset] = useState(0);
+    const catSentinelRef = useRef<HTMLDivElement>(null);
+    const searchRowRef = useRef<HTMLDivElement>(null);
+    const mobileHeaderRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const sentinel = catSentinelRef.current;
+        if (!sentinel) return;
+        // Measure navbar height
+        const nav = document.querySelector('header');
+        const navH = nav ? nav.getBoundingClientRect().height : 0;
+        setNavbarHeight(navH);
+        // Measure search row height for category bar offset
+        const searchEl = searchRowRef.current;
+        const searchH = searchEl ? searchEl.getBoundingClientRect().height + 16 : 52; // 16px for padding
+        setStickyOffset(navH + searchH);
+        // Measure mobileHeader height for spacer
+        const headerEl = mobileHeaderRef.current;
+        if (headerEl) setHeaderHeight(headerEl.getBoundingClientRect().height);
+        const observer = new IntersectionObserver(
+            ([entry]) => setIsCatSticky(!entry.isIntersecting),
+            { threshold: 0, rootMargin: `-${navH}px 0px 0px 0px` }
+        );
+        observer.observe(sentinel);
+        return () => observer.disconnect();
+    }, []);
+
+    const updateHThumb = useCallback(() => {
+        const el = hScrollRef.current;
+        if (!el) return;
+        const { scrollLeft, scrollWidth, clientWidth } = el;
+        if (scrollWidth <= clientWidth) { setHThumbWidth(0); return; }
+        const ratio = clientWidth / scrollWidth;
+        const thumbW = Math.max(ratio * clientWidth, 30);
+        setHThumbWidth(thumbW);
+        setHThumbLeft((scrollLeft / (scrollWidth - clientWidth)) * (clientWidth - thumbW));
+    }, []);
+
+    const updateDateThumb = useCallback(() => {
+        const el = dateScrollRef.current;
+        if (!el) return;
+        const { scrollLeft, scrollWidth, clientWidth } = el;
+        if (scrollWidth <= clientWidth) { setDateThumbWidth(0); return; }
+        const ratio = clientWidth / scrollWidth;
+        const thumbW = Math.max(ratio * clientWidth, 30);
+        setDateThumbWidth(thumbW);
+        setDateThumbLeft((scrollLeft / (scrollWidth - clientWidth)) * (clientWidth - thumbW));
+    }, []);
+
+    // Update horizontal thumb on mount & resize
+    useEffect(() => {
+        updateHThumb();
+        updateDateThumb();
+        window.addEventListener('resize', updateHThumb);
+        window.addEventListener('resize', updateDateThumb);
+        return () => {
+            window.removeEventListener('resize', updateHThumb);
+            window.removeEventListener('resize', updateDateThumb);
+        };
+    }, [updateHThumb, updateDateThumb]);
+
+    const { setCount, registerCartOpener, triggerFlyAnimation } = useCartCount();
+
+
+    // ── Load cart from localStorage on first render (per-store) ──
+    const [cart, setCart] = useState<CartItem[]>(() => {
+        if (typeof window === 'undefined') return [];
+        try {
+            // Use storeParam from top level of component
+            const targetStore = storeParam === 'depot' ? 'depot' : 'butcher';
+            const key = targetStore === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
+            const saved = localStorage.getItem(key);
+            if (!saved) {
+                const legacy = localStorage.getItem('hofherr_cart');
+                if (legacy && targetStore === 'butcher') return JSON.parse(legacy);
+            }
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    });
+
+    // ── Save cart to localStorage whenever it changes (per-store) ──
+    useEffect(() => {
+        try {
+            const key = activeStore === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
+            localStorage.setItem(key, JSON.stringify(cart));
+            // Keep legacy key in sync for the global count context
+            localStorage.setItem('hofherr_cart', JSON.stringify(cart));
+        } catch { /* storage full or unavailable */ }
+    }, [cart, activeStore]);
+
+    // ── Tip Amount (computed after cart is declared) ─────────────────────
+    const tipAmount = useMemo(() => {
+        const subtotal = cart.reduce((s: number, i: CartItem) => s + parseItemPrice(i.price) * i.qty, 0);
+        if (showTipCustom && tipCustom) return parseFloat(tipCustom) || 0;
+        if (tipPercent !== null) return Math.round(subtotal * tipPercent) / 100;
+        return 0;
+    }, [cart, tipPercent, tipCustom, showTipCustom]);
+
+    // ── Load restock submissions from localStorage after hydration ──
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('hofherr_restock_requests');
+            if (saved) {
+                const parsed = JSON.parse(saved) as { item: string }[];
+                setRestockSubmitted(new Set(parsed.map(r => r.item)));
+            }
+        } catch { }
+    }, []);
+
+    // ── Register drawer opener so navbar cart icon can open it ──
+    useEffect(() => {
+        registerCartOpener(() => setDrawerOpen(true));
+        return () => registerCartOpener(() => { navigateTo('/online-orders?cart=open'); });
+    }, [registerCartOpener, navigateTo]);
+
+    useEffect(() => {
+        setCount(cart.reduce((s, i) => s + i.qty, 0));
+    }, [cart, setCount]);
+
+    // Recompute custom scrollbar whenever modal opens or cart changes
+    useEffect(() => {
+        if (!checkoutOpen) return;
+        const timers = [100, 300, 600].map(ms => setTimeout(updateThumb, ms));
+        return () => timers.forEach(t => clearTimeout(t));
+    }, [checkoutOpen, updateThumb]);
+
+    // ── Scroll-synced sidebar via IntersectionObserver ──
+    const isScrollingTo = useRef(false);
+    const categories = activeStore === 'butcher' ? butcherCategories : depotCategories;
+
+    const activeCatRef = useRef(activeCategory);
+
+    useEffect(() => {
+        const ids = categories.map(c => c.id);
+
+        const handleScroll = () => {
+            if (isScrollingTo.current) return;
+
+            const sections = ids.map(id => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+            if (!sections.length) return;
+
+            // Calculate top offset: navbar + sticky mobile header
+            const navEl = document.querySelector('header');
+            const navH = navEl?.getBoundingClientRect().height ?? 0;
+            const mobileH = mobileHeaderRef.current?.getBoundingClientRect().height ?? 0;
+            const topOffset = navH + mobileH + 40;
+
+            // Find the last section whose top has scrolled past the offset
+            let active = ids[0];
+            for (let i = 0; i < sections.length; i++) {
+                const rect = sections[i].getBoundingClientRect();
+                if (rect.top <= topOffset) {
+                    active = sections[i].id;
+                }
+            }
+            // Only update if changed
+            if (active !== activeCatRef.current) {
+                activeCatRef.current = active;
+                setActiveCategory(active);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll(); // set initial state
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [categories, activeStore, searchQuery]);
+
+    // Auto-scroll active category button into view (horizontal bar on mobile)
+    useEffect(() => {
+        const wrap = hScrollRef.current;
+        if (!wrap) return;
+        const btn = wrap.querySelector(`.${styles.sideLinkActive}`) as HTMLElement;
+        if (btn) {
+            // Only scroll the horizontal bar, not the page
+            const btnLeft = btn.offsetLeft;
+            const btnWidth = btn.offsetWidth;
+            const wrapWidth = wrap.offsetWidth;
+            const scrollTarget = btnLeft - (wrapWidth / 2) + (btnWidth / 2);
+            wrap.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+        }
+    }, [activeCategory]);
+
+    const scrollTo = (id: string) => {
+        activeCatRef.current = id;
+        setActiveCategory(id);
+        isScrollingTo.current = true;
+        const el = document.getElementById(id);
+        if (el) {
+            const navEl = document.querySelector('header');
+            const navH = navEl?.getBoundingClientRect().height ?? 0;
+            const isMobile = window.innerWidth < 769;
+            const headerEl = mobileHeaderRef.current;
+            const mobileH = isMobile && headerEl ? headerEl.getBoundingClientRect().height : 0;
+            const offset = navH + mobileH + 24;
+            const top = el.getBoundingClientRect().top + window.scrollY - offset;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+        // Re-enable observer after scroll completes
+        const onEnd = () => { isScrollingTo.current = false; window.removeEventListener('scrollend', onEnd); };
+        window.addEventListener('scrollend', onEnd, { once: true });
+        // Fallback timeout in case scrollend isn't supported
+        setTimeout(() => { isScrollingTo.current = false; }, 1500);
+    };
+
+    const openModal = (item: Item) => {
+        setModal(item);
+        setModalQty(1);
+        setModalNote('');
+    };
+
+    const confirmAdd = useCallback((e?: React.MouseEvent) => {
+        if (!modal) return;
+        setCart(prev => {
+            const existing = prev.findIndex(i => i.name === modal.name);
+            if (existing >= 0) {
+                const updated = [...prev];
+                updated[existing] = { ...updated[existing], qty: updated[existing].qty + modalQty, note: modalNote || updated[existing].note };
+                return updated;
+            }
+            return [...prev, { ...modal, qty: modalQty, note: modalNote }];
+        });
+        setModal(null);
+        // Fire fly-to-cart animation from the button position
+        if (e) {
+            const btn = e.currentTarget as HTMLElement;
+            const rect = btn.getBoundingClientRect();
+            triggerFlyAnimation({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+        }
+    }, [modal, modalQty, modalNote, triggerFlyAnimation]);
+
+    const removeItem = (name: string) => setCart(prev => prev.filter(i => i.name !== name));
+    const changeQty = (name: string, delta: number) => setCart(prev =>
+        prev.map(i => i.name === name ? { ...i, qty: Math.max(1, i.qty + delta) } : i)
+    );
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setStripeError('');
+        startTransition(async () => {
             try {
-                await fetch('/api/order-confirmation', {
+                const res = await fetch('/api/checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty, note: i.note })),
+                        items: cart,
                         contact: form,
                         orderNote,
-                        storeId: activeStore,
-                        tipAmount,
+                        customerId: user?.id,
                         coupon: appliedCoupon,
+                        storeId: activeStore,
+                        paymentMethod,
+                        tipAmount: tipAmount,
                     }),
                 });
-            } catch { /* non-blocking */ }
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error ?? 'Checkout failed');
 
-            if (data.url) {
-                window.location.href = data.url; // redirect to Stripe
-            } else {
-                navigateTo(`/order/success?instore=true&pickupTime=${encodeURIComponent(form.pickup)}&name=${encodeURIComponent(form.name)}&storeId=${activeStore}&summary=${encodeURIComponent(cart.map(i => `${i.name} x${i.qty}`).join(', '))}`);
+                // Save order to history for "Recently Ordered" feature
+                try {
+                    const historyKey = 'hofherr_order_history';
+                    const saved = localStorage.getItem(historyKey);
+                    const history = saved ? JSON.parse(saved) : [];
+                    history.unshift({
+                        items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+                        date: new Date().toISOString(),
+                        store: activeStore,
+                    });
+                    // Keep only last 10 orders
+                    localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
+                } catch { /* ignore */ }
+
+                // Clear cart from localStorage on successful checkout
+                try {
+                    const cartKey = activeStore === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
+                    localStorage.removeItem(cartKey);
+                    localStorage.removeItem('hofherr_cart');
+                } catch { /* ignore */ }
+
+                // Send order confirmation email
+                try {
+                    await fetch('/api/order-confirmation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty, note: i.note })),
+                            contact: form,
+                            orderNote,
+                            storeId: activeStore,
+                            tipAmount,
+                            coupon: appliedCoupon,
+                        }),
+                    });
+                } catch { /* non-blocking */ }
+
+                if (data.url) {
+                    window.location.href = data.url; // redirect to Stripe
+                } else {
+                    navigateTo(`/order/success?instore=true&pickupTime=${encodeURIComponent(form.pickup)}&name=${encodeURIComponent(form.name)}&storeId=${activeStore}&summary=${encodeURIComponent(cart.map(i => `${i.name} x${i.qty}`).join(', '))}`);
+                }
+            } catch (err) {
+                setStripeError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
             }
-        } catch (err) {
-            setStripeError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
-        }
-    });
-};
+        });
+    };
 
-const baseCategories = activeStore === 'butcher' ? butcherCategories : depotCategories;
-const filteredBySearch = searchQuery.trim()
-    ? baseCategories
-        .map(cat => ({
+    const baseCategories = activeStore === 'butcher' ? butcherCategories : depotCategories;
+    const filteredBySearch = searchQuery.trim()
+        ? baseCategories
+            .map(cat => ({
+                ...cat,
+                items: cat.items.filter(item =>
+                    fuzzyMatch(item.name, searchQuery)
+                ),
+            }))
+            .filter(cat => cat.items.length > 0)
+        : baseCategories;
+
+    // Apply favorites filter
+    const filteredByFavorites = showFavoritesOnly
+        ? filteredBySearch.map(cat => ({
             ...cat,
-            items: cat.items.filter(item =>
-                fuzzyMatch(item.name, searchQuery)
-            ),
-        }))
-        .filter(cat => cat.items.length > 0)
-    : baseCategories;
+            items: cat.items.filter(item => favorites.has(item.name)),
+        })).filter(cat => cat.items.length > 0)
+        : filteredBySearch;
 
-// Apply favorites filter
-const filteredByFavorites = showFavoritesOnly
-    ? filteredBySearch.map(cat => ({
-        ...cat,
-        items: cat.items.filter(item => favorites.has(item.name)),
-    })).filter(cat => cat.items.length > 0)
-    : filteredBySearch;
+    const hiddenCount = filteredByFavorites.reduce((sum, cat) =>
+        sum + cat.items.filter(item => item.inStock === false).length, 0
+    );
 
-const hiddenCount = filteredByFavorites.reduce((sum, cat) =>
-    sum + cat.items.filter(item => item.inStock === false).length, 0
-);
+    const visibleCategories = filteredByFavorites.map(cat => hideOutOfStock
+        ? { ...cat, items: cat.items.filter(item => item.inStock !== false) }
+        : cat
+    ).filter(cat => cat.items.length > 0);
 
-const visibleCategories = filteredByFavorites.map(cat => hideOutOfStock
-    ? { ...cat, items: cat.items.filter(item => item.inStock !== false) }
-    : cat
-).filter(cat => cat.items.length > 0);
+    // Total result count
+    const totalResults = visibleCategories.reduce((sum, cat) => sum + cat.items.length, 0);
 
-// Total result count
-const totalResults = visibleCategories.reduce((sum, cat) => sum + cat.items.length, 0);
-
-// Autocomplete suggestions (top 5 matches)
-const suggestions = useMemo(() => {
-    if (!searchQuery.trim() || searchQuery.length < 2) return [];
-    const matches: string[] = [];
-    for (const cat of baseCategories) {
-        for (const item of cat.items) {
-            if (fuzzyMatch(item.name, searchQuery)) matches.push(item.name);
+    // Autocomplete suggestions (top 5 matches)
+    const suggestions = useMemo(() => {
+        if (!searchQuery.trim() || searchQuery.length < 2) return [];
+        const matches: string[] = [];
+        for (const cat of baseCategories) {
+            for (const item of cat.items) {
+                if (fuzzyMatch(item.name, searchQuery)) matches.push(item.name);
+                if (matches.length >= 5) break;
+            }
             if (matches.length >= 5) break;
         }
-        if (matches.length >= 5) break;
-    }
-    return matches;
-}, [searchQuery, baseCategories]);
+        return matches;
+    }, [searchQuery, baseCategories]);
 
-const recentSearchesRef = useRef(recentSearches);
-useEffect(() => {
-    recentSearchesRef.current = recentSearches;
-}, [recentSearches]);
+    const recentSearchesRef = useRef(recentSearches);
+    useEffect(() => {
+        recentSearchesRef.current = recentSearches;
+    }, [recentSearches]);
 
-// Save to recent searches when user clears or blurs with a query
-const saveRecentSearch = useCallback((q: string) => {
-    if (!q.trim()) return;
-    const updated = [q, ...recentSearchesRef.current.filter(s => s !== q)].slice(0, 5);
-    recentSearchesRef.current = updated;
-    setRecentSearches(updated);
-    try { localStorage.setItem('hofherr-recent-searches', JSON.stringify(updated)); } catch { }
-}, []);
+    // Save to recent searches when user clears or blurs with a query
+    const saveRecentSearch = useCallback((q: string) => {
+        if (!q.trim()) return;
+        const updated = [q, ...recentSearchesRef.current.filter(s => s !== q)].slice(0, 5);
+        recentSearchesRef.current = updated;
+        setRecentSearches(updated);
+        try { localStorage.setItem('hofherr-recent-searches', JSON.stringify(updated)); } catch { }
+    }, []);
 
-// Load recent searches from localStorage on mount
-useEffect(() => {
-    try {
-        const saved = localStorage.getItem('hofherr-recent-searches');
-        if (saved) setRecentSearches(JSON.parse(saved));
-    } catch { }
-}, []);
+    // Load recent searches from localStorage on mount
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('hofherr-recent-searches');
+            if (saved) setRecentSearches(JSON.parse(saved));
+        } catch { }
+    }, []);
 
-// ⌘K / Ctrl+K keyboard shortcut
-useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    // ⌘K / Ctrl+K keyboard shortcut
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                searchRef.current?.focus();
+            }
+            if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
+                e.preventDefault();
+                searchRef.current?.focus();
+            }
+        };
+        window.addEventListener('keydown', handler);
+        return () => window.removeEventListener('keydown', handler);
+    }, []);
+
+    // Animated placeholder rotation
+    useEffect(() => {
+        if (searchFocused || searchQuery) return;
+        const interval = setInterval(() => {
+            setPlaceholderIdx(i => (i + 1) % PLACEHOLDER_TEXTS[activeStore].length);
+        }, 2500);
+        return () => clearInterval(interval);
+    }, [searchFocused, searchQuery, activeStore]);
+
+    // Recalculate sidebar scrollbar when categories change
+    useEffect(() => {
+        const timer = setTimeout(updateSideThumb, 50);
+        return () => clearTimeout(timer);
+    }, [activeStore, updateSideThumb]);
+
+    // ── Capture mouse-wheel on the sidebar — never let it bubble to the page ──
+    useEffect(() => {
+        const el = sidebarScrollRef.current;
+        if (!el) return;
+        const handler = (e: WheelEvent) => {
+            // Always prevent the page from scrolling when cursor is over sidebar
             e.preventDefault();
-            searchRef.current?.focus();
-        }
-        if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
-            e.preventDefault();
-            searchRef.current?.focus();
-        }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-}, []);
+            e.stopPropagation();
 
-// Animated placeholder rotation
-useEffect(() => {
-    if (searchFocused || searchQuery) return;
-    const interval = setInterval(() => {
-        setPlaceholderIdx(i => (i + 1) % PLACEHOLDER_TEXTS[activeStore].length);
-    }, 2500);
-    return () => clearInterval(interval);
-}, [searchFocused, searchQuery, activeStore]);
+            // Normalize delta across deltaMode (pixel=0, line=1, page=2)
+            const { clientHeight } = el;
+            let delta = e.deltaY;
+            if (e.deltaMode === 1) delta *= 24;  // line mode
+            if (e.deltaMode === 2) delta *= clientHeight; // page mode
 
-// Recalculate sidebar scrollbar when categories change
-useEffect(() => {
-    const timer = setTimeout(updateSideThumb, 50);
-    return () => clearTimeout(timer);
-}, [activeStore, updateSideThumb]);
-
-// ── Capture mouse-wheel on the sidebar — never let it bubble to the page ──
-useEffect(() => {
-    const el = sidebarScrollRef.current;
-    if (!el) return;
-    const handler = (e: WheelEvent) => {
-        // Always prevent the page from scrolling when cursor is over sidebar
-        e.preventDefault();
-        e.stopPropagation();
-
-        // Normalize delta across deltaMode (pixel=0, line=1, page=2)
-        const { clientHeight } = el;
-        let delta = e.deltaY;
-        if (e.deltaMode === 1) delta *= 24;  // line mode
-        if (e.deltaMode === 2) delta *= clientHeight; // page mode
-
-        el.scrollBy({ top: delta, behavior: 'instant' });
-    };
-    el.addEventListener('wheel', handler, { passive: false });
-    return () => el.removeEventListener('wheel', handler);
-}, []);
+            el.scrollBy({ top: delta, behavior: 'instant' });
+        };
+        el.addEventListener('wheel', handler, { passive: false });
+        return () => el.removeEventListener('wheel', handler);
+    }, []);
 
 
-// ── JSON-LD structured data for Google rich results ──
-const menuJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Restaurant',
-    name: 'Hofherr Meat Co.',
-    url: 'https://hofherrmeatco.com',
-    telephone: '+1-847-441-6328',
-    address: [
-        {
-            '@type': 'PostalAddress',
-            streetAddress: '300 Happ Rd',
-            addressLocality: 'Northfield',
-            addressRegion: 'IL',
-            postalCode: '60093',
-            addressCountry: 'US',
-        },
-        {
-            '@type': 'PostalAddress',
-            streetAddress: '754 Elm St',
-            addressLocality: 'Winnetka',
-            addressRegion: 'IL',
-            postalCode: '60093',
-            addressCountry: 'US',
-        },
-    ],
-    hasMenu: [
-        {
-            '@type': 'Menu',
-            name: 'The Butcher Shop',
-            hasMenuSection: butcherCategories.map(cat => ({
-                '@type': 'MenuSection',
-                name: cat.label,
-                description: cat.sub,
-                hasMenuItem: cat.items.map(item => ({
-                    '@type': 'MenuItem',
-                    name: item.name,
-                    ...(item.desc ? { description: item.desc } : {}),
-                    offers: {
-                        '@type': 'Offer',
-                        price: item.price.replace(/[^0-9.]/g, ''),
-                        priceCurrency: 'USD',
-                        availability: item.inStock === false
-                            ? 'https://schema.org/OutOfStock'
-                            : 'https://schema.org/InStock',
-                    },
+    // ── JSON-LD structured data for Google rich results ──
+    const menuJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Restaurant',
+        name: 'Hofherr Meat Co.',
+        url: 'https://hofherrmeatco.com',
+        telephone: '+1-847-441-6328',
+        address: [
+            {
+                '@type': 'PostalAddress',
+                streetAddress: '300 Happ Rd',
+                addressLocality: 'Northfield',
+                addressRegion: 'IL',
+                postalCode: '60093',
+                addressCountry: 'US',
+            },
+            {
+                '@type': 'PostalAddress',
+                streetAddress: '754 Elm St',
+                addressLocality: 'Winnetka',
+                addressRegion: 'IL',
+                postalCode: '60093',
+                addressCountry: 'US',
+            },
+        ],
+        hasMenu: [
+            {
+                '@type': 'Menu',
+                name: 'The Butcher Shop',
+                hasMenuSection: butcherCategories.map(cat => ({
+                    '@type': 'MenuSection',
+                    name: cat.label,
+                    description: cat.sub,
+                    hasMenuItem: cat.items.map(item => ({
+                        '@type': 'MenuItem',
+                        name: item.name,
+                        ...(item.desc ? { description: item.desc } : {}),
+                        offers: {
+                            '@type': 'Offer',
+                            price: item.price.replace(/[^0-9.]/g, ''),
+                            priceCurrency: 'USD',
+                            availability: item.inStock === false
+                                ? 'https://schema.org/OutOfStock'
+                                : 'https://schema.org/InStock',
+                        },
+                    })),
                 })),
-            })),
-        },
-        {
-            '@type': 'Menu',
-            name: 'The Depot',
-            hasMenuSection: depotCategories.map(cat => ({
-                '@type': 'MenuSection',
-                name: cat.label,
-                description: cat.sub,
-                hasMenuItem: cat.items.map(item => ({
-                    '@type': 'MenuItem',
-                    name: item.name,
-                    ...(item.desc ? { description: item.desc } : {}),
-                    offers: {
-                        '@type': 'Offer',
-                        price: item.price.replace(/[^0-9.]/g, ''),
-                        priceCurrency: 'USD',
-                        availability: item.inStock === false
-                            ? 'https://schema.org/OutOfStock'
-                            : 'https://schema.org/InStock',
-                    },
+            },
+            {
+                '@type': 'Menu',
+                name: 'The Depot',
+                hasMenuSection: depotCategories.map(cat => ({
+                    '@type': 'MenuSection',
+                    name: cat.label,
+                    description: cat.sub,
+                    hasMenuItem: cat.items.map(item => ({
+                        '@type': 'MenuItem',
+                        name: item.name,
+                        ...(item.desc ? { description: item.desc } : {}),
+                        offers: {
+                            '@type': 'Offer',
+                            price: item.price.replace(/[^0-9.]/g, ''),
+                            priceCurrency: 'USD',
+                            availability: item.inStock === false
+                                ? 'https://schema.org/OutOfStock'
+                                : 'https://schema.org/InStock',
+                        },
+                    })),
                 })),
-            })),
-        },
-    ],
-};
+            },
+        ],
+    };
 
-return (
-    <div className={styles.page}>
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(menuJsonLd).replace(/</g, '\\u003c') }}
-        />
-
-        {/* Location Hero Banner */}
-        <div className={styles.locationHero}>
-            <img
-                src={activeStore === 'butcher' ? '/assets/shop-exterior.jpg' : '/assets/shop-exterior.jpg'}
-                alt={activeStore === 'butcher' ? 'The Butcher Shop — Northfield' : 'The Depot — Winnetka'}
-                className={styles.locationHeroImg}
+    return (
+        <div className={styles.page}>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(menuJsonLd).replace(/</g, '\\u003c') }}
             />
-            <div className={styles.locationHeroOverlay}>
-                <h2 className={styles.locationHeroTitle}>
-                    {activeStore === 'butcher' ? 'The Butcher Shop' : 'The Depot'}
-                </h2>
-                <span className={styles.locationHeroSub}>
-                    {activeStore === 'butcher' ? '300 Happ Rd · Northfield, IL' : '754 Elm St · Winnetka Metra Station'}
-                </span>
-            </div>
-        </div>
 
-        {/* ── Online Ordering Hours Banner ── */}
-        <div className={styles.hoursNotice}>
+            {/* Location Hero Banner */}
+                <header className={styles.locationHero}>
+                    <img
+                        src={activeStore === 'butcher' ? '/assets/shop-exterior.jpg' : '/shops/winnetka.png'}
+                        alt={activeStore === 'butcher' ? 'The Butcher Shop — Northfield' : 'The Depot — Winnetka'}
+                        className={styles.locationHeroImg}
+                    />
+                    <div className={styles.locationHeroOverlay}>
+                            <h1 className={styles.locationHeroTitle}>
+                                {activeStore === 'butcher' ? 'The Butcher Shop' : 'The Depot'}
+                    </h1>
+                    <span className={styles.locationHeroSub}>
+                        {activeStore === 'butcher' ? '300 Happ Rd · Northfield, IL' : '754 Elm St · Winnetka Metra Station'}
+                    </span>
+            </div>
+        </header >
+
+        {/* ── Online Ordering Hours Banner ── */ }
+        < div className = { styles.hoursNotice } >
             <div className={styles.hoursNoticeInner}>
                 {activeStore === 'butcher' ? (
                     <>
@@ -1851,7 +1851,7 @@ return (
                     </>
                 )}
             </div>
-        </div>
+        </div >
 
         <div className={`container ${styles.layout}`}>
 
@@ -2059,147 +2059,148 @@ return (
                         </div>
                     )}
                     {visibleCategories.map(cat => (
-                        <section key={cat.id} id={cat.id} className={styles.catSection}>
-                            <div className={styles.catHeader}>
-                                {cat.icon
-                                    ? <img src={cat.icon} alt={cat.label} className={styles.catIcon} />
-                                    : <span className={styles.catEmoji}>{cat.emoji}</span>
-                                }
-                                <div>
-                                    <h2 className={styles.catTitle}>{cat.label}</h2>
-                                    {cat.sub && <p className={styles.catSub}>{cat.sub}</p>}
-                                </div>
-                            </div>
-                            <div className={styles.itemList}>
-                                {cat.items.map(item => (
-                                    <div key={item.name} className={`${styles.item} ${item.inStock === false ? styles.itemOut : ''}`}>
-                                        {/* Favorite Flame */}
-                                        <button
-                                            className={`${styles.favBtn} ${favorites.has(item.name) ? styles.favBtnActive : ''}`}
-                                            onClick={() => toggleFavorite(item.name)}
-                                            aria-label={favorites.has(item.name) ? 'Remove from favorites' : 'Add to favorites'}
-                                            type="button"
-                                        >
-                                            {favorites.has(item.name) ? '🔥' : '🔥'}
-                                        </button>
-                                        {item.image && <img src={item.image} alt={item.name} className={styles.itemThumb} />}
-                                        <div className={styles.itemInfo}>
-                                            <div className={styles.itemName}>
-                                                <HighlightText text={item.name} query={searchQuery} />
-                                                {item.isNew && <span className={styles.stockBadge} data-status="new">✨ NEW</span>}
-                                                {item.stockStatus === 'low-stock' && <span className={styles.stockBadge} data-status="low">🔥 Almost Gone</span>}
-                                                {item.stockStatus === 'pre-order' && <span className={styles.stockBadge} data-status="preorder">📦 Pre-Order</span>}
-                                                {item.stockStatus === 'seasonal' && <span className={styles.stockBadge} data-status="seasonal">🌿 Seasonal</span>}
-                                            </div>
-                                            {item.desc && <div className={styles.itemDesc}><HighlightText text={item.desc} query={searchQuery} /></div>}
-                                            {item.origin && <div className={styles.itemOrigin}>{item.origin}</div>}
-                                        </div>
-                                        <div className={styles.itemRight}>
-                                            {item.salePrice ? (
-                                                <div className={styles.itemPriceWrap}>
-                                                    <span className={styles.itemPriceOld}>{item.price}</span>
-                                                    <span className={styles.itemPriceSale}>{item.salePrice}</span>
-                                                </div>
-                                            ) : (
-                                                <span className={styles.itemPrice}>{item.price}</span>
-                                            )}
-                                            {item.inStock === false ? (
-                                                <div className={styles.restockWrap}>
-                                                    {restockSubmitted.has(item.name) ? (
-                                                        <span className={styles.restockDone}>Requested ✓</span>
-                                                    ) : restockOpen === item.name ? (
-                                                        <div className={styles.restockForm}>
-                                                            <button className={styles.restockClose} onClick={() => setRestockOpen(null)} aria-label="Close">×</button>
-                                                            <div className={styles.restockItemName}>{item.name}</div>
-                                                            <p className={styles.restockDesc}>We will {restockContactType === 'phone' ? 'text' : 'email'} you as soon as we have restocked this item.</p>
-                                                            <input
-                                                                type="text"
-                                                                placeholder="Your name"
-                                                                value={restockName}
-                                                                onChange={e => setRestockName(e.target.value)}
-                                                                className={styles.restockInput}
-                                                            />
-                                                            <div className={styles.restockContactRow}>
-                                                                <button
-                                                                    type="button"
-                                                                    className={`${styles.restockContactToggle} ${restockContactType === 'phone' ? styles.restockContactToggleActive : ''}`}
-                                                                    onClick={() => { setRestockContactType('phone'); setRestockContact(''); }}
-                                                                >📱</button>
-                                                                <button
-                                                                    type="button"
-                                                                    className={`${styles.restockContactToggle} ${restockContactType === 'email' ? styles.restockContactToggleActive : ''}`}
-                                                                    onClick={() => { setRestockContactType('email'); setRestockContact(''); }}
-                                                                >✉️</button>
-                                                                <input
-                                                                    type={restockContactType === 'phone' ? 'tel' : 'email'}
-                                                                    placeholder={restockContactType === 'phone' ? 'Phone number' : 'Email address'}
-                                                                    value={restockContact}
-                                                                    onChange={e => setRestockContact(e.target.value)}
-                                                                    className={styles.restockInput}
-                                                                    style={{ flex: 1 }}
-                                                                />
-                                                            </div>
-                                                            <div className={styles.restockQtyRow}>
-                                                                <span className={styles.restockQtyLabel}>Qty:</span>
-                                                                <button className={styles.restockQtyBtn} onClick={() => setRestockQty(q => Math.max(1, q - 1))}>−</button>
-                                                                <span className={styles.restockQtyVal}>{restockQty}</span>
-                                                                <button className={styles.restockQtyBtn} onClick={() => setRestockQty(q => q + 1)}>+</button>
-                                                            </div>
-                                                            <button
-                                                                className={styles.restockSubmit}
-                                                                disabled={!restockName.trim() || !restockContact.trim()}
-                                                                onClick={() => {
-                                                                    // Save to localStorage
-                                                                    const request = { name: restockName.trim(), contactType: restockContactType, contact: restockContact.trim(), item: item.name, qty: restockQty, store: activeStore, timestamp: new Date().toISOString() };
-                                                                    try {
-                                                                        const saved = localStorage.getItem('hofherr_restock_requests');
-                                                                        const existing = saved ? JSON.parse(saved) : [];
-                                                                        existing.push(request);
-                                                                        localStorage.setItem('hofherr_restock_requests', JSON.stringify(existing));
-                                                                    } catch { }
-
-                                                                    // Send email notification
-                                                                    fetch('/api/restock-request', {
-                                                                        method: 'POST',
-                                                                        headers: { 'Content-Type': 'application/json' },
-                                                                        body: JSON.stringify(request),
-                                                                    }).catch(() => { });
-
-                                                                    setRestockSubmitted(prev => new Set(prev).add(item.name));
-                                                                    setRestockOpen(null);
-                                                                    setRestockName('');
-                                                                    setRestockContact('');
-                                                                    setRestockQty(1);
-                                                                    setRestockToast(true);
-                                                                    setTimeout(() => setRestockToast(false), 3000);
-                                                                }}
-                                                            >
-                                                                Submit Request
-                                                            </button>
-                                                        </div>
-                                                    ) : (
-                                                        <button className={styles.restockBtn} onClick={() => { setRestockOpen(item.name); setRestockQty(1); setRestockName(''); setRestockContact(''); }}>
-                                                            Request Restock
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            ) : (
-                                                <button className={styles.addBtn} onClick={() => openModal(item)}>
-                                                    Add to Cart
-                                                </button>
-                                            )}
-                                        </div>
+                            <section key={cat.id} id={cat.id} aria-labelledby={`${cat.id}-heading`} className={styles.catSection}>
+                                <div className={styles.catHeader}>
+                                    {cat.icon
+                                        ? <img src={cat.icon} alt={cat.label} className={styles.catIcon} />
+                                        : <span className={styles.catEmoji}>{cat.emoji}</span>
+                                    }
+                                    <div>
+                                        <h2 id={`${cat.id}-heading`} className={styles.catTitle}>{cat.label}</h2>
+                                        {cat.sub && <p className={styles.catSub}>{cat.sub}</p>}
                                     </div>
-                                ))}
-                            </div>
-                        </section>
+                                </div>
+                                <div className={styles.itemList}>
+                                    {cat.items.map(item => (
+                                        <div key={item.name} className={`${styles.item} ${item.inStock === false ? styles.itemOut : ''}`}>
+                                            {/* Favorite Flame */}
+                                            <button
+                                                className={`${styles.favBtn} ${favorites.has(item.name) ? styles.favBtnActive : ''}`}
+                                                onClick={() => toggleFavorite(item.name)}
+                                                aria-label={favorites.has(item.name) ? 'Remove from favorites' : 'Add to favorites'}
+                                                type="button"
+                                            >
+                                                {favorites.has(item.name) ? '🔥' : '🔥'}
+                                            </button>
+                                            {item.image && <img src={item.image} alt={item.name} className={styles.itemThumb} />}
+                                            <div className={styles.itemInfo}>
+                                                <div className={styles.itemName}>
+                                                    <HighlightText text={item.name} query={searchQuery} />
+                                                    {item.isNew && <span className={styles.stockBadge} data-status="new">✨ NEW</span>}
+                                                    {item.stockStatus === 'low-stock' && <span className={styles.stockBadge} data-status="low">🔥 Almost Gone</span>}
+                                                    {item.stockStatus === 'pre-order' && <span className={styles.stockBadge} data-status="preorder">📦 Pre-Order</span>}
+                                                    {item.stockStatus === 'seasonal' && <span className={styles.stockBadge} data-status="seasonal">🌿 Seasonal</span>}
+                                                </div>
+                                                {item.desc && <div className={styles.itemDesc}><HighlightText text={item.desc} query={searchQuery} /></div>}
+                                                {item.origin && <div className={styles.itemOrigin}>{item.origin}</div>}
+                                            </div>
+                                            <div className={styles.itemRight}>
+                                                {item.salePrice ? (
+                                                    <div className={styles.itemPriceWrap}>
+                                                        <span className={styles.itemPriceOld}>{item.price}</span>
+                                                        <span className={styles.itemPriceSale}>{item.salePrice}</span>
+                                                    </div>
+                                                ) : (
+                                                    <span className={styles.itemPrice}>{item.price}</span>
+                                                )}
+                                                {item.inStock === false ? (
+                                                    <div className={styles.restockWrap}>
+                                                        {restockSubmitted.has(item.name) ? (
+                                                            <span className={styles.restockDone}>Requested ✓</span>
+                                                        ) : restockOpen === item.name ? (
+                                                            <div className={styles.restockForm}>
+                                                                <button className={styles.restockClose} onClick={() => setRestockOpen(null)} aria-label="Close">×</button>
+                                                                <div className={styles.restockItemName}>{item.name}</div>
+                                                                <p className={styles.restockDesc}>We will {restockContactType === 'phone' ? 'text' : 'email'} you as soon as we have restocked this item.</p>
+                                                                <input
+                                                                    type="text"
+                                                                    placeholder="Your name"
+                                                                    value={restockName}
+                                                                    onChange={e => setRestockName(e.target.value)}
+                                                                    className={styles.restockInput}
+                                                                />
+                                                                <div className={styles.restockContactRow}>
+                                                                    <button
+                                                                        type="button"
+                                                                        className={`${styles.restockContactToggle} ${restockContactType === 'phone' ? styles.restockContactToggleActive : ''}`}
+                                                                        onClick={() => { setRestockContactType('phone'); setRestockContact(''); }}
+                                                                    >📱</button>
+                                                                    <button
+                                                                        type="button"
+                                                                        className={`${styles.restockContactToggle} ${restockContactType === 'email' ? styles.restockContactToggleActive : ''}`}
+                                                                        onClick={() => { setRestockContactType('email'); setRestockContact(''); }}
+                                                                    >✉️</button>
+                                                                    <input
+                                                                        type={restockContactType === 'phone' ? 'tel' : 'email'}
+                                                                        placeholder={restockContactType === 'phone' ? 'Phone number' : 'Email address'}
+                                                                        value={restockContact}
+                                                                        onChange={e => setRestockContact(e.target.value)}
+                                                                        className={styles.restockInput}
+                                                                        style={{ flex: 1 }}
+                                                                    />
+                                                                </div>
+                                                                <div className={styles.restockQtyRow}>
+                                                                    <span className={styles.restockQtyLabel}>Qty:</span>
+                                                                    <button className={styles.restockQtyBtn} onClick={() => setRestockQty(q => Math.max(1, q - 1))}>−</button>
+                                                                    <span className={styles.restockQtyVal}>{restockQty}</span>
+                                                                    <button className={styles.restockQtyBtn} onClick={() => setRestockQty(q => q + 1)}>+</button>
+                                                                </div>
+                                                                <button
+                                                                    className={styles.restockSubmit}
+                                                                    disabled={!restockName.trim() || !restockContact.trim()}
+                                                                    onClick={() => {
+                                                                        // Save to localStorage
+                                                                        const request = { name: restockName.trim(), contactType: restockContactType, contact: restockContact.trim(), item: item.name, qty: restockQty, store: activeStore, timestamp: new Date().toISOString() };
+                                                                        try {
+                                                                            const saved = localStorage.getItem('hofherr_restock_requests');
+                                                                            const existing = saved ? JSON.parse(saved) : [];
+                                                                            existing.push(request);
+                                                                            localStorage.setItem('hofherr_restock_requests', JSON.stringify(existing));
+                                                                        } catch { }
+
+                                                                        // Send email notification
+                                                                        fetch('/api/restock-request', {
+                                                                            method: 'POST',
+                                                                            headers: { 'Content-Type': 'application/json' },
+                                                                            body: JSON.stringify(request),
+                                                                        }).catch(() => { });
+
+                                                                        setRestockSubmitted(prev => new Set(prev).add(item.name));
+                                                                        setRestockOpen(null);
+                                                                        setRestockName('');
+                                                                        setRestockContact('');
+                                                                        setRestockQty(1);
+                                                                        setRestockToast(true);
+                                                                        setTimeout(() => setRestockToast(false), 3000);
+                                                                    }}
+                                                                >
+                                                                    Submit Request
+                                                                </button>
+                                                            </div>
+                                                        ) : (
+                                                            <button className={styles.restockBtn} onClick={() => { setRestockOpen(item.name); setRestockQty(1); setRestockName(''); setRestockContact(''); }}>
+                                                                Request Restock
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <button className={styles.addBtn} onClick={() => openModal(item)}>
+                                                        Add to Cart
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
                     ))}
-                </div>
+                        </div>
             </main>
         </div>
 
-        {/* ── Add to Cart Modal ── */}
-        {modal && typeof document !== 'undefined' && createPortal((
+    {/* ── Add to Cart Modal ── */ }
+    {
+        modal && typeof document !== 'undefined' && createPortal((
             <div className={styles.overlay} data-pt-portal onClick={() => setModal(null)}>
                 <div className={styles.modal} onClick={e => e.stopPropagation()}>
                     <div className={styles.modalTitle}>{modal.name}</div>
@@ -2227,18 +2228,20 @@ return (
                     </div>
                 </div>
             </div>
-        ), document.body)}
+        ), document.body)
+    }
 
-        {/* ── Cart Drawer ── */}
-        {drawerOpen && typeof document !== 'undefined' && createPortal((
+    {/* ── Cart Drawer ── */ }
+    {
+        drawerOpen && typeof document !== 'undefined' && createPortal((
             <div className={styles.overlay} data-pt-portal onClick={() => setDrawerOpen(false)}>
                 <div className={styles.drawer} onClick={e => e.stopPropagation()}>
                     <div style={{ borderTopLeftRadius: '18px', backgroundColor: 'var(--red)', color: 'white', padding: '8px 16px', textAlign: 'center', fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                         📍 Pickup at {activeStore === 'butcher' ? 'The Butcher Shop' : 'The Depot'}
                     </div>
                     <div className={styles.drawerHead}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <img src="/assets/item.png" alt="" width={80} height={80} style={{ objectFit: 'contain' }} />
+                        <div className={styles.drawerHeadLeft}>
+                            <img src="/assets/item.png?v=2" alt="" width={160} height={160} className={styles.drawerParcelImg} />
                             <div>
                                 <h3>Your Order</h3>
                                 {user && (
@@ -2439,10 +2442,12 @@ return (
                     )}
                 </div>
             </div>
-        ), document.body)}
+        ), document.body)
+    }
 
-        {/* ── Checkout Modal ── */}
-        {checkoutOpen && typeof document !== 'undefined' && createPortal((
+    {/* ── Checkout Modal ── */ }
+    {
+        checkoutOpen && typeof document !== 'undefined' && createPortal((
             <div
                 className={styles.overlay}
                 data-pt-portal
@@ -2941,15 +2946,18 @@ return (
                     </>
                 </div>
             </div>
-        ), document.body)}
-        <HelpOrdering />
-        {/* Restock success toast */}
-        {typeof document !== 'undefined' && createPortal(
+        ), document.body)
+    }
+    <HelpOrdering />
+    {/* Restock success toast */ }
+    {
+        typeof document !== 'undefined' && createPortal(
             <div className={`${styles.restockToast} ${restockToast ? styles.restockToastShow : ''}`}>
                 Restock request sent ✓
             </div>,
             document.body
-        )}
-    </div>
+        )
+    }
+    </div >
 );
 }
