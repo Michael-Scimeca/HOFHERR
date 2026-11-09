@@ -1,0 +1,765 @@
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 32px;
+    border-radius: var(--radius-lg);
+    border: 2px solid #8b0a10;
+    background-color: #d8ba92;
+    background-image:
+        linear-gradient(
+            135deg,
+            rgba(216, 186, 146, 0.9) 0%,
+            rgba(202, 168, 124, 0.94) 100%
+        ),
+        url('/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg');
+    background-size: cover, 320px auto;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.headerTop {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.sectionTitle {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 800;
+    color: #8b0a10;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0;
+}
+
+.sectionDesc {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #1c1614;
+    max-width: 88ch;
+    margin: 0;
+}
+
+.headerActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.primaryBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    background: #8b0a10;
+    color: #f3ead8;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid #1c1614;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.primaryBtn:hover {
+    background: #6e070c;
+    transform: translateY(-1px);
+}
+
+.secondaryBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    background: #1c1614;
+    color: #f3ead8;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid #8b0a10;
+    cursor: pointer;
+}
+
+.secondaryBtn:hover {
+    border-color: #f59b1a;
+    color: #f59b1a;
+}
+
+.simGrid {
+    display: grid;
+    grid-template-columns: minmax(340px, 460px) 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .simGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Live Instagram App Frame (@hofherrmeatco) ── */
+.igPhone {
+    border-radius: 28px;
+    border: 3px solid rgba(245, 155, 26, 0.45);
+    background: #120e0d;
+    color: #f3ead8;
+    overflow: hidden;
+    box-shadow: 0 20px 52px rgba(0, 0, 0, 0.55);
+}
+
+.igPhoneKraft {
+    background-color: #d8ba92;
+    background-image:
+        linear-gradient(180deg, rgba(243, 234, 216, 0.92), rgba(216, 186, 146, 0.94)),
+        url('/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg');
+    background-size: cover, 260px auto;
+    color: #1c1614;
+    border-color: #8b0a10;
+}
+
+.igTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.igPhoneKraft .igTopBar {
+    border-bottom-color: rgba(139, 10, 16, 0.2);
+}
+
+.igHandle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 800;
+    font-size: 0.98rem;
+    letter-spacing: 0.02em;
+}
+
+.igVerified {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: #f59b1a;
+    color: #1c1614;
+    font-size: 0.7rem;
+    font-weight: 900;
+}
+
+.igExternalLink {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #f59b1a;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.igPhoneKraft .igExternalLink {
+    color: #8b0a10;
+}
+
+.igProfileHeader {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 20px 12px;
+}
+
+.igAvatarRing {
+    width: 88px;
+    height: 88px;
+    border-radius: 999px;
+    padding: 3px;
+    background: linear-gradient(135deg, #8b0a10 0%, #f59b1a 100%);
+    flex-shrink: 0;
+}
+
+.igAvatarImg {
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    object-fit: cover;
+    background: #1c1614;
+}
+
+.igStats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    flex: 1;
+    text-align: center;
+}
+
+.igStatVal {
+    display: block;
+    font-weight: 800;
+    font-size: 1.05rem;
+}
+
+.igStatLabel {
+    display: block;
+    font-size: 0.74rem;
+    opacity: 0.75;
+}
+
+.igBioBox {
+    padding: 4px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+
+.igBioName {
+    font-weight: 800;
+    font-size: 0.92rem;
+}
+
+.igBioCategory {
+    font-size: 0.78rem;
+    color: #f59b1a;
+    font-weight: 700;
+}
+
+.igPhoneKraft .igBioCategory {
+    color: #8b0a10;
+}
+
+.igBioText {
+    white-space: pre-line;
+    margin: 4px 0;
+}
+
+.igBioLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 800;
+    color: #7cc0ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+}
+
+.igPhoneKraft .igBioLink {
+    color: #8b0a10;
+}
+
+.igActionRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+    padding: 0 20px 16px;
+}
+
+.igFollowBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #8b0a10;
+    color: #f3ead8;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-decoration: none;
+    text-align: center;
+}
+
+.igOrderBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.igPhoneKraft .igOrderBtn {
+    background: #1c1614;
+    color: #f3ead8;
+}
+
+.igCopyBioBtn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(245, 155, 26, 0.16);
+    color: #f59b1a;
+    border: 1px solid rgba(245, 155, 26, 0.4);
+    font-size: 0.76rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.igPhoneKraft .igCopyBioBtn {
+    background: #f3ead8;
+    color: #8b0a10;
+    border-color: #8b0a10;
+}
+
+.igHighlightsRow {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 4px 20px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.igPhoneKraft .igHighlightsRow {
+    border-bottom-color: rgba(139, 10, 16, 0.2);
+}
+
+.igHighlightItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.igHighlightCircle {
+    width: 58px;
+    height: 58px;
+    border-radius: 999px;
+    background: #8b0a10;
+    border: 2px solid #f59b1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+
+.igHighlightImg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.igHighlightLabel {
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.igFeedGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.igFeedTile {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #1c1614;
+    display: block;
+}
+
+.igFeedTileImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.igFeedTile:hover .igFeedTileImg {
+    transform: scale(1.04);
+}
+
+.igFeedTileBadge {
+    position: absolute;
+    left: 6px;
+    bottom: 6px;
+    right: 6px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    background: rgba(28, 22, 20, 0.88);
+    border: 1px solid rgba(245, 155, 26, 0.55);
+    color: #f3ead8;
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* ── Right Column: Controls + App Cards ── */
+.rightCol {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.controlBar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px;
+    border-radius: var(--radius);
+    background: rgba(28, 22, 20, 0.85);
+    border: 1px solid rgba(245, 155, 26, 0.3);
+}
+
+.controlGroup {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.controlLabel {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    margin-right: 4px;
+}
+
+.chipBtn {
+    padding: 7px 13px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--fg-2);
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.chipBtnActive {
+    background: #8b0a10;
+    border-color: #f59b1a;
+    color: #f3ead8;
+}
+
+.assetCardsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .assetCardsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.assetCard {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px;
+    border-radius: var(--radius);
+    background: rgba(28, 22, 20, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.assetPreviewWrap {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: #120e0d;
+    border: 1px solid rgba(245, 155, 26, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.assetPreviewImg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.assetTitle {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0;
+}
+
+.assetSpec {
+    font-size: 0.76rem;
+    color: var(--gold);
+    font-weight: 700;
+}
+
+.assetDesc {
+    font-size: 0.84rem;
+    color: var(--fg-2);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.assetActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+}
+
+/* ── Platform Mode Switcher & Facebook Live Page Preview ── */
+.fbBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    background: rgba(28, 22, 20, 0.9);
+    border: 2px solid rgba(245, 155, 26, 0.35);
+}
+
+.fbBlockHead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.fbBlockTitle {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+    font-weight: 800;
+    color: #f59b1a;
+    margin: 0;
+}
+
+.fbBlockDesc {
+    font-size: 0.92rem;
+    color: var(--fg-2);
+    max-width: 78ch;
+    margin: 4px 0 0;
+}
+
+.fbPageFrame {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #18191a;
+    border: 2px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
+}
+
+.fbCoverStage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1640 / 624;
+    background: #120e0d;
+    overflow: hidden;
+}
+
+.fbCoverImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.fbProfileBar {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0 28px 22px;
+    background: #242526;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fbProfileLeft {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    margin-top: -56px;
+}
+
+.fbProfilePicWrap {
+    width: 136px;
+    height: 136px;
+    border-radius: 999px;
+    border: 5px solid #242526;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+    background: #8b0a10;
+    flex-shrink: 0;
+}
+
+.fbProfilePicImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.fbPageMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: 6px;
+}
+
+.fbPageName {
+    font-family: var(--font-heading);
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #f3ead8;
+    margin: 0;
+    line-height: 1;
+}
+
+.fbPageSub {
+    font-size: 0.84rem;
+    color: #b0b3b8;
+    font-weight: 600;
+}
+
+.fbCtaGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-bottom: 6px;
+}
+
+.fbSetsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+@media (max-width: 960px) {
+    .fbSetsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .fbProfileLeft {
+        margin-top: -36px;
+    }
+
+    .fbProfilePicWrap {
+        width: 96px;
+        height: 96px;
+    }
+}
+
+.fbSetCard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border-radius: var(--radius);
+    background: rgba(18, 14, 13, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.fbSetCardActive {
+    border-color: #f59b1a;
+    box-shadow: 0 0 0 1px #f59b1a;
+}
+
+.fbHeroThumbWrap {
+    width: 100%;
+    aspect-ratio: 1640 / 624;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: #120e0d;
+    border: 1px solid rgba(245, 155, 26, 0.28);
+}
+
+.fbAvatarThumbWrap {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #120e0d;
+    border: 3px solid #f59b1a;
+}
+
+.fbSubHeading {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #f3ead8;
+    margin: 0;
+}
+
+/* ── Platform Matrix Table ── */
+.platformGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 960px) {
+    .platformGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.platformCard {
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    background: rgba(28, 22, 20, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.platformName {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #f59b1a;
+    margin: 0;
+}
+
+.platformHandle {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--fg-2);
+}
+
+.platformSpecs {
+    font-size: 0.8rem;
+    color: var(--fg-3);
+    line-height: 1.5;
+    margin: 0;
+}
+

@@ -1800,25 +1800,27 @@ export default function CustomOrdersPage({
             />
 
             {/* Location Hero Banner */}
-                <header className={styles.locationHero}>
-                    <img
-                        src={activeStore === 'butcher' ? '/assets/shop-exterior.jpg' : '/shops/winnetka.png'}
-                        alt={activeStore === 'butcher' ? 'The Butcher Shop — Northfield' : 'The Depot — Winnetka'}
-                        className={styles.locationHeroImg}
-                    />
-                    <div className={styles.locationHeroOverlay}>
-                            <h1 className={styles.locationHeroTitle}>
-                                {activeStore === 'butcher' ? 'The Butcher Shop' : 'The Depot'}
-                    </h1>
-                    <span className={styles.locationHeroSub}>
-                        {activeStore === 'butcher' ? '300 Happ Rd · Northfield, IL' : '754 Elm St · Winnetka Metra Station'}
-                    </span>
-            </div>
-        </header >
+            <header className={styles.locationHero}>
+                <img
+                    src={activeStore === 'butcher' ? '/assets/shop-exterior.jpg' : '/shops/winnetka.png'}
+                    alt={activeStore === 'butcher' ? 'The Butcher Shop — Northfield' : 'The Depot — Winnetka'}
+                    className={styles.locationHeroImg}
+                />
+                <div className={styles.locationHeroOverlay}>
+                    <div className={`container ${styles.locationHeroContent}`}>
+                        <h1 className={styles.locationHeroTitle}>
+                            {activeStore === 'butcher' ? 'The Butcher Shop' : 'The Depot'}
+                        </h1>
+                        <span className={styles.locationHeroSub}>
+                            {activeStore === 'butcher' ? '300 Happ Rd · Northfield, IL' : '754 Elm St · Winnetka Metra Station'}
+                        </span>
+                    </div>
+                </div>
+            </header>
 
-        {/* ── Online Ordering Hours Banner ── */ }
-        < div className = { styles.hoursNotice } >
-            <div className={styles.hoursNoticeInner}>
+            {/* ── Online Ordering Hours Banner ── */}
+            <div className={styles.hoursNotice}>
+                <div className={`container ${styles.hoursNoticeInner}`}>
                 {activeStore === 'butcher' ? (
                     <>
                         <div className={styles.hoursNoticeLeft}>

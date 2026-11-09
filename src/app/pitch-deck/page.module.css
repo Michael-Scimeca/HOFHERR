@@ -554,16 +554,253 @@
     color: var(--fg-muted);
 }
 
+/* ── Visual Analytics, Pie/Donut Charts & Infographics ── */
+.chartGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.chartCard {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.chartCardFull {
+    grid-column: 1 / -1;
+}
+
+.chartHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+}
+
+.chartTitle {
+    font-size: 1.55rem;
+    color: var(--fg);
+}
+
+.chartSub {
+    font-size: 13px;
+    color: var(--fg-3);
+    line-height: 1.5;
+}
+
+.donutWrap {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    align-items: center;
+    gap: 24px;
+}
+
+.donutSvg {
+    width: 200px;
+    height: 200px;
+    overflow: visible;
+}
+
+.donutCenterNum {
+    font-family: "Yanone Kaffeesatz", sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    fill: var(--fg);
+}
+
+.donutCenterSub {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    fill: var(--gold);
+}
+
+.legendList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.legendLeft {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.swatchRed {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--red);
+    flex-shrink: 0;
+}
+
+.swatchRedLight {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--red-light);
+    flex-shrink: 0;
+}
+
+.swatchGold {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--gold);
+    flex-shrink: 0;
+}
+
+.swatchGoldLight {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--gold-light);
+    flex-shrink: 0;
+}
+
+.swatchMuted {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--fg-3);
+    flex-shrink: 0;
+}
+
+.legendName {
+    font-size: 13px;
+    color: var(--fg-2);
+    font-weight: 600;
+}
+
+.legendVal {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--gold);
+    white-space: nowrap;
+}
+
+/* ── Horizontal Bar Charts & Scorecards ── */
+.barChartList {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.barRow {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.barMeta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.barLabel {
+    color: var(--fg);
+    font-weight: 600;
+}
+
+.barStats {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.barTrack {
+    width: 100%;
+    height: 12px;
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.barFillGold {
+    height: 100%;
+    width: var(--bar-w, 50%);
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+    border-radius: 999px;
+    transition: width 0.35s var(--ease-out);
+}
+
+.barFillRed {
+    height: 100%;
+    width: var(--bar-w, 50%);
+    background: linear-gradient(90deg, var(--red-dark), var(--red-light));
+    border-radius: 999px;
+    transition: width 0.35s var(--ease-out);
+}
+
+/* ── Wait-Time Curve SVG ── */
+.curveSvg {
+    width: 100%;
+    height: auto;
+    max-height: 260px;
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+}
+
+.curveAxisText {
+    font-size: 10px;
+    font-weight: 700;
+    fill: var(--fg-muted);
+}
+
+.curveLabelRed {
+    font-size: 11px;
+    font-weight: 800;
+    fill: var(--red-light);
+}
+
+.curveLabelGold {
+    font-size: 11px;
+    font-weight: 800;
+    fill: var(--gold-light);
+}
+
 @media (max-width: 1080px) {
-    .threeColGrid {
-        grid-template-columns: repeat(2, 1fr);
+    .threeColGrid,
+    .chartGrid {
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 820px) {
     .twoColGrid,
-    .threeColGrid {
+    .threeColGrid,
+    .donutWrap {
         grid-template-columns: 1fr;
+    }
+
+    .donutSvg {
+        margin: 0 auto;
     }
 
     .slideStage {

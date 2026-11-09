@@ -944,6 +944,16 @@ const MASTER_SVG_BY_SLUG: Record<string, string> = {
     'social-example-1': '/assets/identity/social/social-example-1-this-weeks-specials.svg',
     'social-example-2': '/assets/identity/social/social-example-2-new-cut-picanha.svg',
     'social-example-3': '/assets/identity/social/social-example-3-behind-the-block.svg',
+    'ig-kit-board': '/assets/identity/apps/instagram-profile-kit-board.svg',
+    'ig-avatar-wrap': '/assets/identity/apps/ig-avatar-wrapping-paper.svg',
+    'ig-link-bio': '/assets/identity/apps/ig-link-in-bio-screen.svg',
+    'ordering-app-banner': '/assets/identity/apps/ordering-app-storefront-banner.svg',
+    'fb-profile-1': '/assets/identity/apps/fb-profile-wrapping-paper.svg',
+    'fb-profile-2': '/assets/identity/apps/fb-profile-crimson-badge.svg',
+    'fb-profile-3': '/assets/identity/apps/fb-profile-charcoal-seal.svg',
+    'fb-hero-1': '/assets/identity/apps/fb-hero-cover-wrapping-paper.svg',
+    'fb-hero-2': '/assets/identity/apps/fb-hero-cover-crimson-smokehouse.svg',
+    'fb-hero-3': '/assets/identity/apps/fb-hero-cover-two-locations.svg',
 };
 
 const RENDER: Record<SheetId, () => React.ReactElement> = {

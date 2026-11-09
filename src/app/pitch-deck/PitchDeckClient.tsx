@@ -1,7 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './page.module.css';
+
+const COMPETITIVE_SCORECARD = [
+    { label: 'Meat Quality, Dry-Aging & Farm Provenance', hofherrPct: 98, rivalPct: 72, rivalName: 'Grand / Sunset (72%)' },
+    { label: 'Hero Hot Sandwiches (Shabu Italian Beef)', hofherrPct: 97, rivalPct: 68, rivalName: 'Local Delis (68%)' },
+    { label: 'House Sausages & Gourmet Freezer Meals', hofherrPct: 95, rivalPct: 88, rivalName: 'Paulina Market (88%)' },
+    { label: 'Commuter Pickup Convenience (Metra Depot)', hofherrPct: 96, rivalPct: 45, rivalName: 'City Butchers (45%)' },
+    { label: 'Digital Cut Guide, BBQ & Pig Roast Calculators', hofherrPct: 97, rivalPct: 60, rivalName: 'Local Butchers (60%)' },
+    { label: 'Holiday Express & Subscription Value (With Fixes)', hofherrPct: 94, rivalPct: 82, rivalName: 'ButcherBox / SRF (82%)' },
+];
 
 type SlideData = {
     num: string;
@@ -1125,6 +1134,429 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
                 </div>
             </section>
 
+            {/* ── Section 1B: Visual Analytics, Pie/Donut Charts & Infographics ── */}
+            <section id="visual-charts" aria-labelledby="visual-charts-heading" className="section">
+                <div className={`container ${styles.sectionBlock}`}>
+                    <div className={styles.sectionHeader}>
+                        <h2 id="visual-charts-heading" className={styles.sectionTitle}>
+                            Visual Data Analytics, Pie Charts &amp; Operational Curves
+                        </h2>
+                        <p className={styles.sectionDesc}>
+                            Executive visual breakdown of Yelp &amp; Facebook review sentiment, root causes of the 5%
+                            operational friction, whole-animal carcass yield vs. margin, and our peak wait-time
+                            flattening curve.
+                        </p>
+                    </div>
+
+                    <div className={styles.chartGrid}>
+                        {/* ── Chart 1: Review Star Distribution Donut ── */}
+                        <div className={styles.chartCard}>
+                            <div className={styles.chartHeader}>
+                                <div>
+                                    <span className={styles.cardSub}>Chart 01 · Yelp + Facebook + Google Audit</span>
+                                    <h3 className={styles.chartTitle}>Overall Rating Sentiment Distribution</h3>
+                                    <p className={styles.chartSub}>
+                                        95% of all public reviews are 4★ or 5★. Zero complaints cite bad meat quality.
+                                    </p>
+                                </div>
+                                <span className={`${styles.tag} ${styles.tagGold}`}>4.8★ Avg</span>
+                            </div>
+
+                            <div className={styles.donutWrap}>
+                                <svg viewBox="0 0 120 120" className={styles.donutSvg} role="img" aria-label="Review star distribution donut chart">
+                                    <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="16" />
+                                    {/* 86% 5-Star (circumference = 289.02 -> 248.5) */}
+                                    <circle
+                                        cx="60"
+                                        cy="60"
+                                        r="46"
+                                        fill="none"
+                                        stroke="#A8905F"
+                                        strokeWidth="16"
+                                        strokeDasharray="248.5 289.0"
+                                        strokeDashoffset="0"
+                                        transform="rotate(-90 60 60)"
+                                    />
+                                    {/* 9% 4-Star (26.0) */}
+                                    <circle
+                                        cx="60"
+                                        cy="60"
+                                        r="46"
+                                        fill="none"
+                                        stroke="#c4ae82"
+                                        strokeWidth="16"
+                                        strokeDasharray="26.0 289.0"
+                                        strokeDashoffset="-248.5"
+                                        transform="rotate(-90 60 60)"
+                                    />
+                                    {/* 5% 1-3 Star Operational Friction (14.5) */}
+                                    <circle
+                                        cx="60"
+                                        cy="60"
+                                        r="46"
+                                        fill="none"
+                                        stroke="#CC0E1D"
+                                        strokeWidth="16"
+                                        strokeDasharray="14.5 289.0"
+                                        strokeDashoffset="-274.5"
+                                        transform="rotate(-90 60 60)"
+                                    />
+                                    <text x="60" y="58" textAnchor="middle" className={styles.donutCenterNum}>
+                                        95%
+                                    </text>
+                                    <text x="60" y="73" textAnchor="middle" className={styles.donutCenterSub}>
+                                        4★ &amp; 5★ Reviews
+                                    </text>
+                                </svg>
+
+                                <div className={styles.legendList}>
+                                    <div className={styles.legendItem}>
+                                        <div className={styles.legendLeft}>
+                                            <span className={styles.swatchGold} />
+                                            <span className={styles.legendName}>5-Star Rave Reviews (Quality &amp; Staff)</span>
+                                        </div>
+                                        <span className={styles.legendVal}>86%</span>
+                                    </div>
+                                    <div className={styles.legendItem}>
+                                        <div className={styles.legendLeft}>
+                                            <span className={styles.swatchGoldLight} />
+                                            <span className={styles.legendName}>4-Star Positive (Great Food, Busy Line)</span>
+                                        </div>
+                                        <span className={styles.legendVal}>9%</span>
+                                    </div>
+                                    <div className={styles.legendItem}>
+                                        <div className={styles.legendLeft}>
+                                            <span className={styles.swatchRed} />
+                                            <span className={styles.legendName}>1–3 Star (100% Logistics / Wait / Price)</span>
+                                        </div>
+                                        <span className={styles.legendVal}>5%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ── Chart 2: Root Cause of Friction Donut ── */}
+                        <div className={styles.chartCard}>
+                            <div className={styles.chartHeader}>
+                                <div>
+                                    <span className={styles.cardSub}>Chart 02 · Pain-Point Share Breakdown</span>
+                                    <h3 className={styles.chartTitle}>What Drives Customer Friction Mentions</h3>
+                                    <p className={styles.chartSub}>
+                                        65% of all complaints come from just two bottlenecks: Holiday Pickups &amp; Peak Lunch Waits.
+                                    </p>
+                                </div>
+                                <span className={`${styles.tag} ${styles.tagPain}`}>5 Fixes</span>
+                            </div>
+
+                            <div className={styles.donutWrap}>
+                                <svg viewBox="0 0 120 120" className={styles.donutSvg} role="img" aria-label="Friction root cause pie chart">
+                                    <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="16" />
+                                    {/* 38% Holiday Lines & Missing Sides (109.8) */}
+                                    <circle
+                                        cx="60"
+                                        cy="60"
+                                        r="46"
+                                        fill="none"
+                                        stroke="#CC0E1D"
+                                        strokeWidth="16"
+                                        strokeDasharray="109.8 289.0"
+                                        strokeDashoffset="0"
+                                        transform="rotate(-90 60 60)"
+                                    />
+                                    {/* 27% 30-45 Min Lunch Wait (78.0) */}
+                                    <circle
+                                        cx="60"
+                                        cy="60"
+                                        r="46"
+                                        fill="none"
+                                        stroke="#e01e2e"
+                                        strokeWidth="16"
+                                        strokeDasharray="78.0 289.0"
+                                        strokeDashoffset="-109.8"
+                                        transform="rotate(-90 60 60)"
+                                    />
+                                    {/* 18% Price Sticker Shock (52.0) */}
+                                    <circle
+                                        cx="60"
+                                        cy="60"
+                                        r="46"
+                                        fill="none"
+                                        stroke="#A8905F"
+                                        strokeWidth="16"
+                                        strokeDasharray="52.0 289.0"
+                                        strokeDashoffset="-187.8"
+                                        transform="rotate(-90 60 60)"
+                                    />
+                                    {/* 17% Parking + Location Confusion (49.2) */}
+                                    <circle
+                                        cx="60"
+                                        cy="60"
+                                        r="46"
+                                        fill="none"
+                                        stroke="#999999"
+                                        strokeWidth="16"
+                                        strokeDasharray="49.2 289.0"
+                                        strokeDashoffset="-239.8"
+                                        transform="rotate(-90 60 60)"
+                                    />
+                                    <text x="60" y="58" textAnchor="middle" className={styles.donutCenterNum}>
+                                        65%
+                                    </text>
+                                    <text x="60" y="73" textAnchor="middle" className={styles.donutCenterSub}>
+                                        Queue &amp; Wait Issues
+                                    </text>
+                                </svg>
+
+                                <div className={styles.legendList}>
+                                    <div className={styles.legendItem}>
+                                        <div className={styles.legendLeft}>
+                                            <span className={styles.swatchRed} />
+                                            <span className={styles.legendName}>Holiday Pickup Lines &amp; Missing Sides</span>
+                                        </div>
+                                        <span className={styles.legendVal}>38%</span>
+                                    </div>
+                                    <div className={styles.legendItem}>
+                                        <div className={styles.legendLeft}>
+                                            <span className={styles.swatchRedLight} />
+                                            <span className={styles.legendName}>30–45 Min Hot Lunch Waits / Sell-Outs</span>
+                                        </div>
+                                        <span className={styles.legendVal}>27%</span>
+                                    </div>
+                                    <div className={styles.legendItem}>
+                                        <div className={styles.legendLeft}>
+                                            <span className={styles.swatchGold} />
+                                            <span className={styles.legendName}>Per-Pound Price &quot;Sticker Shock&quot;</span>
+                                        </div>
+                                        <span className={styles.legendVal}>18%</span>
+                                    </div>
+                                    <div className={styles.legendItem}>
+                                        <div className={styles.legendLeft}>
+                                            <span className={styles.swatchMuted} />
+                                            <span className={styles.legendName}>Happ Rd. Parking &amp; 2-Store Confusion</span>
+                                        </div>
+                                        <span className={styles.legendVal}>17%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ── Chart 3: Whole-Animal Carcass Yield vs. Gross Margin Pie Chart ── */}
+                        <div className={styles.chartCard}>
+                            <div className={styles.chartHeader}>
+                                <div>
+                                    <span className={styles.cardSub}>Chart 03 · Whole-Animal P&amp;L Flywheel</span>
+                                    <h3 className={styles.chartTitle}>Carcass Weight Yield vs. Margin Contribution</h3>
+                                    <p className={styles.chartSub}>
+                                        Upcycling trim, chuck, fat, and bones into CPG jars, sausages &amp; freezer meals lifts blended margin from 40% to 58%.
+                                    </p>
+                                </div>
+                                <span className={`${styles.tag} ${styles.tagGold}`}>0% Waste</span>
+                            </div>
+
+                            <div className={styles.donutWrap}>
+                                <svg viewBox="0 0 120 120" className={styles.donutSvg} role="img" aria-label="Whole animal carcass yield donut chart">
+                                    <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="16" />
+                                    {/* 35% Middle-Meat Steaks (101.2) */}
+                                    <circle
+                                        cx="60"
+                                        cy="60"
+                                        r="46"
+                                        fill="none"
+                                        stroke="#CC0E1D"
+                                        strokeWidth="16"
+                                        strokeDasharray="101.2 289.0"
+                                        strokeDashoffset="0"
+                                        transform="rotate(-90 60 60)"
+                                    />
+                                    {/* 25% Chuck & Brisket (72.2) */}
+                                    <circle
+                                        cx="60"
+                                        cy="60"
+                                        r="46"
+                                        fill="none"
+                                        stroke="#e01e2e"
+                                        strokeWidth="16"
+                                        strokeDasharray="72.2 289.0"
+                                        strokeDashoffset="-101.2"
+                                        transform="rotate(-90 60 60)"
+                                    />
+                                    {/* 22% Sausages, Grind & Pot Pies (63.6) */}
+                                    <circle
+                                        cx="60"
+                                        cy="60"
+                                        r="46"
+                                        fill="none"
+                                        stroke="#A8905F"
+                                        strokeWidth="16"
+                                        strokeDasharray="63.6 289.0"
+                                        strokeDashoffset="-173.4"
+                                        transform="rotate(-90 60 60)"
+                                    />
+                                    {/* 18% Broth, Jus & Tallow Jars (52.0) */}
+                                    <circle
+                                        cx="60"
+                                        cy="60"
+                                        r="46"
+                                        fill="none"
+                                        stroke="#c4ae82"
+                                        strokeWidth="16"
+                                        strokeDasharray="52.0 289.0"
+                                        strokeDashoffset="-237.0"
+                                        transform="rotate(-90 60 60)"
+                                    />
+                                    <text x="60" y="58" textAnchor="middle" className={styles.donutCenterNum}>
+                                        58%
+                                    </text>
+                                    <text x="60" y="73" textAnchor="middle" className={styles.donutCenterSub}>
+                                        Blended Margin
+                                    </text>
+                                </svg>
+
+                                <div className={styles.legendList}>
+                                    <div className={styles.legendItem}>
+                                        <div className={styles.legendLeft}>
+                                            <span className={styles.swatchRed} />
+                                            <span className={styles.legendName}>Prime Middle Steaks (35% Wt)</span>
+                                        </div>
+                                        <span className={styles.legendVal}>40% Margin</span>
+                                    </div>
+                                    <div className={styles.legendItem}>
+                                        <div className={styles.legendLeft}>
+                                            <span className={styles.swatchRedLight} />
+                                            <span className={styles.legendName}>Chuck &amp; Brisket / Italian Beef (25% Wt)</span>
+                                        </div>
+                                        <span className={styles.legendVal}>62% Margin</span>
+                                    </div>
+                                    <div className={styles.legendItem}>
+                                        <div className={styles.legendLeft}>
+                                            <span className={styles.swatchGold} />
+                                            <span className={styles.legendName}>Sausages, Burgers &amp; Freezer (22% Wt)</span>
+                                        </div>
+                                        <span className={styles.legendVal}>65% Margin</span>
+                                    </div>
+                                    <div className={styles.legendItem}>
+                                        <div className={styles.legendLeft}>
+                                            <span className={styles.swatchGoldLight} />
+                                            <span className={styles.legendName}>24-Hr Broth, Jus &amp; Smoked Tallow (18% Wt)</span>
+                                        </div>
+                                        <span className={styles.legendVal}>74% Margin</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ── Chart 4: Peak Wait-Time Curve (Before vs. After SVG Line Graph) ── */}
+                        <div className={styles.chartCard}>
+                            <div className={styles.chartHeader}>
+                                <div>
+                                    <span className={styles.cardSub}>Chart 04 · Queue &amp; Throughput Simulation</span>
+                                    <h3 className={styles.chartTitle}>Peak Wait-Time Curve (Before vs. After Fixes)</h3>
+                                    <p className={styles.chartSub}>
+                                        10-Min Mobile Slots + Curbside Express Bays + Winnetka Hub flatten 45-min spikes under 8 mins.
+                                    </p>
+                                </div>
+                                <span className={`${styles.tag} ${styles.tagGold}`}>-82% Wait</span>
+                            </div>
+
+                            <svg viewBox="0 0 460 195" className={styles.curveSvg} role="img" aria-label="Before and after wait time curve">
+                                {/* Grid lines */}
+                                <line x1="42" y1="25" x2="440" y2="25" stroke="rgba(255,255,255,0.08)" strokeDasharray="3 3" />
+                                <line x1="42" y1="75" x2="440" y2="75" stroke="rgba(255,255,255,0.08)" strokeDasharray="3 3" />
+                                <line x1="42" y1="125" x2="440" y2="125" stroke="rgba(255,255,255,0.08)" strokeDasharray="3 3" />
+                                <line x1="42" y1="160" x2="440" y2="160" stroke="rgba(255,255,255,0.18)" />
+
+                                {/* Y-axis labels */}
+                                <text x="36" y="29" textAnchor="end" className={styles.curveAxisText}>45m</text>
+                                <text x="36" y="79" textAnchor="end" className={styles.curveAxisText}>30m</text>
+                                <text x="36" y="129" textAnchor="end" className={styles.curveAxisText}>15m</text>
+                                <text x="36" y="163" textAnchor="end" className={styles.curveAxisText}>0m</text>
+
+                                {/* X-axis labels */}
+                                <text x="50" y="180" textAnchor="middle" className={styles.curveAxisText}>10 AM</text>
+                                <text x="145" y="180" textAnchor="middle" className={styles.curveAxisText}>12 PM</text>
+                                <text x="240" y="180" textAnchor="middle" className={styles.curveAxisText}>2 PM</text>
+                                <text x="335" y="180" textAnchor="middle" className={styles.curveAxisText}>4 PM</text>
+                                <text x="425" y="180" textAnchor="middle" className={styles.curveAxisText}>6 PM</text>
+
+                                {/* BEFORE Red Curve (Spikes at 12:30 PM lunch & 4:30 PM holiday pickup) */}
+                                <path
+                                    d="M 50 145 Q 100 140, 145 32 Q 190 38, 240 128 Q 295 135, 345 24 Q 390 55, 425 130"
+                                    fill="none"
+                                    stroke="#CC0E1D"
+                                    strokeWidth="3.5"
+                                />
+                                <circle cx="145" cy="32" r="4.5" fill="#CC0E1D" />
+                                <circle cx="345" cy="24" r="4.5" fill="#CC0E1D" />
+                                <text x="145" y="20" textAnchor="middle" className={styles.curveLabelRed}>
+                                    42m Lunch Rush
+                                </text>
+                                <text x="345" y="15" textAnchor="middle" className={styles.curveLabelRed}>
+                                    48m Holiday Peak
+                                </text>
+
+                                {/* AFTER Gold Curve (Flattened under 8 mins all day) */}
+                                <path
+                                    d="M 50 150 Q 145 136, 240 146 Q 345 134, 425 148"
+                                    fill="none"
+                                    stroke="#A8905F"
+                                    strokeWidth="3.5"
+                                />
+                                <circle cx="145" cy="141" r="4" fill="#A8905F" />
+                                <circle cx="345" cy="139" r="4" fill="#A8905F" />
+                                <text x="245" y="120" textAnchor="middle" className={styles.curveLabelGold}>
+                                    After Fixes: 5–8 Min Max Wait All Day
+                                </text>
+                            </svg>
+                        </div>
+
+                        {/* ── Chart 5: Competitive Benchmark Scorecard Bars (Full Width) ── */}
+                        <div className={`${styles.chartCard} ${styles.chartCardFull}`}>
+                            <div className={styles.chartHeader}>
+                                <div>
+                                    <span className={styles.cardSub}>Chart 05 · 6-Axis Competitive Benchmark Scorecard</span>
+                                    <h3 className={styles.chartTitle}>Hofherr Meat Co. (Gold) vs. Best Category Rival (Red)</h3>
+                                    <p className={styles.chartSub}>
+                                        Comparing Hofherr&apos;s post-rollout platform against the highest-scoring competitor in each category.
+                                    </p>
+                                </div>
+                                <span className={`${styles.tag} ${styles.tagGold}`}>96 / 100 Score</span>
+                            </div>
+
+                            <div className={styles.twoColGrid}>
+                                {COMPETITIVE_SCORECARD.map((item) => (
+                                    <div key={item.label} className={styles.barChartList}>
+                                        <div className={styles.barRow}>
+                                            <div className={styles.barMeta}>
+                                                <span className={styles.barLabel}>{item.label}</span>
+                                                <span className={styles.barStats}>Hofherr: {item.hofherrPct}/100</span>
+                                            </div>
+                                            <div className={styles.barTrack}>
+                                                <div
+                                                    className={styles.barFillGold}
+                                                    style={{ '--bar-w': `${item.hofherrPct}%` } as React.CSSProperties}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className={styles.barRow}>
+                                            <div className={styles.barMeta}>
+                                                <span className={styles.cellMuted}>Closest Rival: {item.rivalName}</span>
+                                                <span className={styles.cellMuted}>{item.rivalPct}/100</span>
+                                            </div>
+                                            <div className={styles.barTrack}>
+                                                <div
+                                                    className={styles.barFillRed}
+                                                    style={{ '--bar-w': `${item.rivalPct}%` } as React.CSSProperties}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* ── Section 2: Interactive Revenue & Profit Simulator ── */}
             <section id="roi-simulator" aria-labelledby="roi-simulator-heading" className="section">
                 <div className={`container ${styles.sectionBlock}`}>
@@ -1167,6 +1599,47 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
                                 <span className={styles.roiMetricNum}>{blendedMargin}%</span>
                                 <span className={styles.roiMetricLabel}>Blended Gross Margin</span>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Live Revenue Contribution Bar Chart */}
+                    <div className={styles.chartCard}>
+                        <div className={styles.chartHeader}>
+                            <div>
+                                <span className={styles.cardSub}>Chart 06 · Live Revenue Waterfall Breakdown</span>
+                                <h3 className={styles.chartTitle}>Annual Revenue Share by Growth Play</h3>
+                            </div>
+                            <span className={`${styles.tag} ${styles.tagGold}`}>
+                                +${totalAnnualRev.toLocaleString()}/yr Total
+                            </span>
+                        </div>
+                        <div className={styles.barChartList}>
+                            {GROWTH_ENGINES.map((engine) => {
+                                const isActive = selectedEngines.has(engine.id);
+                                const pctOfMax = isActive ? Math.round((engine.annualRevenue / 178800) * 100) : 0;
+                                const sharePct =
+                                    isActive && totalAnnualRev > 0
+                                        ? Math.round((engine.annualRevenue / totalAnnualRev) * 100)
+                                        : 0;
+                                return (
+                                    <div key={engine.id} className={styles.barRow}>
+                                        <div className={styles.barMeta}>
+                                            <span className={styles.barLabel}>{engine.title}</span>
+                                            <span className={styles.barStats}>
+                                                {isActive
+                                                    ? `+$${engine.annualRevenue.toLocaleString()}/yr (${sharePct}% of total · ${engine.grossMarginPct}% margin)`
+                                                    : 'Excluded (Click card below to enable)'}
+                                            </span>
+                                        </div>
+                                        <div className={styles.barTrack}>
+                                            <div
+                                                className={styles.barFillGold}
+                                                style={{ '--bar-w': `${pctOfMax}%` } as React.CSSProperties}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -1474,20 +1947,23 @@ export default function PitchDeckClient({ embedded = false }: { embedded?: boole
                             <a href="#pitch-deck" className={styles.jumpLink}>
                                 01 · 14-Slide Interactive Deck
                             </a>
+                            <a href="#visual-charts" className={styles.jumpLink}>
+                                02 · Pie Charts &amp; Visual Analytics
+                            </a>
                             <a href="#roi-simulator" className={styles.jumpLink}>
-                                02 · Interactive Revenue &amp; ROI Simulator
+                                03 · Interactive Revenue Simulator
                             </a>
                             <a href="#business-pillars" className={styles.jumpLink}>
-                                03 · All 8 Business Sides Deep-Dive
+                                04 · All 8 Business Sides Deep-Dive
                             </a>
                             <a href="#competitors" className={styles.jumpLink}>
-                                04 · Competitor Matrix &amp; Teardowns
+                                05 · Competitor Matrix &amp; Teardowns
                             </a>
                             <a href="#pain-matrix" className={styles.jumpLink}>
-                                05 · Review Pain-Point Fixes
+                                06 · Review Pain-Point Fixes
                             </a>
                             <a href="#rollout-plan" className={styles.jumpLink}>
-                                06 · 90-Day Execution Plan
+                                07 · 90-Day Execution Plan
                             </a>
                         </nav>
                     </div>

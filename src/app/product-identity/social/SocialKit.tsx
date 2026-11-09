@@ -213,6 +213,21 @@ function StickerGuide({ top, label, color = 'rgba(245,155,26,.6)' }: { top: numb
 function ProfileSet({ ctx }: { ctx: Ctx }) {
     return (
         <>
+            <Canvas name="fb-profile-set-1-wrapping-paper" w={1080} h={1080} preview={220} svgHref="/assets/identity/apps/fb-profile-wrapping-paper.svg">
+                <img src="/assets/identity/apps/fb-profile-wrapping-paper.svg" alt="Facebook Profile Set 1 — Wrapping Paper & Bull Seal" className={s.fullSvgCanvas} />
+            </Canvas>
+            <Canvas name="fb-profile-set-2-crimson-crest" w={1080} h={1080} preview={220} svgHref="/assets/identity/apps/fb-profile-crimson-badge.svg">
+                <img src="/assets/identity/apps/fb-profile-crimson-badge.svg" alt="Facebook Profile Set 2 — Oxblood Crimson Crest" className={s.fullSvgCanvas} />
+            </Canvas>
+            <Canvas name="fb-profile-set-3-charcoal-seal" w={1080} h={1080} preview={220} svgHref="/assets/identity/apps/fb-profile-charcoal-seal.svg">
+                <img src="/assets/identity/apps/fb-profile-charcoal-seal.svg" alt="Facebook Profile Set 3 — Smokehouse Charcoal Seal" className={s.fullSvgCanvas} />
+            </Canvas>
+            <Canvas name="profile-ig-wrapping-paper" w={1080} h={1080} preview={220} svgHref="/assets/identity/apps/ig-avatar-wrapping-paper.svg">
+                <img src="/assets/identity/apps/ig-avatar-wrapping-paper.svg" alt="@hofherrmeatco Wrapping Paper Avatar" className={s.fullSvgCanvas} />
+            </Canvas>
+            <Canvas name="profile-ios-android-app-icon" w={1024} h={1024} preview={220} svgHref="/assets/identity/hofherr-app-icon.svg">
+                <img src="/assets/identity/hofherr-app-icon.svg" alt="Hofherr App Icon" className={s.fullSvgCanvas} />
+            </Canvas>
             <Canvas name="profile-logo-charcoal" w={1080} h={1080} preview={220}>
                 <div style={{ ...fill, background: C.charcoal, display: 'grid', placeItems: 'center' }}><Logo size={560} /></div>
             </Canvas>
@@ -1287,6 +1302,19 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
                                                 className={s.fullSvgCanvas}
                                             />
                                         </Canvas>
+                                        <Canvas
+                                            name="ig-link-in-bio-screen"
+                                            w={1080}
+                                            h={1920}
+                                            preview={260}
+                                            svgHref="/assets/identity/apps/ig-link-in-bio-screen.svg"
+                                        >
+                                            <img
+                                                src="/assets/identity/apps/ig-link-in-bio-screen.svg"
+                                                alt="Instagram Link-in-Bio Screen"
+                                                className={s.fullSvgCanvas}
+                                            />
+                                        </Canvas>
                                         <StorySpecial ctx={ctx} />
                                         <StoryQuiz ctx={ctx} />
                                         <StoryPoll ctx={ctx} />
@@ -1298,6 +1326,58 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
                                 {g.id === 'profile' && <ProfileSet ctx={ctx} />}
                                 {g.id === 'covers' && (
                                     <>
+                                        <Canvas
+                                            name="fb-hero-set-1-wrapping-paper"
+                                            w={1640}
+                                            h={624}
+                                            preview={460}
+                                            svgHref="/assets/identity/apps/fb-hero-cover-wrapping-paper.svg"
+                                        >
+                                            <img
+                                                src="/assets/identity/apps/fb-hero-cover-wrapping-paper.svg"
+                                                alt="Facebook Hero Cover Set 1 — Wrapping Paper & 10-Dept Suite"
+                                                className={s.fullSvgCanvas}
+                                            />
+                                        </Canvas>
+                                        <Canvas
+                                            name="fb-hero-set-2-crimson-smokehouse"
+                                            w={1640}
+                                            h={624}
+                                            preview={460}
+                                            svgHref="/assets/identity/apps/fb-hero-cover-crimson-smokehouse.svg"
+                                        >
+                                            <img
+                                                src="/assets/identity/apps/fb-hero-cover-crimson-smokehouse.svg"
+                                                alt="Facebook Hero Cover Set 2 — Crimson & Charcoal Split"
+                                                className={s.fullSvgCanvas}
+                                            />
+                                        </Canvas>
+                                        <Canvas
+                                            name="fb-hero-set-3-two-locations"
+                                            w={1640}
+                                            h={624}
+                                            preview={460}
+                                            svgHref="/assets/identity/apps/fb-hero-cover-two-locations.svg"
+                                        >
+                                            <img
+                                                src="/assets/identity/apps/fb-hero-cover-two-locations.svg"
+                                                alt="Facebook Hero Cover Set 3 — Two Locations Showcase"
+                                                className={s.fullSvgCanvas}
+                                            />
+                                        </Canvas>
+                                        <Canvas
+                                            name="ordering-app-storefront-banner"
+                                            w={1600}
+                                            h={900}
+                                            preview={460}
+                                            svgHref="/assets/identity/apps/ordering-app-storefront-banner.svg"
+                                        >
+                                            <img
+                                                src="/assets/identity/apps/ordering-app-storefront-banner.svg"
+                                                alt="Ordering App Storefront Banner (16:9)"
+                                                className={s.fullSvgCanvas}
+                                            />
+                                        </Canvas>
                                         <Cover name="facebook-cover" w={1640} h={624} ctx={ctx} />
                                         <Cover name="x-twitter-header" w={1500} h={500} ctx={ctx} />
                                         <Cover name="linkedin-banner" w={1584} h={396} ctx={ctx} />

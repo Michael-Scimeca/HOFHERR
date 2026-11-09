@@ -5,6 +5,7 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import SizeStudio from './sizes/SizeStudio';
 import ExtendedIdentityBoards from './ExtendedIdentityBoards';
+import AppBrandIdentitySection from './AppBrandIdentitySection';
 import SocialKit from './social/SocialKit';
 import PressKitSection from './PressKitSection';
 import PitchDeckClient from '../pitch-deck/PitchDeckClient';
@@ -405,6 +406,10 @@ export default function ProductIdentityClient() {
                     <Link href="/product-identity#digital" className={styles.heroNavLink}>
                         <span className={styles.heroNavIndex}>09</span>
                         Digital &amp; Social
+                    </Link>
+                    <Link href="/product-identity#app-identity" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <span className={styles.heroNavIndex}>09B</span>
+                        Instagram (@hofherrmeatco) &amp; Apps
                     </Link>
                     <Link href="/product-identity#brand-standards" className={styles.heroNavLink}>
                         <span className={styles.heroNavIndex}>10</span>
@@ -1108,6 +1113,9 @@ export default function ProductIdentityClient() {
 
         {/* ── 05–10 / Extended identity system (images via Gemini Nano Banana) ── */}
         <ExtendedIdentityBoards />
+
+        {/* ── 09B / Instagram (@hofherrmeatco) & Multi-App Brand Identity System (#app-identity) ── */}
+        <AppBrandIdentitySection />
 
         {/* ── 11 / Merged Social Media Kit, Cut Charts (#cuts), Print & Auto-Post Verification Studio ── */}
         <SocialKit embedded />
