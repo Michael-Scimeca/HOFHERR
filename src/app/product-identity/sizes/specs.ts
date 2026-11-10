@@ -27,7 +27,7 @@ export const DEFAULT_SPECS: PrintSpec[] = [
     { key: 'catering-lid', group: 'Packaging', name: 'Catering box lid print', w: 10, h: 7, bleed: 0.125, shape: 'rect' },
     { key: 'tray-sleeve', group: 'Packaging', name: 'Catering tray sleeve', w: 11, h: 3.5, bleed: 0.125, shape: 'rect' },
     { key: 'tote', group: 'Packaging', name: 'Insulated tote imprint', w: 8.5, h: 8.5, bleed: 0, shape: 'rect', art: '/assets/identity/vector/insulated-tote.svg' },
-    { key: 'wrap-sheet', group: 'Packaging', name: 'Butcher paper sheet', w: 24, h: 16, bleed: 0, shape: 'rect', art: '/assets/identity/hofherr-wrapping-paper-pattern-10-icons.svg' },
+    { key: 'wrap-sheet', group: 'Packaging', name: 'Butcher paper sheet', w: 24, h: 16, bleed: 0, shape: 'rect', art: '/assets/identity/hofherr-wrapping-paper-pattern-10-icons.svg?v=3' },
     // Cards & stationery
     { key: 'gift-card', group: 'Cards & stationery', name: 'Gift card (CR80)', w: 3.375, h: 2.125, bleed: 0.125, shape: 'rounded' },
     { key: 'business-card', group: 'Cards & stationery', name: 'Business card', w: 3.5, h: 2, bleed: 0.125, shape: 'rect' },

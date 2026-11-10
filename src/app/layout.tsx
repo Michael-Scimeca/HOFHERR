@@ -11,6 +11,7 @@ import { getClient } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import ClientProviders from "@/components/ClientProviders";
 import Navbar from "@/components/Navbar";
+import AuthModal from "@/components/AuthModal";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -42,10 +43,11 @@ export const metadata: Metadata = {
   title: "Hofherr Meat Co. | Northfield's Premier Craft Butcher",
   description: "Experience the finest local meats and expert butchery at Hofherr Meat Co. in Northfield, IL. Hand-cut steaks, whole-hog roasts, and premium catering.",
   metadataBase: new URL("https://hofherrmeatco.com"),
-  alternates: {
-    canonical: "/",
-  },
+  applicationName: "Hofherr Meat Co.",
   openGraph: {
+    siteName: "Hofherr Meat Co.",
+    type: "website",
+    locale: "en_US",
     title: "Hofherr Meat Co. | Northfield's Premier Craft Butcher",
     description: "Northfield's Premier Craft Butcher & BBQ Pitmasters",
     images: [
@@ -53,9 +55,12 @@ export const metadata: Metadata = {
         url: "/OG/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Hofherr Meat Co storefront",
+        alt: "Hofherr Meat Co. — Premium Butcher Shop, Northfield IL",
       },
     ],
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 
@@ -112,21 +117,25 @@ export default async function RootLayout({
       <head>
       </head>
       <body suppressHydrationWarning>
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
-        />
-        <Script id="ga-config" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
-              page_path: window.location.pathname,
-            });
-          `}
-        </Script>
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <>
+            <Script
+              id="google-analytics"
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
+            />
+            <Script id="ga-config" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `}
+            </Script>
+          </>
+        )}
 
         <EmbersBackground />
         <EmberFlare />
@@ -138,6 +147,7 @@ export default async function RootLayout({
               <SmoothScroll />
               <ScrollToTop />
               <Navbar />
+              <AuthModal />
               <PageTransition>
                 <div className="site-shell">
                   {children}

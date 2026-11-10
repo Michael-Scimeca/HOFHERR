@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Lenis from 'lenis';
+import { isScrollLocked } from '@/lib/scrollLock';
 
 export default function SmoothScroll() {
     const lenisRef = useRef<Lenis | null>(null);
@@ -51,6 +52,9 @@ export default function SmoothScroll() {
 
         // Scroll to top on route change
         lenis.scrollTo(0, { immediate: true });
+
+        // A modal or the preloader may already be holding the scroll lock (see src/lib/scrollLock.ts)
+        if (isScrollLocked()) lenis.stop();
 
         return () => {
             cancelAnimationFrame(rafId);

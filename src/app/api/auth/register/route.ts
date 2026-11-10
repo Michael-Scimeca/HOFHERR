@@ -27,7 +27,7 @@ export async function POST(req: Request) {
         rateLimitMap.set(ip, rateRecord);
 
         // Sanitize and Validate Input
-        const { email, password, name, phone, address } = await req.json();
+        const { email, password, name, phone, address, username, favoriteCut, bio } = await req.json();
 
         if (!email || !password) {
             return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
@@ -62,6 +62,25 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Name is too long' }, { status: 400 });
         }
 
+        // Process and validate username
+        let rawUsername = typeof username === 'string' ? username.toLowerCase().trim().replace(/[^a-z0-9_-]/g, '').slice(0, 30) : '';
+        if (!rawUsername) {
+            const fallbackBase = (name ? name.toLowerCase().replace(/[^a-z0-9]/g, '-') : email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '-')).slice(0, 18);
+            rawUsername = `${fallbackBase}-${Math.floor(100 + Math.random() * 900)}`;
+        }
+
+        const existingUsername = await adminClient.fetch(
+            `*[_type == "customer" && username == $username][0]`,
+            { username: rawUsername }
+        );
+
+        if (existingUsername) {
+            if (username) {
+                return NextResponse.json({ error: 'This username is already taken. Please choose another.' }, { status: 400 });
+            }
+            rawUsername = `${rawUsername}-${Math.floor(100 + Math.random() * 900)}`;
+        }
+
         // 1. Check if user already exists
         const existingUser = await adminClient.fetch(
             `*[_type == "customer" && email == $email][0]`,
@@ -76,7 +95,20 @@ export async function POST(req: Request) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // 3. Assign a random default avatar
-        const avatarOptions = ['/avatars/avator-chickin.png', '/avatars/avator-cow.png', '/avatars/avator-pig.png', '/avatars/avator-sheep.png'];
+        const avatarOptions = [
+            '/assets/avatars/avatar-angus-bull.jpg',
+            '/assets/avatars/avatar-berkshire-boar.jpg',
+            '/assets/avatars/avatar-suffolk-ram.jpg',
+            '/assets/avatars/avatar-heritage-rooster.jpg',
+            '/assets/avatars/avatar-mallard-drake.jpg',
+            '/assets/avatars/avatar-bronze-turkey.jpg',
+            '/assets/avatars/avatar-red-stag.jpg',
+            '/assets/avatars/avatar-alpine-goat.jpg',
+            '/avatars/avator-cow.png',
+            '/avatars/avator-pig.png',
+            '/avatars/avator-chickin.png',
+            '/avatars/avator-sheep.png',
+        ];
         const randomAvatar = avatarOptions[Math.floor(Math.random() * avatarOptions.length)];
 
         // 4. Generate email verification token (24-hour expiry)
@@ -89,6 +121,9 @@ export async function POST(req: Request) {
             email: email.toLowerCase(),
             password: hashedPassword,
             name: name || '',
+            username: rawUsername,
+            bio: bio || '',
+            favoriteCut: favoriteCut || '',
             phone: phone || '',
             address: address || '',
             avatar: randomAvatar,

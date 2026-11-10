@@ -1,4 +1,4 @@
-export const metadata = { title: 'Hofherr Meat Co. — Sanity Studio' };
+export const metadata = { title: 'Hofherr Meat Co. — Sanity Studio', robots: { index: false, follow: false } };
 
 export default function StudioLayout({ children }: { children: React.ReactNode }) {
     return (

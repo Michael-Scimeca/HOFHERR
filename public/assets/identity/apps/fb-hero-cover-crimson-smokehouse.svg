@@ -14,11 +14,11 @@
   </g>
 
   <!-- Right Main Hero Content -->
-  <rect x="650" y="95" width="440" height="46" rx="8" fill="#F59B1A"/>
-  <text x="870" y="126" text-anchor="middle" fill="#1C1614" font-family="Arial Black, sans-serif" font-size="20" font-weight="900" letter-spacing="3">NORTH SHORE&apos;S CRAFT BUTCHER</text>
+  <rect x="650" y="95" width="480" height="46" rx="8" fill="#F59B1A"/>
+  <text x="890" y="125" text-anchor="middle" fill="#1C1614" font-family="Arial Black, sans-serif" font-size="18" font-weight="900" letter-spacing="2.5">NORTH SHORE&apos;S CRAFT BUTCHER</text>
 
-  <text x="650" y="255" fill="#F3EAD8" font-family="Impact, Arial Black, sans-serif" font-size="112" font-weight="900" letter-spacing="4">HOFHERR MEAT CO.</text>
-  <text x="650" y="315" fill="#F59B1A" font-family="Impact, Arial Black, sans-serif" font-size="44" font-weight="700" letter-spacing="5">CUT TO ORDER · DRY-AGED STEAKS · WHOLE-HOG BBQ</text>
+  <text x="650" y="255" fill="#F3EAD8" font-family="Impact, Arial Black, sans-serif" font-size="108" font-weight="900" letter-spacing="4">HOFHERR MEAT CO.</text>
+  <text x="650" y="312" fill="#F59B1A" font-family="Impact, Arial Black, sans-serif" font-size="31" font-weight="700" letter-spacing="3">CUT TO ORDER · DRY-AGED STEAKS · WHOLE-HOG BBQ</text>
 
   <line x1="650" y1="348" x2="1540" y2="348" stroke="#8B0A10" stroke-width="5"/>
 
@@ -36,5 +36,5 @@
     <text x="24" y="98" fill="#B9AD9E" font-family="Arial, sans-serif" font-size="15">Order by 1:30pm · Pickup 3:30–6:30pm</text>
   </g>
 
-  <text x="650" y="555" fill="#D8BA92" font-family="Arial, sans-serif" font-size="22" font-weight="800" letter-spacing="3">📞 (847) 441-MEAT &nbsp;·&nbsp; 🌐 HOFHERRMEATCO.COM &nbsp;·&nbsp; 📸 @HOFHERRMEATCO</text>
+  <text x="650" y="555" fill="#D8BA92" font-family="Arial, sans-serif" font-size="21" font-weight="800" letter-spacing="2">📞 (847) 441-MEAT   ·   🌐 HOFHERRMEATCO.COM   ·   📸 @HOFHERRMEATCO</text>
 </svg>

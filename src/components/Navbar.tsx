@@ -6,6 +6,7 @@ import TransitionLink from './TransitionLink';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
+import { openAuthModal } from '@/components/AuthModal';
 import { useSiteSettings, type StoreHourEntry } from '@/context/SiteSettingsContext';
 import styles from './Navbar.module.css';
 import NavCartIcon from './NavCartIcon';
@@ -17,7 +18,7 @@ function AvatarImage({ src, name }: { src: string; name: string }) {
     if (src !== lastSrc) { setLastSrc(src); setBroken(false); }
     if (broken || !src) {
         return (
-            <span style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>
+            <span className={styles.avatarFallbackLetter}>
                 {name ? name.charAt(0).toUpperCase() : 'U'}
             </span>
         );
@@ -29,6 +30,7 @@ function AvatarImage({ src, name }: { src: string; name: string }) {
 }
 
 const NAV_ITEMS = [
+    { label: 'Selections', href: '/selections' },
     { label: 'Specials', href: '/specials' },
     { label: 'BBQ', href: '/bbq' },
     { label: 'Catering', href: '/catering' },
@@ -112,6 +114,16 @@ function getShopStatus(hours: StoreHourEntry[], absoluteNow: Date) {
 export default function Navbar() {
     const pathname = usePathname();
     const { data: session } = useSession();
+
+    /** Sign In / Sign Up open the auth modal over the current page instead of navigating.
+        Modifier-clicks (new tab) fall through to the normal link. The links carry
+        `data-no-transition` so PageTransition's global click handler leaves them alone. */
+    const openAuthFromLink = (e: React.MouseEvent, mode: 'login' | 'register', closeMobile = false) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        if (closeMobile) setMobileOpen(false);
+        openAuthModal(mode);
+    };
     const user = session?.user;
     const { butcherHours, depotHours } = useSiteSettings();
     const [scrolled, setScrolled] = useState(false);
@@ -141,11 +153,24 @@ export default function Navbar() {
         return () => clearInterval(timer);
     }, []);
 
-    // Listen for avatar changes from the dashboard (real-time update)
+    // Listen for avatar changes from the dashboard (real-time update) + hydrate from localStorage
     useEffect(() => {
+        try {
+            const stored = window.localStorage.getItem('hofherr_user_avatar_v1');
+            if (stored) setAvatarOverride(stored);
+        } catch {
+            // ignore storage errors
+        }
         const handler = (e: Event) => {
             const detail = (e as CustomEvent).detail;
-            if (detail?.avatar !== undefined) setAvatarOverride(detail.avatar);
+            if (detail?.avatar !== undefined) {
+                setAvatarOverride(detail.avatar);
+                try {
+                    window.localStorage.setItem('hofherr_user_avatar_v1', detail.avatar);
+                } catch {
+                    // ignore storage errors
+                }
+            }
         };
         window.addEventListener('avatar-updated', handler);
         return () => window.removeEventListener('avatar-updated', handler);
@@ -238,7 +263,7 @@ export default function Navbar() {
                         alt="Hofherr Meat Co."
                         height={56}
                         width={180}
-                        style={{ objectFit: 'contain', width: 'auto', height: '56px' }}
+                        className={styles.logoImgMain}
                         priority
                         fetchPriority="high"
                     />
@@ -248,8 +273,13 @@ export default function Navbar() {
                 <nav className={styles.nav} ref={navRef}>
                     {indicator && (
                         <span
-                            className={styles.magicLine}
-                            style={{ left: indicator.left, width: indicator.width }}
+                            className={`${styles.magicLine} ${styles.magicLineDynamic}`}
+                            style={
+                                {
+                                    '--magic-left': `${indicator.left}px`,
+                                    '--magic-width': `${indicator.width}px`,
+                                } as React.CSSProperties
+                            }
                         />
                     )}
                     {NAV_ITEMS.map((item) => (
@@ -263,7 +293,7 @@ export default function Navbar() {
                         </TransitionLink>
                     ))}
                     {showOwnerPortal && (
-                        <Link href="/admin" className={`${styles.navLink} ${isActive('/admin') ? styles.navActive : ''}`} style={{ color: 'var(--red)', fontWeight: 'bold' }}>
+                        <Link href="/admin" className={`${styles.navLink} ${styles.ownerPortalLink} ${isActive('/admin') ? styles.navActive : ''}`}>
                             Owner Portal
                         </Link>
                     )}
@@ -274,24 +304,34 @@ export default function Navbar() {
                     <div className={styles.rightActions}>
                         {!user ? (
                             <div className={styles.authPill}>
-                                <TransitionLink href="/online-orders?login=true" className={styles.signInLink}>Sign In</TransitionLink>
+                                <Link href="/online-orders?login=true" prefetch={false} data-no-transition className={styles.signInLink} onClick={(e) => openAuthFromLink(e, 'login')}>Sign In</Link>
                                 <span className={styles.authDivider}>/</span>
-                                <TransitionLink href="/online-orders?signup=true" className={styles.signInLink}>Sign Up</TransitionLink>
+                                <Link href="/online-orders?signup=true" prefetch={false} data-no-transition className={styles.signInLink} onClick={(e) => openAuthFromLink(e, 'register')}>Sign Up</Link>
                             </div>
                         ) : (
-                            <div className={styles.avatarDropdownWrap}>
-                                <button className={styles.avatar} aria-label="My Dashboard">
+                            <div className={styles.avatarActionsRow}>
+                                <TransitionLink
+                                    href="/dashboard"
+                                    className={styles.avatar}
+                                    aria-label="Open My Dashboard"
+                                >
                                     <AvatarImage
-                                        src={avatarOverride ?? (user as any).avatar ?? user.image ?? ''}
+                                        src={
+                                            avatarOverride ||
+                                            user.avatar ||
+                                            user.image ||
+                                            '/assets/avatars/avatar-angus-bull.jpg'
+                                        }
                                         name={user.name ?? ''}
                                     />
+                                </TransitionLink>
+                                <button
+                                    type="button"
+                                    onClick={() => signOut()}
+                                    className={styles.signOutInlineBtn}
+                                >
+                                    Sign Out
                                 </button>
-                                <div className={styles.avatarDropdown}>
-                                    <TransitionLink href={user.isAdmin ? "/admin" : "/dashboard"} className={styles.avatarDropdownItem}>
-                                        {user.isAdmin ? '🛡️ Admin Panel' : '📊 My Dashboard'}
-                                    </TransitionLink>
-                                    <button onClick={() => signOut()} className={styles.avatarDropdownItem} style={{ color: '#ef4444' }}>🚪 Sign Out</button>
-                                </div>
                             </div>
                         )}
 
@@ -341,7 +381,7 @@ export default function Navbar() {
                         ))}
                         {showOwnerPortal && (
                             <div className={styles.mobileSection}>
-                                <Link href="/admin" className={styles.mobilePrimary} onClick={() => setMobileOpen(false)} style={{ color: 'var(--red)' }}>
+                                <Link href="/admin" className={`${styles.mobilePrimary} ${styles.ownerPortalLink}`} onClick={() => setMobileOpen(false)}>
                                     Owner Portal
                                 </Link>
                             </div>
@@ -386,8 +426,8 @@ export default function Navbar() {
                         <div className={styles.mobileCTA}>
                             {!user ? (
                                 <div className={styles.mobileAuthGrid}>
-                                    <TransitionLink href="/online-orders?login=true" className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Sign In</TransitionLink>
-                                    <TransitionLink href="/online-orders?signup=true" className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Sign Up</TransitionLink>
+                                    <Link href="/online-orders?login=true" prefetch={false} data-no-transition className={`btn btn-secondary ${styles.authGridBtn}`} onClick={(e) => openAuthFromLink(e, 'login', true)}>Sign In</Link>
+                                    <Link href="/online-orders?signup=true" prefetch={false} data-no-transition className={`btn btn-secondary ${styles.authGridBtn}`} onClick={(e) => openAuthFromLink(e, 'register', true)}>Sign Up</Link>
                                 </div>
                             ) : (
                                 <TransitionLink href="/dashboard" className="btn btn-secondary" onClick={() => setMobileOpen(false)}>Dashboard</TransitionLink>

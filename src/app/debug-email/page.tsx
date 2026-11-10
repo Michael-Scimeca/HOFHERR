@@ -10,6 +10,7 @@ const IS_DEV = process.env.NODE_ENV === 'development';
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Debug Email Body',
+  robots: { index: false, follow: false },
 };
 
 export default async function DebugEmailPage({ searchParams }: { searchParams: Promise<{ id?: string; package_id?: string }> }) {

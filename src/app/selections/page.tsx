@@ -7,6 +7,9 @@ export const metadata: Metadata = {
         'Explore Hofherr Meat Co. selections: 100% vegetarian-fed, hormone- and antibiotic-free Midwest beef, heritage pork, pasture poultry, lamb, exotic game, 18+ housemade sausages, 6 signature sandwiches, 24-hour bone broths, prepared meals, and BBQ supplies.',
     alternates: { canonical: 'https://hofherrmeatco.com/selections' },
     openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
         title: 'Our Selections & Butcher Boards | Hofherr Meat Co.',
         description:
             'Custom-cut prime & dry-aged beef, heritage pork, pasture poultry, lamb, exotic game, house charcuterie, 6 signature sandwiches, and scratch soups.',
@@ -18,3 +21,4 @@ export const metadata: Metadata = {
 export default function SelectionsPage() {
     return <SelectionsClient />;
 }
+

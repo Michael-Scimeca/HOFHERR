@@ -21,6 +21,24 @@ export default {
             type: 'string',
         },
         {
+            name: 'username',
+            title: 'Username / Handle',
+            type: 'string',
+            description: 'Unique public username handle (e.g. janesmith)',
+        },
+        {
+            name: 'bio',
+            title: 'Butcher Bio',
+            type: 'text',
+            rows: 3,
+            description: 'Short customer bio / cooking style',
+        },
+        {
+            name: 'favoriteCut',
+            title: 'Favorite Butcher Cut',
+            type: 'string',
+        },
+        {
             name: 'phone',
             title: 'Phone Number',
             type: 'string',

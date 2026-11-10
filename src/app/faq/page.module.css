@@ -33,7 +33,7 @@
 }
 
 .sub a {
-    color: var(--red);
+    color: var(--gold);
     font-weight: 600;
     text-decoration: none;
 }
@@ -76,22 +76,30 @@
 
 .sideLink:hover {
     background: var(--bg-2);
-    color: var(--red);
+    color: var(--gold);
 }
 
 .sideCard {
     margin-top: 24px;
-    padding: 20px;
+    padding: 24px;
     background: var(--bg-2);
     border: 1px solid var(--border);
-    border-radius: 14px;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .sideCard p {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 0.875rem;
+    font-weight: 700;
     color: var(--fg);
-    margin: 0;
+    margin: 0 0 4px;
+}
+
+.sideBtn {
+    width: 100%;
+    text-align: center;
 }
 
 /* ── Accordion ── */
@@ -103,27 +111,29 @@
 
 .group {
     scroll-margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .groupTitle {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 1.3rem;
-    color: var(--red);
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--red);
+    font-size: clamp(1.5rem, 2.2vw, 1.875rem);
+    color: var(--gold);
+    margin: 0 0 8px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 .item {
     border: 1px solid var(--border);
-    border-radius: 12px;
-    margin-bottom: 8px;
+    border-radius: var(--radius);
     overflow: hidden;
     transition: border-color 0.2s;
 }
 
 .itemOpen {
-    border-color: var(--red);
+    border-color: rgba(255, 255, 255, 0.35);
 }
 
 .question {
@@ -149,8 +159,8 @@
 }
 
 .itemOpen .question {
-    color: var(--red);
-    background: rgba(193, 57, 43, 0.04);
+    color: var(--gold);
+    background: rgba(168, 144, 95, 0.06);
 }
 
 .chevron {
@@ -161,7 +171,7 @@
 
 .chevronOpen {
     transform: rotate(180deg);
-    color: var(--red);
+    color: var(--gold);
 }
 
 /* ── Answer (smooth expand via grid rows) ── */

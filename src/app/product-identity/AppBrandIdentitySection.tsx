@@ -109,7 +109,7 @@ const IG_GRID_TILES = [
     },
     {
         title: 'The Butcher Shop (16:9)',
-        img: '/assets/shop-exterior.jpg',
+        img: '/images/visit/northfield-storefront-front.jpg',
         href: '/product-identity#press-kit',
     },
     {
@@ -119,7 +119,7 @@ const IG_GRID_TILES = [
     },
     {
         title: 'Wrapping Paper Suite',
-        img: '/assets/identity/butcher-wrapping-paper-roll-v5.jpg',
+        img: '/assets/identity/wrapping-paper/butcher-wrapping-paper-roll-10-icons.jpg',
         href: '/product-identity#wrapping-paper',
     },
 ];

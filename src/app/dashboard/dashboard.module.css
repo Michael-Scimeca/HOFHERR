@@ -24,7 +24,7 @@
 /* ── Main Canvas ── */
 .mainCanvas {
     flex: 1;
-    padding: 64px var(--container-px);
+    padding: 0 var(--container-px) 80px;
     overflow-y: auto;
     max-width: var(--max-w, 1800px);
     width: 100%;
@@ -33,7 +33,56 @@
 }
 
 .header {
-    margin-bottom: 64px;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    margin-bottom: 48px;
+    padding: 56px 0 48px;
+    border-bottom: 1px solid var(--border, #1e1e1e);
+}
+
+.header::before,
+.header::after {
+    content: '';
+    position: absolute;
+    inset: -30%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.header::before {
+    background-image:
+        radial-gradient(at 20% 50%, #80002026 0%, #0000 60%),
+        radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
+    animation: dashEmberPulse 4s ease-in-out infinite;
+}
+
+.header::after {
+    background-image:
+        radial-gradient(at 22% 45%, #8000201a 0%, #0000 45%);
+    animation: dashEmberPulseAfter 4s ease-in-out infinite;
+}
+
+@keyframes dashEmberPulse {
+    0%, 100% {
+        opacity: 0.55;
+        transform: scale(0.92);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.16);
+    }
+}
+
+@keyframes dashEmberPulseAfter {
+    0%, 100% {
+        opacity: 0.2;
+        transform: scale(0.85);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1.25);
+    }
 }
 
 .headerTop {
@@ -229,15 +278,57 @@
 /* ── Content Sections ── */
 .contentGrid {
     display: grid;
-    grid-template-columns: 2fr 3fr;
-    gap: 16px;
+    grid-template-columns: 410px 1fr;
+    gap: 28px;
     align-items: start;
+    padding-top: 24px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .contentGrid {
         grid-template-columns: 1fr;
     }
+}
+
+.sideColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.mainColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.guildSection {
+    margin-bottom: 0;
+}
+
+.guildSectionTitle {
+    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg, #fff);
+    margin: 0 0 14px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.contactDetailsTitle {
+    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg, #fff);
+    margin: 0;
 }
 
 .sectionTitle {
@@ -518,13 +609,18 @@
 
 /* ── Profile Card ── */
 .profileCard {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 20px;
-    padding: 32px;
-    box-shadow: var(--card-shadow);
-    position: sticky;
-    top: 48px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+.profileAvatarWrap {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 24px;
 }
 
 .profileAvatar {
@@ -540,30 +636,59 @@
     color: #fff;
     border: 3px solid var(--red);
     box-shadow: var(--shadow-sm);
-    margin-bottom: 24px;
     position: relative;
     overflow: hidden;
 }
 
+.avatarBadgeEditBtn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--red);
+    color: #fff;
+    border: 2.5px solid #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+    transition: transform 0.15s ease, background 0.15s ease;
+    z-index: 2;
+    padding: 0;
+}
+
+.avatarBadgeEditBtn:hover,
+.avatarBadgeEditBtnActive {
+    background: var(--red-dark);
+    transform: scale(1.08);
+}
+
 .avatarPicker {
     margin-bottom: 20px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid #1e1e1e;
+    border-radius: 14px;
 }
 
 .avatarGrid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
 }
 
 .avatarOption {
     width: 100%;
     aspect-ratio: 1;
     border-radius: 50%;
-    border: 2px solid transparent;
+    border: 2px solid #262626;
     padding: 0;
     cursor: pointer;
     overflow: hidden;
-    background: #f1f5f9;
+    background: #0a0a0a;
     transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
@@ -572,16 +697,17 @@
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
+    display: block;
 }
 
 .avatarOption:hover {
-    border-color: #d1d5db;
+    border-color: #666;
     transform: scale(1.08);
 }
 
 .avatarOptionActive {
     border-color: var(--red);
-    box-shadow: 0 0 0 2px rgba(139, 0, 0, 0.2);
+    box-shadow: 0 0 0 2px rgba(204, 14, 29, 0.35);
 }
 
 .editBtn {
@@ -693,7 +819,7 @@
 .specialsSection {
     margin-top: 48px;
     padding-top: 32px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--card-border);
 }
 
 .specialsGrid {
@@ -703,13 +829,15 @@
 }
 
 .specialCard {
-    background: #fff;
+    background: var(--card-bg);
     border-radius: var(--radius);
     border: 1px solid var(--card-border);
     box-shadow: var(--card-shadow);
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .specialCard:hover {
@@ -754,15 +882,17 @@
 
 .specialImageWrap {
     width: 100%;
-    height: 180px;
+    height: 200px;
     overflow: hidden;
-    background: #f1f5f9;
+    background: #111111;
+    border-radius: 14px;
 }
 
 .specialImage {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
     transition: transform 0.3s ease;
 }
 
@@ -772,6 +902,9 @@
 
 .specialContent {
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .specialTitle {
@@ -811,20 +944,1667 @@
     display: inline-block;
     font-size: 13px;
     font-weight: 600;
-    color: #16a34a;
-    background: #f0fdf4;
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.25);
     padding: 2px 8px;
     border-radius: 4px;
     margin-top: 4px;
 }
 
+/* ── Previous Purchases / Buy It Again Shelf ── */
+.buyAgainSection {
+    margin-bottom: 32px;
+}
+
+.buyAgainHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.buyAgainSubtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.buyAgainGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.buyAgainCard {
+    background: var(--card-bg);
+    border: 1px solid #ffffff1a;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    position: relative;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.buyAgainCard:hover {
+    transform: translateY(-2px);
+    border-color: var(--red);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.buyAgainCardTop {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.buyAgainMetaRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.storeTag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.storeTagButcher {
+    background: #7a0000;
+    color: #fff;
+    border: 1px solid #b91c1c;
+}
+
+.storeTagDepot {
+    background: #1e3a5f;
+    color: #fff;
+    border: 1px solid #2563eb;
+}
+
+.buyAgainCountBadge {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gold, #a8905f);
+    background: rgba(168, 144, 95, 0.12);
+    border: 1px solid rgba(168, 144, 95, 0.25);
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.buyAgainItemName {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 4px 0 0;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+}
+
+.buyAgainItemDesc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.buyAgainLastDate {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.buyAgainFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #ffffff14;
+}
+
+.buyAgainPrice {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.buyAgainBtn {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+    white-space: nowrap;
+}
+
+.buyAgainBtn:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+}
+
+/* ── Quick Reorder Card & Order Item Badges ── */
+.quickReorderCard {
+    position: relative;
+    background: var(--card-bg);
+    margin-bottom: 24px;
+    border: 1px solid #ffffff1a;
+    padding-top: 28px;
+}
+
+.quickReorderTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.quickReorderTitle {
+    margin: 8px 0;
+    font-size: 24px;
+    color: var(--text-primary);
+}
+
+.quickReorderMeta {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin: 0;
+}
+
+.quickReorderItems {
+    margin-top: 16px;
+    border-top: 1px solid #ffffff14;
+    padding-top: 16px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.orderItemActionPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.orderItemBuyBtn {
+    background: rgba(209, 72, 54, 0.16);
+    color: #ff7b6b;
+    border: 1px solid rgba(209, 72, 54, 0.35);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.orderItemBuyBtn:hover {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+}
+
+.storeBadgeFloating {
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.headerActions {
+    display: flex;
+    gap: 16px;
+}
+
+.statsBarGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #1e1e1e;
+}
+
+.statBarItem {
+    text-align: left;
+    padding: 8px 0;
+}
+
+.statBarIcon {
+    font-size: 26px;
+    margin-bottom: 6px;
+}
+
+.statBarValue {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    letter-spacing: 0.02em;
+}
+
+.statBarLabel {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.restockBanner {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 24px;
+    background: rgba(139, 0, 0, 0.08);
+    border: 1px solid rgba(139, 0, 0, 0.25);
+}
+
+.restockTitle {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.restockText {
+    color: var(--text-primary);
+    margin-top: 4px;
+    font-size: 14px;
+}
+
+.noTopMarginBtn {
+    margin-top: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.fullWidthActionBtn {
+    width: 100%;
+    margin-top: 0;
+}
+
+.specialActionBtn {
+    width: 100%;
+    margin-top: auto;
+}
+
+.profileHeaderRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.noMarginTitle {
+    margin: 0;
+}
+
+.editActionsRow {
+    display: flex;
+    gap: 8px;
+}
+
+.cancelBtn {
+    color: var(--text-secondary);
+}
+
+.profileAvatarCustom {
+    background-image: var(--avatar-url);
+    background-size: cover;
+    background-position: center;
+    color: transparent;
+}
+
+.avatarPickerLabel {
+    margin-bottom: 8px;
+}
+
+.mutedEmailValue {
+    opacity: 0.6;
+}
+
+.newsletterRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.newsletterLabelWithInfo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.infoTooltipWrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.infoIconBtn {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    border: 1px solid #3d3d3d;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
+    font-family: Georgia, serif;
+    font-size: 11px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.15s ease;
+}
+
+.infoIconBtn:hover,
+.infoIconBtn:focus-visible {
+    border-color: var(--red);
+    background: rgba(204, 14, 29, 0.2);
+    color: #fff;
+    outline: none;
+}
+
+.infoTooltipPopup {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: -12px;
+    width: 260px;
+    padding: 12px 14px;
+    background: #141414;
+    border: 1px solid rgba(204, 14, 29, 0.45);
+    border-radius: 10px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75);
+    color: #d4d4d4;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.45;
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+    pointer-events: none;
+    z-index: 30;
+}
+
+.infoTooltipPopup strong {
+    color: #fff;
+    font-weight: 700;
+}
+
+.infoTooltipWrap:hover .infoTooltipPopup,
+.infoTooltipWrap:focus-within .infoTooltipPopup {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.newsletterStatusRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.unsubscribeInlineBtn,
+.subscribeInlineBtn {
+    background: transparent;
+    border: 1px solid #2b2b2b;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.unsubscribeInlineBtn:hover {
+    border-color: var(--red);
+    color: #ff6b78;
+    background: rgba(204, 14, 29, 0.12);
+}
+
+.subscribeInlineBtn {
+    border-color: rgba(204, 14, 29, 0.45);
+    color: #fff;
+    background: rgba(204, 14, 29, 0.18);
+}
+
+.subscribeInlineBtn:hover {
+    background: var(--red);
+    border-color: var(--red);
+}
+
+.toggleSwitch {
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    border: none;
+    background: #444;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.toggleSwitchActive {
+    background: var(--red);
+}
+
+.toggleKnob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left 0.2s;
+    display: block;
+}
+
+.toggleKnobActive {
+    left: 22px;
+}
+
+.profileNameHeading {
+    font-size: 22px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.profileHandleRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.profileHandleBadge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    background: rgba(var(--gold-rgb), 0.12);
+    border: 1px solid rgba(var(--gold-rgb), 0.35);
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-family: var(--font-mono, monospace);
+}
+
+.publicProfileLink {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fg);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.15s;
+}
+
+.publicProfileLink:hover {
+    color: var(--gold);
+}
+
+.copyHandleBtn {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-3);
+    color: var(--fg-2);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.copyHandleBtn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.usernameInputWrap {
+    display: flex;
+    align-items: center;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.usernamePrefix {
+    padding-left: 12px;
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 15px;
+    user-select: none;
+}
+
+.usernameInput {
+    border: none !important;
+    background: transparent !important;
+    padding-left: 4px !important;
+}
+
+.editTextarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--fg);
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.editTextarea:focus {
+    outline: none;
+    border-color: var(--gold);
+}
+
+.fieldHelpText {
+    font-size: 11px;
+    color: var(--fg-muted);
+    margin-top: 4px;
+    display: block;
+}
+
+/* ── Centered Heritage Guild Hero ── */
+.dashHero {
+    position: relative;
+    padding: 120px 0 40px;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(var(--red-rgb), 0.16) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 100%, rgba(var(--gold-rgb), 0.08) 0%, transparent 70%),
+        #120f0d;
+    border-bottom: 1px solid rgba(var(--gold-rgb), 0.22);
+}
+
+.dashProfileCard {
+    position: relative;
+    background: radial-gradient(circle at 50% 25%, rgba(139, 21, 38, 0.2) 0%, transparent 68%);
+    border: none;
+    border-radius: 0;
+    padding: 12px 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    box-shadow: none;
+    overflow: visible;
+}
+
+.dashHeroInner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 18px;
+}
+
+.dashAvatarFrame {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    box-shadow: 0 0 30px rgba(var(--gold-rgb), 0.3), 0 12px 36px rgba(0, 0, 0, 0.8);
+    background: var(--bg-3);
+    margin-bottom: 4px;
+}
+
+.dashAvatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.dashAvatarFallback {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+    font-weight: 900;
+    color: var(--gold);
+    background: var(--bg-4);
+    font-family: "Yanone Kaffeesatz", sans-serif;
+}
+
+.dashAvatarEditBtn {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--dark);
+    border: 2px solid #141210;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: transform 0.15s ease, background 0.15s ease;
+    z-index: 10;
+}
+
+.dashAvatarEditBtn:hover {
+    transform: scale(1.1);
+    background: #fff;
+}
+
+.dashProfileName {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 2.125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.1;
+}
+
+.dashProfileName em {
+    font-style: normal;
+    color: var(--gold);
+}
+
+.dashHandleRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.dashHandleBadge {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold);
+    background: rgba(var(--gold-rgb), 0.12);
+    border: 1px solid rgba(var(--gold-rgb), 0.35);
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-family: var(--font-mono, monospace);
+}
+
+.dashGuildBadge {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--red);
+    background: rgba(var(--red-rgb), 0.14);
+    border: 1px solid rgba(var(--red-rgb), 0.35);
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+
+.dashAdminBadge {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    background: rgba(var(--gold-rgb), 0.16);
+    border: 1px solid rgba(var(--gold-rgb), 0.4);
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+
+.dashMemberSinceText {
+    font-size: 14px;
+    color: var(--fg-3);
+    margin: 0;
+}
+
+.dashActionRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+    width: 100%;
+}
+
+.dashShareBtn,
+.dashEditBtn,
+.dashCancelBtn,
+.dashSaveBtn,
+.dashAdminLinkBtn,
+.dashLogoutBtn {
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, transform 0.15s;
+    white-space: nowrap;
+}
+
+.dashShareBtn {
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: 1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+
+.dashShareBtn:hover {
+    background: var(--gold);
+    color: var(--dark);
+    transform: translateY(-1px);
+}
+
+.dashEditBtn {
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: var(--bg-3);
+    color: var(--fg);
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, transform 0.15s;
+}
+
+.dashEditBtn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-1px);
+}
+
+.dashSaveBtn {
+    padding: 10px 24px;
+    border-radius: 999px;
+    border: none;
+    background: var(--gold);
+    color: var(--dark);
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s;
+}
+
+.dashSaveBtn:hover:not(:disabled) {
+    opacity: 0.95;
+    transform: translateY(-1px);
+}
+
+.dashCancelBtn {
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg-3);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.dashAdminLinkBtn {
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--gold-rgb), 0.35);
+    background: rgba(var(--gold-rgb), 0.1);
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.dashAdminLinkBtn:hover {
+    background: rgba(var(--gold-rgb), 0.2);
+}
+
+.dashLogoutBtn {
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--red-rgb), 0.35);
+    background: transparent;
+    color: var(--red);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.dashLogoutBtn:hover {
+    background: rgba(var(--red-rgb), 0.15);
+}
+
+/* ── 2x2 Guild Selections Grid ── */
+.dashGuildCardsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-bottom: 36px;
+}
+
+@media (max-width: 768px) {
+    .dashGuildCardsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashGuildCard {
+    background: #15120f;
+    border: 1px solid rgba(var(--gold-rgb), 0.25);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.dashGuildCardTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--gold);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dashBioText {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-2);
+    margin: 0;
+}
+
+.dashFavCutBox {
+    background: rgba(var(--gold-rgb), 0.06);
+    border: 1px solid rgba(var(--gold-rgb), 0.2);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.dashFavCutIcon {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.dashFavCutName {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0 0 4px;
+}
+
+.dashFavCutDesc {
+    font-size: 13px;
+    color: var(--fg-3);
+    margin: 0;
+}
+
+.dashPerksList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dashPerkItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--fg-2);
+}
+
+.dashPerkIcon {
+    color: var(--gold);
+    font-weight: 800;
+}
+
+/* ── Section Dividers / Tabs ── */
+.dashSectionDivider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 36px 0 24px;
+    border-top: 1px solid rgba(var(--gold-rgb), 0.2);
+    padding-top: 24px;
+}
+
+.dashSectionDividerTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--fg);
+    margin: 0;
+}
+
+.memberSinceSub {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.signatureCutCard {
+    margin-top: 16px;
+    padding: 24px 0;
+}
+
+.signatureCutName {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 8px 0 4px;
+    font-family: var(--font-heading);
+    letter-spacing: 0.02em;
+}
+
+.signatureCutSub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.giftCardTopOffset {
+    margin-top: 16px;
+}
+
+.giftCardLabel {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 700;
+}
+
+.giftCardBody {
+    margin: 8px 0;
+}
+
+.giftCardHeading {
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 8px;
+    font-family: var(--font-heading);
+}
+
+.giftCardDesc {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+}
+
+.giftCardLinkBlock {
+    margin-top: auto;
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
+.orderHistoryHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filterGroup {
+    display: flex;
+    gap: 6px;
+}
+
+.filterBtn {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #ffffff1a;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.15s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.filterBtnActive {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+}
+
+.orderCardRelative {
+    position: relative;
+    padding-top: 28px;
+}
+
+.orderIdRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.copyOrderBtn {
+    background: none;
+    border: 1px solid #333;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 600;
+}
+
+.copyOrderBtnActive {
+    color: var(--red);
+    border-color: var(--red);
+}
+
+.orderItemsWrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.orderDate {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 4px 0;
+}
+
+.pickupMeta {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.pickupMetaLabel {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.pickupMetaStrong {
+    color: var(--text-primary);
+}
+
+.orderNotesList {
+    margin-top: 8px;
+}
+
+.orderNoteItem {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 2px 0;
+}
+
+.emptyOrdersBox {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-secondary);
+    border: 1px solid #181818;
+    border-radius: 12px;
+}
+
+.emptyOrdersActionWrap {
+    margin-top: 16px;
+}
+
+.specialsIntro {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+/* ── Active Order Tracker (Test Mode) ── */
+.liveTrackerCard {
+    background: linear-gradient(165deg, rgba(24, 18, 14, 0.96) 0%, rgba(10, 8, 7, 0.98) 100%);
+    border: 1px solid rgba(204, 14, 29, 0.45);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    margin-bottom: 32px;
+}
+
+.liveTrackerTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.liveTrackerKickerRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.liveTrackerPulseDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 10px var(--red);
+    animation: trackerPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes trackerPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.45;
+        transform: scale(0.85);
+    }
+}
+
+.liveTrackerKicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.liveTrackerStageTitle {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    color: #fff;
+    line-height: 1;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.liveTrackerEta {
+    text-align: right;
+}
+
+.liveTrackerEtaValue {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--accent-gold);
+    font-variant-numeric: tabular-nums;
+    margin-top: 4px;
+}
+
+.liveTrackerBar {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.liveSegItem {
+    display: flex;
+}
+
+.liveSeg {
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    padding: 0 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #222;
+    overflow: hidden;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: color 0.35s ease, border-color 0.35s ease;
+}
+
+.liveSegItem:first-child .liveSeg {
+    border-radius: 999px 0 0 999px;
+}
+
+.liveSegItem:last-child .liveSeg {
+    border-radius: 0 999px 999px 0;
+}
+
+.liveSegFill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--red-dark), var(--red));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.5s ease;
+}
+
+.liveSegNum,
+.liveSegLabel {
+    position: relative;
+    z-index: 1;
+}
+
+.liveSegNum {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.liveSegLabel {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.liveSegDone,
+.liveSegActive {
+    color: #fff;
+    border-color: transparent;
+}
+
+.liveSegDone .liveSegFill,
+.liveSegActive .liveSegFill {
+    transform: scaleX(1);
+}
+
+.liveSegActive .liveSegFill {
+    background: linear-gradient(90deg, var(--red-dark), var(--red), #ff3b4e, var(--red));
+    background-size: 220% 100%;
+    animation: trackerSweep 2.2s linear infinite;
+}
+
+.liveSegActive {
+    box-shadow: 0 0 22px rgba(204, 14, 29, 0.45);
+}
+
+.liveSegTodo:hover {
+    border-color: rgba(204, 14, 29, 0.5);
+    color: #fff;
+}
+
+@keyframes trackerSweep {
+    from {
+        background-position: 100% 0;
+    }
+    to {
+        background-position: -120% 0;
+    }
+}
+
+.liveTrackerCancelled .liveSeg {
+    opacity: 0.45;
+}
+
+.liveTrackerMessage {
+    margin: 20px 0 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #e5e5e5;
+}
+
+.liveTrackerDetails {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 24px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #1e1e1e;
+}
+
+.liveTrackerDetailMain {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 6px 0 4px;
+}
+
+.liveTrackerDetailLink {
+    color: var(--accent-gold);
+    font-size: 13px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.liveTrackerDetailLink:hover {
+    color: #fff;
+}
+
+.liveTrackerItemsList {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+    color: #d4d4d4;
+    font-size: 13px;
+    line-height: 1.85;
+}
+
+.liveTrackerItemQty {
+    color: var(--accent-gold);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.liveTrackerItemNote {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.liveTrackerControls {
+    margin-top: 22px;
+    padding: 16px 18px;
+    border: 1px dashed #2a2a2a;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.liveTrackerControlsHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.liveTrackerTestBadge {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(204, 14, 29, 0.2);
+    color: #ff6b78;
+    border: 1px solid rgba(204, 14, 29, 0.4);
+}
+
+.liveTrackerControlsSub {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.liveTrackerControlRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.liveTrackerField {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1 1 190px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.liveTrackerField select {
+    height: 38px;
+    padding: 0 10px;
+    background: #0a0a0a;
+    color: #fff;
+    border: 1px solid #2b2b2b;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.liveTrackerField select:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+}
+
+.liveTrackerDemoBtn {
+    height: 38px;
+    padding: 0 18px;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.liveTrackerDemoBtn:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+}
+
 /* ── Responsive Mobile ── */
 @media (max-width: 900px) {
     .mainCanvas {
-        padding: 24px var(--container-px);
+        padding: 0 var(--container-px) 48px;
     }
 
     .greeting {
         font-size: 32px;
     }
+
+    .statsBarGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .liveTrackerBar {
+        grid-template-columns: 1fr;
+    }
+
+    .liveSeg,
+    .liveSegItem:first-child .liveSeg,
+    .liveSegItem:last-child .liveSeg {
+        border-radius: 10px;
+    }
+
+    .liveTrackerDetails {
+        grid-template-columns: 1fr;
+    }
+
+    .liveTrackerEta {
+        text-align: left;
+    }
+}
+
+/* ── Member Profile Not Found State ── */
+.notFoundContainer {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    background: radial-gradient(circle at center, rgba(168, 38, 38, 0.08) 0%, transparent 60%);
+}
+
+.notFoundCard {
+    max-width: 520px;
+    width: 100%;
+    text-align: center;
+    background: rgba(22, 19, 18, 0.85);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: var(--radius-lg, 16px);
+    padding: 48px 32px;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6);
+}
+
+.notFoundTitle {
+    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+    font-size: 2.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--gold, #d4af37);
+    margin: 0 0 16px 0;
+}
+
+.notFoundText {
+    font-family: var(--font-body, system-ui, sans-serif);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--fg-2, #d1c7bd);
+    margin: 0 0 32px 0;
+}
+
+.notFoundText strong {
+    color: #fff;
+}
+
+.notFoundActions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.notFoundBtnPrimary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background: var(--red, #cc0e1d);
+    color: #fff;
+    border-radius: 999px;
+    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.notFoundBtnPrimary:hover {
+    background: var(--red-dark, #9b0b16);
+    transform: translateY(-1px);
+}
+
+.notFoundBtnSecondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background: transparent;
+    color: var(--fg-2, #d1c7bd);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.notFoundBtnSecondary:hover {
+    border-color: var(--gold, #d4af37);
+    color: var(--gold, #d4af37);
 }

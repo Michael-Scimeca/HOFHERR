@@ -8,6 +8,9 @@ export const metadata = {
     description: 'Every cut of beef, pork, chicken, and lamb — what it\'s best for, how to cook it, and pro tips from our butcher Sean.',
     alternates: { canonical: 'https://hofherrmeatco.com/cut-guide' },
     openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
         title: 'Cut Guide | Hofherr Meat Co.',
         description: 'Every cut explained — what it\'s best for, how to cook it, and pro tips from butcher Sean Hofherr.',
         url: 'https://hofherrmeatco.com/cut-guide',

@@ -35,6 +35,9 @@ export const metadata: Metadata = {
     keywords: ['Sean Hofherr', 'Hofherr Meat Co our story', 'craft butcher Northfield IL', 'North Shore butcher heritage', 'Hofherr family history', 'meet the team butcher shop', 'Northfield IL butcher'],
     alternates: { canonical: 'https://hofherrmeatco.com/our-story' },
     openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
         title: 'Our Story & Team | Hofherr Meat Co.',
         description: '120+ years of butchering heritage. Meet Sean Hofherr and the full HMC crew — butchers, chefs, and managers. Chicago South Side roots, now in Northfield & Winnetka, IL.',
         url: 'https://hofherrmeatco.com/our-story',

@@ -1,0 +1,234 @@
+.page {
+    min-height: calc(100vh - 88px);
+    width: 100%;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 64px var(--container-px);
+}
+
+.cardWrapper {
+    width: 100%;
+    max-width: 560px;
+}
+
+.card {
+    position: relative;
+    background: linear-gradient(165deg, rgba(24, 18, 14, 0.97) 0%, rgba(10, 8, 7, 0.99) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.32);
+    border-radius: 20px;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+    box-shadow: 0 28px 72px rgba(0, 0, 0, 0.78);
+}
+
+.sealCluster {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sealImg {
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.6));
+}
+
+.statusBadge {
+    position: absolute;
+    bottom: -4px;
+    right: -6px;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #8B0A10 0%, #cc0e1d 100%);
+    border: 2px solid #F3EAD8;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.65);
+}
+
+.statusBadgeSuccess {
+    background: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
+    color: #ffffff;
+}
+
+.statusIcon {
+    width: 18px;
+    height: 18px;
+}
+
+.headerGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    color: var(--fg);
+    margin: 0;
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+}
+
+.title em {
+    font-style: italic;
+    color: var(--red);
+}
+
+.desc {
+    font-size: 1rem;
+    color: var(--fg-2);
+    line-height: 1.65;
+    margin: 0;
+    max-width: 44ch;
+}
+
+/* Bone-Cream & Oxblood Dispatch Ticket Notice */
+.dispatchTicket {
+    width: 100%;
+    background: #F3EAD8;
+    color: #18120E;
+    border-radius: var(--radius);
+    padding: 8px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+    text-align: left;
+}
+
+.dispatchTicketInner {
+    border: 2px solid #8B0A10;
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dispatchTopRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1.5px solid #8B0A10;
+}
+
+.dispatchBrand {
+    font-size: 0.6875rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8B0A10;
+}
+
+.dispatchTag {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: #8B0A10;
+    color: #F3EAD8;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+}
+
+.dispatchSteps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dispatchSteps li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #2A1E17;
+}
+
+.stepBadge {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: #8B0A10;
+    color: #F3EAD8;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.hintBox {
+    width: 100%;
+    background: rgba(200, 164, 126, 0.08);
+    border: 1px solid rgba(200, 164, 126, 0.24);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-size: 0.875rem;
+    color: var(--fg-2);
+    line-height: 1.5;
+}
+
+.hintBox strong {
+    color: var(--gold);
+    font-weight: 700;
+}
+
+.actionsRow {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.primaryBtn,
+.secondaryBtn {
+    flex: 1 1 180px;
+    justify-content: center;
+    text-align: center;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(245, 155, 26, 0.25);
+    border-top-color: var(--gold);
+    border-radius: 999px;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 640px) {
+    .page {
+        padding: 40px var(--container-px);
+    }
+
+    .card {
+        padding: 32px 24px;
+    }
+}
+

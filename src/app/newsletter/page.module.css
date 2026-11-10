@@ -1,21 +1,68 @@
 /* ── Hero ── */
 .hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
     background: var(--bg-2);
     border-bottom: 1px solid var(--border);
     padding: 56px 0 48px;
-    text-align: center;
+}
+
+.hero::before,
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: -30%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.hero::before {
+    background-image:
+        radial-gradient(at 20% 50%, #80002026 0%, #0000 60%),
+        radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
+    animation: nlEmberPulse 4s ease-in-out infinite;
+}
+
+.hero::after {
+    background-image:
+        radial-gradient(at 22% 45%, #8000201a 0%, #0000 45%);
+    animation: nlEmberPulseAfter 4s ease-in-out infinite;
+}
+
+@keyframes nlEmberPulse {
+    0%, 100% {
+        opacity: 0.55;
+        transform: scale(0.92);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.16);
+    }
+}
+
+@keyframes nlEmberPulseAfter {
+    0%, 100% {
+        opacity: 0.2;
+        transform: scale(0.85);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1.25);
+    }
 }
 
 .heroInner {
-    max-width: 620px;
+    max-width: var(--max-w);
+    width: 100%;
     animation: fadeInUp 0.6s var(--ease-out) both;
 }
 
 .headline {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
     color: var(--fg);
-    margin: 12px 0 16px;
+    margin: 0 0 12px;
     animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
 }
 
@@ -25,11 +72,42 @@
 }
 
 .sub {
-    font-size: 1rem;
-    color: var(--fg-muted);
+    font-size: 1.05rem;
+    color: var(--fg-2);
     line-height: 1.75;
+    max-width: 78ch;
     margin: 0;
     animation: fadeInUp 0.6s 0.2s var(--ease-out) both;
+}
+
+.worthMetricsRow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.worthMetricItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.worthMetricValue {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.worthMetricLabel {
+    font-size: 12px;
+    color: var(--fg-muted);
+    line-height: 1.4;
 }
 
 /* ── Form Section ── */
@@ -38,30 +116,42 @@
 }
 
 .formWrap {
-    max-width: 960px;
+    max-width: var(--max-w);
+    width: 100%;
 }
 
 /* ── Two-column card ── */
 .card {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.15fr 0.85fr;
     gap: 0;
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
 }
 
 .cardLeft {
     background: var(--bg-2);
-    padding: 48px 44px;
+    padding: 48px;
     border-right: 1px solid var(--border);
+}
+
+.cardLeftHeader {
+    margin-bottom: 32px;
 }
 
 .cardTitle {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: var(--fg);
-    margin: 0 0 28px;
+    margin: 0 0 8px;
+}
+
+.cardLead {
+    font-size: 14px;
+    color: var(--fg-muted);
+    line-height: 1.65;
+    margin: 0;
 }
 
 .perks {
@@ -73,50 +163,92 @@
     gap: 24px;
 }
 
-.perks li {
+.perkItem {
     display: flex;
-    gap: 14px;
+    gap: 16px;
     align-items: flex-start;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
 }
 
-.perkIcon {
-    font-size: 1.4rem;
+.perkItem:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.perkNum {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+    padding-top: 2px;
     flex-shrink: 0;
-    margin-top: 2px;
+    min-width: 24px;
 }
 
-.perks strong {
-    display: block;
-    font-size: 14px;
+.perkBody {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.perkTitleRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.perkTitleRow strong {
+    font-size: 15px;
     font-weight: 700;
     color: var(--fg);
-    margin-bottom: 4px;
 }
 
-.perks p {
-    font-size: 13px;
-    color: var(--fg-muted);
-    line-height: 1.6;
+.perkBadge {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    background: rgba(168, 144, 95, 0.12);
+    border: 1px solid rgba(168, 144, 95, 0.28);
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.perkBody p {
+    font-size: 13.5px;
+    color: var(--fg-2);
+    line-height: 1.65;
     margin: 0;
 }
 
-/* ── Right (form) ── */
+/* ── Right (form + preview) ── */
 .cardRight {
     background: var(--bg);
-    padding: 48px 44px;
+    padding: 48px;
+}
+
+.stickyFormBox {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
 }
 
 .formTitle {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: var(--fg);
-    margin: 0 0 6px;
+    margin: 0 0 8px;
 }
 
 .formSub {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--fg-muted);
-    margin: 0 0 28px;
+    line-height: 1.6;
+    margin: 0 0 24px;
 }
 
 .form {
@@ -142,8 +274,8 @@
 .field input {
     background: var(--bg-2);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 11px 14px;
+    border-radius: var(--radius);
+    padding: 12px 16px;
     font-size: 14px;
     color: var(--fg);
     font-family: inherit;
@@ -174,7 +306,7 @@
 .submit {
     width: 100%;
     justify-content: center;
-    margin-top: 4px;
+    margin-top: 8px;
 }
 
 .legal {
@@ -184,6 +316,71 @@
     text-align: center;
     margin: 0;
     opacity: 0.7;
+}
+
+/* ── Sample Tuesday Dispatch Box ── */
+.sampleBox {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+}
+
+.sampleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.sampleHeading {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+}
+
+.sampleReadTime {
+    font-size: 11px;
+    color: var(--fg-muted);
+}
+
+.sampleList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sampleRow {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sampleKicker {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red);
+}
+
+.sampleTitle {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--fg);
+}
+
+.sampleDetail {
+    font-size: 12.5px;
+    color: var(--fg-muted);
+    line-height: 1.5;
+    margin: 0;
 }
 
 /* ── Success ── */
@@ -225,7 +422,11 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 720px) {
+@media (max-width: 960px) {
+    .worthMetricsRow {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .card {
         grid-template-columns: 1fr;
     }
@@ -233,10 +434,16 @@
     .cardLeft {
         border-right: none;
         border-bottom: 1px solid var(--border);
-        padding: 36px 28px;
+        padding: 32px 24px;
     }
 
     .cardRight {
-        padding: 36px 28px;
+        padding: 32px 24px;
+    }
+}
+
+@media (max-width: 560px) {
+    .worthMetricsRow {
+        grid-template-columns: 1fr;
     }
 }

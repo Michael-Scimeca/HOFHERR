@@ -130,3 +130,19 @@
 /* few reviews: no conveyor, no duplicates — one centered, still row */
 .still .row { animation: none; width: auto; justify-content: center; flex-wrap: wrap; row-gap: 40px; padding: 0 24px; }
 .still .card:last-child { margin-right: 0; }
+
+.fireBorderSvg {
+    position: absolute;
+    inset: -40px;
+    width: calc(100% + 80px);
+    height: calc(100% + 80px);
+    pointer-events: none;
+    overflow: visible;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 3;
+}
+
+.fireBorderActive {
+    opacity: 1;
+}

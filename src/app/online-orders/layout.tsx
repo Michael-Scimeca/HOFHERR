@@ -13,6 +13,9 @@ export const metadata: Metadata = {
         'North Shore butcher', 'produce Winnetka', 'grab and go',
     ],
     openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
         title: 'Order Online | Hofherr Meat Co. — Northfield & Winnetka, IL',
         description:
             'Shop our full menu of premium cuts, produce & pantry items online. Dry-aged beef, Berkshire pork, lamb, house sausage & more — pick up at Northfield or The Depot in Winnetka.',

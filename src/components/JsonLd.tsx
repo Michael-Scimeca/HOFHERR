@@ -14,15 +14,15 @@ export default function JsonLd() {
                 name: 'Hofherr Meat Co.',
                 alternateName: 'Hofherr Meat Company',
                 description:
-                    'Premium craft butcher shop in Northfield, IL. Family butchering heritage dating to Chicago\'s South Side. Custom cuts, dry-aged USDA prime beef, rotisserie chicken, pig roasts, Chicago Italian beef (as featured on America\'s Test Kitchen), and full-service BBQ catering.',
+                    'Premium craft butcher shop in Northfield, IL. Family butchering heritage since 1903, rooted on Chicago\'s South Side and re-established in Northfield in 2014. Custom cuts, dry-aged USDA prime beef, rotisserie chicken, pig roasts, Chicago Italian beef (as featured on America\'s Test Kitchen), and full-service BBQ catering.',
                 url: 'https://hofherrmeatco.com',
                 telephone: '+18474416328',
                 email: 'butcher@hofherrmeatco.com',
                 foundingDate: '2014',
                 priceRange: '$$',
                 servesCuisine: ['American', 'Butcher Shop', 'BBQ', 'Italian Beef'],
-                image: 'https://hofherrmeatco.com/OG/og-image.png',
-                logo: 'https://hofherrmeatco.com/assets/logo.png',
+                image: 'https://hofherrmeatco.com/OG/og-image.jpg',
+                logo: 'https://hofherrmeatco.com/icon.png',
 
                 address: {
                     '@type': 'PostalAddress',
@@ -94,7 +94,7 @@ export default function JsonLd() {
                 url: 'https://hofherrmeatco.com/visit',
                 telephone: '+18474416328',
                 email: 'butcher@hofherrmeatco.com',
-                image: 'https://hofherrmeatco.com/OG/og-image.png',
+                image: 'https://hofherrmeatco.com/OG/og-image.jpg',
                 priceRange: '$$',
                 servesCuisine: ['Italian Beef', 'American', 'Grab and Go'],
                 parentOrganization: { '@id': 'https://hofherrmeatco.com/#business' },
@@ -150,14 +150,6 @@ export default function JsonLd() {
                 url: 'https://hofherrmeatco.com',
                 name: 'Hofherr Meat Co.',
                 publisher: { '@id': 'https://hofherrmeatco.com/#business' },
-                potentialAction: {
-                    '@type': 'SearchAction',
-                    target: {
-                        '@type': 'EntryPoint',
-                        urlTemplate: 'https://hofherrmeatco.com/?q={search_term_string}',
-                    },
-                    'query-input': 'required name=search_term_string',
-                },
             },
 
             // ── Breadcrumb (home) ─────────────────────────────────────────────

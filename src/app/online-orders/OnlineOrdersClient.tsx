@@ -9,6 +9,8 @@ import { useCartCount } from '@/context/CartContext';
 import { usePageTransition } from '@/components/PageTransition';
 import styles from './page.module.css';
 import HelpOrdering from '@/components/online-orders/HelpOrdering';
+import BurnModalShell, { BurnPanel } from '@/components/BurnModalShell';
+import { lockScroll } from '@/lib/scrollLock';
 const TAX_RATE = 0.0225; // 2.25% based on reference image
 
 /* ─── Payment Brand Badges ───────────────────────────────────────────── */
@@ -945,6 +947,13 @@ export default function CustomOrdersPage({
     };
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [checkoutOpen, setCheckoutOpen] = useState(false);
+
+    // No page scrolling behind the add-to-cart modal, the cart drawer or the checkout modal.
+    const overlayOpen = !!modal || drawerOpen || checkoutOpen;
+    useEffect(() => {
+        if (!overlayOpen) return;
+        return lockScroll();
+    }, [overlayOpen]);
     const [checkoutStep, setCheckoutStep] = useState<'choice' | 'form'>('choice');
     const [form, setForm] = useState({ name: '', phone: '', email: '', pickup: '' });
     const [contactPref, setContactPref] = useState<'phone' | 'email'>('phone');
@@ -1802,7 +1811,7 @@ export default function CustomOrdersPage({
             {/* Location Hero Banner */}
             <header className={styles.locationHero}>
                 <img
-                    src={activeStore === 'butcher' ? '/assets/shop-exterior.jpg' : '/shops/winnetka.png'}
+                    src={activeStore === 'butcher' ? '/images/visit/northfield-butcher-shop-signage.jpg' : '/images/visit/winnetka-depot-red-awning.jpg'}
                     alt={activeStore === 'butcher' ? 'The Butcher Shop — Northfield' : 'The Depot — Winnetka'}
                     className={styles.locationHeroImg}
                 />
@@ -2203,8 +2212,8 @@ export default function CustomOrdersPage({
     {/* ── Add to Cart Modal ── */ }
     {
         modal && typeof document !== 'undefined' && createPortal((
-            <div className={styles.overlay} data-pt-portal onClick={() => setModal(null)}>
-                <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.overlay} data-pt-portal data-lenis-prevent onClick={() => setModal(null)}>
+                <BurnModalShell className={styles.modal} maxWidth={460} onClick={e => e.stopPropagation()}>
                     <div className={styles.modalTitle}>{modal.name}</div>
                     <div className={styles.modalPrice}>{modal.price}</div>
                     {modal.desc && <p className={styles.modalDesc}>{modal.desc}</p>}
@@ -2228,7 +2237,7 @@ export default function CustomOrdersPage({
                         <button className={styles.cancelBtn} onClick={() => setModal(null)}>Cancel</button>
                         <button className={styles.confirmBtn} onClick={(e) => confirmAdd(e)}>Add to Order</button>
                     </div>
-                </div>
+                </BurnModalShell>
             </div>
         ), document.body)
     }
@@ -2236,8 +2245,8 @@ export default function CustomOrdersPage({
     {/* ── Cart Drawer ── */ }
     {
         drawerOpen && typeof document !== 'undefined' && createPortal((
-            <div className={styles.overlay} data-pt-portal onClick={() => setDrawerOpen(false)}>
-                <div className={styles.drawer} onClick={e => e.stopPropagation()}>
+            <div className={styles.overlay} data-pt-portal data-lenis-prevent onClick={() => setDrawerOpen(false)}>
+                <BurnPanel className={styles.drawer} onClick={e => e.stopPropagation()}>
                     <div style={{ borderTopLeftRadius: '18px', backgroundColor: 'var(--red)', color: 'white', padding: '8px 16px', textAlign: 'center', fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                         📍 Pickup at {activeStore === 'butcher' ? 'The Butcher Shop' : 'The Depot'}
                     </div>
@@ -2442,7 +2451,7 @@ export default function CustomOrdersPage({
                             </div>
                         </>
                     )}
-                </div>
+                </BurnPanel>
             </div>
         ), document.body)
     }
@@ -2453,6 +2462,7 @@ export default function CustomOrdersPage({
             <div
                 className={styles.overlay}
                 data-pt-portal
+                data-lenis-prevent
                 onClick={() => {
                     if (isPending) return;
                     setCheckoutOpen(false);
@@ -2461,7 +2471,7 @@ export default function CustomOrdersPage({
                     }
                 }}
             >
-                <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: 480, position: 'relative' }}>
+                <BurnModalShell className={styles.modal} maxWidth={480} onClick={e => e.stopPropagation()} style={{ maxWidth: 480, position: 'relative' }}>
 
                     <>
                         {checkoutStep === 'choice' ? (
@@ -2946,7 +2956,7 @@ export default function CustomOrdersPage({
                             </form>
                         )}
                     </>
-                </div>
+                </BurnModalShell>
             </div>
         ), document.body)
     }

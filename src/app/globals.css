@@ -104,6 +104,30 @@ html.lenis, html.lenis body {
   overflow: hidden;
 }
 
+/* Set by src/lib/scrollLock.ts while a modal or the preloader is up */
+html.scroll-locked,
+html.scroll-locked body {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+/* Burn-in reveal (src/components/BurnModalShell.tsx). While a panel burns in it is shown
+   left to right behind the burn front (--burn-front is updated every frame). The panel is
+   fully laid out the whole time, so nothing moves as it appears. Its border is hidden until
+   the burn ends because the flame canvas draws the frame while it is hot. */
+[data-burn='in'] {
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--burn-front, -20%) - 10%), transparent var(--burn-front, -20%));
+  mask-image: linear-gradient(90deg, #000 calc(var(--burn-front, -20%) - 10%), transparent var(--burn-front, -20%));
+  border-color: transparent !important;
+}
+
+/* Always keep the scrollbar's space reserved. On systems with classic (always visible)
+   scrollbars, e.g. most Windows PCs, this stops the whole page, navbar included, from jumping
+   sideways when scrolling is locked and released (preloader ending, a modal opening). */
+html {
+  scrollbar-gutter: stable;
+}
+
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
@@ -358,6 +382,19 @@ h4 {
   box-shadow: 0 8px 28px rgba(204, 14, 29, 0.45);
 }
 
+.btn-gold {
+  background: var(--gold);
+  color: var(--dark);
+  box-shadow: 0 4px 18px rgba(168, 144, 95, 0.28);
+}
+
+.btn-gold:hover {
+  background: var(--gold-light);
+  color: var(--dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(168, 144, 95, 0.42);
+}
+
 .btn-secondary {
   border: 1.5px solid var(--border);
   color: var(--text-2);
@@ -499,7 +536,7 @@ h4 {
   }
 
   .container {
-    padding: 0 16px;
+    padding-inline: var(--container-px);
   }
 }
 

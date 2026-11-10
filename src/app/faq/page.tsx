@@ -8,6 +8,9 @@ export const metadata = {
     description: 'Frequently asked questions about ordering, custom cuts, BBQ catering, gift cards, curbside pickup, and more at Hofherr Meat Co. in Northfield & Winnetka, IL.',
     alternates: { canonical: 'https://hofherrmeatco.com/faq' },
     openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
         title: 'FAQ | Hofherr Meat Co.',
         description: 'Answers to common questions about orders, catering, custom cuts, and gift cards.',
         url: 'https://hofherrmeatco.com/faq',

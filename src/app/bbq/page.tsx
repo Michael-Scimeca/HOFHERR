@@ -13,6 +13,9 @@ export const metadata: Metadata = {
     keywords: ['BBQ catering Northfield IL', 'pig roast Chicago', 'whole hog roast North Shore', 'Ravinia picnic baskets', 'corporate catering Northfield', 'tailgate catering Chicago', 'wild game processing Illinois', 'smoked brisket catering', 'BBQ catering Winnetka'],
     alternates: { canonical: 'https://hofherrmeatco.com/bbq' },
     openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
         title: 'BBQ Catering, Pig Roasts & Event Services | Hofherr Meat Co.',
         description: 'Authentic low-and-slow BBQ catering plus whole-pig roasts, Ravinia picnic baskets, tailgate spreads, corporate buffets & wild game processing. Brisket, ribs, pulled pork & full sides. Chicago North Shore.',
         url: 'https://hofherrmeatco.com/bbq',

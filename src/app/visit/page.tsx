@@ -6,6 +6,9 @@ export const metadata: Metadata = {
     description: 'Two locations: The Butcher Shop at 300 Happ Rd, Northfield IL (Tue–Sun) and The Depot at 754 Elm St inside the Winnetka Elm Street Metra Station (Mon–Fri). Get hours, directions, and parking info.',
     alternates: { canonical: 'https://hofherrmeatco.com/visit' },
     openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
         title: 'Visit Hofherr Meat Co. | Northfield & Winnetka, IL',
         description: 'The Butcher Shop: 300 Happ Rd, Northfield — Tue–Sun. The Depot: 754 Elm St, Winnetka Metra Station — Mon–Fri. Free parking at both.',
         url: 'https://hofherrmeatco.com/visit',

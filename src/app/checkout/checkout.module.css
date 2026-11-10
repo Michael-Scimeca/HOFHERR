@@ -2,28 +2,31 @@
 .page {
     min-height: 100vh;
     background: #0a0a0a;
-    padding: 24px var(--container-px) 80px;
+    padding: 56px var(--container-px) 80px;
     font-family: var(--font-body, 'Inter', sans-serif);
     color: var(--fg, #f0ece4);
 }
 
 .backLink {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 6px;
     font-size: 13px;
     color: #888;
     text-decoration: none;
-    margin-bottom: 28px;
+    width: 100%;
+    max-width: calc(var(--max-w, 1800px) - (2 * var(--container-px)));
+    margin: 0 auto 28px;
     transition: color 0.2s;
 }
 .backLink:hover { color: var(--red, #800020); }
 
 .layout {
     display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 32px;
-    max-width: 1000px;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
+    gap: 48px;
+    width: 100%;
+    max-width: calc(var(--max-w, 1800px) - (2 * var(--container-px)));
     margin: 0 auto;
     align-items: start;
 }
@@ -46,14 +49,223 @@
 }
 
 .storeBanner {
-    background: rgba(128, 0, 32, 0.12);
-    border: 1px solid rgba(128, 0, 32, 0.25);
-    color: var(--red, #800020);
-    padding: 14px 18px;
-    border-radius: 10px;
+    background: rgba(139, 10, 16, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--fg, #f0ece4);
+    padding: 16px 20px;
+    border-radius: var(--radius, 12px);
     font-size: 15px;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.storeBannerLocation {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.storeSwitchRow {
+    display: flex;
+    gap: 8px;
+}
+
+.storeSwitchBtn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--fg-2, #c8c0b4);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.storeSwitchBtn:hover {
+    border-color: var(--gold, #d4a853);
+    color: var(--fg, #f0ece4);
+}
+
+.storeSwitchBtnActive {
+    background: var(--gold, #d4a853);
+    border-color: var(--gold, #d4a853);
+    color: #0d0d0d;
+    font-weight: 700;
+}
+
+/* ── Store Hours & 2-Hour Cutoff Buffer Card ──────────────────────────── */
+.hoursCutoffCard {
+    background: #121110;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: var(--radius, 12px);
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.hoursCutoffCardOpen {
+    border-left: 4px solid #22c55e;
+}
+
+.hoursCutoffCardBuffer {
+    border-left: 4px solid var(--gold, #d4a853);
+    background: linear-gradient(135deg, rgba(212, 168, 83, 0.1) 0%, #121110 70%);
+}
+
+.hoursCutoffCardClosed {
+    border-left: 4px solid var(--red, #8b0a10);
+    background: linear-gradient(135deg, rgba(139, 10, 16, 0.14) 0%, #121110 70%);
+}
+
+.cutoffTopRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.statusBadgeOpen {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.statusBadgeBuffer {
+    background: rgba(212, 168, 83, 0.18);
+    color: var(--gold, #d4a853);
+    border: 1px solid rgba(212, 168, 83, 0.45);
+}
+
+.statusBadgeClosed {
+    background: rgba(139, 10, 16, 0.28);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.35);
+}
+
+.todayHoursTag {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fg-2, #c8c0b4);
+}
+
+.todayHoursTag strong {
+    color: var(--gold, #d4a853);
+}
+
+.cutoffHeadline {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--fg, #f0ece4);
+    line-height: 1.4;
+    margin: 0;
+}
+
+.cutoffSubtext {
+    font-size: 13px;
+    color: var(--fg-2, #c8c0b4);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.cutoffSubtext strong {
+    color: var(--gold, #d4a853);
+}
+
+.hoursScheduleGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hoursScheduleItem {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.hoursScheduleItemToday {
+    border-color: var(--gold, #d4a853);
+    background: rgba(212, 168, 83, 0.08);
+}
+
+.scheduleDay {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg, #f0ece4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.todayPill {
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--gold, #d4a853);
+    color: #0d0d0d;
+    font-weight: 800;
+}
+
+.scheduleHours {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-2, #c8c0b4);
+}
+
+.scheduleCutoff {
+    font-size: 11px;
+    color: var(--gold, #d4a853);
+    font-weight: 600;
+}
+
+.scheduleClosed {
+    font-size: 12px;
+    font-weight: 600;
+    color: #f87171;
+}
+
+.nextBizBanner {
+    background: rgba(212, 168, 83, 0.12);
+    border: 1px solid rgba(212, 168, 83, 0.35);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--fg, #f0ece4);
+    margin-bottom: 12px;
+    line-height: 1.45;
+}
+
+.nextBizBanner strong {
+    color: var(--gold, #d4a853);
 }
 
 .subtext {
@@ -89,7 +301,8 @@
     border: 1px solid #1e1e1e;
     border-radius: 16px;
     padding: 28px;
-    max-width: 460px;
+    width: 100%;
+    max-width: 100%;
 }
 
 .authTitle {
@@ -195,7 +408,7 @@
 .successMsg { color: #22c55e; font-size: 13px; }
 
 /* ── Checkout form ────────────────────────────────────────────────────── */
-.checkoutForm { max-width: 560px; }
+.checkoutForm { width: 100%; max-width: 100%; }
 
 .input {
     width: 100%;
@@ -265,10 +478,50 @@
 .dateScrollThumb {
     position: absolute;
     top: 0;
+    left: var(--thumb-left, 0px);
+    width: var(--thumb-width, 0px);
     height: 100%;
     background: var(--red, #800020);
     border-radius: 4px;
     transition: left 0.1s linear;
+}
+
+.dateScrollViewport {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    min-width: 0;
+    width: 100%;
+}
+
+.dateScrollViewport::-webkit-scrollbar {
+    display: none;
+}
+
+.dateScrollRow {
+    display: flex;
+    gap: 8px;
+    width: max-content;
+}
+
+.hiddenRadio {
+    display: none;
+}
+
+.dateTag {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--red, #800020);
+    margin-top: 2px;
+}
+
+.dateBtnActive .dateTag {
+    color: var(--gold, #d4a853) !important;
 }
 
 .dateBtn {

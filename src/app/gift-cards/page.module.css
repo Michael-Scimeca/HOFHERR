@@ -19,9 +19,9 @@
 
 .imageWrapper {
     position: sticky;
-    top: 0;
-    margin-top: -88px;
-    height: 100vh;
+    top: 88px;
+    margin-top: 0;
+    height: calc(100vh - 88px);
     width: 100%;
     display: flex;
     align-items: flex-end;
@@ -30,7 +30,7 @@
 
 .heroImg {
     object-fit: cover;
-    object-position: center;
+    object-position: 40% center;
     z-index: 0;
 }
 
@@ -53,7 +53,7 @@
 .overlayText h2 {
     font-family: var(--font-heading);
     font-size: clamp(3rem, 6vw, 4.5rem);
-    color: #fff;
+    color: var(--fg);
     line-height: 0.9;
     margin-bottom: 16px;
     text-shadow: 0 4px 20px rgba(0,0,0,0.8);
@@ -63,7 +63,7 @@
 
 .overlayText p {
     font-family: var(--font-body);
-    color: rgba(255,255,255,0.8);
+    color: var(--fg-2);
     font-size: 1.1rem;
     font-weight: 500;
 }
@@ -77,7 +77,7 @@
 }
 
 .contentInner {
-    max-width: 600px;
+    max-width: 640px;
     margin: 0 0 0 auto;
     padding: 4vw 0 8vw;
 }
@@ -86,7 +86,7 @@
     font-family: var(--font-heading);
     font-size: clamp(2.5rem, 5vw, 4rem);
     color: var(--fg);
-    margin: 16px 0 24px;
+    margin: 0 0 24px;
     line-height: 1;
     animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
 }
@@ -100,91 +100,227 @@
     font-size: 1.1rem;
     color: var(--fg-muted);
     line-height: 1.75;
-    margin-bottom: 16px;
+    margin-bottom: 32px;
     animation: fadeInUp 0.6s 0.2s var(--ease-out) both;
 }
 
 .cardsStack {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 32px;
     margin-bottom: 64px;
     animation: fadeInUp 0.6s 0.3s var(--ease-out) both;
 }
 
 .card {
-    background: #000;
-    border: 1px solid var(--border);
+    position: relative;
+    background: linear-gradient(165deg, rgba(24, 18, 14, 0.96) 0%, rgba(10, 8, 7, 0.98) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.22);
     border-radius: 20px;
     padding: 32px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
     transition: all 0.3s ease;
     cursor: default;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
 }
 
 .card:hover {
-    border-color: #ffffff1a;
+    border-color: rgba(245, 155, 26, 0.45);
 }
 
 .cardFeature {
     border-color: var(--red);
-    background: color-mix(in srgb, var(--red) 4%, #000);
-    box-shadow: 0 0 40px rgba(255, 0, 0, 0.05); /* very soft red glow */
+    background: linear-gradient(165deg, rgba(139, 10, 16, 0.18) 0%, rgba(12, 8, 8, 0.98) 65%);
+    box-shadow: 0 20px 56px rgba(139, 10, 16, 0.22);
 }
 
 .cardFeature:hover {
-    border-color: #ffffff1a;
-    background: color-mix(in srgb, var(--red) 6%, #000);
-    box-shadow: 0 0 60px rgba(255, 0, 0, 0.1); 
+    border-color: var(--gold);
+    box-shadow: 0 24px 64px rgba(139, 10, 16, 0.32);
 }
 
 .cardHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.brandSealGroup {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.headerMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.headerKicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
 }
 
 .iconCircle {
-    font-size: 2rem;
     width: 56px;
     height: 56px;
-    background: color-mix(in srgb, var(--bg-hover) 50%, var(--bg));
+    background: rgba(245, 155, 26, 0.12);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    border: 1px solid var(--border);
+    border-radius: 999px;
+    border: 1px solid rgba(245, 155, 26, 0.35);
+    flex-shrink: 0;
 }
 
 .cardFeature .iconCircle {
-    background: color-mix(in srgb, var(--red) 15%, var(--bg));
-    border-color: color-mix(in srgb, var(--red) 30%, transparent);
+    background: rgba(139, 10, 16, 0.32);
+    border-color: rgba(245, 155, 26, 0.5);
+}
+
+.sealImg {
+    display: block;
+    object-fit: contain;
 }
 
 .badge {
     background: var(--red);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
+    color: var(--fg);
+    font-size: 0.75rem;
+    font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 6px 14px;
-    border-radius: 100px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(245, 155, 26, 0.45);
+}
+
+.badgeKraft {
+    background: rgba(200, 164, 126, 0.18);
+    color: var(--gold);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(200, 164, 126, 0.45);
 }
 
 .cardTitle {
     font-family: var(--font-heading);
     font-size: 2rem;
     color: var(--fg);
-    margin: 8px 0 0;
+    margin: 0;
+    line-height: 1;
+}
+
+/* New Gift Card Design System Showcase */
+.cardShowcase {
+    position: relative;
+    border-radius: var(--radius);
+    padding: 16px;
+    background-color: #8B0A10;
+    background-image:
+        linear-gradient(180deg, rgba(14, 10, 9, 0.84) 0%, rgba(20, 12, 10, 0.88) 100%),
+        url('/assets/identity/hofherr-wrapping-paper-tile-red-10-icons.svg');
+    background-size: cover, 260px auto;
+    border: 1px solid rgba(245, 155, 26, 0.24);
+    overflow: hidden;
+}
+
+.cardShowcasePhysical {
+    position: relative;
+    border-radius: var(--radius);
+    padding: 16px;
+    background-color: #C8A47E;
+    background-image:
+        linear-gradient(180deg, rgba(18, 14, 11, 0.86) 0%, rgba(12, 9, 7, 0.9) 100%),
+        url('/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg');
+    background-size: cover, 260px auto;
+    border: 1px solid rgba(200, 164, 126, 0.28);
+    overflow: hidden;
+}
+
+.cardMockupGrid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 16px;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.cr80CardWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    flex: 0 1 180px;
+    min-width: 0;
+}
+
+.cr80CardImg {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.65);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cr80CardWrap:hover .cr80CardImg {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.8);
+}
+
+.swatchCaption {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--fg-2);
+    white-space: nowrap;
+}
+
+.swatchDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.swatchCrimson {
+    background: var(--red);
+}
+
+.swatchAmber {
+    background: var(--gold);
+}
+
+.swatchKraft {
+    background: #C8A47E;
+}
+
+.swatchCream {
+    background: #F3EAD8;
 }
 
 .cardDesc {
-    font-size: 15px;
-    color: var(--fg-muted);
-    line-height: 1.6;
+    font-size: 0.9375rem;
+    color: var(--fg-2);
+    line-height: 1.65;
     margin: 0;
 }
 
@@ -195,34 +331,31 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 12px;
 }
 
 .perks li {
-    font-size: 14px;
-    color: var(--fg-muted);
-    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--fg-2);
+    font-weight: 600;
 }
 
 .btnFull {
     width: 100%;
-    margin-top: 8px;
 }
 
 .howTo {
-    background: #000;
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(200, 164, 126, 0.24);
+    border-radius: var(--radius);
     padding: 24px;
-    margin: 8px 0;
 }
 
 .howToTitle {
-    font-size: 11px;
+    font-size: 0.75rem;
     font-weight: 800;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--fg-muted);
+    color: var(--gold);
     margin-bottom: 16px;
 }
 
@@ -238,20 +371,20 @@
 .steps li {
     display: flex;
     gap: 16px;
-    font-size: 14px;
-    color: var(--fg-muted);
+    font-size: 0.875rem;
+    color: var(--fg-2);
     line-height: 1.6;
     align-items: center;
 }
 
 .steps span {
-    background: var(--fg-muted);
-    color: #000;
-    font-size: 11px;
+    background: var(--gold);
+    color: #18120E;
+    font-size: 0.75rem;
     font-weight: 800;
     width: 24px;
     height: 24px;
-    border-radius: 50%;
+    border-radius: 999px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -286,14 +419,14 @@
 }
 
 .faqQ {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--fg);
     margin-bottom: 8px;
 }
 
 .faqA {
-    font-size: 15px;
+    font-size: 0.9375rem;
     color: var(--fg-muted);
     line-height: 1.6;
 }
@@ -305,18 +438,18 @@
         height: 60vh;
         min-height: 400px;
     }
-    
+
     .overlayText {
         padding: 40px;
     }
-    
+
     .contentPane {
         padding-left: var(--container-px);
         padding-right: var(--container-px);
     }
 
     .contentInner {
-        max-width: 600px;
+        max-width: 640px;
         margin: 0 auto;
         padding: 48px 0;
     }

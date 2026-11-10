@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 675 425" width="675" height="425">
+  <!-- Bone Cream Card Base -->
+  <rect x="0" y="0" width="675" height="425" rx="28" fill="#EFE7D6" />
+  <rect x="16" y="16" width="643" height="393" rx="18" fill="none" stroke="#8B0A10" stroke-width="2" stroke-opacity="0.55" />
+
+  <!-- Magnetic Stripe -->
+  <rect x="0" y="48" width="675" height="68" fill="#231F20" />
+
+  <!-- Barcode Box -->
+  <g transform="translate(177.5, 166)">
+    <rect x="0" y="0" width="320" height="114" rx="8" fill="#FFFFFF" stroke="#D8CEBE" stroke-width="1.5" />
+    <g transform="translate(30, 14)">
+      <rect x="0" y="0" width="5" height="68" fill="#181512" />
+      <rect x="8" y="0" width="2" height="68" fill="#181512" />
+      <rect x="13" y="0" width="4" height="68" fill="#181512" />
+      <rect x="20" y="0" width="2" height="68" fill="#181512" />
+      <rect x="26" y="0" width="6" height="68" fill="#181512" />
+      <rect x="35" y="0" width="2" height="68" fill="#181512" />
+      <rect x="40" y="0" width="4" height="68" fill="#181512" />
+      <rect x="47" y="0" width="3" height="68" fill="#181512" />
+      <rect x="53" y="0" width="2" height="68" fill="#181512" />
+      <rect x="58" y="0" width="6" height="68" fill="#181512" />
+      <rect x="67" y="0" width="3" height="68" fill="#181512" />
+      <rect x="73" y="0" width="2" height="68" fill="#181512" />
+      <rect x="78" y="0" width="5" height="68" fill="#181512" />
+      <rect x="86" y="0" width="2" height="68" fill="#181512" />
+      <rect x="91" y="0" width="4" height="68" fill="#181512" />
+      <rect x="98" y="0" width="6" height="68" fill="#181512" />
+      <rect x="107" y="0" width="2" height="68" fill="#181512" />
+      <rect x="112" y="0" width="3" height="68" fill="#181512" />
+      <rect x="118" y="0" width="5" height="68" fill="#181512" />
+      <rect x="126" y="0" width="2" height="68" fill="#181512" />
+      <rect x="131" y="0" width="4" height="68" fill="#181512" />
+      <rect x="138" y="0" width="2" height="68" fill="#181512" />
+      <rect x="143" y="0" width="6" height="68" fill="#181512" />
+      <rect x="152" y="0" width="3" height="68" fill="#181512" />
+      <rect x="158" y="0" width="2" height="68" fill="#181512" />
+      <rect x="163" y="0" width="5" height="68" fill="#181512" />
+      <rect x="171" y="0" width="2" height="68" fill="#181512" />
+      <rect x="176" y="0" width="4" height="68" fill="#181512" />
+      <rect x="183" y="0" width="3" height="68" fill="#181512" />
+      <rect x="189" y="0" width="6" height="68" fill="#181512" />
+      <rect x="198" y="0" width="2" height="68" fill="#181512" />
+      <rect x="203" y="0" width="4" height="68" fill="#181512" />
+      <rect x="210" y="0" width="2" height="68" fill="#181512" />
+      <rect x="215" y="0" width="5" height="68" fill="#181512" />
+      <rect x="223" y="0" width="3" height="68" fill="#181512" />
+      <rect x="229" y="0" width="2" height="68" fill="#181512" />
+      <rect x="234" y="0" width="6" height="68" fill="#181512" />
+      <rect x="243" y="0" width="2" height="68" fill="#181512" />
+      <rect x="248" y="0" width="4" height="68" fill="#181512" />
+      <rect x="255" y="0" width="5" height="68" fill="#181512" />
+    </g>
+    <text x="160" y="102" text-anchor="middle" fill="#231F20" font-family="'Courier New', monospace" font-weight="700" font-size="16" letter-spacing="2">000135672008</text>
+  </g>
+
+  <!-- Provenance Footer -->
+  <text x="337.5" y="346" text-anchor="middle" fill="#8B0A10" font-family="'Helvetica Neue', Arial, sans-serif" font-weight="800" font-size="12" letter-spacing="2.2">NEVER EXPIRES · CUSTOM LOADED TO ANY AMOUNT</text>
+  <text x="337.5" y="372" text-anchor="middle" fill="#231F20" font-family="'Helvetica Neue', Arial, sans-serif" font-weight="800" font-size="12.5" letter-spacing="0.8">REDEEMABLE AT HOFHERR MEAT CO. · 300 HAPP RD, NORTHFIELD, IL · (847) 441-MEAT</text>
+</svg>

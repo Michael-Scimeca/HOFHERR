@@ -13,16 +13,15 @@ export default function FaqClient({ faqs }: { faqs: FaqGroup[] }) {
     return (
         <main className={styles.page}>
             {/* ── Hero ── */}
-            <section className={styles.hero}>
-                <p className={styles.eyebrow}>Everything you need to know</p>
+            <header className={styles.hero}>
                 <h1 className={styles.headline}>Frequently Asked Questions</h1>
                 <p className={styles.sub}>
                     Can&apos;t find your answer? Call us at <a href="tel:8474416328">(847) 441-MEAT</a> — a real person will pick up.
                 </p>
-            </section>
+            </header>
 
             {/* ── FAQ accordion ── */}
-            <section className={styles.faqSection}>
+            <section id="faq-content" aria-label="Frequently Asked Questions by Category" className={`section ${styles.faqSection}`}>
                 <div className="container">
                     <div className={styles.faqGrid}>
                         {/* Sticky sidebar nav */}
@@ -36,15 +35,13 @@ export default function FaqClient({ faqs }: { faqs: FaqGroup[] }) {
                                 <p>Still have a question?</p>
                                 <a
                                     href="tel:8474416328"
-                                    className="btn btn-primary"
-                                    style={{ display: 'block', textAlign: 'center', marginTop: '10px' }}
+                                    className={`btn btn-gold ${styles.sideBtn}`}
                                 >
                                     📞 Call Us
                                 </a>
                                 <Link
                                     href="/online-orders"
-                                    className="btn btn-secondary"
-                                    style={{ display: 'block', textAlign: 'center', marginTop: '10px' }}
+                                    className={`btn btn-gold ${styles.sideBtn}`}
                                 >
                                     Order Online
                                 </Link>
@@ -99,15 +96,15 @@ export default function FaqClient({ faqs }: { faqs: FaqGroup[] }) {
             </section>
 
             {/* ── CTA ── */}
-            <section className={styles.cta}>
+            <section id="faq-cta" aria-labelledby="faq-cta-heading" className={`section-sm ${styles.cta}`}>
                 <div className="container">
-                    <h2>Ready to come in?</h2>
+                    <h2 id="faq-cta-heading">Ready to come in?</h2>
                     <p>300 Happ Rd, Northfield Square · Tue–Fri 10am–6pm · Sat 10am–5pm · Sun 10am–4pm</p>
                     <div className={styles.ctaBtns}>
-                        <Link href="/visit" className="btn btn-primary">
+                        <Link href="/visit" className="btn btn-gold">
                             Get Directions
                         </Link>
-                        <Link href="/online-orders" className="btn btn-primary">
+                        <Link href="/online-orders" className="btn btn-gold">
                             Order Online
                         </Link>
                     </div>

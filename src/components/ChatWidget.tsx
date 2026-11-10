@@ -310,7 +310,7 @@ export default function ChatWidget() {
                                     <span>Monday</span><span className={styles.closed}>Closed</span>
                                 </div>
                                 <div className={styles.locationLabel} style={{ marginTop: 10 }}>🏪 The Depot</div>
-                                <div className={styles.hoursAddr}>780 Elm St, Winnetka</div>
+                                <div className={styles.hoursAddr}>754 Elm St, Winnetka</div>
                                 <div className={styles.hoursGrid}>
                                     <span>Mon – Fri</span><span>10:30am – 6pm</span>
                                     <span>Sat – Sun</span><span className={styles.closed}>Closed</span>

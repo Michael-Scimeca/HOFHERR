@@ -23,13 +23,34 @@ export async function PATCH(request: Request) {
         }
 
         // Whitelist allowed fields to prevent privilege escalation
-        const ALLOWED_STRING_FIELDS = ['name', 'phone', 'address', 'avatar', 'birthday', 'preferredPickupTime'] as const;
+        const ALLOWED_STRING_FIELDS = ['name', 'phone', 'address', 'avatar', 'birthday', 'preferredPickupTime', 'bio', 'favoriteCut'] as const;
         const patch: Record<string, any> = {};
         for (const key of ALLOWED_STRING_FIELDS) {
             if (body[key] !== undefined) {
-                patch[key] = String(body[key]).slice(0, 200);
+                patch[key] = String(body[key]).slice(0, 300);
             }
         }
+
+        // Handle username update with validation and collision check
+        if (body.username !== undefined) {
+            const cleanUsername = String(body.username).toLowerCase().trim().replace(/[^a-z0-9_-]/g, '').slice(0, 30);
+            if (cleanUsername.length < 3) {
+                return NextResponse.json({ error: 'Username must be at least 3 characters long.' }, { status: 400 });
+            }
+
+            // Check if another customer already has this username
+            const duplicate = await adminClient.fetch(
+                `*[_type == "customer" && username == $username && _id != $customerId][0]`,
+                { username: cleanUsername, customerId: customer._id }
+            );
+
+            if (duplicate) {
+                return NextResponse.json({ error: 'This username is already taken. Please choose another.' }, { status: 400 });
+            }
+
+            patch.username = cleanUsername;
+        }
+
         // Boolean field
         if (body.newsletter !== undefined) {
             patch.newsletter = Boolean(body.newsletter);

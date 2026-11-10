@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -7,6 +8,9 @@ export const metadata: Metadata = {
     description: 'Give the gift of premium butcher-shop quality. Hofherr Meat Co. offers physical gift cards (mailed free) and instant eGift cards via Square. Northfield, IL.',
     alternates: { canonical: 'https://hofherrmeatco.com/gift-cards' },
     openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
         title: 'Gift Cards | Hofherr Meat Co.',
         description: 'Physical gift cards mailed free or instant eGift cards via Square. The perfect gift for the meat lover in your life.',
         url: 'https://hofherrmeatco.com/gift-cards',
@@ -27,8 +31,8 @@ export default function GiftCardsPage() {
                 <div className={styles.visualPane}>
                     <div className={styles.imageWrapper}>
                          <Image
-                             src="/assets/gift-card-left-image.webp"
-                             alt="Hofherr Meat Co. craft butcher selection"
+                             src="/assets/gift-cards/gift-card-left-image.webp"
+                             alt="Hofherr Meat Co. craft butcher selection and gift cards"
                              fill
                              priority
                              fetchPriority="high"
@@ -45,7 +49,6 @@ export default function GiftCardsPage() {
                 {/* Content Pane */}
                 <div className={styles.contentPane}>
                     <div className={styles.contentInner}>
-                        <div className="section-label">For Every Occasion</div>
                         <h1 className={styles.headline}>The Gift of <em>Great Meat</em></h1>
                         <p className={styles.sub}>
                             Know a home cook, grill master, or someone who just appreciates quality?
@@ -55,18 +58,65 @@ export default function GiftCardsPage() {
                         <div className={styles.cardsStack}>
                             {/* eGift Card */}
                             <div className={`${styles.card} ${styles.cardFeature}`}>
+                                <FireBorder active radius={20} />
                                 <div className={styles.cardHeader}>
-                                    <div className={styles.iconCircle}>📲</div>
+                                    <div className={styles.brandSealGroup}>
+                                        <div className={styles.iconCircle}>
+                                            <Image
+                                                src="/assets/identity/stickers/sticker-cow.svg"
+                                                alt="Hofherr Flame Steer Emblem"
+                                                width={40}
+                                                height={40}
+                                                className={styles.sealImg}
+                                            />
+                                        </div>
+                                        <div className={styles.headerMeta}>
+                                            <span className={styles.headerKicker}>Digital Edition · Square</span>
+                                            <h2 className={styles.cardTitle}>Instant eGift Card</h2>
+                                        </div>
+                                    </div>
                                     <div className={styles.badge}>Instant Delivery</div>
                                 </div>
-                                <h2 className={styles.cardTitle}>Instant eGift Card</h2>
+
+                                {/* New Design System Dual-Card Showcase */}
+                                <div className={styles.cardShowcase}>
+                                    <div className={styles.cardMockupGrid}>
+                                        <div className={styles.cr80CardWrap}>
+                                            <Image
+                                                src="/assets/gift-cards/gift-card-crimson.svg"
+                                                alt="Hofherr Meat Co. Oxblood Crimson Gift Card"
+                                                width={180}
+                                                height={114}
+                                                className={styles.cr80CardImg}
+                                            />
+                                            <div className={styles.swatchCaption}>
+                                                <span className={`${styles.swatchDot} ${styles.swatchCrimson}`} />
+                                                Oxblood Crimson · #8B0A10
+                                            </div>
+                                        </div>
+                                        <div className={styles.cr80CardWrap}>
+                                            <Image
+                                                src="/assets/gift-cards/gift-card-amber.svg"
+                                                alt="Hofherr Meat Co. Smokehouse Amber Gift Card"
+                                                width={180}
+                                                height={114}
+                                                className={styles.cr80CardImg}
+                                            />
+                                            <div className={styles.swatchCaption}>
+                                                <span className={`${styles.swatchDot} ${styles.swatchAmber}`} />
+                                                Smokehouse Amber · #F59B1A
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <p className={styles.cardDesc}>
                                     Buy online in seconds and send it directly to the recipient&apos;s inbox. Powered by Square.
                                 </p>
                                 <ul className={styles.perks}>
-                                    <li>✓ Sent instantly via email</li>
-                                    <li>✓ Any amount you choose</li>
-                                    <li>✓ Redeemable in-store</li>
+                                    <li>✓ Sent instantly via email or text</li>
+                                    <li>✓ Any custom amount you choose</li>
+                                    <li>✓ Redeemable in-store &amp; online</li>
                                 </ul>
                                 <a
                                     href="https://squareup.com/gift/D4T9XAQSCNMKT/order"
@@ -80,26 +130,74 @@ export default function GiftCardsPage() {
 
                             {/* Physical Gift Card */}
                             <div className={styles.card}>
+                                <FireBorder active radius={20} />
                                 <div className={styles.cardHeader}>
-                                    <div className={styles.iconCircle}>🪪</div>
+                                    <div className={styles.brandSealGroup}>
+                                        <div className={styles.iconCircle}>
+                                            <Image
+                                                src="/assets/identity/hofherr-stamp-circular-crimson.svg"
+                                                alt="Hofherr Meat Co. Northfield Provenance Seal"
+                                                width={42}
+                                                height={42}
+                                                className={styles.sealImg}
+                                            />
+                                        </div>
+                                        <div className={styles.headerMeta}>
+                                            <span className={styles.headerKicker}>CR80 PVC Card · Mailed Free</span>
+                                            <h2 className={styles.cardTitle}>Physical Gift Card</h2>
+                                        </div>
+                                    </div>
+                                    <div className={styles.badgeKraft}>Mailed Free</div>
                                 </div>
-                                <h2 className={styles.cardTitle}>Physical Gift Card</h2>
+
+                                {/* Physical Card Front + Back Showcase */}
+                                <div className={styles.cardShowcasePhysical}>
+                                    <div className={styles.cardMockupGrid}>
+                                        <div className={styles.cr80CardWrap}>
+                                            <Image
+                                                src="/assets/gift-cards/gift-card-crimson.svg"
+                                                alt="Hofherr CR80 Physical Gift Card Front"
+                                                width={180}
+                                                height={114}
+                                                className={styles.cr80CardImg}
+                                            />
+                                            <div className={styles.swatchCaption}>
+                                                <span className={`${styles.swatchDot} ${styles.swatchCrimson}`} />
+                                                CR80 Front
+                                            </div>
+                                        </div>
+                                        <div className={styles.cr80CardWrap}>
+                                            <Image
+                                                src="/assets/gift-cards/gift-card-back.svg"
+                                                alt="Hofherr CR80 Gift Card Back with Mag Stripe and Barcode"
+                                                width={180}
+                                                height={114}
+                                                className={styles.cr80CardImg}
+                                            />
+                                            <div className={styles.swatchCaption}>
+                                                <span className={`${styles.swatchDot} ${styles.swatchCream}`} />
+                                                CR80 Back · Mag Stripe &amp; Barcode
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <p className={styles.cardDesc}>
-                                    A tangible gift card they can pull out of their wallet. We load any amount, then mail it free — to you or straight to the recipient.
+                                    A tangible CR80 butcher-shop gift card they can pull out of their wallet. We load any amount, then mail it free — to you or straight to the recipient.
                                 </p>
                                 <div className={styles.howTo}>
                                     <div className={styles.howToTitle}>How to Order</div>
                                     <ul className={styles.steps}>
                                         <li><span>1</span>Email us the amount and the best number to reach you.</li>
                                         <li><span>2</span>We call to take payment over the phone.</li>
-                                        <li><span>3</span>Free mail delivery or curbside pickup at the shop.</li>
+                                        <li><span>3</span>Free USPS mail delivery or curbside pickup at the shop.</li>
                                     </ul>
                                 </div>
                                 <a
                                     href="mailto:butcher@hofherrmeatco.com?subject=Gift Card Request"
-                                    className={`btn btn-secondary ${styles.btnFull}`}
+                                    className={`btn btn-primary ${styles.btnFull}`}
                                 >
-                                    ✉️ Email to Order
+                                    Email to Order
                                 </a>
                             </div>
                         </div>

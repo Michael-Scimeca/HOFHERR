@@ -66,6 +66,8 @@ type FlameSticker = {
     name: string;
     dept: string;
     src: string;
+    iconSvg?: string;
+    storeGroup?: 'butcher' | 'depot';
     sampleCut: string;
     sampleWeight: string;
     storageNote: string;
@@ -241,6 +243,8 @@ export const FLAME_STICKERS: FlameSticker[] = [
         name: 'Specialty Duck',
         dept: 'Magret Breast & Confit',
         src: '/assets/identity/stickers/sticker-duck.svg',
+        iconSvg: '/icons/duck.svg',
+        storeGroup: 'butcher',
         sampleCut: 'Rohan Duck Breast · Scored Skin',
         sampleWeight: '0.95 LB',
         storageNote: 'Start Skin-Side Down In Cold Cast Iron Skillet',
@@ -250,9 +254,302 @@ export const FLAME_STICKERS: FlameSticker[] = [
         name: 'Catering & Delivery',
         dept: 'Whole Hog & Event BBQ',
         src: '/assets/identity/stickers/sticker-truck.svg',
+        iconSvg: '/icons/catering.svg',
+        storeGroup: 'butcher',
         sampleCut: 'Oak-Smoked Texas Brisket Catering Pack',
         sampleWeight: '6.50 LB',
         storageNote: 'Hot Insulated Delivery · North Shore & Chicagoland',
+    },
+];
+
+export const ALL_DEPARTMENT_STICKERS: FlameSticker[] = [
+    // ── 14 Northfield Butcher Shop Sidebar Icons (Exact Online-Orders Sequence) ──
+    {
+        id: 'cow',
+        name: 'Beef',
+        dept: 'Midwest Farms · Dry-Aged & Steaks',
+        src: '/icons/cow.svg',
+        iconSvg: '/icons/cow.svg',
+        storeGroup: 'butcher',
+        sampleCut: '45-Day Dry-Aged Bone-In Ribeye',
+        sampleWeight: '1.85 LB',
+        storageNote: 'Keep Refrigerated · Let Rest 20 Min Before Searing',
+    },
+    {
+        id: 'pig',
+        name: 'Pork',
+        dept: 'Local Berkshire Breeds',
+        src: '/icons/pig.svg',
+        iconSvg: '/icons/pig.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Berkshire Bone-In Double Pork Chop',
+        sampleWeight: '1.40 LB',
+        storageNote: 'Pasture-Raised Midwest Heritage Pork · Cut To Order',
+    },
+    {
+        id: 'chicken',
+        name: 'Chicken',
+        dept: 'Pasture Raised, Hand-Trimmed',
+        src: '/icons/chicken.svg',
+        iconSvg: '/icons/chicken.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Herb-Brined Whole Rotisserie Chicken',
+        sampleWeight: '3.65 LB',
+        storageNote: 'Spit-Roasted Fresh Daily · Northfield & Winnetka',
+    },
+    {
+        id: 'suage',
+        name: 'Sausage',
+        dept: 'All Housemade Links & Brats',
+        src: '/icons/suage.svg',
+        iconSvg: '/icons/suage.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Housemade Cheddar Jalapeño Smoked Brats',
+        sampleWeight: '1.25 LB',
+        storageNote: 'Ground & Stuffed In-House Daily · Grill Over Medium Heat',
+    },
+    {
+        id: 'hamcheese',
+        name: 'Deli Meat & Cheese',
+        dept: 'House-Roasted & Cut To Order',
+        src: '/icons/hamcheese.svg',
+        iconSvg: '/icons/hamcheese.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'House-Smoked Peppered Turkey & Aged Swiss',
+        sampleWeight: '0.75 LB',
+        storageNote: 'Sliced Fresh To Order · Keep Chilled Below 38°F',
+    },
+    {
+        id: 'prepared',
+        name: 'Prepared Foods',
+        dept: 'Scratch Kitchen · Heat & Serve',
+        src: '/icons/prepared.svg',
+        iconSvg: '/icons/prepared.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'House-Roasted Chicago Italian Beef & Au Jus',
+        sampleWeight: '2.00 LB',
+        storageNote: 'Prepared In-House · Simmer Gently In Natural Jus',
+    },
+    {
+        id: 'lamb',
+        name: 'Lamb',
+        dept: 'Pasture Raised, All Natural',
+        src: '/icons/lamb.svg',
+        iconSvg: '/icons/lamb.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Frenched Domestic Rack of Lamb',
+        sampleWeight: '2.10 LB',
+        storageNote: 'Domestic Pasture-Raised · Trimmed & Frenched In-House',
+    },
+    {
+        id: 'fish',
+        name: 'Seafood',
+        dept: 'Fresh & Sushi-Grade Catch',
+        src: '/icons/fish.svg',
+        iconSvg: '/icons/fish.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Faroe Island Center-Cut Salmon Fillet',
+        sampleWeight: '1.15 LB',
+        storageNote: 'Sushi-Grade Cold Chain · Keep On Ice At 34°F',
+    },
+    {
+        id: 'veal',
+        name: 'Veal',
+        dept: 'Midwest Milk-Fed Chops & Cutlets',
+        src: '/icons/veal.svg',
+        iconSvg: '/icons/veal.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Bone-In Center-Cut Veal Rib Chop',
+        sampleWeight: '1.10 LB',
+        storageNote: 'Carefully Sourced From Midwest Farms · Hand-Trimmed',
+    },
+    {
+        id: 'turkey',
+        name: 'Turkey',
+        dept: 'Ferndale Market All-Natural',
+        src: '/icons/turkey.svg',
+        iconSvg: '/icons/turkey.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Ferndale Free-Range Whole Heritage Turkey',
+        sampleWeight: '14.50 LB',
+        storageNote: 'All-Natural Free-Range · Antibiotic & Hormone Free',
+    },
+    {
+        id: 'duck',
+        name: 'Duck',
+        dept: 'Premium Sourced Breast & Confit',
+        src: '/icons/duck.svg',
+        iconSvg: '/icons/duck.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Rohan Duck Breast · Scored Skin',
+        sampleWeight: '0.95 LB',
+        storageNote: 'Start Skin-Side Down In Cold Cast Iron Skillet',
+    },
+    {
+        id: 'game',
+        name: 'Game',
+        dept: 'Wild & Exotic Proteins',
+        src: '/icons/game.svg',
+        iconSvg: '/icons/game.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Pasture-Raised Bison Ribeye & Elk Tenderloin',
+        sampleWeight: '1.30 LB',
+        storageNote: 'Lean Wild & Pasture Game · Sear Hot To Medium-Rare',
+    },
+    {
+        id: 'stocksoup',
+        name: 'Soups & Stocks',
+        dept: 'Housemade, Frozen in Quarts',
+        src: '/icons/stocksoup.svg',
+        iconSvg: '/icons/stocksoup.svg',
+        storeGroup: 'butcher',
+        sampleCut: '24-Hour Roasted Beef Marrow Bone Broth',
+        sampleWeight: '32 OZ QT',
+        storageNote: 'Simmered 24 Hours · Bring To Rolling Boil Before Serving',
+    },
+    {
+        id: 'catering',
+        name: 'Catering',
+        dept: 'Whole Hog & Events of Any Size',
+        src: '/icons/catering.svg',
+        iconSvg: '/icons/catering.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Oak-Smoked Texas Brisket Catering Pack',
+        sampleWeight: '6.50 LB',
+        storageNote: 'Hot Insulated Delivery · North Shore & Chicagoland',
+    },
+    // ── 12 Winnetka Depot & Specialty Counter Icons ──
+    {
+        id: 'cheese',
+        name: 'Artisanal Cheese',
+        dept: 'Cave-Aged Wheels & Wedges',
+        src: '/icons/cheese.svg',
+        iconSvg: '/icons/cheese.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Aged Emmental Swiss Reserve Wedge',
+        sampleWeight: '0.68 LB',
+        storageNote: 'Hand-Cut From The Wheel · Wrap In Wax Paper After Opening',
+    },
+    {
+        id: 'seafood',
+        name: 'Shellfish & Crab',
+        dept: 'Shrimp, Crab & Maine Lobster',
+        src: '/assets/identity/stickers/sticker-seafood-lobster.svg',
+        iconSvg: '/assets/identity/stickers/sticker-seafood-lobster.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Wild Maine Lobster Tails & Gulf Shrimp',
+        sampleWeight: '1.50 LB',
+        storageNote: 'Wild-Caught · Keep Chilled Until Preparation',
+    },
+    {
+        id: 'pastries',
+        name: 'Pastries',
+        dept: 'The Depot · Fresh Baked Daily',
+        src: '/icons/pastries.svg',
+        iconSvg: '/icons/pastries.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Laminated Butter Croissant & Morning Bun',
+        sampleWeight: '2 PC',
+        storageNote: 'Baked Fresh Every Morning · 754 Elm St, Winnetka',
+    },
+    {
+        id: 'hotbeverage',
+        name: 'Hot Beverages',
+        dept: 'Sparrow Coffee & Espresso',
+        src: '/icons/hotbeverage.svg',
+        iconSvg: '/icons/hotbeverage.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Small-Batch Sparrow Roast Drip & Cortado',
+        sampleWeight: '12 FL OZ',
+        storageNote: 'Custom Roasted For Hofherr Meat Co. · Winnetka Depot',
+    },
+    {
+        id: 'grabgo',
+        name: 'Grab + Go Hot Foods',
+        dept: 'Commuter Hot Case · Ready Now',
+        src: '/icons/grabgo.svg',
+        iconSvg: '/icons/grabgo.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Hot Smoked Brisket Biscuit & Rotisserie Half',
+        sampleWeight: '0.85 LB',
+        storageNote: 'Hot From The Warmer · Ready For Metra Commuters',
+    },
+    {
+        id: 'produce',
+        name: 'Produce',
+        dept: 'Locally & Seasonally Sourced',
+        src: '/icons/produce.svg',
+        iconSvg: '/icons/produce.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Midwest Heirloom Tomatoes & Roasting Herbs',
+        sampleWeight: '1.00 LB',
+        storageNote: 'Farm-Direct Seasonal Produce · Wash Before Use',
+    },
+    {
+        id: 'dairy',
+        name: 'Dairy, Eggs & Cheese',
+        dept: 'Local Creamery & Pasture Eggs',
+        src: '/icons/dairy.svg',
+        iconSvg: '/icons/dairy.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Pasture-Raised Brown Eggs & Cultured Butter',
+        sampleWeight: '1 DOZEN',
+        storageNote: 'Grade A Farmstead Dairy · Keep Refrigerated',
+    },
+    {
+        id: 'pantry',
+        name: 'Pantry & More',
+        dept: 'BBQ Sauces, Rubs & Tallow',
+        src: '/icons/pantry.svg',
+        iconSvg: '/icons/pantry.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Hofherr Signature Steak Rub & Bourbon BBQ Sauce',
+        sampleWeight: '12 OZ',
+        storageNote: 'Small-Batch House Pantry · Store In Cool Dry Place',
+    },
+    {
+        id: 'bread',
+        name: 'Bread & Bakery',
+        dept: 'Crusty Loaves & Brioche Buns',
+        src: '/icons/bread.svg',
+        iconSvg: '/icons/bread.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Country Sourdough Boule & Toasted Brioche Rolls',
+        sampleWeight: '1 LOAF',
+        storageNote: 'Delivered Fresh Daily · Slice With Serrated Bread Knife',
+    },
+    {
+        id: 'coldbeverage',
+        name: 'Cold Beverages',
+        dept: 'Craft Sodas & Cold Brew',
+        src: '/icons/coldbeverage.svg',
+        iconSvg: '/icons/coldbeverage.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Nitro Cold Brew & Craft Root Beer',
+        sampleWeight: '16 FL OZ',
+        storageNote: 'Serve Ice Cold · Grab & Go Cooler At Both Shops',
+    },
+    {
+        id: 'swag',
+        name: 'HMC Swag',
+        dept: 'Official Butcher Apparel & Gear',
+        src: '/icons/swag.svg',
+        iconSvg: '/icons/swag.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Heavyweight Waxed Canvas Butcher Apron & Tee',
+        sampleWeight: 'ONE SIZE',
+        storageNote: 'Official Hofherr Meat Co. Goods · Northfield & Winnetka',
+    },
+    {
+        id: 'festival',
+        name: 'Festival',
+        dept: 'Seasonal Cookouts & Pop-Ups',
+        src: '/icons/festival.svg',
+        iconSvg: '/icons/festival.svg',
+        storeGroup: 'depot',
+        sampleCut: 'Ribfest Champion Baby Back Ribs & Chili Quart',
+        sampleWeight: '2.50 LB',
+        storageNote: 'Seasonal Event Feature · Smoked Over White Oak & Cherry',
     },
 ];
 
@@ -312,12 +609,17 @@ const INK_PADS = [
 export default function ProductIdentityClient() {
     const [activePaper, setActivePaper] = useState<PaperStock>(PAPER_STOCKS[0]);
     const [showTwine, setShowTwine] = useState<boolean>(false);
-    const [selectedSticker, setSelectedSticker] = useState<FlameSticker>(FLAME_STICKERS[0]);
+    const [selectedSticker, setSelectedSticker] = useState<FlameSticker>(ALL_DEPARTMENT_STICKERS[0]);
+    const [stickerGroupFilter, setStickerGroupFilter] = useState<'all' | 'butcher' | 'depot'>('all');
     const [stickerShape, setStickerShape] = useState<'circle' | 'rounded'>('circle');
     const [deliStore, setDeliStore] = useState<'butcher' | 'depot'>('butcher');
     const [activeStamp, setActiveStamp] = useState<StampPreset>(STAMP_PRESETS[0]);
     const [stampIconId, setStampIconId] = useState<string>('cow');
     const [activeInk, setActiveInk] = useState(INK_PADS[0]);
+
+    const filteredStickers = ALL_DEPARTMENT_STICKERS.filter((st) =>
+        stickerGroupFilter === 'all' ? true : st.storeGroup === stickerGroupFilter
+    );
 
     const currentStampPaths = VECTOR_ICON_PATHS[stampIconId] || VECTOR_ICON_PATHS.cow;
     const isProvenance = activeStamp.id === 'provenance';
@@ -334,7 +636,7 @@ export default function ProductIdentityClient() {
             <header className={styles.hero}>
                 <div className={styles.heroBackdrop}>
                     <img
-                        src="/assets/identity/butcher-complete-packaging-suite-v5.jpg?v=4"
+                        src="/assets/identity/packaging/butcher-complete-packaging-suite-10-icons.jpg"
                         alt="Hofherr Meat Co. complete product identity packaging suite on walnut butcher block"
                         className={styles.heroBackdropImg}
                     />
@@ -351,9 +653,9 @@ export default function ProductIdentityClient() {
                         seals, and hand-pressed crimson rubber ink stamps across Northfield and The Depot in Winnetka.
                     </p>
                     <nav className={styles.heroNav} aria-label="Product identity sections">
-                            <Link href="/product-identity#press-kit" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
-                                <span className={styles.heroNavIndex}>⬇</span>
-                                Press &amp; Media Download Kit
+                        <Link href="/product-identity#press-kit" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                            <span className={styles.heroNavIndex}>⬇</span>
+                            Press &amp; Media Download Kit
                         </Link>
                         <Link href="/product-identity/sizes" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>📐</span>
@@ -370,69 +672,69 @@ export default function ProductIdentityClient() {
                         <Link href="/admin/social" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>⚙</span>
                             Admin Auto-Post &amp; Verification
-                    </Link>
-                    <a href="#wrapping-paper" className={styles.heroNavLink}>
-                        <span className={styles.heroNavIndex}>01</span>
-                        Butcher Wrapping Paper
-                    </a>
-                    <a href="#stickers" className={styles.heroNavLink}>
-                        <span className={styles.heroNavIndex}>02</span>
-                        Die-Cut Stickers &amp; Deli Seals
-                    </a>
-                    <a href="#stamps" className={styles.heroNavLink}>
-                        <span className={styles.heroNavIndex}>03</span>
-                        Rubber Ink Stamps
-                    </a>
-                    <a href="#packaging-suite" className={styles.heroNavLink}>
-                        <span className={styles.heroNavIndex}>04</span>
-                        Complete Counter Suite
-                    </a>
+                        </Link>
+                        <a href="#wrapping-paper" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>01</span>
+                            Butcher Wrapping Paper
+                        </a>
+                        <a href="#stickers" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>02</span>
+                            Die-Cut Stickers &amp; Deli Seals
+                        </a>
+                        <a href="#stamps" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>03</span>
+                            Rubber Ink Stamps
+                        </a>
+                        <a href="#packaging-suite" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>04</span>
+                            Complete Counter Suite
+                        </a>
                         <Link href="/product-identity#retail-packaging" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>05</span>
                             Retail &amp; Cold Case
-                    </Link>
-                    <Link href="/product-identity#carryout-gifting" className={styles.heroNavLink}>
-                        <span className={styles.heroNavIndex}>06</span>
-                        Carry-Out &amp; Gifting
-                    </Link>
-                    <Link href="/product-identity#signage" className={styles.heroNavLink}>
-                        <span className={styles.heroNavIndex}>07</span>
-                        In-Store Signage
-                    </Link>
-                    <Link href="/product-identity#uniforms-stationery" className={styles.heroNavLink}>
-                        <span className={styles.heroNavIndex}>08</span>
-                        Uniforms &amp; Stationery
-                    </Link>
-                    <Link href="/product-identity#digital" className={styles.heroNavLink}>
-                        <span className={styles.heroNavIndex}>09</span>
-                        Digital &amp; Social
-                    </Link>
-                    <Link href="/product-identity#app-identity" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
-                        <span className={styles.heroNavIndex}>09B</span>
-                        Instagram (@hofherrmeatco) &amp; Apps
-                    </Link>
-                    <Link href="/product-identity#brand-standards" className={styles.heroNavLink}>
-                        <span className={styles.heroNavIndex}>10</span>
-                        Brand Standards
-                    </Link>
-                    <Link href="/product-identity#cuts" className={styles.heroNavLink}>
-                        <span className={styles.heroNavIndex}>11</span>
-                        Cut Charts, Social &amp; Auto-Post
-                    </Link>
-                    <Link href="/product-identity#press-kit" className={styles.heroNavLink}>
-                        <span className={styles.heroNavIndex}>12</span>
-                        Press &amp; Media Kit
-                    </Link>
-                    <a href="#pitch-deck" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
-                        <span className={styles.heroNavIndex}>13</span>
-                        Review Audit &amp; Growth Pitch Deck
-                    </a>
-            </nav>
-        </div>
+                        </Link>
+                        <Link href="/product-identity#carryout-gifting" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>06</span>
+                            Carry-Out &amp; Gifting
+                        </Link>
+                        <Link href="/product-identity#signage" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>07</span>
+                            In-Store Signage
+                        </Link>
+                        <Link href="/product-identity#uniforms-stationery" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>08</span>
+                            Uniforms &amp; Stationery
+                        </Link>
+                        <Link href="/product-identity#digital" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>09</span>
+                            Digital &amp; Social
+                        </Link>
+                        <Link href="/product-identity#app-identity" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                            <span className={styles.heroNavIndex}>09B</span>
+                            Instagram (@hofherrmeatco) &amp; Apps
+                        </Link>
+                        <Link href="/product-identity#brand-standards" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>10</span>
+                            Brand Standards
+                        </Link>
+                        <Link href="/product-identity#cuts" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>11</span>
+                            Cut Charts, Social &amp; Auto-Post
+                        </Link>
+                        <Link href="/product-identity#press-kit" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>12</span>
+                            Press &amp; Media Kit
+                        </Link>
+                        <a href="#pitch-deck" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                            <span className={styles.heroNavIndex}>13</span>
+                            Review Audit &amp; Growth Pitch Deck
+                        </a>
+                    </nav>
+                </div>
             </header>
 
-        {/* ── Print Sizes Editor: edit, compare and print every printable item at any size ── */}
-        <SizeStudio embedded />
+            {/* ── Print Sizes Editor: edit, compare and print every printable item at any size ── */}
+            <SizeStudio embedded />
 
             {/* ── 01 / Butcher Wrapping Paper System ── */}
             <section id="wrapping-paper" aria-labelledby="wrapping-paper-heading" className="section">
@@ -444,8 +746,10 @@ export default function ProductIdentityClient() {
                         <p className={styles.sectionDesc}>
                             Printed in a two-tone crimson-maroon (<code>#8B0A10</code>) and warm amber (<code>#F59B1A</code>)
                             linocut register on 40# wet-strength butcher paper. The step-and-repeat pattern alternates the
-                            Hofherr Meat Co. stencil wordmark with our wood-fired department emblems so every wrapped parcel
-                            is unmistakably Hofherr from any fold angle.
+                            Hofherr Meat Co. stencil wordmark with our full suite of 25 wood-fired department SVG emblems
+                            (Beef, Pork, Chicken, Sausage, Deli Meat &amp; Cheese, Prepared Foods, Lamb, Seafood, Veal, Turkey,
+                            Duck, Game, Soups &amp; Stocks, Catering, and Winnetka Depot icons) so every wrapped parcel is
+                            unmistakably Hofherr from any fold angle.
                         </p>
                     </div>
 
@@ -453,7 +757,7 @@ export default function ProductIdentityClient() {
                         <div className={styles.studioBoard}>
                             <div className={styles.studioImageWrap}>
                                 <img
-                                    src="/assets/identity/butcher-wrapping-paper-roll-v5.jpg"
+                                    src="/assets/identity/wrapping-paper/butcher-wrapping-paper-roll-10-icons.jpg"
                                     alt="Hofherr Meat Co. custom printed butcher wrapping paper on cast iron dispenser with twine-wrapped cuts"
                                     className={styles.studioImage}
                                 />
@@ -502,629 +806,673 @@ export default function ProductIdentityClient() {
                                     </button>
                                 </div>
                                 <div className={styles.downloadRow}>
-                                        <Link
+                                    <Link
                                         href="/product-identity/print?sheet=wrap&autoprint=1"
                                         className={styles.downloadBtn}
                                     >
                                         🖨 Print 1:1 Swatch (7.50&quot;×4.75&quot;) &amp; Freezer Plate (7.50&quot;×4.40&quot;)
-                                </Link>
-                                <a
-                                    href="/assets/identity/hofherr-wrapping-paper-pattern-10-icons.svg"
-                                    download="hofherr-wrapping-paper-pattern.svg"
-                                    className={styles.downloadBtn}
+                                    </Link>
+                                    <a
+                                        href="/assets/identity/hofherr-wrapping-paper-pattern-10-icons.svg"
+                                        download="hofherr-wrapping-paper-pattern.svg"
+                                        className={styles.downloadBtn}
+                                    >
+                                        ⬇ 24.00&quot;×16.00&quot; Vector Sheet (.SVG)
+                                    </a>
+                                    <a
+                                        href="/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg"
+                                        download="hofherr-wrapping-paper-ink-only.svg"
+                                        className={styles.downloadBtn}
+                                    >
+                                        ⬇ Spot-Color Ink Plates (.SVG)
+                                    </a>
+                                    <a
+                                        href="/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg"
+                                        download="hofherr-wrapping-paper-tile.svg"
+                                        className={styles.downloadBtn}
+                                    >
+                                        ⬇ 5.00&quot;×6.00&quot; Repeat Tile (.SVG)
+                                    </a>
+                                    <a
+                                        href="/assets/identity/hofherr-wrapping-paper-print-10-icons-7200x4800.png"
+                                        download="hofherr-wrapping-paper-print-7200x4800.png"
+                                        className={styles.downloadBtn}
+                                    >
+                                        ⬇ 24.00&quot;×16.00&quot; @ 300-DPI Print (.PNG)
+                                    </a>
+                                </div>
+                            </div>
+
+                            {/* Live Pure-Vector Butcher Sheet Simulator */}
+                            <div
+                                className={styles.paperSheetStage}
+                                style={
+                                    {
+                                        '--paper-bg': activePaper.bg,
+                                        '--paper-ink': activePaper.ink,
+                                    } as React.CSSProperties
+                                }
+                            >
+                                <img
+                                    src="/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg?v=3"
+                                    alt="Hofherr Meat Co. true vector step-and-repeat butcher wrapping paper pattern"
+                                    className={styles.paperVectorSheet}
+                                />
+
+                                {showTwine && (
+                                    <>
+                                        <div className={styles.twineHorizontal} />
+                                        <div className={styles.twineVertical} />
+                                        <div className={styles.twineSealBadge}>
+                                            <img
+                                                src={selectedSticker.src}
+                                                alt={selectedSticker.name}
+                                                className={styles.dieCutImg}
+                                            />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── 02 / Die-Cut Stickers & Tamper-Evident Deli Seals ── */}
+            <section id="stickers" aria-labelledby="stickers-heading" className="section">
+                <div className={`container ${styles.sectionStack}`}>
+                    <div className={styles.sectionHeader}>
+                        <h2 id="stickers-heading" className={styles.sectionTitle}>
+                            02 / Die-Cut Flame Stickers, Counter Seals &amp; Department SVGs
+                        </h2>
+                        <p className={styles.sectionDesc}>
+                            Every department across The Butcher Shop in Northfield (all 14 online-ordering sidebar medallions:
+                            Beef, Pork, Chicken, Sausage, Deli Meat &amp; Cheese, Prepared Foods, Lamb, Seafood, Veal, Turkey,
+                            Duck, Game, Soups &amp; Stocks, and Catering) and The Depot in Winnetka has its own 100% vector
+                            woodcut flame emblem (<code>.SVG</code>). Click any medallion to preview its counter scale label or
+                            download the standalone vector <code>.SVG</code> directly.
+                        </p>
+                    </div>
+
+                    {/* Store / Department SVG Filter Bar */}
+                    <div className={styles.buttonRow} role="tablist" aria-label="Filter department SVG icons">
+                        <button
+                            type="button"
+                            role="tab"
+                            aria-selected={stickerGroupFilter === 'all'}
+                            onClick={() => setStickerGroupFilter('all')}
+                            className={`${styles.pillBtn} ${stickerGroupFilter === 'all' ? styles.pillBtnActive : ''}`}
+                        >
+                            All 26 Official Department Icons (.SVG)
+                        </button>
+                        <button
+                            type="button"
+                            role="tab"
+                            aria-selected={stickerGroupFilter === 'butcher'}
+                            onClick={() => setStickerGroupFilter('butcher')}
+                            className={`${styles.pillBtn} ${stickerGroupFilter === 'butcher' ? styles.pillBtnActive : ''}`}
+                        >
+                            The Butcher Shop · 14 Sidebar Icons (.SVG)
+                        </button>
+                        <button
+                            type="button"
+                            role="tab"
+                            aria-selected={stickerGroupFilter === 'depot'}
+                            onClick={() => setStickerGroupFilter('depot')}
+                            className={`${styles.pillBtn} ${stickerGroupFilter === 'depot' ? styles.pillBtnActive : ''}`}
+                        >
+                            Winnetka Depot &amp; Specialty · 12 Icons (.SVG)
+                        </button>
+                    </div>
+
+                    {/* 26-Sticker Interactive Department SVG Grid */}
+                    <div className={styles.stickerCatalogGrid}>
+                        {filteredStickers.map((sticker) => (
+                            <div
+                                key={sticker.id}
+                                className={`${styles.stickerCard} ${selectedSticker.id === sticker.id ? styles.stickerCardActive : ''}`}
+                                style={
+                                    {
+                                        '--sticker-radius': stickerShape === 'circle' ? '999px' : '18px',
+                                    } as React.CSSProperties
+                                }
+                            >
+                                <button
+                                    type="button"
+                                    onClick={() => setSelectedSticker(sticker)}
+                                    className={styles.stickerSelectBtn}
                                 >
-                                    ⬇ 24.00&quot;×16.00&quot; Vector Sheet (.SVG)
-                                </a>
+                                    <div className={styles.dieCutPreview}>
+                                        <img
+                                            src={sticker.src}
+                                            alt={sticker.name}
+                                            className={styles.dieCutImg}
+                                        />
+                                    </div>
+                                    <span className={styles.stickerName}>{sticker.name}</span>
+                                    <span className={styles.stickerDept}>{sticker.dept} · Ø 3.00&quot;</span>
+                                </button>
                                 <a
-                                    href="/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg"
-                                    download="hofherr-wrapping-paper-ink-only.svg"
-                                    className={styles.downloadBtn}
+                                    href={sticker.src}
+                                    download={`hofherr-icon-${sticker.id}.svg`}
+                                    className={styles.stickerSvgDlBtn}
                                 >
-                                    ⬇ Spot-Color Ink Plates (.SVG)
+                                    ⬇ Download .SVG
                                 </a>
-                                <a
-                                    href="/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg"
-                                    download="hofherr-wrapping-paper-tile.svg"
-                                    className={styles.downloadBtn}
-                                >
-                                    ⬇ 5.00&quot;×6.00&quot; Repeat Tile (.SVG)
-                                </a>
-                                <a
-                                    href="/assets/identity/hofherr-wrapping-paper-print-10-icons-7200x4800.png"
-                                    download="hofherr-wrapping-paper-print-7200x4800.png"
-                                    className={styles.downloadBtn}
-                                >
-                                    ⬇ 24.00&quot;×16.00&quot; @ 300-DPI Print (.PNG)
-                                </a>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className={styles.splitGrid}>
+                        <div className={styles.studioBoard}>
+                            <div className={styles.studioImageWrap}>
+                                <img
+                                    src="/assets/identity/stickers/butcher-deli-stickers-sheet-10-icons.jpg"
+                                    alt="Hofherr Meat Co. 10 true-SVG die-cut flame-linocut stickers, patterned butcher parcel with circular Flame-Cow seal, and tamper-evident deli scale labels on dark slate"
+                                    className={styles.studioImage}
+                                />
+                            </div>
+                            <div className={styles.studioMeta}>
+                                <span className={styles.studioLabel}>Board 02 · Matte Vinyl Die-Cuts (Ø 3.00&quot;) &amp; Scale Labels (4.00&quot;×3.00&quot;)</span>
+                                <span className={styles.studioCaption}>Freezer-Grade Adhesive · Kiss-Cut &amp; Roll Format</span>
                             </div>
                         </div>
 
-                        {/* Live Pure-Vector Butcher Sheet Simulator */}
-                        <div
-                            className={styles.paperSheetStage}
-                            style={
-                                {
-                                    '--paper-bg': activePaper.bg,
-                                    '--paper-ink': activePaper.ink,
-                                } as React.CSSProperties
-                            }
-                        >
-                            <img
-                                src="/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg?v=2"
-                                alt="Hofherr Meat Co. true vector step-and-repeat butcher wrapping paper pattern"
-                                className={styles.paperVectorSheet}
-                            />
+                        <div className={styles.controlPanel}>
+                            <div className={styles.controlGroup}>
+                                <h3 className={styles.controlHeading}>Sticker Die-Cut Format &amp; Counter Location</h3>
+                                <div className={styles.buttonRow}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setStickerShape('circle')}
+                                        className={`${styles.pillBtn} ${stickerShape === 'circle' ? styles.pillBtnActive : ''}`}
+                                    >
+                                        3.00&quot;×3.00&quot; Circular Coin Seal
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setStickerShape('rounded')}
+                                        className={`${styles.pillBtn} ${stickerShape === 'rounded' ? styles.pillBtnActive : ''}`}
+                                    >
+                                        3.00&quot;×3.00&quot; Contour Badge Cut
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setDeliStore('butcher')}
+                                        className={`${styles.pillBtn} ${deliStore === 'butcher' ? styles.pillBtnActive : ''}`}
+                                    >
+                                        Northfield Butcher Shop
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setDeliStore('depot')}
+                                        className={`${styles.pillBtn} ${deliStore === 'depot' ? styles.pillBtnActive : ''}`}
+                                    >
+                                        Winnetka Depot
+                                    </button>
+                                </div>
+                                <div className={styles.downloadRow}>
+                                    <Link
+                                        href="/product-identity/print?sheet=stickers&autoprint=1"
+                                        className={styles.downloadBtn}
+                                    >
+                                        🖨 Print 3.00&quot;×3.00&quot; Stickers (1:1)
+                                    </Link>
+                                    <Link
+                                        href="/product-identity/print?sheet=scale-labels&autoprint=1"
+                                        className={styles.downloadBtn}
+                                    >
+                                        🖨 Print 4.00&quot;×3.00&quot; Scale Labels (1:1)
+                                    </Link>
+                                    <a
+                                        href="/assets/identity/hofherr-die-cut-stickers-10-icons.svg"
+                                        download="hofherr-die-cut-stickers-10-icons.svg"
+                                        className={styles.downloadBtn}
+                                    >
+                                        ⬇ 10-Icon Die-Cut Sheet (19.00&quot;×8.50&quot; .SVG)
+                                    </a>
+                                    <a
+                                        href={selectedSticker.src}
+                                        download={`hofherr-sticker-${selectedSticker.id}.svg`}
+                                        className={styles.downloadBtn}
+                                    >
+                                        ⬇ {selectedSticker.name} Ø 3.00&quot; Sticker (.SVG)
+                                    </a>
+                                </div>
+                            </div>
 
-                            {showTwine && (
-                                <>
-                                    <div className={styles.twineHorizontal} />
-                                    <div className={styles.twineVertical} />
-                                    <div className={styles.twineSealBadge}>
+                            {/* Live Deli Scale Label Preview */}
+                            <div className={styles.deliLabelCard}>
+                                <div className={styles.deliLabelHeader}>
+                                    <div className={styles.deliLabelBrand}>
+                                        <span className={styles.deliLabelShop}>HOFHERR MEAT CO.</span>
+                                        <span className={styles.deliLabelLoc}>
+                                            {deliStore === 'butcher'
+                                                ? 'THE BUTCHER SHOP · 300 HAPP RD · NORTHFIELD, IL'
+                                                : 'THE DEPOT · 754 ELM ST · WINNETKA METRA STATION'}
+                                        </span>
+                                    </div>
+                                    <div className={styles.deliLabelSeal}>
                                         <img
                                             src={selectedSticker.src}
                                             alt={selectedSticker.name}
                                             className={styles.dieCutImg}
                                         />
                                     </div>
-                                </>
-                            )}
+                                </div>
+
+                                <div className={styles.deliLabelFields}>
+                                    <div className={`${styles.deliField} ${styles.deliFieldFull}`}>
+                                        <span className={styles.deliFieldKey}>Cut / Selection</span>
+                                        <span className={styles.deliFieldVal}>{selectedSticker.sampleCut}</span>
+                                    </div>
+                                    <div className={styles.deliField}>
+                                        <span className={styles.deliFieldKey}>Department</span>
+                                        <span className={styles.deliFieldVal}>{selectedSticker.name}</span>
+                                    </div>
+                                    <div className={styles.deliField}>
+                                        <span className={styles.deliFieldKey}>Net Weight</span>
+                                        <span className={styles.deliFieldVal}>{selectedSticker.sampleWeight}</span>
+                                    </div>
+                                    <div className={styles.deliField}>
+                                        <span className={styles.deliFieldKey}>Packed On</span>
+                                        <span className={styles.deliFieldVal}>FRESH TODAY</span>
+                                    </div>
+                                    <div className={styles.deliField}>
+                                        <span className={styles.deliFieldKey}>Cut By</span>
+                                        <span className={styles.deliFieldVal}>SEAN H. · MASTER BUTCHER</span>
+                                    </div>
+                                </div>
+
+                                <div className={styles.deliLabelFooter}>
+                                    <span>{selectedSticker.storageNote}</span>
+                                    <span>LABEL SIZE: 4.00&quot; W × 3.00&quot; H · (847) 441-MEAT</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                </div>
             </section>
 
-        {/* ── 02 / Die-Cut Stickers & Tamper-Evident Deli Seals ── */}
-        <section id="stickers" aria-labelledby="stickers-heading" className="section">
-            <div className={`container ${styles.sectionStack}`}>
-                <div className={styles.sectionHeader}>
-                    <h2 id="stickers-heading" className={styles.sectionTitle}>
-                        02 / Die-Cut Flame Stickers &amp; Counter Seals
-                    </h2>
-                    <p className={styles.sectionDesc}>
-                        Each department has its own woodcut flame emblem — from Prime Beef, Heritage Pork, and
-                        Spit-Roasted Chicken to Cave-Aged Swiss Cheese and 24-Hour Kettle Bone Broth. Click any
-                        department sticker below to preview how it seals a custom-cut counter label.
-                    </p>
-                </div>
+            {/* ── 03 / Custom Rubber Ink Stamps ── */}
+            <section id="stamps" aria-labelledby="stamps-heading" className="section">
+                <div className={`container ${styles.sectionStack}`}>
+                    <div className={styles.sectionHeader}>
+                        <h2 id="stamps-heading" className={styles.sectionTitle}>
+                            03 / Turned-Wood &amp; Brass Rubber Stamps
+                        </h2>
+                        <p className={styles.sectionDesc}>
+                            Kraft takeaway bags, catering boxes, and butcher parcels receive a hand-pressed rubber stamp
+                            at checkout. The natural paper grain breaks up the solid crimson ink just enough to echo our
+                            distressed woodblock illustration style.
+                        </p>
+                    </div>
 
-                {/* 10-Sticker Interactive Department Grid */}
-                <div className={styles.stickerCatalogGrid}>
-                    {FLAME_STICKERS.map((sticker) => (
-                        <button
-                            key={sticker.id}
-                            type="button"
-                            onClick={() => setSelectedSticker(sticker)}
-                            className={`${styles.stickerCard} ${selectedSticker.id === sticker.id ? styles.stickerCardActive : ''}`}
-                            style={
-                                {
-                                    '--sticker-radius': stickerShape === 'circle' ? '999px' : '18px',
-                                } as React.CSSProperties
-                            }
-                        >
-                            <div className={styles.dieCutPreview}>
+                    <div className={styles.splitGrid}>
+                        <div className={styles.studioBoard}>
+                            <div className={styles.studioImageWrap}>
                                 <img
-                                    src={sticker.src}
-                                    alt={sticker.name}
-                                    className={styles.dieCutImg}
+                                    src="/assets/identity/stamps/butcher-rubber-stamp-system.jpg"
+                                    alt="Turned walnut and brass rubber butcher stamps with crimson ink pad and hand-stamped impressions on kraft paper"
+                                    className={styles.studioImage}
                                 />
                             </div>
-                            <span className={styles.stickerName}>{sticker.name}</span>
-                            <span className={styles.stickerDept}>{sticker.dept} · Ø 3.00&quot;</span>
-                        </button>
-                    ))}
-                </div>
-
-                <div className={styles.splitGrid}>
-                    <div className={styles.studioBoard}>
-                        <div className={styles.studioImageWrap}>
-                            <img
-                                src="/assets/identity/butcher-deli-stickers-sheet-v4.jpg?v=2"
-                                alt="Hofherr Meat Co. 10 true-SVG die-cut flame-linocut stickers, patterned butcher parcel with circular Flame-Cow seal, and tamper-evident deli scale labels on dark slate"
-                                className={styles.studioImage}
-                            />
-                        </div>
-                        <div className={styles.studioMeta}>
-                            <span className={styles.studioLabel}>Board 02 · Matte Vinyl Die-Cuts (Ø 3.00&quot;) &amp; Scale Labels (4.00&quot;×3.00&quot;)</span>
-                            <span className={styles.studioCaption}>Freezer-Grade Adhesive · Kiss-Cut &amp; Roll Format</span>
-                        </div>
-                    </div>
-
-                    <div className={styles.controlPanel}>
-                        <div className={styles.controlGroup}>
-                            <h3 className={styles.controlHeading}>Sticker Die-Cut Format &amp; Counter Location</h3>
-                            <div className={styles.buttonRow}>
-                                <button
-                                    type="button"
-                                    onClick={() => setStickerShape('circle')}
-                                    className={`${styles.pillBtn} ${stickerShape === 'circle' ? styles.pillBtnActive : ''}`}
-                                >
-                                    3.00&quot;×3.00&quot; Circular Coin Seal
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setStickerShape('rounded')}
-                                    className={`${styles.pillBtn} ${stickerShape === 'rounded' ? styles.pillBtnActive : ''}`}
-                                >
-                                    3.00&quot;×3.00&quot; Contour Badge Cut
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setDeliStore('butcher')}
-                                    className={`${styles.pillBtn} ${deliStore === 'butcher' ? styles.pillBtnActive : ''}`}
-                                >
-                                    Northfield Butcher Shop
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setDeliStore('depot')}
-                                    className={`${styles.pillBtn} ${deliStore === 'depot' ? styles.pillBtnActive : ''}`}
-                                >
-                                    Winnetka Depot
-                                </button>
-                            </div>
-                            <div className={styles.downloadRow}>
-                                    <Link
-                                        href="/product-identity/print?sheet=stickers&autoprint=1"
-                                    className={styles.downloadBtn}
-                                >
-                                    🖨 Print 3.00&quot;×3.00&quot; Stickers (1:1)
-                                    </Link>
-                            <Link
-                                href="/product-identity/print?sheet=scale-labels&autoprint=1"
-                                className={styles.downloadBtn}
-                            >
-                                🖨 Print 4.00&quot;×3.00&quot; Scale Labels (1:1)
-                        </Link>
-                        <a
-                            href="/assets/identity/hofherr-die-cut-stickers-10-icons.svg"
-                            download="hofherr-die-cut-stickers-10-icons.svg"
-                            className={styles.downloadBtn}
-                        >
-                            ⬇ 10-Icon Die-Cut Sheet (19.00&quot;×8.50&quot; .SVG)
-                        </a>
-                        <a
-                            href={selectedSticker.src}
-                            download={`hofherr-sticker-${selectedSticker.id}.svg`}
-                            className={styles.downloadBtn}
-                        >
-                            ⬇ {selectedSticker.name} Ø 3.00&quot; Sticker (.SVG)
-                        </a>
-                    </div>
-                </div>
-
-                {/* Live Deli Scale Label Preview */}
-                <div className={styles.deliLabelCard}>
-                    <div className={styles.deliLabelHeader}>
-                        <div className={styles.deliLabelBrand}>
-                            <span className={styles.deliLabelShop}>HOFHERR MEAT CO.</span>
-                            <span className={styles.deliLabelLoc}>
-                                {deliStore === 'butcher'
-                                    ? 'THE BUTCHER SHOP · 300 HAPP RD · NORTHFIELD, IL'
-                                    : 'THE DEPOT · 754 ELM ST · WINNETKA METRA STATION'}
-                            </span>
-                        </div>
-                        <div className={styles.deliLabelSeal}>
-                            <img
-                                src={selectedSticker.src}
-                                alt={selectedSticker.name}
-                                className={styles.dieCutImg}
-                            />
-                        </div>
-                    </div>
-
-                    <div className={styles.deliLabelFields}>
-                        <div className={`${styles.deliField} ${styles.deliFieldFull}`}>
-                            <span className={styles.deliFieldKey}>Cut / Selection</span>
-                            <span className={styles.deliFieldVal}>{selectedSticker.sampleCut}</span>
-                        </div>
-                        <div className={styles.deliField}>
-                            <span className={styles.deliFieldKey}>Department</span>
-                            <span className={styles.deliFieldVal}>{selectedSticker.name}</span>
-                        </div>
-                        <div className={styles.deliField}>
-                            <span className={styles.deliFieldKey}>Net Weight</span>
-                            <span className={styles.deliFieldVal}>{selectedSticker.sampleWeight}</span>
-                        </div>
-                        <div className={styles.deliField}>
-                            <span className={styles.deliFieldKey}>Packed On</span>
-                            <span className={styles.deliFieldVal}>FRESH TODAY</span>
-                        </div>
-                        <div className={styles.deliField}>
-                            <span className={styles.deliFieldKey}>Cut By</span>
-                            <span className={styles.deliFieldVal}>SEAN H. · MASTER BUTCHER</span>
-                        </div>
-                    </div>
-
-                    <div className={styles.deliLabelFooter}>
-                        <span>{selectedSticker.storageNote}</span>
-                        <span>LABEL SIZE: 4.00&quot; W × 3.00&quot; H · (847) 441-MEAT</span>
-                    </div>
-                </div>
-            </div>
-                    </div>
-                </div>
-            </section>
-
-        {/* ── 03 / Custom Rubber Ink Stamps ── */}
-        <section id="stamps" aria-labelledby="stamps-heading" className="section">
-            <div className={`container ${styles.sectionStack}`}>
-                <div className={styles.sectionHeader}>
-                    <h2 id="stamps-heading" className={styles.sectionTitle}>
-                        03 / Turned-Wood &amp; Brass Rubber Stamps
-                    </h2>
-                    <p className={styles.sectionDesc}>
-                        Kraft takeaway bags, catering boxes, and butcher parcels receive a hand-pressed rubber stamp
-                        at checkout. The natural paper grain breaks up the solid crimson ink just enough to echo our
-                        distressed woodblock illustration style.
-                    </p>
-                </div>
-
-                <div className={styles.splitGrid}>
-                    <div className={styles.studioBoard}>
-                        <div className={styles.studioImageWrap}>
-                            <img
-                                src="/assets/identity/butcher-rubber-stamp-system.jpg?v=2"
-                                alt="Turned walnut and brass rubber butcher stamps with crimson ink pad and hand-stamped impressions on kraft paper"
-                                className={styles.studioImage}
-                            />
-                        </div>
-                        <div className={styles.studioMeta}>
-                            <span className={styles.studioLabel}>Board 03 · Turned Walnut &amp; Brass Rocker Stamps</span>
-                            <span className={styles.studioCaption}>Laser-Engraved Natural Red Rubber · Waterproof Oil-Based Ink</span>
-                        </div>
-                    </div>
-
-                    <div className={styles.controlPanel}>
-                        <div className={styles.controlGroup}>
-                            <h3 className={styles.controlHeading}>Select Rubber Stamp Die</h3>
-                            <div className={styles.buttonRow}>
-                                {STAMP_PRESETS.map((preset) => (
-                                    <button
-                                        key={preset.id}
-                                        type="button"
-                                        onClick={() => {
-                                            setActiveStamp(preset);
-                                            setStampIconId(preset.defaultIconId);
-                                        }}
-                                        className={`${styles.pillBtn} ${activeStamp.id === preset.id ? styles.pillBtnActive : ''}`}
-                                    >
-                                        {preset.name}
-                                    </button>
-                                ))}
+                            <div className={styles.studioMeta}>
+                                <span className={styles.studioLabel}>Board 03 · Turned Walnut &amp; Brass Rocker Stamps</span>
+                                <span className={styles.studioCaption}>Laser-Engraved Natural Red Rubber · Waterproof Oil-Based Ink</span>
                             </div>
                         </div>
 
-                        <div className={styles.controlGroup}>
-                            <h3 className={styles.controlHeading}>Center Woodcut Emblem &amp; Ink Pad</h3>
-                            <div className={styles.buttonRow}>
-                                {FLAME_STICKERS.map((sticker) => (
-                                    <button
-                                        key={sticker.id}
-                                        type="button"
-                                        onClick={() => setStampIconId(sticker.id)}
-                                        className={`${styles.pillBtn} ${stampIconId === sticker.id ? styles.pillBtnActive : ''}`}
-                                    >
-                                        {sticker.name}
-                                    </button>
-                                ))}
+                        <div className={styles.controlPanel}>
+                            <div className={styles.controlGroup}>
+                                <h3 className={styles.controlHeading}>Select Rubber Stamp Die</h3>
+                                <div className={styles.buttonRow}>
+                                    {STAMP_PRESETS.map((preset) => (
+                                        <button
+                                            key={preset.id}
+                                            type="button"
+                                            onClick={() => {
+                                                setActiveStamp(preset);
+                                                setStampIconId(preset.defaultIconId);
+                                            }}
+                                            className={`${styles.pillBtn} ${activeStamp.id === preset.id ? styles.pillBtnActive : ''}`}
+                                        >
+                                            {preset.name}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                            <div className={styles.buttonRow}>
-                                {INK_PADS.map((ink) => (
-                                    <button
-                                        key={ink.id}
-                                        type="button"
-                                        onClick={() => setActiveInk(ink)}
-                                        className={`${styles.pillBtn} ${activeInk.id === ink.id ? styles.pillBtnActive : ''}`}
-                                        style={{ '--swatch-bg': ink.hex } as React.CSSProperties}
-                                    >
-                                        <span className={styles.swatchDot} />
-                                        {ink.label}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className={styles.downloadRow}>
+
+                            <div className={styles.controlGroup}>
+                                <h3 className={styles.controlHeading}>Center Woodcut Emblem &amp; Ink Pad</h3>
+                                <div className={styles.buttonRow}>
+                                    {ALL_DEPARTMENT_STICKERS.map((sticker) => (
+                                        <button
+                                            key={sticker.id}
+                                            type="button"
+                                            onClick={() => setStampIconId(sticker.id)}
+                                            className={`${styles.pillBtn} ${stampIconId === sticker.id ? styles.pillBtnActive : ''}`}
+                                        >
+                                            {sticker.name}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className={styles.buttonRow}>
+                                    {INK_PADS.map((ink) => (
+                                        <button
+                                            key={ink.id}
+                                            type="button"
+                                            onClick={() => setActiveInk(ink)}
+                                            className={`${styles.pillBtn} ${activeInk.id === ink.id ? styles.pillBtnActive : ''}`}
+                                            style={{ '--swatch-bg': ink.hex } as React.CSSProperties}
+                                        >
+                                            <span className={styles.swatchDot} />
+                                            {ink.label}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className={styles.downloadRow}>
                                     <Link
                                         href="/product-identity/print?sheet=stamps&autoprint=1"
-                                    className={styles.downloadBtn}
-                                >
-                                    🖨 Print Ø 2.00&quot;, Ø 3.00&quot; &amp; 2.50&quot;×1.10&quot; Stamp Dies (1:1)
-                            </Link>
-                            <a
-                                href="/assets/identity/hofherr-stamp-circular.svg"
-                                download="hofherr-stamp-circular.svg"
-                                className={styles.downloadBtn}
+                                        className={styles.downloadBtn}
+                                    >
+                                        🖨 Print Ø 2.00&quot;, Ø 3.00&quot; &amp; 2.50&quot;×1.10&quot; Stamp Dies (1:1)
+                                    </Link>
+                                    <a
+                                        href="/assets/identity/hofherr-stamp-circular.svg"
+                                        download="hofherr-stamp-circular.svg"
+                                        className={styles.downloadBtn}
+                                    >
+                                        ⬇ Ø 3.00&quot; (3.00&quot;×3.00&quot;) Circular Scalloped Stamp (.SVG)
+                                    </a>
+                                    <a
+                                        href="/assets/identity/hofherr-stamp-usda-prime.svg"
+                                        download="hofherr-stamp-usda-prime.svg"
+                                        className={styles.downloadBtn}
+                                    >
+                                        ⬇ 2.50&quot;×1.10&quot; USDA Prime Rectangular Stamp (.SVG)
+                                    </a>
+                                </div>
+                            </div>
+
+                            {/* Live Kraft Paper Vector Stamp Impression Preview */}
+                            <div
+                                className={styles.stampCanvasStage}
+                                style={
+                                    {
+                                        '--stamp-ink': activeInk.hex,
+                                    } as React.CSSProperties
+                                }
                             >
-                                ⬇ Ø 3.00&quot; (3.00&quot;×3.00&quot;) Circular Scalloped Stamp (.SVG)
-                            </a>
-                            <a
-                                href="/assets/identity/hofherr-stamp-usda-prime.svg"
-                                download="hofherr-stamp-usda-prime.svg"
-                                className={styles.downloadBtn}
-                            >
-                                ⬇ 2.50&quot;×1.10&quot; USDA Prime Rectangular Stamp (.SVG)
-                            </a>
+                                {activeStamp.shape === 'circle' ? (
+                                    <svg
+                                        viewBox="0 0 2000 2000"
+                                        className={styles.stampVectorCircle}
+                                        role="img"
+                                        aria-label={`${activeStamp.name} rubber stamp impression`}
+                                    >
+                                        <defs>
+                                            <mask id="stamp-scallop-ring-mask" x="14" y="14" width="1972" height="1972" maskUnits="userSpaceOnUse">
+                                                <path d={SCALLOP_OUTER_PATH} fill="#ffffff" />
+                                                <circle cx="1000" cy="1000" r="874" fill="#000000" />
+                                            </mask>
+                                        </defs>
+
+                                        {/* 76-Tooth Scalloped Outer Seal Ring */}
+                                        <path
+                                            d={SCALLOP_OUTER_PATH}
+                                            fill={activeInk.hex}
+                                            mask="url(#stamp-scallop-ring-mask)"
+                                        />
+
+                                        {/* Concentric Inner Seal Ring */}
+                                        <circle
+                                            cx="1000"
+                                            cy="1000"
+                                            r="832"
+                                            fill="none"
+                                            stroke={activeInk.hex}
+                                            strokeWidth="28"
+                                            strokeMiterlimit="16"
+                                        />
+
+                                        {/* Curved Top Arc Typography */}
+                                        {topArcGlyphs.map((glyph) => (
+                                            <text
+                                                key={`top-${glyph.key}`}
+                                                transform={glyph.transform}
+                                                textAnchor={isProvenance ? undefined : 'middle'}
+                                                dominantBaseline={isProvenance ? undefined : 'central'}
+                                                fill={activeInk.hex}
+                                                className={styles.stampSvgArcText}
+                                            >
+                                                <tspan x="0" y="0">{glyph.char}</tspan>
+                                            </text>
+                                        ))}
+
+                                        {/* Curved Bottom Arc Typography */}
+                                        {bottomArcGlyphs.map((glyph) => (
+                                            <text
+                                                key={`bot-${glyph.key}`}
+                                                transform={glyph.transform}
+                                                textAnchor={isProvenance ? undefined : 'middle'}
+                                                dominantBaseline={isProvenance ? undefined : 'central'}
+                                                fill={activeInk.hex}
+                                                className={styles.stampSvgArcBottomText}
+                                            >
+                                                <tspan x="0" y="0">{glyph.char}</tspan>
+                                            </text>
+                                        ))}
+
+                                        {/* Left Flank: EST. 2018 */}
+                                        <g>
+                                            <text
+                                                transform="translate(240.39 996.01) rotate(-8)"
+                                                fill={activeInk.hex}
+                                                className={styles.stampSvgFlankText}
+                                            >
+                                                <tspan x="0" y="0">{activeStamp.flankTop}</tspan>
+                                            </text>
+                                            <text
+                                                transform="translate(241.0249 1092.8677) rotate(-8)"
+                                                fill={activeInk.hex}
+                                                className={styles.stampSvgFlankText}
+                                            >
+                                                <tspan x="0" y="0">{activeStamp.flankBottom}</tspan>
+                                            </text>
+                                        </g>
+
+                                        {/* Right Flank: EST. 2018 */}
+                                        <g>
+                                            <text
+                                                transform="translate(1558.7474 991.6016) rotate(-8)"
+                                                fill={activeInk.hex}
+                                                className={styles.stampSvgFlankText}
+                                            >
+                                                <tspan x="0" y="0">{activeStamp.flankTop}</tspan>
+                                            </text>
+                                            <text
+                                                transform="translate(1559.3834 1088.4556) rotate(-8)"
+                                                fill={activeInk.hex}
+                                                className={styles.stampSvgFlankText}
+                                            >
+                                                <tspan x="0" y="0">{activeStamp.flankBottom}</tspan>
+                                            </text>
+                                        </g>
+
+                                        {/* Open-Linework Two-Tone Woodcut Center Emblem */}
+                                        {stampIconId === 'cow' ? (
+                                            <g>
+                                                <path
+                                                    d={STAMP_COW_CORAL_PATH}
+                                                    fill="#e85222"
+                                                    fillRule="evenodd"
+                                                    opacity="0.88"
+                                                />
+                                                <path
+                                                    d={STAMP_COW_CRIMSON_PATH}
+                                                    fill={activeInk.hex}
+                                                    fillRule="evenodd"
+                                                />
+                                            </g>
+                                        ) : (
+                                            <g transform="translate(188.05, 166.38) scale(1.5844)">
+                                                <path
+                                                    d={currentStampPaths.coralPath}
+                                                    fill="#e85222"
+                                                    fillRule="evenodd"
+                                                    opacity="0.88"
+                                                />
+                                                <path
+                                                    d={currentStampPaths.crimsonPath}
+                                                    fill={activeInk.hex}
+                                                    fillRule="evenodd"
+                                                />
+                                            </g>
+                                        )}
+                                    </svg>
+                                ) : (
+                                    <svg
+                                        viewBox="0 0 640 280"
+                                        className={styles.stampVectorRect}
+                                        role="img"
+                                        aria-label={`${activeStamp.name} rubber stamp impression`}
+                                    >
+                                        <rect
+                                            x="14"
+                                            y="14"
+                                            width="612"
+                                            height="252"
+                                            rx="18"
+                                            ry="18"
+                                            fill="none"
+                                            stroke={activeInk.hex}
+                                            strokeWidth="10"
+                                        />
+                                        <rect
+                                            x="28"
+                                            y="28"
+                                            width="584"
+                                            height="224"
+                                            rx="10"
+                                            ry="10"
+                                            fill="none"
+                                            stroke={activeInk.hex}
+                                            strokeWidth="3.5"
+                                        />
+                                        <text
+                                            x="320"
+                                            y="98"
+                                            textAnchor="middle"
+                                            fill={activeInk.hex}
+                                            className={styles.stampRectTopText}
+                                        >
+                                            {activeStamp.topText}
+                                        </text>
+                                        <text
+                                            x="320"
+                                            y="166"
+                                            textAnchor="middle"
+                                            fill={activeInk.hex}
+                                            className={styles.stampRectMidText}
+                                        >
+                                            {activeStamp.centerTitle}
+                                        </text>
+                                        <text
+                                            x="320"
+                                            y="226"
+                                            textAnchor="middle"
+                                            fill={activeInk.hex}
+                                            className={styles.stampRectBotText}
+                                        >
+                                            {activeStamp.bottomText}
+                                        </text>
+                                    </svg>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── 04 / Complete Packaging Suite & Production Specs ── */}
+            <section id="packaging-suite" aria-labelledby="packaging-suite-heading" className="section">
+                <div className={`container ${styles.sectionStack}`}>
+                    <div className={styles.sectionHeader}>
+                        <h2 id="packaging-suite-heading" className={styles.sectionTitle}>
+                            04 / Complete Countertop Packaging Suite
+                        </h2>
+                        <p className={styles.sectionDesc}>
+                            Viewed together on the block, the wrapping paper, die-cut department seals, and hand-stamped
+                            kraft takeaway bags hold a single cohesive visual register from the butcher counter to the
+                            customer&apos;s kitchen.
+                        </p>
+                    </div>
+
+                    <div className={styles.studioBoard}>
+                        <div className={styles.studioImageWrap}>
+                            <img
+                                src="/assets/identity/packaging/butcher-complete-packaging-suite-10-icons.jpg"
+                                alt="Complete Hofherr Meat Co. countertop packaging suite with patterned butcher paper, die-cut stickers, and stamped kraft takeaway bag"
+                                className={styles.studioImage}
+                            />
+                        </div>
+                        <div className={styles.studioMeta}>
+                            <span className={styles.studioLabel}>Board 04 · Full Packaging System Assembly</span>
+                            <span className={styles.studioCaption}>
+                                Wrapping Paper + Die-Cut Department Seals + Stamped Kraft Carryout Bag
+                            </span>
                         </div>
                     </div>
 
-                    {/* Live Kraft Paper Vector Stamp Impression Preview */}
-                    <div
-                        className={styles.stampCanvasStage}
-                        style={
-                            {
-                                '--stamp-ink': activeInk.hex,
-                            } as React.CSSProperties
-                        }
-                    >
-                        {activeStamp.shape === 'circle' ? (
-                            <svg
-                                viewBox="0 0 2000 2000"
-                                className={styles.stampVectorCircle}
-                                role="img"
-                                aria-label={`${activeStamp.name} rubber stamp impression`}
-                            >
-                                <defs>
-                                    <mask id="stamp-scallop-ring-mask" x="14" y="14" width="1972" height="1972" maskUnits="userSpaceOnUse">
-                                        <path d={SCALLOP_OUTER_PATH} fill="#ffffff" />
-                                        <circle cx="1000" cy="1000" r="874" fill="#000000" />
-                                    </mask>
-                                </defs>
+                    <div className={styles.stampSpecList}>
+                        <div className={styles.specCard}>
+                            <span className={styles.specCode}>SPEC 01 · WRAPPING PAPER</span>
+                            <h3 className={styles.specName}>40# Peach &amp; Unbleached Butcher Roll</h3>
+                            <p className={styles.specDetail}>
+                                FDA food-contact compliant wet-strength butcher paper. Printed flexographically in two
+                                spot colors: Oxblood Crimson (<code>#8B0A10</code>) and Smokehouse Amber (<code>#F59B1A</code>)
+                                on 18&quot; and 24&quot; counter rolls with a 6&quot; diagonal step-and-repeat grid.
+                            </p>
+                        </div>
 
-                                {/* 76-Tooth Scalloped Outer Seal Ring */}
-                                <path
-                                    d={SCALLOP_OUTER_PATH}
-                                    fill={activeInk.hex}
-                                    mask="url(#stamp-scallop-ring-mask)"
-                                />
+                        <div className={styles.specCard}>
+                            <span className={styles.specCode}>SPEC 02 · STICKERS &amp; SEALS</span>
+                            <h3 className={styles.specName}>Cold-Temp Matte Vinyl &amp; Scale Labels</h3>
+                            <p className={styles.specDetail}>
+                                3&quot; circular and contour die-cut stickers printed on 70# matte weatherproof stock
+                                with freezer-grade cold-temp adhesive (rated down to -20°F) so seals never lift on
+                                chilled butcher paper or vacuum-sealed cuts.
+                            </p>
+                        </div>
 
-                                {/* Concentric Inner Seal Ring */}
-                                <circle
-                                    cx="1000"
-                                    cy="1000"
-                                    r="832"
-                                    fill="none"
-                                    stroke={activeInk.hex}
-                                    strokeWidth="28"
-                                    strokeMiterlimit="16"
-                                />
-
-                                {/* Curved Top Arc Typography */}
-                                {topArcGlyphs.map((glyph) => (
-                                    <text
-                                        key={`top-${glyph.key}`}
-                                        transform={glyph.transform}
-                                        textAnchor={isProvenance ? undefined : 'middle'}
-                                        dominantBaseline={isProvenance ? undefined : 'central'}
-                                        fill={activeInk.hex}
-                                        className={styles.stampSvgArcText}
-                                    >
-                                        <tspan x="0" y="0">{glyph.char}</tspan>
-                                    </text>
-                                ))}
-
-                                {/* Curved Bottom Arc Typography */}
-                                {bottomArcGlyphs.map((glyph) => (
-                                    <text
-                                        key={`bot-${glyph.key}`}
-                                        transform={glyph.transform}
-                                        textAnchor={isProvenance ? undefined : 'middle'}
-                                        dominantBaseline={isProvenance ? undefined : 'central'}
-                                        fill={activeInk.hex}
-                                        className={styles.stampSvgArcBottomText}
-                                    >
-                                        <tspan x="0" y="0">{glyph.char}</tspan>
-                                    </text>
-                                ))}
-
-                                {/* Left Flank: EST. 2018 */}
-                                <g>
-                                    <text
-                                        transform="translate(240.39 996.01) rotate(-8)"
-                                        fill={activeInk.hex}
-                                        className={styles.stampSvgFlankText}
-                                    >
-                                        <tspan x="0" y="0">{activeStamp.flankTop}</tspan>
-                                    </text>
-                                    <text
-                                        transform="translate(241.0249 1092.8677) rotate(-8)"
-                                        fill={activeInk.hex}
-                                        className={styles.stampSvgFlankText}
-                                    >
-                                        <tspan x="0" y="0">{activeStamp.flankBottom}</tspan>
-                                    </text>
-                                </g>
-
-                                {/* Right Flank: EST. 2018 */}
-                                <g>
-                                    <text
-                                        transform="translate(1558.7474 991.6016) rotate(-8)"
-                                        fill={activeInk.hex}
-                                        className={styles.stampSvgFlankText}
-                                    >
-                                        <tspan x="0" y="0">{activeStamp.flankTop}</tspan>
-                                    </text>
-                                    <text
-                                        transform="translate(1559.3834 1088.4556) rotate(-8)"
-                                        fill={activeInk.hex}
-                                        className={styles.stampSvgFlankText}
-                                    >
-                                        <tspan x="0" y="0">{activeStamp.flankBottom}</tspan>
-                                    </text>
-                                </g>
-
-                                {/* Open-Linework Two-Tone Woodcut Center Emblem */}
-                                {stampIconId === 'cow' ? (
-                                    <g>
-                                        <path
-                                            d={STAMP_COW_CORAL_PATH}
-                                            fill="#e85222"
-                                            fillRule="evenodd"
-                                            opacity="0.88"
-                                        />
-                                        <path
-                                            d={STAMP_COW_CRIMSON_PATH}
-                                            fill={activeInk.hex}
-                                            fillRule="evenodd"
-                                        />
-                                    </g>
-                                ) : (
-                                    <g transform="translate(188.05, 166.38) scale(1.5844)">
-                                        <path
-                                            d={currentStampPaths.coralPath}
-                                            fill="#e85222"
-                                            fillRule="evenodd"
-                                            opacity="0.88"
-                                        />
-                                        <path
-                                            d={currentStampPaths.crimsonPath}
-                                            fill={activeInk.hex}
-                                            fillRule="evenodd"
-                                        />
-                                    </g>
-                                )}
-                            </svg>
-                        ) : (
-                            <svg
-                                viewBox="0 0 640 280"
-                                className={styles.stampVectorRect}
-                                role="img"
-                                aria-label={`${activeStamp.name} rubber stamp impression`}
-                            >
-                                <rect
-                                    x="14"
-                                    y="14"
-                                    width="612"
-                                    height="252"
-                                    rx="18"
-                                    ry="18"
-                                    fill="none"
-                                    stroke={activeInk.hex}
-                                    strokeWidth="10"
-                                />
-                                <rect
-                                    x="28"
-                                    y="28"
-                                    width="584"
-                                    height="224"
-                                    rx="10"
-                                    ry="10"
-                                    fill="none"
-                                    stroke={activeInk.hex}
-                                    strokeWidth="3.5"
-                                />
-                                <text
-                                    x="320"
-                                    y="98"
-                                    textAnchor="middle"
-                                    fill={activeInk.hex}
-                                    className={styles.stampRectTopText}
-                                >
-                                    {activeStamp.topText}
-                                </text>
-                                <text
-                                    x="320"
-                                    y="166"
-                                    textAnchor="middle"
-                                    fill={activeInk.hex}
-                                    className={styles.stampRectMidText}
-                                >
-                                    {activeStamp.centerTitle}
-                                </text>
-                                <text
-                                    x="320"
-                                    y="226"
-                                    textAnchor="middle"
-                                    fill={activeInk.hex}
-                                    className={styles.stampRectBotText}
-                                >
-                                    {activeStamp.bottomText}
-                                </text>
-                            </svg>
-                        )}
+                        <div className={styles.specCard}>
+                            <span className={styles.specCode}>SPEC 03 · RUBBER STAMPS</span>
+                            <h3 className={styles.specName}>55-Shore Laser-Cut Red Rubber</h3>
+                            <p className={styles.specDetail}>
+                                Deep-relief 2.3mm laser-engraved natural red rubber mounted on turned American walnut
+                                handles and curved brass rocker mounts for uneven meat parcels, paired with fast-drying
+                                waterproof pigment ink pads.
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </div>
                 </div>
             </section>
 
-        {/* ── 04 / Complete Packaging Suite & Production Specs ── */}
-        <section id="packaging-suite" aria-labelledby="packaging-suite-heading" className="section">
-            <div className={`container ${styles.sectionStack}`}>
-                <div className={styles.sectionHeader}>
-                    <h2 id="packaging-suite-heading" className={styles.sectionTitle}>
-                        04 / Complete Countertop Packaging Suite
-                    </h2>
-                    <p className={styles.sectionDesc}>
-                        Viewed together on the block, the wrapping paper, die-cut department seals, and hand-stamped
-                        kraft takeaway bags hold a single cohesive visual register from the butcher counter to the
-                        customer&apos;s kitchen.
-                    </p>
-                </div>
+            {/* ── 05–10 / Extended identity system (images via Gemini Nano Banana) ── */}
+            <ExtendedIdentityBoards />
 
-                <div className={styles.studioBoard}>
-                    <div className={styles.studioImageWrap}>
-                        <img
-                            src="/assets/identity/butcher-complete-packaging-suite-v5.jpg?v=4"
-                            alt="Complete Hofherr Meat Co. countertop packaging suite with patterned butcher paper, die-cut stickers, and stamped kraft takeaway bag"
-                            className={styles.studioImage}
-                        />
-                    </div>
-                    <div className={styles.studioMeta}>
-                        <span className={styles.studioLabel}>Board 04 · Full Packaging System Assembly</span>
-                        <span className={styles.studioCaption}>
-                            Wrapping Paper + Die-Cut Department Seals + Stamped Kraft Carryout Bag
-                        </span>
-                    </div>
-                </div>
+            {/* ── 09B / Instagram (@hofherrmeatco) & Multi-App Brand Identity System (#app-identity) ── */}
+            <AppBrandIdentitySection />
 
-                <div className={styles.stampSpecList}>
-                    <div className={styles.specCard}>
-                        <span className={styles.specCode}>SPEC 01 · WRAPPING PAPER</span>
-                        <h3 className={styles.specName}>40# Peach &amp; Unbleached Butcher Roll</h3>
-                        <p className={styles.specDetail}>
-                            FDA food-contact compliant wet-strength butcher paper. Printed flexographically in two
-                            spot colors: Oxblood Crimson (<code>#8B0A10</code>) and Smokehouse Amber (<code>#F59B1A</code>)
-                            on 18&quot; and 24&quot; counter rolls with a 6&quot; diagonal step-and-repeat grid.
-                        </p>
-                    </div>
+            {/* ── 11 / Merged Social Media Kit, Cut Charts (#cuts), Print & Auto-Post Verification Studio ── */}
+            <SocialKit embedded />
 
-                    <div className={styles.specCard}>
-                        <span className={styles.specCode}>SPEC 02 · STICKERS &amp; SEALS</span>
-                        <h3 className={styles.specName}>Cold-Temp Matte Vinyl &amp; Scale Labels</h3>
-                        <p className={styles.specDetail}>
-                            3&quot; circular and contour die-cut stickers printed on 70# matte weatherproof stock
-                            with freezer-grade cold-temp adhesive (rated down to -20°F) so seals never lift on
-                            chilled butcher paper or vacuum-sealed cuts.
-                        </p>
-                    </div>
+            {/* ── 12 / Official Press & Media Download Kit (#press-kit) ── */}
+            <PressKitSection />
 
-                    <div className={styles.specCard}>
-                        <span className={styles.specCode}>SPEC 03 · RUBBER STAMPS</span>
-                        <h3 className={styles.specName}>55-Shore Laser-Cut Red Rubber</h3>
-                        <p className={styles.specDetail}>
-                            Deep-relief 2.3mm laser-engraved natural red rubber mounted on turned American walnut
-                            handles and curved brass rocker mounts for uneven meat parcels, paired with fast-drying
-                            waterproof pigment ink pads.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            </section>
-
-        {/* ── 05–10 / Extended identity system (images via Gemini Nano Banana) ── */}
-        <ExtendedIdentityBoards />
-
-        {/* ── 09B / Instagram (@hofherrmeatco) & Multi-App Brand Identity System (#app-identity) ── */}
-        <AppBrandIdentitySection />
-
-        {/* ── 11 / Merged Social Media Kit, Cut Charts (#cuts), Print & Auto-Post Verification Studio ── */}
-        <SocialKit embedded />
-
-        {/* ── 12 / Official Press & Media Download Kit (#press-kit) ── */}
-        <PressKitSection />
-
-        {/* ── 13 / Yelp & Facebook Review Audit & Strategic Growth Pitch Deck (#pitch-deck) ── */}
-        <PitchDeckClient embedded />
+            {/* ── 13 / Yelp & Facebook Review Audit & Strategic Growth Pitch Deck (#pitch-deck) ── */}
+            <PitchDeckClient embedded />
         </main>
     );
 }

@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     'Craft butchery since 1903. Order online for custom cuts, dry-aged USDA prime beef, rotisserie chicken, and world-class BBQ catering. 300 Happ Rd, Northfield & Winnetka Depot.',
   alternates: { canonical: 'https://hofherrmeatco.com' },
   openGraph: {
+    siteName: 'Hofherr Meat Co.',
+    type: 'website',
+    locale: 'en_US',
     title: 'Hofherr Meat Co. | Premium Butcher Shop — Northfield, IL',
     description:
       'Craft butchery since 1903. Custom cuts, dry-aged USDA prime beef, rotisserie chicken, pig roasts & full catering. Order online for curbside pickup.',

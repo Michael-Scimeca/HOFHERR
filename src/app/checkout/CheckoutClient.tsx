@@ -1,16 +1,19 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, useRef, useTransition } from 'react';
-import { useSession, signIn, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback, useMemo, useRef, useTransition, type CSSProperties } from 'react';
+import { useSession, signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { usePageTransition } from '@/components/PageTransition';
 import styles from './checkout.module.css';
 
 // ── Constants ──────────────────────────────────────────────────────────────
 const TAX_RATE = 0.0225;
+const CUTOFF_BUFFER_HOURS = 2; // Stop same-day orders 2 hours before store closing
+const STORAGE_VERSION = 'v1';
 
 // ── Types ──────────────────────────────────────────────────────────────────
+type StoreId = 'butcher' | 'depot';
+
 type CartItem = {
     name: string;
     price: string | number;
@@ -19,17 +22,97 @@ type CartItem = {
     desc?: string;
 };
 
-type Coupon = { code: string; type: 'percent' | 'fixed'; value: number } | null;
+type DaySchedule = {
+    isClosed: boolean;
+    openHour: number;
+    openMin: number;
+    closeHour: number;
+    cutoffHour: number;
+    openLabel: string;
+    closeLabel: string;
+    cutoffLabel: string;
+};
+
+type WeeklyScheduleGroup = {
+    daysLabel: string;
+    dayNums: number[];
+    hoursLabel: string;
+    cutoffLabel: string;
+    isClosed: boolean;
+};
+
+const STORE_WEEKLY_GROUPS: Record<StoreId, WeeklyScheduleGroup[]> = {
+    butcher: [
+        {
+            daysLabel: 'Tue – Fri',
+            dayNums: [2, 3, 4, 5],
+            hoursLabel: '10:00 AM – 6:00 PM',
+            cutoffLabel: 'Cutoff 4:00 PM (2h buffer)',
+            isClosed: false,
+        },
+        {
+            daysLabel: 'Saturday',
+            dayNums: [6],
+            hoursLabel: '10:00 AM – 5:00 PM',
+            cutoffLabel: 'Cutoff 3:00 PM (2h buffer)',
+            isClosed: false,
+        },
+        {
+            daysLabel: 'Sunday',
+            dayNums: [0],
+            hoursLabel: '10:00 AM – 4:00 PM',
+            cutoffLabel: 'Cutoff 2:00 PM (2h buffer)',
+            isClosed: false,
+        },
+        {
+            daysLabel: 'Monday',
+            dayNums: [1],
+            hoursLabel: 'Closed',
+            cutoffLabel: 'Ready Tue 10:00 AM',
+            isClosed: true,
+        },
+    ],
+    depot: [
+        {
+            daysLabel: 'Mon – Fri',
+            dayNums: [1, 2, 3, 4, 5],
+            hoursLabel: '10:30 AM – 6:00 PM',
+            cutoffLabel: 'Cutoff 4:00 PM (2h buffer)',
+            isClosed: false,
+        },
+        {
+            daysLabel: 'Sat – Sun',
+            dayNums: [6, 0],
+            hoursLabel: 'Closed',
+            cutoffLabel: 'Ready Mon 10:30 AM',
+            isClosed: true,
+        },
+    ],
+};
 
 // ── Helpers ────────────────────────────────────────────────────────────────
+const WEEKDAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const WEEKDAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function formatShortDate(d: Date): string {
+    return `${WEEKDAYS_SHORT[d.getDay()]}, ${MONTHS_SHORT[d.getMonth()]} ${d.getDate()}`;
+}
+
+function formatLongWeekdayDate(d: Date): string {
+    return `${WEEKDAYS_LONG[d.getDay()]}, ${MONTHS_SHORT[d.getMonth()]} ${d.getDate()}`;
+}
+
 function parseItemPrice(price: string | number): number {
     if (typeof price === 'number') return price;
     const m = String(price).match(/\$([\d.]+)/);
     return m ? parseFloat(m[1]) : parseFloat(String(price)) || 0;
 }
+
 function fmtTotal(n: number): string {
     return '$' + n.toFixed(2);
 }
+
 function formatPhoneNumber(value: string) {
     const digits = value.replace(/\D/g, '').slice(0, 10);
     if (digits.length <= 3) return digits;
@@ -37,58 +120,121 @@ function formatPhoneNumber(value: string) {
     return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 }
 
+function formatHour12(hour24: number, min = 0): string {
+    const period = hour24 >= 12 ? 'PM' : 'AM';
+    let dispH = hour24 > 12 ? hour24 - 12 : hour24;
+    if (dispH === 0) dispH = 12;
+    const minStr = min === 0 ? '00' : String(min).padStart(2, '0');
+    return `${dispH}:${minStr} ${period}`;
+}
+
+function formatDurationMinutes(totalMins: number): string {
+    const clamped = Math.max(1, Math.ceil(totalMins));
+    const hrs = Math.floor(clamped / 60);
+    const mins = clamped % 60;
+    if (hrs > 0 && mins > 0) return `${hrs} hr ${mins} min`;
+    if (hrs > 0) return `${hrs} ${hrs === 1 ? 'hour' : 'hours'}`;
+    return `${mins} min`;
+}
+
+function getStoreHoursForDay(dayOfWeek: number, activeStore: StoreId): DaySchedule {
+    if (activeStore === 'butcher') {
+        if (dayOfWeek === 1) {
+            return {
+                isClosed: true,
+                openHour: 10,
+                openMin: 0,
+                closeHour: 18,
+                cutoffHour: 16,
+                openLabel: '',
+                closeLabel: '',
+                cutoffLabel: '',
+            };
+        }
+        const closeHour = dayOfWeek === 6 ? 17 : dayOfWeek === 0 ? 16 : 18;
+        const cutoffHour = closeHour - CUTOFF_BUFFER_HOURS;
+        return {
+            isClosed: false,
+            openHour: 10,
+            openMin: 0,
+            closeHour,
+            cutoffHour,
+            openLabel: '10:00 AM',
+            closeLabel: formatHour12(closeHour, 0),
+            cutoffLabel: formatHour12(cutoffHour, 0),
+        };
+    }
+
+    // The Depot (Winnetka) — Mon–Fri 10:30 AM – 6:00 PM
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+        return {
+            isClosed: true,
+            openHour: 10,
+            openMin: 30,
+            closeHour: 18,
+            cutoffHour: 16,
+            openLabel: '',
+            closeLabel: '',
+            cutoffLabel: '',
+        };
+    }
+    const closeHour = 18;
+    const cutoffHour = closeHour - CUTOFF_BUFFER_HOURS;
+    return {
+        isClosed: false,
+        openHour: 10,
+        openMin: 30,
+        closeHour,
+        cutoffHour,
+        openLabel: '10:30 AM',
+        closeLabel: formatHour12(closeHour, 0),
+        cutoffLabel: formatHour12(cutoffHour, 0),
+    };
+}
+
 // ── Date / time helpers ────────────────────────────────────────────────────
-function getAvailablePickupDates(activeStore: string): Date[] {
+function getAvailablePickupDates(activeStore: StoreId, now: Date): Date[] {
     const dates: Date[] = [];
-    const now = new Date();
     for (let i = 0; i < 14; i++) {
-        const d = new Date();
+        const d = new Date(now);
         d.setDate(now.getDate() + i);
-        const day = d.getDay();
-        let isPast = false;
+        const sched = getStoreHoursForDay(d.getDay(), activeStore);
+        if (sched.isClosed) continue;
+
+        // Enforce 2-hour same-day cutoff buffer before store closing
         if (i === 0) {
-            let lastH = 18;
-            if (activeStore === 'butcher') {
-                if (day === 6) lastH = 17;
-                if (day === 0) lastH = 16;
+            if (now.getHours() >= sched.cutoffHour) {
+                continue;
             }
-            if (now.getHours() >= lastH) isPast = true;
         }
-        if (isPast) continue;
-        if (activeStore === 'butcher') {
-            if (day !== 1) dates.push(d);
-        } else {
-            if (day !== 0 && day !== 6) dates.push(d);
-        }
+        dates.push(d);
     }
     return dates;
 }
 
-function getAvailableTimeSlots(date: Date | null, activeStore: string) {
+function getAvailableTimeSlots(date: Date | null, activeStore: StoreId, now: Date) {
     if (!date) return [];
     const slots: { label: string; value: string; disabled: boolean }[] = [];
-    const day = date.getDay();
-    const now = new Date();
+    const sched = getStoreHoursForDay(date.getDay(), activeStore);
+    if (sched.isClosed) return [];
+
     const isToday = date.toDateString() === now.toDateString();
-    let start = 10, startMin = 0, end = 18;
-    if (activeStore === 'butcher') {
-        if (day === 6) end = 17;
-        if (day === 0) end = 16;
-    } else {
-        startMin = 30;
-    }
+    const start = sched.openHour;
+    const startMin = sched.openMin;
+    const end = sched.closeHour;
+
     for (let h = start; h < end; h++) {
         if (!(h === start && startMin === 30)) {
-            const dis = isToday && (h < now.getHours() || (h === now.getHours() && now.getMinutes() + 15 > 0));
+            const dis = isToday && (h < now.getHours() || (h === now.getHours() && now.getMinutes() + 30 > 0));
             slots.push({ label: '', value: `${h}:00`, disabled: dis });
         }
-        const dis30 = isToday && (h < now.getHours() || (h === now.getHours() && now.getMinutes() + 15 > 30));
+        const dis30 = isToday && (h < now.getHours() || (h === now.getHours() && now.getMinutes() + 30 > 30));
         slots.push({ label: '', value: `${h}:30`, disabled: dis30 });
     }
     let foundFirst = false;
     return slots.map(s => {
         const [h, m] = s.value.split(':');
-        const hh = parseInt(h);
+        const hh = parseInt(h, 10);
         const period = hh >= 12 ? 'PM' : 'AM';
         let dispH = hh > 12 ? hh - 12 : hh;
         if (dispH === 0) dispH = 12;
@@ -102,23 +248,125 @@ function getAvailableTimeSlots(date: Date | null, activeStore: string) {
     });
 }
 
+function getCutoffStatusInfo(activeStore: StoreId, now: Date, firstAvailableDate: Date | undefined) {
+    const todaySched = getStoreHoursForDay(now.getDay(), activeStore);
+    const nextDateLabel = firstAvailableDate
+        ? formatLongWeekdayDate(firstAvailableDate)
+        : 'next business day';
+    const nextSched = firstAvailableDate
+        ? getStoreHoursForDay(firstAvailableDate.getDay(), activeStore)
+        : todaySched;
+    const nextOpenLabel = nextSched.openLabel || (activeStore === 'butcher' ? '10:00 AM' : '10:30 AM');
+
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+    const openMinutes = todaySched.openHour * 60 + todaySched.openMin;
+    const cutoffMinutes = todaySched.cutoffHour * 60;
+    const closeMinutes = todaySched.closeHour * 60;
+
+    if (todaySched.isClosed) {
+        return {
+            state: 'closed' as const,
+            badgeText: 'Store Closed Today · Next Business Day Pickup',
+            todayTag: 'Today: Closed',
+            headline: `We're closed today — your order will be ready next business day (${nextDateLabel} starting at ${nextOpenLabel}).`,
+            subtext: `Same-day pickup requires a ${CUTOFF_BUFFER_HOURS}-hour buffer before store closing. Orders placed while closed are prepared fresh first thing on our next open business day.`,
+            isSameDayAvailable: false,
+            nextDateLabel,
+            nextOpenLabel,
+        };
+    }
+
+    if (nowMinutes < cutoffMinutes) {
+        const minsToCutoff = cutoffMinutes - nowMinutes;
+        const minsToClose = closeMinutes - nowMinutes;
+        const cutoffCountdown = formatDurationMinutes(minsToCutoff);
+        const closeCountdown = formatDurationMinutes(minsToClose);
+
+        const headline =
+            nowMinutes < openMinutes
+                ? `Opens today at ${todaySched.openLabel} — same-day orders close at ${todaySched.cutoffLabel} (${CUTOFF_BUFFER_HOURS} hours before our ${todaySched.closeLabel} close).`
+                : `You have ${cutoffCountdown} left to order for same-day pickup (${closeCountdown} until store closes at ${todaySched.closeLabel}).`;
+
+        return {
+            state: 'open' as const,
+            badgeText: `Same-Day Pickup Open · ${CUTOFF_BUFFER_HOURS}-Hr Closing Buffer`,
+            todayTag: `Today: ${todaySched.openLabel} – ${todaySched.closeLabel} (Cutoff ${todaySched.cutoffLabel})`,
+            headline,
+            subtext: `We stop taking same-day orders ${CUTOFF_BUFFER_HOURS} hours before close (${todaySched.cutoffLabel} today) so our butchers have time to custom-cut and pack your order. Orders placed after ${todaySched.cutoffLabel} will come ready on the next business day.`,
+            isSameDayAvailable: true,
+            nextDateLabel,
+            nextOpenLabel,
+        };
+    }
+
+    if (nowMinutes < closeMinutes) {
+        const minsToClose = closeMinutes - nowMinutes;
+        const closeCountdown = formatDurationMinutes(minsToClose);
+
+        return {
+            state: 'buffer' as const,
+            badgeText: `Within ${CUTOFF_BUFFER_HOURS}-Hr Closing Buffer · Ready Next Business Day`,
+            todayTag: `Today: ${todaySched.openLabel} – ${todaySched.closeLabel} (Cutoff ${todaySched.cutoffLabel} Passed)`,
+            headline: `Heads up: There is only ${closeCountdown} left before the store closes at ${todaySched.closeLabel} — same-day ordering ended at ${todaySched.cutoffLabel}.`,
+            subtext: `Because we require a ${CUTOFF_BUFFER_HOURS}-hour buffer before closing to prepare fresh cuts, you can no longer order for pickup today. Your order will come ready on the next business day: ${nextDateLabel} starting at ${nextOpenLabel}.`,
+            isSameDayAvailable: false,
+            nextDateLabel,
+            nextOpenLabel,
+        };
+    }
+
+    return {
+        state: 'closed' as const,
+        badgeText: 'Closed for the Evening · Ready Next Business Day',
+        todayTag: `Today's Hours (${todaySched.openLabel} – ${todaySched.closeLabel}) Have Ended`,
+        headline: `The shop closed at ${todaySched.closeLabel} today — your order will come ready on the next business day (${nextDateLabel} starting at ${nextOpenLabel}).`,
+        subtext: `Same-day online orders must be placed at least ${CUTOFF_BUFFER_HOURS} hours before store closing (${todaySched.cutoffLabel}). Orders placed within the 2-hour closing window or after hours are prepared fresh for the next business day.`,
+        isSameDayAvailable: false,
+        nextDateLabel,
+        nextOpenLabel,
+    };
+}
+
+function readInitialCheckoutState(): { store: StoreId; items: CartItem[] } {
+    if (typeof window === 'undefined') {
+        return { store: 'butcher', items: [] };
+    }
+    try {
+        const rawStore = localStorage.getItem('hofherr_active_store');
+        const store: StoreId = rawStore === 'depot' ? 'depot' : 'butcher';
+        const key = store === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
+        const saved =
+            localStorage.getItem(`${key}_${STORAGE_VERSION}`) ||
+            localStorage.getItem(key) ||
+            localStorage.getItem('hofherr_cart');
+        const items: CartItem[] = saved ? JSON.parse(saved) : [];
+        return { store, items };
+    } catch {
+        return { store: 'butcher', items: [] };
+    }
+}
+
 // ── Component ──────────────────────────────────────────────────────────────
 export default function CheckoutClient() {
     const { data: session, status } = useSession();
-    const router = useRouter();
     const { navigateTo } = usePageTransition();
     const [isPending, startTransition] = useTransition();
 
-    // Cart & store (from localStorage)
-    const [cart, setCart] = useState<CartItem[]>([]);
-    const [activeStore, setActiveStore] = useState<'butcher' | 'depot'>('butcher');
-    const [hydrated, setHydrated] = useState(false);
+    const [now, setNow] = useState<Date>(() => new Date());
+    const [activeStore, setActiveStore] = useState<StoreId>(() => readInitialCheckoutState().store);
+    const [cart, setCart] = useState<CartItem[]>(() => readInitialCheckoutState().items);
 
-    // Checkout step
-    const [step, setStep] = useState<'auth' | 'form'>('auth');
+    const isAuthenticated = status === 'authenticated' && Boolean(session?.user);
+    const [guestProceeded, setGuestProceeded] = useState(false);
+    const step: 'auth' | 'form' = isAuthenticated || guestProceeded ? 'form' : 'auth';
+
+    const sessionUser = session?.user as { id?: string; name?: string | null; email?: string | null; phone?: string | null } | undefined;
 
     // Form state
-    const [form, setForm] = useState({ name: '', phone: '', email: '', pickup: '' });
+    const [nameInput, setNameInput] = useState('');
+    const [phoneInput, setPhoneInput] = useState('');
+    const [emailInput, setEmailInput] = useState('');
+    const [selectedSlotValue, setSelectedSlotValue] = useState('');
     const [contactPref, setContactPref] = useState<'phone' | 'email'>('phone');
     const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'instore'>('stripe');
     const [orderNote, setOrderNote] = useState('');
@@ -128,16 +376,11 @@ export default function CheckoutClient() {
     const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot'>('login');
     const [authLoading, setAuthLoading] = useState(false);
     const [authError, setAuthError] = useState('');
+    const [authNotice, setAuthNotice] = useState('');
     const [loginData, setLoginData] = useState({ email: '', password: '' });
     const [registerData, setRegisterData] = useState({ name: '', email: '', phone: '', address: '', password: '' });
     const [forgotEmail, setForgotEmail] = useState('');
     const [forgotSuccess, setForgotSuccess] = useState(false);
-
-    // Coupon state
-    const [couponCode, setCouponCode] = useState('');
-    const [appliedCoupon, setAppliedCoupon] = useState<Coupon>(null);
-    const [couponError, setCouponError] = useState('');
-    const [couponLoading, setCouponLoading] = useState(false);
 
     // Date / time
     const [selectedDateIdx, setSelectedDateIdx] = useState(0);
@@ -146,62 +389,76 @@ export default function CheckoutClient() {
     const [dateThumbLeft, setDateThumbLeft] = useState(0);
     const [dateThumbWidth, setDateThumbWidth] = useState(0);
 
-    // Load cart from localStorage
+    // Keep live clock ticked every 30s so countdowns & 2-hour cutoff stay accurate
     useEffect(() => {
-        try {
-            const store = (localStorage.getItem('hofherr_active_store') as 'butcher' | 'depot') || 'butcher';
-            setActiveStore(store);
-            const key = store === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
-            const saved = localStorage.getItem(key) || localStorage.getItem('hofherr_cart');
-            if (saved) setCart(JSON.parse(saved));
-        } catch { /* ignore */ }
-        setHydrated(true);
+        const interval = setInterval(() => {
+            setNow(new Date());
+        }, 30000);
+        return () => clearInterval(interval);
     }, []);
 
-    // If session loaded & user exists, skip auth step
+    // Redirect to orders if cart is empty
     useEffect(() => {
-        if (status === 'authenticated' && session?.user) {
-            const u = session.user as any;
-            setForm(f => ({
-                ...f,
-                name: u.name || '',
-                email: u.email || '',
-                phone: u.phone ? formatPhoneNumber(u.phone) : '',
-            }));
-            setStep('form');
-        }
-    }, [status, session]);
-
-    // Redirect to orders if cart is empty and page is loaded
-    useEffect(() => {
-        if (hydrated && cart.length === 0 && status !== 'loading') {
-            // Give a brief moment so localStorage can hydrate
+        if (cart.length === 0 && status !== 'loading') {
             const t = setTimeout(() => {
-                if (cart.length === 0) navigateTo('/online-orders');
+                navigateTo('/online-orders');
             }, 1500);
             return () => clearTimeout(t);
         }
-    }, [hydrated, cart.length, status, router, navigateTo]);
+    }, [cart.length, status, navigateTo]);
+
+    const handleStoreSwitch = (nextStore: StoreId) => {
+        setActiveStore(nextStore);
+        setSelectedDateIdx(0);
+        setSelectedSlotValue('');
+        try {
+            localStorage.setItem(`hofherr_active_store_${STORAGE_VERSION}`, nextStore);
+            localStorage.setItem('hofherr_active_store', nextStore);
+            const key = nextStore === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
+            const saved = localStorage.getItem(key) || localStorage.getItem('hofherr_cart');
+            if (saved) {
+                const parsed: CartItem[] = JSON.parse(saved);
+                if (parsed.length > 0) setCart(parsed);
+            }
+        } catch {
+            // ignore storage errors
+        }
+    };
 
     // Dates & slots
-    const availableDates = useMemo(() => getAvailablePickupDates(activeStore), [activeStore]);
-    const availableSlots = useMemo(() => getAvailableTimeSlots(availableDates[selectedDateIdx] ?? null, activeStore), [availableDates, selectedDateIdx, activeStore]);
+    const availableDates = useMemo(() => getAvailablePickupDates(activeStore, now), [activeStore, now]);
+    const activeDate = availableDates[selectedDateIdx] ?? availableDates[0] ?? null;
+    const availableSlots = useMemo(
+        () => getAvailableTimeSlots(activeDate, activeStore, now),
+        [activeDate, activeStore, now]
+    );
+    const cutoffInfo = useMemo(
+        () => getCutoffStatusInfo(activeStore, now, availableDates[0]),
+        [activeStore, now, availableDates]
+    );
 
-    // Auto-select first available slot
-    useEffect(() => {
-        const first = availableSlots.find(s => !s.disabled);
-        if (first) {
-            const dateStr = availableDates[selectedDateIdx]?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-            setForm(f => ({ ...f, pickup: `${dateStr} at ${first.value}` }));
-        }
-    }, [selectedDateIdx, availableDates, availableSlots]);
+    const firstEnabledSlot = availableSlots.find(s => !s.disabled);
+    const effectiveSlotValue =
+        selectedSlotValue && availableSlots.some(s => !s.disabled && s.value === selectedSlotValue)
+            ? selectedSlotValue
+            : (firstEnabledSlot?.value ?? '');
+
+    const activeDateLabel = activeDate ? formatShortDate(activeDate) : '';
+    const pickupString = activeDateLabel && effectiveSlotValue ? `${activeDateLabel} at ${effectiveSlotValue}` : '';
+
+    const resolvedName = nameInput || sessionUser?.name || '';
+    const resolvedEmail = emailInput || sessionUser?.email || '';
+    const resolvedPhone = phoneInput || (sessionUser?.phone ? formatPhoneNumber(sessionUser.phone) : '');
 
     // Custom scrollbar for date strip
     const updateDateThumb = useCallback(() => {
         const el = dateScrollRef.current;
         if (!el) return;
         const { scrollLeft, scrollWidth, clientWidth } = el;
-        if (scrollWidth <= clientWidth) { setDateThumbWidth(0); return; }
+        if (scrollWidth <= clientWidth) {
+            setDateThumbWidth(0);
+            return;
+        }
         const ratio = clientWidth / scrollWidth;
         const tw = Math.max(ratio * clientWidth, 32);
         const tl = (scrollLeft / (scrollWidth - clientWidth)) * (clientWidth - tw);
@@ -219,13 +476,18 @@ export default function CheckoutClient() {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setAuthError('');
+        setAuthNotice('');
         setAuthLoading(true);
         try {
-            const res = await signIn('credentials', { email: loginData.email, password: loginData.password, redirect: false });
+            const res = await signIn('credentials', {
+                email: loginData.email,
+                password: loginData.password,
+                redirect: false,
+            });
             if (res?.error) throw new Error('Invalid email or password');
-            setStep('form');
-        } catch (err: any) {
-            setAuthError(err.message);
+            setGuestProceeded(true);
+        } catch (err: unknown) {
+            setAuthError(err instanceof Error ? err.message : 'Sign-in failed');
         } finally {
             setAuthLoading(false);
         }
@@ -234,26 +496,34 @@ export default function CheckoutClient() {
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setAuthError('');
+        setAuthNotice('');
         setAuthLoading(true);
         try {
-            const res = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(registerData) });
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(registerData),
+            });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Registration failed');
 
-            // If email verification is required, show message instead of auto-login
             if (data.requiresVerification) {
                 setAuthError('');
+                setAuthNotice('Account created! Please check your email to verify your account before signing in.');
                 setAuthLoading(false);
-                alert('✅ Account created! Please check your email to verify your account before signing in.');
                 setAuthMode('login');
                 return;
             }
 
-            const sr = await signIn('credentials', { email: registerData.email, password: registerData.password, redirect: false });
+            const sr = await signIn('credentials', {
+                email: registerData.email,
+                password: registerData.password,
+                redirect: false,
+            });
             if (sr?.error) throw new Error('Could not auto-login after registration');
-            setStep('form');
-        } catch (err: any) {
-            setAuthError(err.message);
+            setGuestProceeded(true);
+        } catch (err: unknown) {
+            setAuthError(err instanceof Error ? err.message : 'Registration failed');
         } finally {
             setAuthLoading(false);
         }
@@ -262,34 +532,21 @@ export default function CheckoutClient() {
     const handleForgot = async (e: React.FormEvent) => {
         e.preventDefault();
         setAuthError('');
+        setAuthNotice('');
         setAuthLoading(true);
         try {
-            const res = await fetch('/api/auth/forgot-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: forgotEmail }) });
+            const res = await fetch('/api/auth/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: forgotEmail }),
+            });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Failed to send reset link.');
             setForgotSuccess(true);
-        } catch (err: any) {
-            setAuthError(err.message);
+        } catch (err: unknown) {
+            setAuthError(err instanceof Error ? err.message : 'Failed to send reset link.');
         } finally {
             setAuthLoading(false);
-        }
-    };
-
-    // ── Coupon handler ─────────────────────────────────────────────────────
-    const handleApplyCoupon = async () => {
-        if (!couponCode.trim()) return;
-        setCouponError('');
-        setCouponLoading(true);
-        try {
-            const res = await fetch('/api/coupons/validate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: couponCode }) });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Invalid coupon');
-            setAppliedCoupon({ code: couponCode.toUpperCase(), type: data.discountType, value: data.discountValue });
-            setCouponCode('');
-        } catch (err: any) {
-            setCouponError(err.message);
-        } finally {
-            setCouponLoading(false);
         }
     };
 
@@ -297,23 +554,43 @@ export default function CheckoutClient() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setStripeError('');
+        const contactPayload = {
+            name: resolvedName,
+            phone: resolvedPhone,
+            email: resolvedEmail,
+            pickup: pickupString,
+        };
         startTransition(async () => {
             try {
                 const res = await fetch('/api/checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ items: cart, contact: form, orderNote, customerId: (session?.user as any)?.id, coupon: appliedCoupon, storeId: activeStore, paymentMethod }),
+                    body: JSON.stringify({
+                        items: cart,
+                        contact: contactPayload,
+                        orderNote,
+                        customerId: sessionUser?.id,
+                        coupon: null,
+                        storeId: activeStore,
+                        paymentMethod,
+                    }),
                 });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error ?? 'Checkout failed');
                 try {
-                    localStorage.removeItem(activeStore === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot');
+                    const key = activeStore === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
+                    localStorage.removeItem(`${key}_${STORAGE_VERSION}`);
+                    localStorage.removeItem(key);
                     localStorage.removeItem('hofherr_cart');
-                } catch { }
+                } catch {
+                    // ignore storage errors
+                }
                 if (data.url) {
                     window.location.href = data.url;
                 } else {
-                    navigateTo(`/order/success?instore=true&pickupTime=${encodeURIComponent(form.pickup)}&name=${encodeURIComponent(form.name)}&storeId=${activeStore}&summary=${encodeURIComponent(cart.map(i => `${i.name} x${i.qty}`).join(', '))}`);
+                    navigateTo(
+                        `/order/success?instore=true&pickupTime=${encodeURIComponent(pickupString)}&name=${encodeURIComponent(resolvedName)}&storeId=${activeStore}&summary=${encodeURIComponent(cart.map(i => `${i.name} x${i.qty}`).join(', '))}`
+                    );
                 }
             } catch (err) {
                 setStripeError(err instanceof Error ? err.message : 'Something went wrong.');
@@ -323,17 +600,30 @@ export default function CheckoutClient() {
 
     // ── Derived ────────────────────────────────────────────────────────────
     const subtotal = cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0);
-    let discounted = subtotal;
-    if (appliedCoupon) {
-        discounted = appliedCoupon.type === 'percent' ? subtotal * (1 - appliedCoupon.value / 100) : Math.max(0, subtotal - appliedCoupon.value);
-    }
-    const tax = discounted * TAX_RATE;
-    const total = discounted + tax;
+    const tax = subtotal * TAX_RATE;
+    const total = subtotal + tax;
 
-    if (!hydrated) return null;
+    const thumbVars = {
+        '--thumb-left': `${dateThumbLeft}px`,
+        '--thumb-width': `${dateThumbWidth}px`,
+    } as CSSProperties;
+
+    const cutoffCardClass =
+        cutoffInfo.state === 'open'
+            ? `${styles.hoursCutoffCard} ${styles.hoursCutoffCardOpen}`
+            : cutoffInfo.state === 'buffer'
+              ? `${styles.hoursCutoffCard} ${styles.hoursCutoffCardBuffer}`
+              : `${styles.hoursCutoffCard} ${styles.hoursCutoffCardClosed}`;
+
+    const badgeClass =
+        cutoffInfo.state === 'open'
+            ? `${styles.statusBadge} ${styles.statusBadgeOpen}`
+            : cutoffInfo.state === 'buffer'
+              ? `${styles.statusBadge} ${styles.statusBadgeBuffer}`
+              : `${styles.statusBadge} ${styles.statusBadgeClosed}`;
 
     return (
-        <div className={styles.page}>
+        <main className={styles.page}>
             {/* Back link */}
             <Link href="/online-orders" className={styles.backLink}>
                 ← Back to Shop
@@ -344,23 +634,76 @@ export default function CheckoutClient() {
                 <div className={styles.formCol}>
                     <h1 className={styles.heading}>Complete Your Order</h1>
 
-                    {/* Store banner */}
+                    {/* Store banner + location switcher */}
                     <div className={styles.storeBanner}>
-                        📍 Pickup at: {activeStore === 'butcher' ? 'The Butcher Shop (Northfield)' : 'The Depot (Winnetka)'}
+                        <span className={styles.storeBannerLocation}>
+                            📍 Pickup at: {activeStore === 'butcher' ? 'The Butcher Shop (300 Happ Rd, Northfield)' : 'The Depot (600 Elm St, Winnetka)'}
+                        </span>
+                        <div className={styles.storeSwitchRow}>
+                            <button
+                                type="button"
+                                className={`${styles.storeSwitchBtn} ${activeStore === 'butcher' ? styles.storeSwitchBtnActive : ''}`}
+                                onClick={() => handleStoreSwitch('butcher')}
+                            >
+                                Northfield Butcher Shop
+                            </button>
+                            <button
+                                type="button"
+                                className={`${styles.storeSwitchBtn} ${activeStore === 'depot' ? styles.storeSwitchBtnActive : ''}`}
+                                onClick={() => handleStoreSwitch('depot')}
+                            >
+                                Winnetka Depot
+                            </button>
+                        </div>
                     </div>
-                    <p className={styles.subtext}>
-                        {activeStore === 'butcher' ? 'Just a few final details to get your prime cuts ready for pickup.' : 'Just a few final details to get your order ready for pickup.'}
-                    </p>
+
+                    {/* ── Store Hours & 2-Hour Same-Day Cutoff Buffer Card ── */}
+                    <section aria-labelledby="checkout-hours-heading" className={cutoffCardClass}>
+                        <div className={styles.cutoffTopRow}>
+                            <span id="checkout-hours-heading" className={badgeClass}>
+                                {cutoffInfo.badgeText}
+                            </span>
+                            <span className={styles.todayHoursTag}>{cutoffInfo.todayTag}</span>
+                        </div>
+
+                        <p className={styles.cutoffHeadline}>{cutoffInfo.headline}</p>
+                        <p className={styles.cutoffSubtext}>{cutoffInfo.subtext}</p>
+
+                        <div className={styles.hoursScheduleGrid}>
+                            {STORE_WEEKLY_GROUPS[activeStore].map(group => {
+                                const isTodayGroup = group.dayNums.includes(now.getDay());
+                                return (
+                                    <div
+                                        key={group.daysLabel}
+                                        className={`${styles.hoursScheduleItem} ${isTodayGroup ? styles.hoursScheduleItemToday : ''}`}
+                                    >
+                                        <span className={styles.scheduleDay}>
+                                            {group.daysLabel}
+                                            {isTodayGroup && <span className={styles.todayPill}>TODAY</span>}
+                                        </span>
+                                        {group.isClosed ? (
+                                            <span className={styles.scheduleClosed}>{group.hoursLabel}</span>
+                                        ) : (
+                                            <span className={styles.scheduleHours}>{group.hoursLabel}</span>
+                                        )}
+                                        <span className={styles.scheduleCutoff}>{group.cutoffLabel}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </section>
 
                     {/* ── AUTH STEP ── */}
                     {step === 'auth' && (
                         <div className={styles.authBox}>
-                            <h3 className={styles.authTitle}>
+                            <h2 className={styles.authTitle}>
                                 {authMode === 'forgot' ? 'Reset Password' : authMode === 'register' ? 'Create Account' : 'Sign In to Checkout'}
-                            </h3>
+                            </h2>
                             <p className={styles.authSub}>
                                 {authMode === 'forgot' ? "We'll send you a reset link." : authMode === 'register' ? 'Join for faster checkout & rewards.' : 'Sign in to continue.'}
                             </p>
+
+                            {authNotice && <p className={styles.successMsg}>✅ {authNotice}</p>}
 
                             {/* Social buttons */}
                             {authMode !== 'forgot' && (
@@ -421,7 +764,7 @@ export default function CheckoutClient() {
                                         <button type="button" className={styles.switchLink} onClick={() => setAuthMode('register')}>Create account</button>
                                     </div>
                                     <div className={styles.dividerOr}><span>or</span></div>
-                                    <button type="button" className={styles.guestBtn} onClick={() => setStep('form')}>Continue as Guest →</button>
+                                    <button type="button" className={styles.guestBtn} onClick={() => setGuestProceeded(true)}>Continue as Guest →</button>
                                 </form>
                             )}
                         </div>
@@ -434,11 +777,40 @@ export default function CheckoutClient() {
                             <div className={styles.section}>
                                 <div className={styles.contactGrid}>
                                     <div className={styles.contactLeft}>
-                                        <input required name="name" id="checkout-name" autoComplete="name" className={styles.input} placeholder="Full Name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+                                        <input
+                                            required
+                                            name="name"
+                                            id="checkout-name"
+                                            autoComplete="name"
+                                            className={styles.input}
+                                            placeholder="Full Name"
+                                            value={resolvedName}
+                                            onChange={e => setNameInput(e.target.value)}
+                                        />
                                         {contactPref === 'phone' ? (
-                                            <input required name="tel" id="checkout-phone" autoComplete="tel" type="tel" className={styles.input} placeholder="(847) 555-0100" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: formatPhoneNumber(e.target.value) }))} />
+                                            <input
+                                                required
+                                                name="tel"
+                                                id="checkout-phone"
+                                                autoComplete="tel"
+                                                type="tel"
+                                                className={styles.input}
+                                                placeholder="(847) 555-0100"
+                                                value={resolvedPhone}
+                                                onChange={e => setPhoneInput(formatPhoneNumber(e.target.value))}
+                                            />
                                         ) : (
-                                            <input required name="email" id="checkout-email" autoComplete="email" type="email" className={styles.input} placeholder="Email Address" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+                                            <input
+                                                required
+                                                name="email"
+                                                id="checkout-email"
+                                                autoComplete="email"
+                                                type="email"
+                                                className={styles.input}
+                                                placeholder="Email Address"
+                                                value={resolvedEmail}
+                                                onChange={e => setEmailInput(e.target.value)}
+                                            />
                                         )}
                                     </div>
                                     <div className={styles.contactRight}>
@@ -453,31 +825,52 @@ export default function CheckoutClient() {
 
                             {/* Date & time picker */}
                             <div className={styles.section}>
-                                <h3 className={styles.sectionLabel}>SELECT PICKUP DAY &amp; TIME</h3>
-                                <p className={styles.prepNote}>⚡ Orders generally take 20–40 minutes to prepare.</p>
+                                <h2 className={styles.sectionLabel}>SELECT PICKUP DAY &amp; TIME</h2>
+                                <p className={styles.prepNote}>
+                                    ⚡ Orders require a {CUTOFF_BUFFER_HOURS}-hour buffer before store closing for same-day pickup.
+                                </p>
+
+                                {!cutoffInfo.isSameDayAvailable && (
+                                    <div className={styles.nextBizBanner}>
+                                        📅 <strong>Scheduled for Next Business Day:</strong> Because today&apos;s {CUTOFF_BUFFER_HOURS}-hour closing cutoff has passed (or the store is closed), your earliest pickup is <strong>{cutoffInfo.nextDateLabel} starting at {cutoffInfo.nextOpenLabel}</strong>.
+                                    </div>
+                                )}
 
                                 {/* Date scroll */}
                                 <div className={styles.dateSelectorContainer}>
                                     <div className={styles.dateScrollTrack}>
                                         {dateThumbWidth > 0 && (
-                                            <div ref={dateThumbRef} className={styles.dateScrollThumb} style={{ left: dateThumbLeft, width: dateThumbWidth }} />
+                                            <div ref={dateThumbRef} className={styles.dateScrollThumb} style={thumbVars} />
                                         )}
                                     </div>
                                     <div
                                         ref={dateScrollRef}
                                         onScroll={updateDateThumb}
-                                        style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' as any, touchAction: 'pan-x', paddingBottom: '8px', scrollbarWidth: 'none' as any, msOverflowStyle: 'none', minWidth: 0, width: '100%' }}
+                                        className={styles.dateScrollViewport}
                                     >
-                                        <div style={{ display: 'flex', gap: '8px', width: 'max-content' }}>
-                                            {availableDates.map((date, idx) => (
-                                                <button key={date.toISOString()} type="button"
-                                                    className={`${styles.dateBtn} ${selectedDateIdx === idx ? styles.dateBtnActive : ''}`}
-                                                    onClick={() => setSelectedDateIdx(idx)}
-                                                >
-                                                    <span className={styles.dateDay}>{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
-                                                    <span className={styles.dateNum}>{date.toLocaleDateString('en-US', { day: 'numeric' })}</span>
-                                                </button>
-                                            ))}
+                                        <div className={styles.dateScrollRow}>
+                                            {availableDates.map((date, idx) => {
+                                                const isDateToday = date.toDateString() === now.toDateString();
+                                                return (
+                                                    <button
+                                                        key={date.toISOString()}
+                                                        type="button"
+                                                        className={`${styles.dateBtn} ${selectedDateIdx === idx ? styles.dateBtnActive : ''}`}
+                                                        onClick={() => {
+                                                            setSelectedDateIdx(idx);
+                                                            setSelectedSlotValue('');
+                                                        }}
+                                                    >
+                                                        <span className={styles.dateDay}>{WEEKDAYS_SHORT[date.getDay()]}</span>
+                                                        <span className={styles.dateNum}>{date.getDate()}</span>
+                                                        {idx === 0 && (
+                                                            <span className={styles.dateTag}>
+                                                                {isDateToday ? 'TODAY' : 'NEXT BIZ'}
+                                                            </span>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -485,18 +878,18 @@ export default function CheckoutClient() {
                                 {/* Time slots */}
                                 <div className={styles.timeGrid}>
                                     {availableSlots.length > 0 ? availableSlots.map(slot => {
-                                        const dateStr = availableDates[selectedDateIdx]?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-                                        const fullSlot = `${dateStr} at ${slot.value}`;
-                                        const isActive = form.pickup === fullSlot;
+                                        const isActive = effectiveSlotValue === slot.value;
                                         if (slot.disabled) return (
                                             <button key={slot.value} type="button" disabled className={styles.timeSlotBtnDisabled}>
                                                 {slot.label || slot.value}
                                             </button>
                                         );
                                         return (
-                                            <button key={slot.value} type="button"
+                                            <button
+                                                key={slot.value}
+                                                type="button"
                                                 className={`${styles.timeSlotBtn} ${isActive ? styles.timeSlotBtnActive : ''}`}
-                                                onClick={() => setForm(f => ({ ...f, pickup: fullSlot }))}
+                                                onClick={() => setSelectedSlotValue(slot.value)}
                                             >
                                                 {slot.label || slot.value}
                                             </button>
@@ -512,16 +905,15 @@ export default function CheckoutClient() {
                                 <textarea className={styles.noteArea} placeholder="Special instructions (optional)…" value={orderNote} onChange={e => setOrderNote(e.target.value)} rows={2} />
                             </div>
 
-
                             {/* Payment method */}
                             <div className={styles.section}>
                                 <div className={styles.payRow}>
                                     <label className={`${styles.payBtn} ${paymentMethod === 'stripe' ? styles.payBtnActive : ''}`}>
-                                        <input type="radio" name="paymentMethod" value="stripe" checked={paymentMethod === 'stripe'} onChange={() => setPaymentMethod('stripe')} style={{ display: 'none' }} />
+                                        <input type="radio" name="paymentMethod" value="stripe" checked={paymentMethod === 'stripe'} onChange={() => setPaymentMethod('stripe')} className={styles.hiddenRadio} />
                                         💳 Pay Online
                                     </label>
                                     <label className={`${styles.payBtn} ${paymentMethod === 'instore' ? styles.payBtnActive : ''}`}>
-                                        <input type="radio" name="paymentMethod" value="instore" checked={paymentMethod === 'instore'} onChange={() => setPaymentMethod('instore')} style={{ display: 'none' }} />
+                                        <input type="radio" name="paymentMethod" value="instore" checked={paymentMethod === 'instore'} onChange={() => setPaymentMethod('instore')} className={styles.hiddenRadio} />
                                         🏪 Pay In-Store
                                     </label>
                                 </div>
@@ -530,8 +922,10 @@ export default function CheckoutClient() {
                             {stripeError && <p className={styles.stripeError}>⚠️ {stripeError}</p>}
 
                             <div className={styles.formActions}>
-                                <button type="button" className={styles.backBtn} onClick={() => setStep('auth')}>← Back</button>
-                                <button type="submit" className={styles.submitBtn} disabled={isPending || !form.pickup}>
+                                {!isAuthenticated && (
+                                    <button type="button" className={styles.backBtn} onClick={() => setGuestProceeded(false)}>← Back</button>
+                                )}
+                                <button type="submit" className={styles.submitBtn} disabled={isPending || !pickupString}>
                                     {isPending ? 'Processing…' : (paymentMethod === 'stripe' ? 'Continue to Payment' : 'Place Order')}
                                 </button>
                             </div>
@@ -541,9 +935,9 @@ export default function CheckoutClient() {
                 </div>
 
                 {/* ── Right: Order Summary ── */}
-                <div className={styles.summaryCol}>
+                <aside className={styles.summaryCol} aria-label="Order Summary">
                     <div className={styles.summaryCard}>
-                        <h3 className={styles.summaryTitle}>Order Summary</h3>
+                        <h2 className={styles.summaryTitle}>Order Summary</h2>
                         <div className={styles.summaryItems}>
                             {cart.map((item) => (
                                 <div key={`${item.name}-${item.note || ''}`} className={styles.summaryItem}>
@@ -564,8 +958,8 @@ export default function CheckoutClient() {
                         <div className={styles.summaryTotal}><span>Est. Total</span><span>{fmtTotal(total)}</span></div>
                         <p className={styles.summaryNote}>*Final total based on exact weight at pickup.</p>
                     </div>
-                    </div>
-                </div>
+                </aside>
             </div>
-            );
+        </main>
+    );
 }

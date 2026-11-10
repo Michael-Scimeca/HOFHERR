@@ -739,16 +739,16 @@
 
 .newsletterInner {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.1fr 1fr;
     gap: 64px;
     align-items: center;
-    max-width: 900px;
+    max-width: var(--max-w);
     margin: 0 auto;
 }
 
 .nlTitle {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(1.9rem, 3.2vw, 2.6rem);
+    font-size: clamp(2.5rem, 4.5vw, 3.75rem);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -758,7 +758,7 @@
 }
 
 .nlSub {
-    font-size: 15px;
+    font-size: 1.125rem;
     font-weight: 600;
     color: #1c1614;
     line-height: 1.7;

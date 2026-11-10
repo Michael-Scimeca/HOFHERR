@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
             .commit();
 
         // Base URL for the reset link
-        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || req.nextUrl.origin || 'http://localhost:2000';
         const resetLink = `${baseUrl}/reset-password?token=${resetToken}&email=${encodeURIComponent(normalizedEmail)}`;
 
         // Check for SMTP / email credentials (same logic as restock)
@@ -97,7 +97,11 @@ export async function POST(req: NextRequest) {
             console.log(`==========================================\n`);
         }
 
-        return NextResponse.json({ success: true, message: 'If an account exists, a reset link has been sent.' });
+        return NextResponse.json({
+            success: true,
+            message: 'If an account exists, a reset link has been sent.',
+            ...(process.env.NODE_ENV !== 'production' ? { devToken: resetToken, devResetLink: resetLink } : {}),
+        });
 
     } catch (err) {
         console.error('[Forgot Password Error]', err);

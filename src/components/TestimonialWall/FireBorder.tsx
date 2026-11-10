@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import styles from './TestimonialWall.module.css';
 
 /**
  * "Smoker Embers" fire border (tuned in the Fire Border Playground).
@@ -29,13 +30,18 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
         if (!svg || !host || !active) return;
         const s = SMOKER_EMBERS;
         const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const W = host.offsetWidth + P * 2, H = host.offsetHeight + P * 2;
+        let W = host.offsetWidth + P * 2;
+        let H = host.offsetHeight + P * 2;
         const cols = s.ramp.map(hex);
         const tv = (k: number) => cols.map((c) => c[k].toFixed(3)).join(' ');
         const tips = `0 ${(0.02 + 0.25 * s.tips).toFixed(2)} ${(0.9 - 0.5 * s.tips).toFixed(2)} 1 1`;
         const f = id.current;
-        svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-        svg.innerHTML = `<defs><filter id="${f}" filterUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}" color-interpolation-filters="sRGB">
+
+        const buildSvg = () => {
+            W = host.offsetWidth + P * 2;
+            H = host.offsetHeight + P * 2;
+            svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+            svg.innerHTML = `<defs><filter id="${f}" filterUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}" color-interpolation-filters="sRGB">
 <feTurbulence type="fractalNoise" baseFrequency="${s.fy} ${s.fx}" numOctaves="3" seed="17" stitchTiles="stitch" x="0" y="0" width="${TW}" height="${TH}" result="n"/>
 <feOffset in="n" dy="0" x="0" y="0" width="${TW}" height="${TH}" result="a"/>
 <feOffset in="n" dy="0" x="0" y="0" width="${TW}" height="${TH}" result="b2"/>
@@ -54,9 +60,13 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
 <mask id="${f}m" maskUnits="userSpaceOnUse"><rect width="${W}" height="${H}" fill="#fff"/><rect x="${P + s.thick}" y="${P + s.thick}" width="${W - P * 2 - s.thick * 2}" height="${H - P * 2 - s.thick * 2}" rx="${radius}" fill="#000" fill-opacity="${1 - s.inner}"/></mask></defs>
 <rect x="${P}" y="${P}" width="${W - P * 2}" height="${H - P * 2}" rx="${radius}" fill="none" stroke="#fff" stroke-width="${s.thick}" filter="url(#${f})" mask="url(#${f}m)"/>
 <g class="em"></g>`;
-        const offs = svg.querySelectorAll('feOffset[width]');
-        const fl = svg.querySelector('.fl')!;
-        const em = svg.querySelector('.em')!;
+        };
+
+        buildSvg();
+        let offs = svg.querySelectorAll('feOffset[width]');
+        let fl = svg.querySelector('.fl')!;
+        let em = svg.querySelector('.em')!;
+
         const spawn = (rand: boolean) => {
             const per = 2 * (W + H - 4 * P); let t = Math.random() * per, x: number, y: number;
             const w = W - 2 * P, h = H - 2 * P;
@@ -64,7 +74,21 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
             return { x, y, vx: (Math.random() - 0.5) * 0.4, vy: -(0.3 + Math.random() * 0.9), life: rand ? Math.random() : 1, r: 0.8 + Math.random() * 1.6 };
         };
         const parts = Array.from({ length: s.embers }, () => spawn(true));
-        const dots = parts.map(() => { const c = document.createElementNS(NS, 'circle'); em.appendChild(c); return c; });
+        let dots = parts.map(() => { const c = document.createElementNS(NS, 'circle'); em.appendChild(c); return c; });
+
+        const ro = new ResizeObserver(() => {
+            const nextW = host.offsetWidth + P * 2;
+            const nextH = host.offsetHeight + P * 2;
+            if (Math.abs(nextW - W) > 1 || Math.abs(nextH - H) > 1) {
+                buildSvg();
+                offs = svg.querySelectorAll('feOffset[width]');
+                fl = svg.querySelector('.fl')!;
+                em = svg.querySelector('.em')!;
+                dots = parts.map(() => { const c = document.createElementNS(NS, 'circle'); em.appendChild(c); return c; });
+            }
+        });
+        ro.observe(host);
+
         let t = Math.random() * 1000, last = performance.now(), raf = 0;
         const tick = (now: number) => {
             const dt = Math.min(50, now - last); last = now;
@@ -82,14 +106,17 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
             raf = requestAnimationFrame(tick);
         };
         raf = requestAnimationFrame(tick);
-        return () => cancelAnimationFrame(raf);
+        return () => {
+            cancelAnimationFrame(raf);
+            ro.disconnect();
+        };
     }, [active, radius]);
 
     return (
         <svg
             ref={svgRef}
             aria-hidden="true"
-            style={{ position: 'absolute', inset: -P, width: `calc(100% + ${P * 2}px)`, height: `calc(100% + ${P * 2}px)`, pointerEvents: 'none', overflow: 'visible', opacity: active ? 1 : 0, transition: 'opacity .35s ease', zIndex: 3 }}
+            className={`${styles.fireBorderSvg} ${active ? styles.fireBorderActive : ''}`}
         />
     );
 }

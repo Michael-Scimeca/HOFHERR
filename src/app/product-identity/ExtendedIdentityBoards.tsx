@@ -6,17 +6,8 @@ import styles from './extended.module.css';
 
 /**
  * Sections 05–10 of the product identity system.
- * Images live in /public/assets/identity/extended/<slug>.jpg — generate each with
- * Gemini (Nano Banana) using the prompt on its card, then save it under that filename.
- * Until a file exists, the card shows a placeholder with the target filename.
+ * Assets are organized into category folders under /public/assets/identity/<folder>/.
  */
-
-const BRAND_STYLE =
-    'Photorealistic commercial product photography for Hofherr Meat Co., a premium Midwest butcher shop in Northfield, Illinois. ' +
-    'Brand style: distressed woodblock / linocut illustration featuring the 10 official Hofherr department flame emblems (1. Prime Beef Flaming Cow, 2. Heritage Pork Flaming Pig, 3. Poultry & Rotisserie Flaming Rooster, 4. Pasture Lamb Flaming Sheep Head, 5. Artisanal Cheese Flaming Wedge, 6. Stocks & Soups Flaming Bowl, 7. Fresh Catch Flaming Leaping Fish, 8. Shellfish & Crab Flaming Maine Lobster, 9. Specialty Duck Flaming Duck Head, 10. Catering & Delivery Flaming Vintage Truck), bold stencil wordmark "HOFHERR MEAT CO.", ' +
-    'two-color print in oxblood crimson (#8B0A10) and smokehouse amber (#F59B1A) on natural kraft and warm cream stock, charcoal (#1C1614) accents. ' +
-    'Moody warm side lighting, dark walnut butcher block and slate surfaces, shallow depth of field. ' +
-    'All printed text crisp, legible and spelled exactly as written. No extra logos, no watermarks.';
 
 type IdentityItem = {
     slug: string;
@@ -29,6 +20,7 @@ type IdentityItem = {
 
 type IdentitySection = {
     id: string;
+    folder: string;
     index: string;
     title: string;
     desc: string;
@@ -38,6 +30,7 @@ type IdentitySection = {
 export const EXTENDED_SECTIONS: IdentitySection[] = [
     {
         id: 'retail-packaging',
+        folder: 'packaging',
         index: '05',
         title: 'Retail & Cold-Case Packaging',
         desc: 'Pre-packed product leaving the case needs more than a scale label: vacuum-pack front and back labels with the USDA safe-handling panel, case-ready tray labels, freezer wrap for bulk orders, and labels for broths, tallow, rubs and sauces.',
@@ -78,6 +71,7 @@ export const EXTENDED_SECTIONS: IdentitySection[] = [
     },
     {
         id: 'carryout-gifting',
+        folder: 'gifting',
         index: '06',
         title: 'Carry-Out, Catering & Gifting',
         desc: 'The pieces that travel furthest from the counter: insulated totes for summer pickups, catering boxes for the whole-hog side of the business, a steak gift box for the holidays, and gift cards.',
@@ -118,6 +112,7 @@ export const EXTENDED_SECTIONS: IdentitySection[] = [
     },
     {
         id: 'signage',
+        folder: 'signage',
         index: '07',
         title: 'In-Store Signage',
         desc: 'Everything a customer reads while standing at the case: price tags, a butcher cut chart and 10-department emblem poster drawn in the linocut style, menu boards, door graphics and farm-source signage.',
@@ -166,6 +161,7 @@ export const EXTENDED_SECTIONS: IdentitySection[] = [
     },
     {
         id: 'uniforms-stationery',
+        folder: 'uniforms-stationery',
         index: '08',
         title: 'Uniforms & Stationery',
         desc: 'What the team wears and hands over: aprons, caps, butcher coats and the 10 woven department merit patches, plus business cards, letterhead, a 10-department custom-cut order pad and a 10-department loyalty punch card.',
@@ -206,6 +202,7 @@ export const EXTENDED_SECTIONS: IdentitySection[] = [
     },
     {
         id: 'digital',
+        folder: 'digital',
         index: '09',
         title: 'Digital & Social',
         desc: 'The same register on screen: social templates for weekly specials, an email header with the 10-department badge bar, the Google Business cover image, and the app icon / 10-badge suite.',
@@ -344,8 +341,31 @@ const PRINT_SPEC_BY_SLUG: Record<
     'gift-cards': {
         href: '/product-identity/print?sheet=cards&autoprint=1',
         scaleLabel: 'SIZE: 3.375" W × 2.125" H CR80 Card & 4.00" W × 2.75" H Sleeve · 1:1 @ 300 DPI',
-        svgMaster: '/assets/identity/hofherr-stamp-circular.svg',
-        svgDownloadName: 'hofherr-stamp-circular.svg',
+        svgMaster: '/assets/identity/gifting/gift-card-crimson.svg',
+        svgDownloadName: 'hofherr-gift-card-crimson.svg',
+        printableExamples: [
+            {
+                id: 'gift-card-crimson',
+                title: '01 · Oxblood Crimson CR80 Gift Card (Front · #8B0A10)',
+                spec: 'CR80 Standard · 3.375" W × 2.125" H · /assets/identity/gifting/gift-card-crimson.svg',
+                svg: '/assets/identity/gifting/gift-card-crimson.svg',
+                printHref: '/product-identity/print?sheet=cards&autoprint=1',
+            },
+            {
+                id: 'gift-card-amber',
+                title: '02 · Smokehouse Amber CR80 eGift / Gift Card (Front · #F59B1A)',
+                spec: 'CR80 Standard · 3.375" W × 2.125" H · /assets/identity/gifting/gift-card-amber.svg',
+                svg: '/assets/identity/gifting/gift-card-amber.svg',
+                printHref: '/product-identity/print?sheet=cards&autoprint=1',
+            },
+            {
+                id: 'gift-card-back',
+                title: '03 · CR80 Physical Gift Card Back (Mag Stripe & Barcode)',
+                spec: 'CR80 Standard · 3.375" W × 2.125" H · /assets/identity/gifting/gift-card-back.svg',
+                svg: '/assets/identity/gifting/gift-card-back.svg',
+                printHref: '/product-identity/print?sheet=cards&autoprint=1',
+            },
+        ],
     },
     'case-price-tags': {
         href: '/product-identity/print?sheet=price-tags&autoprint=1',
@@ -436,232 +456,147 @@ const PRINT_SPEC_BY_SLUG: Record<
     },
 };
 
-function ItemCard({ item }: { item: IdentityItem }) {
+function ItemCard({ item, folder }: { item: IdentityItem; folder: string }) {
     const [missing, setMissing] = useState(false);
     const [missingPrint, setMissingPrint] = useState(false);
-    const [copied, setCopied] = useState(false);
-    const [copiedPrint, setCopiedPrint] = useState(false);
     const printInfo = PRINT_SPEC_BY_SLUG[item.slug] || {
         href: `/product-identity/print?master=${item.slug}&w=7.5&h=5.6&autoprint=1`,
         scaleLabel: '1:1 True Size · 300 DPI Press Master',
     };
-    const src = printInfo.svgPrintMaster && printInfo.svgMaster ? printInfo.svgMaster : `/assets/identity/extended/${item.slug}.jpg`;
-    const printSrc = printInfo.svgPrintMaster ? printInfo.svgPrintMaster : `/assets/identity/print/${item.slug}-print.jpg`;
-    const jpgPrintSrc = `/assets/identity/print/${item.slug}-print.jpg`;
-    const fullPrompt = `${item.prompt}\n\n${BRAND_STYLE}\n\nAspect ratio ${item.ratio}.`;
-    const fullPrintPrompt = `${item.printPrompt}\n\nFlat 2D orthographic print-ready graphic design production artwork with crop marks and dielines, zero 3D props or camera tilt.\n\nAspect ratio ${item.ratio}.`;
+    const categoryBase = `/assets/identity/${folder}`;
+    const src = printInfo.svgPrintMaster && printInfo.svgMaster ? printInfo.svgMaster : `${categoryBase}/${item.slug}.jpg`;
+    const printSrc = printInfo.svgPrintMaster ? printInfo.svgPrintMaster : `${categoryBase}/${item.slug}-print.jpg`;
+    const jpgPrintSrc = `${categoryBase}/${item.slug}-print.jpg`;
+    const vectorSrc = printInfo.svgMaster || `${categoryBase}/${item.slug}.svg`;
     const [rw, rh] = item.ratio.split(':').map(Number);
-
-    const copy = async () => {
-        try {
-            await navigator.clipboard.writeText(fullPrompt);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 1600);
-        } catch {
-            /* clipboard blocked — prompt is still visible below */
-        }
-    };
-
-    const copyPrint = async () => {
-        try {
-            await navigator.clipboard.writeText(fullPrintPrompt);
-            setCopiedPrint(true);
-            setTimeout(() => setCopiedPrint(false), 1600);
-        } catch {
-            /* clipboard blocked — prompt is still visible below */
-        }
-    };
 
     return (
         <article className={styles.card}>
             <div className={styles.cardHeader}>
                 <div className={styles.meta}>
                     <h3 className={styles.title}>{item.title}</h3>
-                    <span className={styles.spec}>{item.spec} · {printInfo.scaleLabel}</span>
+                    <span className={styles.spec}>
+                        {item.spec} · <code>{categoryBase}/{item.slug}.jpg</code>
+                    </span>
                 </div>
                 <div className={styles.cardActions}>
                     <Link href={printInfo.href} className={styles.actionLink}>
-                        🖨 Print 1:1 Actual Size
+                        🖨 Print 1:1
                     </Link>
-                    {printInfo.svgMaster && (
-                        <a
-                            href={printInfo.svgMaster}
-                            download={printInfo.svgDownloadName || `${item.slug}.svg`}
-                            className={styles.actionLink}
-                        >
-                            ↓ Download Vector (.SVG — Any Size)
-                        </a>
-                    )}
-                    {printInfo.svgPrintMaster && (
-                        <a
-                            href={printInfo.svgPrintMaster}
-                            download={`${item.slug}-print.svg`}
-                            className={styles.actionLinkSecondary}
-                        >
-                            ↓ Vector Press Sheet (.SVG)
-                        </a>
-                    )}
-                        <a href={`${jpgPrintSrc}?v=13`} download={`${item.slug}-print.jpg`} className={styles.actionLinkSecondary}>
-                            ↓ Download 300 DPI Sheet (.JPG)
-                        </a>
-                            <a href={`${printSrc}?v=13`} target="_blank" rel="noopener noreferrer" className={styles.actionLinkSecondary}>
-                                ↗ View Full Print Sheet
-                            </a>
-                                <a href={`${src}?v=13`} download={printInfo.svgMaster ? (printInfo.svgDownloadName || `${item.slug}.svg`) : `${item.slug}-mockup.jpg`} className={styles.actionLinkSecondary}>
-                                    {printInfo.svgMaster ? '↓ Master (.SVG)' : '↓ Mockup (.JPG)'}
-                                </a>
-                            </div>
-                        </div>
+                    <a
+                        href={vectorSrc}
+                        download={printInfo.svgDownloadName || `${item.slug}.svg`}
+                        className={styles.actionLinkSecondary}
+                    >
+                        ↓ Vector (.SVG)
+                    </a>
+                    <a href={`${jpgPrintSrc}?v=13`} download={`${item.slug}-print.jpg`} className={styles.actionLinkSecondary}>
+                        ↓ 300 DPI Sheet (.JPG)
+                    </a>
+                </div>
+            </div>
 
-                        <div className={styles.mediaPair}>
-                            <div className={styles.mediaCol}>
-                                <div className={styles.mediaLabelBar}>
-                                    <span className={styles.mediaLabel}>
-                                        {printInfo.svgMaster ? '01 · Pure Vector Master (.SVG — Infinite Scale)' : '01 · In-Use Mockup'}
-                                    </span>
-                                    <span className={styles.mediaSubLabel}>
-                                        {printInfo.svgMaster ? '100% Vector Paths · Zero Pixelation at Any Size' : '3D Context Preview'}
-                                    </span>
-                                </div>
-                                <div
-                                    className={styles.frame}
-                                    style={{ '--card-aspect': `${rw} / ${rh}` } as React.CSSProperties}
-                                >
-                                    {!missing ? (
-                                        <img
-                                            src={`${src}?v=13`}
-                                            alt={`${item.title} — In-Use Mockup`}
-                                            className={styles.img}
-                                            onError={() => setMissing(true)}
-                                        />
-                                    ) : (
-                                        <div className={styles.placeholder}>
-                                            <span className={styles.placeholderTag}>Mockup pending · Nano Banana</span>
-                                            <code className={styles.placeholderPath}>public{src}</code>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className={styles.mediaCol}>
-                                <div className={styles.mediaLabelBar}>
-                                    <span className={styles.mediaLabel}>02 · Flat Print-Ready Artwork &amp; Dieline (Size in Inches)</span>
-                                    <span className={styles.mediaSubLabel}>{printInfo.scaleLabel}</span>
-                                </div>
-                                <div
-                                    className={styles.frame}
-                                    style={{ '--card-aspect': `${rw} / ${rh}` } as React.CSSProperties}
-                                >
-                                    {!missingPrint ? (
-                                        <img
-                                            src={`${printSrc}?v=13`}
-                                            alt={`${item.title} — Flat Print-Ready Artwork & Dieline`}
-                                            className={styles.img}
-                                            onError={() => setMissingPrint(true)}
-                                        />
-                                    ) : (
-                                        <div className={styles.placeholder}>
-                                            <span className={styles.placeholderTag}>Print sheet pending · Nano Banana</span>
-                                            <code className={styles.placeholderPath}>public{printSrc}</code>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        {printInfo.printableExamples && (
-                            <div className={styles.examplesSection}>
-                                <div className={styles.examplesHeader}>
-                                    <span className={styles.mediaLabel}>
-                                        03 · Individual Printable Examples Shown in Phone Mockups (1:1 Vector SVG &amp; Print Proofs)
-                                    </span>
-                                    <span className={styles.mediaSubLabel}>
-                                        Click any example below to print at 1:1 scale or download as a standalone vector (.SVG)
-                                    </span>
-                                </div>
-                                <div className={styles.examplesGrid}>
-                                    {printInfo.printableExamples.map((ex) => (
-                                        <div key={ex.id} className={styles.exampleCard}>
-                                            <div className={styles.exampleFrame}>
-                                                <img src={ex.svg} alt={ex.title} className={styles.exampleImg} />
-                                            </div>
-                                            <div className={styles.exampleMeta}>
-                                                <h4 className={styles.exampleTitle}>{ex.title}</h4>
-                                                <span className={styles.exampleSpec}>{ex.spec}</span>
-                                            </div>
-                                            <div className={styles.exampleActions}>
-                                                <Link href={ex.printHref} className={styles.actionLink}>
-                                                    🖨 Print 1:1
-                                                </Link>
-                                                <a href={ex.svg} download={`${ex.id}.svg`} className={styles.actionLinkSecondary}>
-                                                    ↓ Vector (.SVG)
-                                                </a>
-                                                <a href={ex.svg} target="_blank" rel="noopener noreferrer" className={styles.actionLinkSecondary}>
-                                                    ↗ Full Size
-                                                </a>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+            <div className={styles.mediaPair}>
+                <div className={styles.mediaCol}>
+                    <div className={styles.mediaLabelBar}>
+                        <span className={styles.mediaLabel}>
+                            {printInfo.svgPrintMaster && printInfo.svgMaster ? '01 · Pure Vector Master (.SVG)' : '01 · In-Use Mockup'}
+                        </span>
+                        <span className={styles.mediaSubLabel}>
+                            {categoryBase}/{item.slug}.jpg
+                        </span>
+                    </div>
+                    <div
+                        className={styles.frame}
+                        style={{ '--card-aspect': `${rw} / ${rh}` } as React.CSSProperties}
+                    >
+                        {!missing ? (
+                            <img
+                                src={`${src}?v=13`}
+                                alt={`${item.title} — In-Use Mockup`}
+                                className={styles.img}
+                                onError={() => setMissing(true)}
+                            />
+                        ) : (
+                            <div className={styles.placeholder}>
+                                <span className={styles.placeholderTag}>Mockup pending</span>
+                                <code className={styles.placeholderPath}>public{src}</code>
                             </div>
                         )}
+                    </div>
+                </div>
 
-                        <div className={styles.promptRow}>
-                            <details className={styles.promptBox}>
-                                <summary className={styles.promptSummary}>
-                                    Nano Banana Mockup Prompt <span className={styles.ratio}>{item.ratio}</span>
-                                </summary>
-                                <p className={styles.promptText}>{item.prompt}</p>
-                                <button type="button" className={styles.copyBtn} onClick={copy}>
-                                    {copied ? '✓ Copied mockup prompt' : 'Copy mockup prompt'}
-                                </button>
-                            </details>
+                <div className={styles.mediaCol}>
+                    <div className={styles.mediaLabelBar}>
+                        <span className={styles.mediaLabel}>02 · Flat Print-Ready Artwork &amp; Dieline</span>
+                        <span className={styles.mediaSubLabel}>{printInfo.scaleLabel}</span>
+                    </div>
+                    <div
+                        className={styles.frame}
+                        style={{ '--card-aspect': `${rw} / ${rh}` } as React.CSSProperties}
+                    >
+                        {!missingPrint ? (
+                            <img
+                                src={`${printSrc}?v=13`}
+                                alt={`${item.title} — Flat Print-Ready Artwork & Dieline`}
+                                className={styles.img}
+                                onError={() => setMissingPrint(true)}
+                            />
+                        ) : (
+                            <div className={styles.placeholder}>
+                                <span className={styles.placeholderTag}>Print sheet pending</span>
+                                <code className={styles.placeholderPath}>public{printSrc}</code>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
 
-                            <details className={styles.promptBox}>
-                                <summary className={styles.promptSummary}>
-                                    Nano Banana Print-Ready Flat Prompt <span className={styles.ratio}>{item.ratio}</span>
-                                </summary>
-                                <p className={styles.promptText}>{item.printPrompt}</p>
-                                <button type="button" className={styles.copyBtn} onClick={copyPrint}>
-                                    {copiedPrint ? '✓ Copied print-ready prompt' : 'Copy print-ready prompt'}
-                                </button>
-                            </details>
-                        </div>
-                    </article >
-                    );
+            {printInfo.printableExamples && (
+                <div className={styles.examplesSection}>
+                    <div className={styles.examplesHeader}>
+                        <span className={styles.mediaLabel}>
+                            {item.slug === 'gift-cards'
+                                ? '03 · Individual CR80 Gift Card Vector Masters (3.375" × 2.125" · /assets/identity/gifting/)'
+                                : '03 · Individual Printable Vector Masters (.SVG & 1:1 Print Proofs)'}
+                        </span>
+                        <span className={styles.mediaSubLabel}>
+                            Sorted into {categoryBase}/ · Click any card below to print 1:1 or download .SVG
+                        </span>
+                    </div>
+                    <div className={styles.examplesGrid}>
+                        {printInfo.printableExamples.map((ex) => (
+                            <div key={ex.id} className={styles.exampleCard}>
+                                <div className={styles.exampleFrame}>
+                                    <img src={ex.svg} alt={ex.title} className={styles.exampleImg} />
+                                </div>
+                                <div className={styles.exampleMeta}>
+                                    <h4 className={styles.exampleTitle}>{ex.title}</h4>
+                                    <span className={styles.exampleSpec}>{ex.spec}</span>
+                                </div>
+                                <div className={styles.exampleActions}>
+                                    <Link href={ex.printHref} className={styles.actionLink}>
+                                        🖨 Print 1:1
+                                    </Link>
+                                    <a href={ex.svg} download={`${ex.id}.svg`} className={styles.actionLinkSecondary}>
+                                        ↓ Vector (.SVG)
+                                    </a>
+                                    <a href={ex.svg} target="_blank" rel="noopener noreferrer" className={styles.actionLinkSecondary}>
+                                        ↗ Full Size
+                                    </a>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </article>
+    );
 }
 
 export default function ExtendedIdentityBoards() {
-    const [allCopied, setAllCopied] = useState(false);
-
-    const copyAll = async () => {
-        const text = EXTENDED_SECTIONS.flatMap((s) =>
-            s.items.map(
-                (i) =>
-                    `### ${s.index} · ${i.title}\nMockup: public/assets/identity/extended/${i.slug}.jpg\n${i.prompt}\n\nPrint-Ready Sheet: public/assets/identity/print/${i.slug}-print.jpg\n${i.printPrompt}\n\n${BRAND_STYLE}\n\nAspect ratio ${i.ratio}.`
-            )
-        ).join('\n\n---\n\n');
-        try {
-            await navigator.clipboard.writeText(text);
-            setAllCopied(true);
-            setTimeout(() => setAllCopied(false), 1800);
-        } catch {
-            /* ignore */
-        }
-    };
-
     return (
         <>
-            <div className={`container ${styles.toolbar}`}>
-                <p className={styles.toolbarText}>
-                    Sections 05–10 extend the 10-Department Flame Emblem system across retail packaging, carry-out &amp; gifting,
-                    in-store signage, team uniforms, stationery and digital channels.
-                </p>
-                <button type="button" className={styles.copyAllBtn} onClick={copyAll}>
-                    {allCopied ? '✓ All prompts copied' : 'Copy all prompts'}
-                </button>
-            </div>
-
             {EXTENDED_SECTIONS.map((section) => (
                 <section key={section.id} id={section.id} aria-labelledby={`${section.id}-heading`} className="section">
                     <div className={`container ${styles.stack}`}>
@@ -669,11 +604,13 @@ export default function ExtendedIdentityBoards() {
                             <h2 id={`${section.id}-heading`} className={styles.sectionTitle}>
                                 {section.index} / {section.title}
                             </h2>
-                            <p className={styles.sectionDesc}>{section.desc}</p>
+                            <p className={styles.sectionDesc}>
+                                {section.desc} — <code>/public/assets/identity/{section.folder}/</code>
+                            </p>
                         </div>
                         <div className={styles.grid}>
                             {section.items.map((item) => (
-                                <ItemCard key={`${item.slug}-v2`} item={item} />
+                                <ItemCard key={`${item.slug}-v2`} item={item} folder={section.folder} />
                             ))}
                         </div>
                     </div>

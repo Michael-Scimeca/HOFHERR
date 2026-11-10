@@ -209,12 +209,35 @@ export const CUSTOMER_BY_EMAIL_QUERY = defineQuery(`
     email,
     password,
     name,
+    username,
+    bio,
+    favoriteCut,
     phone,
     address,
     avatar,
     birthday,
     newsletter,
-    preferredPickupTime
+    preferredPickupTime,
+    createdAt
+  }
+`);
+
+/** Fetch a customer profile by username */
+export const CUSTOMER_BY_USERNAME_QUERY = defineQuery(`
+  *[_type == "customer" && (username == $username || lower(username) == lower($username))][0] {
+    _id,
+    name,
+    username,
+    email,
+    avatar,
+    bio,
+    favoriteCut,
+    phone,
+    address,
+    birthday,
+    newsletter,
+    preferredPickupTime,
+    createdAt
   }
 `);
 

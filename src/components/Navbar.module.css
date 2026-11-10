@@ -276,6 +276,31 @@
     background: var(--red);
 }
 
+/* ─── Avatar + Sign Out Row ─── */
+.avatarActionsRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.signOutInlineBtn {
+    background: none;
+    border: none;
+    padding: 4px 2px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-3, #9ca3af);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.18s ease;
+}
+
+.signOutInlineBtn:hover {
+    color: var(--red, #cc0e1d);
+}
+
 /* ─── Avatar Dropdown Wrap ─── */
 .avatarDropdownWrap {
     position: relative;
@@ -494,8 +519,8 @@
 }
 
 .cta {
-    background: #cc0d1d;
-    color: #fff;
+    background: var(--gold);
+    color: var(--dark);
     padding: 9px 18px;
     border-radius: 6px;
     font-size: 11px;
@@ -507,14 +532,16 @@
 }
 
 .cta:hover {
-    background: #a80a18;
+    background: var(--gold-light);
+    color: var(--dark);
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(204, 14, 29, 0.4);
+    box-shadow: 0 4px 16px rgba(168, 144, 95, 0.4);
 }
 
 .ctaActive {
-    background: var(--red-dark);
-    box-shadow: 0 0 0 3px rgba(204, 14, 29, 0.35), 0 4px 12px rgba(204, 14, 29, 0.3);
+    background: var(--gold-dark);
+    color: var(--dark);
+    box-shadow: 0 0 0 3px rgba(168, 144, 95, 0.35), 0 4px 12px rgba(168, 144, 95, 0.3);
 }
 
 /* ─── Cart Icon ─── */
@@ -1109,4 +1136,30 @@
     .logo img {
         height: 28px !important;
     }
+}
+
+.avatarFallbackLetter {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.logoImgMain {
+    object-fit: contain;
+    width: auto;
+    height: 56px;
+}
+
+.magicLineDynamic {
+    left: var(--magic-left, 0px);
+    width: var(--magic-width, 0px);
+}
+
+.ownerPortalLink {
+    color: var(--red);
+    font-weight: 700;
+}
+
+.signOutDropdownBtn {
+    color: #ef4444;
 }

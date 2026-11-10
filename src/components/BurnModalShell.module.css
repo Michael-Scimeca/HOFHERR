@@ -1,0 +1,16 @@
+/* Takes over the modal box's place in the overlay (full width up to max-width, centred),
+   so wrapping an existing modal doesn't change where it sits or how big it is. */
+.shell {
+    position: relative;
+    width: 100%;
+    margin: auto;
+}
+
+/* Flame canvas, attached to <body> and positioned with a transform by BurnPanel. */
+.canvas {
+    position: fixed;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease-out;
+}

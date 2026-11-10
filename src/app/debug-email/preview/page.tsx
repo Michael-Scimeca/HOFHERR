@@ -6,7 +6,7 @@ import { buildWelcomeEmail, buildNewsletterWelcomeEmail, buildVerifyEmail } from
 const IS_DEV = process.env.NODE_ENV === 'development';
 
 export const dynamic = 'force-dynamic';
-export const metadata: Metadata = { title: 'Email Template Preview' };
+export const metadata: Metadata = { title: 'Email Template Preview', robots: { index: false, follow: false } };
 
 /* ── Sample order confirmation (self-contained for preview) ──────────── */
 function buildSampleOrderConfirmation() {

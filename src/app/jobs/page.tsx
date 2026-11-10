@@ -1,13 +1,17 @@
-import cx from 'classnames';
+import Link from 'next/link';
 import styles from './page.module.css';
 
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Jobs & Careers | Hofherr Meat Co. — Northfield, IL',
-    description: 'Join the team at Hofherr Meat Co. — one of Chicago\'s North Shore premier butcher shops. Open positions in butchery, customer service, and kitchen. Health care, retirement savings & more.',
+    description:
+        "Join the team at Hofherr Meat Co. — one of Chicago's North Shore premier butcher shops. Open positions in butchery, customer service, and kitchen. Health care, retirement savings & more.",
     alternates: { canonical: 'https://hofherrmeatco.com/jobs' },
     openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
         title: 'Jobs & Careers | Hofherr Meat Co.',
         description: 'Work with passionate craftspeople at Hofherr Meat Co. Open roles in Northfield, IL.',
         url: 'https://hofherrmeatco.com/jobs',
@@ -21,9 +25,46 @@ export const metadata: Metadata = {
 };
 
 const POSITIONS = [
-    { title: 'Dishwasher', description: 'Keep the kitchen running smoothly.' },
-    { title: 'Meat Cutter', description: 'Master your craft with the finest cuts.' },
-    { title: 'Cashier', description: 'Deliver exceptional service to our customers.' }
+    {
+        title: 'Meat Cutter',
+        department: 'Butcher Counter · Northfield Flagship',
+        schedule: 'Full-Time · Competitive Pay + Benefits',
+        description:
+            'Master your craft breaking down whole-animal beef, heritage pork, lamb, and poultry. Cut steaks and roasts to custom counter specifications and assist North Shore guests with cooking guidance.',
+    },
+    {
+        title: 'Cashier & Counter Associate',
+        department: 'Guest Service · Northfield & Winnetka Depot',
+        schedule: 'Full-Time / Part-Time · Flexible Shifts',
+        description:
+            'Deliver warm, knowledgeable hospitality at the butcher counter and register. Coordinate online order pickups, wrap custom parcels in kraft paper, and help guests navigate our daily cases.',
+    },
+    {
+        title: 'Dishwasher & Kitchen Utility',
+        department: 'Scratch Kitchen & Smokehouse · Northfield',
+        schedule: 'Full-Time / Part-Time · Competitive Hourly',
+        description:
+            'Keep our scratch kitchen, rotisserie, and butcher block sanitized, organized, and running smoothly throughout daily prep and service.',
+    },
+];
+
+const PERKS = [
+    {
+        title: 'Health Care Plans',
+        detail: 'Comprehensive medical coverage options for full-time team members.',
+    },
+    {
+        title: 'Retirement Savings',
+        detail: 'Retirement savings accounts to help you build long-term financial security.',
+    },
+    {
+        title: 'Craft Apprenticeship',
+        detail: 'Hands-on training in whole-animal seam butchery, dry-aging, and smokehouse prep.',
+    },
+    {
+        title: 'Shop Discounts & Meals',
+        detail: 'Generous team discounts on custom cuts, scratch meals, and daily kitchen fare.',
+    },
 ];
 
 export default function JobsPage() {
@@ -54,52 +95,131 @@ export default function JobsPage() {
                     },
                 },
                 employmentType: 'FULL_TIME',
-                datePosted: new Date().toISOString().split('T')[0],
+                datePosted: '2026-11-09',
             },
         })),
     };
 
     return (
         <main className={styles.main}>
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jobSchema).replace(/</g, '\\u003c') }} />
-            <section className={cx(styles.hero)} style={{ padding: '120px 0 100px' }}>
-                <div className="container" style={{ maxWidth: '800px', textAlign: 'center' }}>
-                    <div className="section-label">Join Our Team</div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '40px', alignItems: 'center' }}>
-                        <h1 className="hero-title">Work at Hofherr Meat Co.</h1>
-                        <p className="hero-desc">
-                            We are always looking to grow our team. We offer health care plans, retirement savings accounts, and other great perks!
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jobSchema).replace(/</g, '\\u003c') }}
+            />
+
+            {/* ── Hero ── */}
+            <header className={styles.hero}>
+                <div className="container">
+                    <div className={styles.heroInner}>
+                        <h1 className={styles.headline}>
+                            WORK AT <em>HOFHERR MEAT CO.</em>
+                        </h1>
+                        <p className={styles.sub}>
+                            We are always looking to grow our team of craftspeople, cooks, and counter hosts. We offer
+                            health care plans, retirement savings accounts, and a true neighborhood butcher shop culture.
                         </p>
-                        <a href="mailto:jobs@hofherrmeatco.com" className="btn btn-primary" style={{ padding: '22px 56px' }}>
-                            Email Us Your Resume
-                        </a>
+                        <div className={styles.heroActions}>
+                            <a href="mailto:jobs@hofherrmeatco.com" className="btn btn-gold">
+                                Email Us Your Resume
+                            </a>
+                            <a href="tel:8474416328" className="btn btn-secondary">
+                                Call (847) 441-MEAT
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </header>
 
-            <section className={cx('section-sm', styles.positionsSection)}>
-                <div className="container" style={{ maxWidth: '800px' }}>
-                    <h2 className={styles.sectionTitle}>Open Positions</h2>
-                    <div className={styles.jobList}>
-                        {POSITIONS.map((job) => (
-                            <div key={job.title} className={styles.jobCard}>
-                                <div className={styles.jobInfo}>
-                                    <h3 className={styles.jobTitle}>{job.title}</h3>
-                                    <p className={styles.jobDesc}>{job.description}</p>
+            {/* ── Open Positions & Benefits Grid ── */}
+            <section id="open-positions" aria-labelledby="open-positions-heading" className="section">
+                <div className="container">
+                    <div className={styles.jobsGrid}>
+                        {/* Benefits & Shop Info Sidebar */}
+                        <aside className={styles.sidebar} aria-label="Benefits and Shop Culture">
+                            <div className={styles.perksPanel}>
+                                <h2 className={styles.sidebarHeading}>TEAM BENEFITS &amp; PERKS</h2>
+                                <div className={styles.perksList}>
+                                    {PERKS.map((perk) => (
+                                        <div key={perk.title} className={styles.perkItem}>
+                                            <strong className={styles.perkTitle}>{perk.title}</strong>
+                                            <p className={styles.perkDesc}>{perk.detail}</p>
+                                        </div>
+                                    ))}
                                 </div>
-                                <a href={`mailto:jobs@hofherrmeatco.com?subject=Applying for ${job.title} position`} className="btn btn-secondary">
-                                    Apply
-                                </a>
                             </div>
-                        ))}
-                    </div>
 
-                    <div className={styles.generalAppBox}>
-                        <h3>Don't see your role?</h3>
-                        <p>We're always looking for talented people. Send us your resume anyway!</p>
-                        <a href="mailto:jobs@hofherrmeatco.com?subject=General Application" className="btn btn-outline">
-                            General Application
-                        </a>
+                            <div className={styles.locationsCard}>
+                                <span className={styles.cardKicker}>TWO NORTH SHORE SHOPS</span>
+                                <div className={styles.locBlock}>
+                                    <strong>Northfield Butcher Shop</strong>
+                                    <span>300 Happ Rd · Northfield, IL 60093</span>
+                                </div>
+                                <div className={styles.locBlock}>
+                                    <strong>The Depot · Winnetka</strong>
+                                    <span>780 Elm St · Winnetka, IL 60093</span>
+                                </div>
+                                <Link href="/our-story" className="btn btn-outline">
+                                    Read Our Story
+                                </Link>
+                            </div>
+                        </aside>
+
+                        {/* Open Roles Column */}
+                        <div className={styles.positionsColumn}>
+                            <div className={styles.groupHeader}>
+                                <h2 id="open-positions-heading" className={styles.sectionTitle}>
+                                    OPEN POSITIONS
+                                </h2>
+                                <span className={styles.roleCount}>{POSITIONS.length} Active Roles</span>
+                            </div>
+
+                            <div className={styles.jobList}>
+                                {POSITIONS.map((job) => (
+                                    <article key={job.title} className={styles.jobCard}>
+                                        <div className={styles.jobInfo}>
+                                            <div className={styles.jobMetaRow}>
+                                                <span className={styles.jobDept}>{job.department}</span>
+                                                <span className={styles.jobSchedule}>{job.schedule}</span>
+                                            </div>
+                                            <h3 className={styles.jobTitle}>{job.title}</h3>
+                                            <p className={styles.jobDesc}>{job.description}</p>
+                                        </div>
+                                        <div className={styles.jobAction}>
+                                            <a
+                                                href={`mailto:jobs@hofherrmeatco.com?subject=Applying for ${encodeURIComponent(job.title)} position`}
+                                                className="btn btn-gold"
+                                            >
+                                                Apply Now
+                                            </a>
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+
+                            {/* General Application 60/40 Action Board */}
+                            <div className={styles.generalAppBoard}>
+                                <div className={styles.generalAppLeft}>
+                                    <h3 className={styles.generalAppTitle}>DON&apos;T SEE YOUR ROLE?</h3>
+                                    <p className={styles.generalAppDesc}>
+                                        We&apos;re always looking for talented cutters, cooks, and counter pros. Send your
+                                        resume or a quick note to <strong>jobs@hofherrmeatco.com</strong> and introduce
+                                        yourself.
+                                    </p>
+                                </div>
+                                <div className={styles.generalAppRight}>
+                                    <span className={styles.dispatchKicker}>OPEN APPLICATION</span>
+                                    <a
+                                        href="mailto:jobs@hofherrmeatco.com?subject=General Application — Hofherr Meat Co."
+                                        className="btn btn-gold"
+                                    >
+                                        General Application
+                                    </a>
+                                    <a href="tel:8474416328" className="btn btn-secondary">
+                                        Call (847) 441-MEAT
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

@@ -7,13 +7,10 @@
 /* ── Open Hero Section (No Content-Boxing, No Pill Above H1) ── */
 .hero {
     position: relative;
-    padding: 96px 0 64px;
-    background: linear-gradient(
-        180deg,
-        rgba(28, 22, 20, 0.92) 0%,
-        rgba(18, 14, 13, 0.78) 65%,
-        transparent 100%
-    );
+    padding: 56px 0 48px;
+    background: var(--bg-2);
+    background-image: radial-gradient(at 20%, #80002026 0%, #0000 60%), radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
+    border-bottom: 1px solid var(--border);
 }
 
 .heroInner {
@@ -79,7 +76,7 @@
     background: rgba(168, 144, 95, 0.14);
 }
 
-/* ── Shared Section Layout ── */
+/* ── Shared Section Layout & Feature Banners ── */
 .sectionStack {
     display: flex;
     flex-direction: column;
@@ -106,6 +103,97 @@
     color: var(--fg-2);
     max-width: 78ch;
     margin: 0;
+}
+
+.featureBanner {
+    margin: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-3);
+}
+
+.featureBannerImg {
+    width: 100%;
+    max-height: 460px;
+    object-fit: cover;
+    display: block;
+}
+
+.featureBannerVector {
+    object-fit: contain;
+    background: #C9AB84;
+}
+
+.featureBannerCap {
+    padding: 12px 24px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(18, 14, 13, 0.92);
+    border-top: 1px solid var(--border);
+}
+
+.featureBannerCapRow {
+    padding: 12px 24px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(18, 14, 13, 0.92);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.featureBannerActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vectorBadgeBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--gold);
+    color: var(--dark);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.15s ease, transform 0.15s ease;
+    white-space: nowrap;
+}
+
+.vectorBadgeBtn:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+}
+
+.dualPhotoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 960px) {
+    .dualPhotoGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dualPhotoGrid .featureBannerImg {
+    height: 320px;
 }
 
 /* ── 01 · Farm Traceability & Sourcing Standards ── */
@@ -165,42 +253,7 @@
     margin: 0;
 }
 
-/* ── 02 · Custom-Cut Butcher Boards (Interactive Department Tabs + Full Board) ── */
-.filterRow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.filterBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-radius: 999px;
-    background: var(--bg-3);
-    border: 1px solid var(--border);
-    color: var(--fg-2);
-    font-size: 0.84rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.filterBtnActive {
-    background: var(--red);
-    border-color: var(--gold);
-    color: var(--fg);
-}
-
-.filterIcon {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-}
-
+/* ── 02 · Custom-Cut Butcher Boards ── */
 .boardsGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -216,24 +269,48 @@
 .boardCard {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
     padding: 32px;
     border-radius: var(--radius-lg);
     background: var(--bg-3);
     border: 1px solid var(--border);
 }
 
-.boardHead {
+.systemBoardBanner {
+    position: relative;
+    height: 220px;
+    border-radius: var(--radius);
+    background: #120e0d;
+    border: 2px solid #8b0a10;
+    overflow: hidden;
+}
+
+.systemBoardImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.engravingBadge {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background: #1c1614;
+    border: 2px solid var(--gold);
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border);
+    justify-content: center;
+    padding: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.65);
 }
 
 .boardEmblem {
-    width: 64px;
-    height: 64px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
     flex-shrink: 0;
 }
@@ -246,7 +323,7 @@
 
 .boardTitle {
     font-family: var(--font-heading);
-    font-size: 1.85rem;
+    font-size: 2rem;
     font-weight: 800;
     color: var(--fg);
     margin: 0;
@@ -258,6 +335,24 @@
     color: var(--gold);
     letter-spacing: 0.04em;
     text-transform: uppercase;
+}
+
+.classicRoster {
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    background: rgba(139, 10, 16, 0.16);
+    border: 1px solid rgba(204, 14, 29, 0.35);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--fg);
+    margin: 0;
+}
+
+.classicRoster strong {
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-right: 8px;
 }
 
 .boardIntro {
@@ -302,7 +397,95 @@
     color: var(--fg-3);
 }
 
-/* ── 03 · 6 Signature Housemade Sandwiches (Wrapping Paper Accent Cards) ── */
+/* ── 03 · Charcuterie Case & 6 Photo Categories ── */
+.charcuterieGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1024px) {
+    .charcuterieGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .charcuterieGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.charcuterieCard {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+}
+
+.charcuterieThumbWrap {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: #120e0d;
+    border-bottom: 1px solid var(--border);
+}
+
+.charcuterieThumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.charcuterieCornerBadge {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: rgba(18, 14, 13, 0.92);
+    border: 1.5px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+}
+
+.charcuterieBadgeIcon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.charcuterieBody {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 24px;
+}
+
+.charcuterieTitle {
+    font-family: var(--font-heading);
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: var(--gold);
+    margin: 0;
+}
+
+.charcuterieItems {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--fg-2);
+    margin: 0;
+}
+
+/* ── 04 · 6 Signature Housemade Sandwiches (Wrapping Paper Accent Cards) ── */
 .sandwichGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -328,12 +511,12 @@
     padding: 24px;
     border-radius: var(--radius);
     border: 2px solid #8b0a10;
-    background-color: #d8ba92;
+    background-color: #c8a47e;
     background-image:
         linear-gradient(
             135deg,
-            rgba(243, 234, 216, 0.92) 0%,
-            rgba(216, 186, 146, 0.94) 100%
+            rgba(200, 164, 126, 0.78) 0%,
+            rgba(190, 148, 108, 0.84) 100%
         ),
         url('/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg');
     background-size: cover, 280px auto;
@@ -375,13 +558,35 @@
 }
 
 .sandwichBread {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-size: 0.8rem;
     font-weight: 700;
     color: #5a3e28;
     margin-top: auto;
 }
 
-/* ── 04 · Soups, Stocks & Prepared Meals ── */
+.breadIcon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+/* ── Soups, Stocks & Prepared Meals Grids ── */
+.soupsStocksGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 960px) {
+    .soupsStocksGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .trioGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -395,13 +600,62 @@
 }
 
 .pantryCard {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 16px;
     padding: 24px;
     border-radius: var(--radius);
-    background: var(--bg-3);
-    border: 1px solid var(--border);
+    background: linear-gradient(165deg, rgba(24, 18, 14, 0.96) 0%, rgba(12, 9, 8, 0.98) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.28);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.pantryBannerWrap {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1.5px solid #8b0a10;
+    background: #120e0d;
+}
+
+.pantryBannerImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.pantryBannerBadge {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    background: rgba(18, 14, 13, 0.94);
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+}
+
+.pantryHeadMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pantryKicker {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
 }
 
 .pantryHead {
@@ -411,79 +665,220 @@
 }
 
 .pantryIcon {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
 }
 
 .pantryTitle {
     font-family: var(--font-heading);
-    font-size: 1.6rem;
+    font-size: 1.65rem;
     font-weight: 700;
+    color: var(--fg);
+    margin: 0;
+}
+
+.tagCloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rosterPill {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--fg);
+}
+
+/* ── 05 · Barbeque Feature Card (Design System Catering Box + Pitmaster Suite) ── */
+.bbqFeatureCard {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.05fr 1.15fr;
+    gap: 32px;
+    padding: 32px;
+    border-radius: 20px;
+    background: linear-gradient(165deg, rgba(24, 18, 14, 0.96) 0%, rgba(10, 8, 7, 0.98) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.32);
+    align-items: center;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 960px) {
+    .bbqFeatureCard {
+        grid-template-columns: 1fr;
+    }
+}
+
+.bbqVisualStack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.bbqPhotoWrap {
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 2px solid #8b0a10;
+}
+
+.bbqPhoto {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    display: block;
+}
+
+.bbqSubGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.bbqMiniCard {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid rgba(245, 155, 26, 0.3);
+    background: #120e0d;
+}
+
+.bbqMiniImg {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+}
+
+.bbqMiniCap {
+    padding: 8px 12px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-align: center;
+    border-top: 1px solid rgba(245, 155, 26, 0.2);
+}
+
+.bbqContent {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.bbqBadgeRow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.cleaverBadge {
+    height: 56px;
+    width: 56px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.bbqTitle {
+    font-family: var(--font-heading);
+    font-size: clamp(1.75rem, 3vw, 2.35rem);
+    font-weight: 800;
     color: var(--gold);
     margin: 0;
 }
 
-.pantryList {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.pantryRow {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-}
-
-.pantryItemName {
-    font-weight: 700;
-    font-size: 0.94rem;
-    color: var(--fg);
-}
-
-.pantryItemSub {
-    font-size: 0.82rem;
-    color: var(--fg-3);
-}
-
-/* ── 05 · Wrapping Paper CTA Banner ── */
-.ctaWrap {
-    position: relative;
-    padding: 64px 32px;
-    border-radius: var(--radius-lg);
-    border: 2px solid #8b0a10;
-    background-color: #d8ba92;
-    background-image:
-        linear-gradient(
-            135deg,
-            rgba(216, 186, 146, 0.88) 0%,
-            rgba(198, 162, 118, 0.93) 100%
-        ),
-        url('/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg');
-    background-size: cover, 320px auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 16px;
-}
-
-.ctaHeading {
-    font-family: var(--font-heading);
-    font-size: clamp(2.2rem, 4vw, 3.25rem);
-    font-weight: 800;
-    color: #8b0a10;
+.bbqText {
+    font-size: 0.96rem;
+    line-height: 1.65;
+    color: var(--fg-2);
     margin: 0;
 }
 
-.ctaSub {
-    font-size: 1rem;
-    color: #1c1614;
+.bbqActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-top: 8px;
+}
+
+/* ── 06 · 5 CTA Banner Style Variations ── */
+.ctaShowcaseStack {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.ctaVariantBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ctaVariantLabel {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.ctaSealLg {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.ctaMiniSticker {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.ctaKickerGold {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.ctaHeadingLight {
+    font-family: var(--font-heading);
+    font-size: clamp(2.1rem, 3.8vw, 3.1rem);
+    font-weight: 800;
+    color: var(--fg);
+    line-height: 0.96;
+    margin: 0;
+}
+
+.ctaHeadingLight em {
+    font-style: italic;
+    color: var(--red);
+}
+
+.ctaSubLight {
+    font-size: 0.96rem;
+    color: var(--fg-2);
+    line-height: 1.6;
     max-width: 68ch;
     margin: 0;
+}
+
+.ctaSubLight strong {
+    color: var(--fg);
+    font-weight: 700;
 }
 
 .ctaBtns {
@@ -492,4 +887,354 @@
     justify-content: center;
     gap: 16px;
     padding-top: 8px;
+}
+
+.ctaBtnsLeft {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* STYLE 01: Ember Smokehouse Split Ledger */
+.ctaStyle1 {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 32px;
+    padding: 36px;
+    border-radius: 20px;
+    background: linear-gradient(165deg, rgba(24, 18, 14, 0.97) 0%, rgba(10, 8, 7, 0.99) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.35);
+    align-items: center;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+}
+
+.ctaStyle1Left {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ctaStyle1BrandRow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ctaStyle1Right {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.ctaLocCard {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    background: rgba(200, 164, 126, 0.07);
+    border: 1px solid rgba(245, 155, 26, 0.28);
+}
+
+.ctaLocBadge {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.ctaLocTitle {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--fg);
+}
+
+.ctaLocAddr {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--fg-2);
+}
+
+.ctaLocNote {
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+}
+
+/* STYLE 02: Bone-Cream & Oxblood Butcher Scale Ticket */
+.ctaStyle2 {
+    background: #F3EAD8;
+    color: #18120E;
+    border-radius: var(--radius-lg);
+    padding: 10px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+}
+
+.ctaStyle2Inner {
+    border: 2px solid #8B0A10;
+    border-radius: var(--radius);
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.ctaStyle2TopBar {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #8B0A10;
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8B0A10;
+}
+
+.ctaStyle2Body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.ctaStyle2Copy {
+    flex: 1 1 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ctaStyle2Heading {
+    font-family: var(--font-heading);
+    font-size: clamp(2.1rem, 3.8vw, 3.1rem);
+    font-weight: 800;
+    color: #18120E;
+    margin: 0;
+    line-height: 0.96;
+}
+
+.ctaStyle2Heading em {
+    font-style: italic;
+    color: #8B0A10;
+}
+
+.ctaStyle2Sub {
+    font-size: 0.96rem;
+    color: #3E2D23;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.ctaStyle2Actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btnOxblood {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    background: #8B0A10;
+    color: #F3EAD8;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 2px solid #8B0A10;
+    transition: all 0.2s ease;
+}
+
+.btnOxblood:hover {
+    background: #18120E;
+    border-color: #18120E;
+    color: #F59B1A;
+}
+
+.btnCharcoalOutline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: #18120E;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 2px solid #18120E;
+    transition: all 0.2s ease;
+}
+
+.btnCharcoalOutline:hover {
+    background: #18120E;
+    color: #F3EAD8;
+}
+
+.ctaStyle2Footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(139, 10, 16, 0.45);
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6B4D38;
+}
+
+/* STYLE 03: Unbleached Kraft Wrapping Paper + Dark Stamped Plaque */
+.ctaStyle3 {
+    padding: 36px;
+    border-radius: var(--radius-lg);
+    border: 2px solid #8B0A10;
+    background-color: #C8A47E;
+    background-image:
+        linear-gradient(135deg, rgba(200, 164, 126, 0.72) 0%, rgba(182, 140, 98, 0.78) 100%),
+        url('/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg');
+    background-size: cover, 280px auto;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 20px 56px rgba(0, 0, 0, 0.5);
+}
+
+.ctaStyle3Plaque {
+    position: relative;
+    width: 100%;
+    max-width: 920px;
+    background: rgba(16, 12, 10, 0.96);
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.75);
+}
+
+.ctaStyle3StickerRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* STYLE 04: Oxblood Crimson & Charcoal 60/40 Action Board */
+.ctaStyle4 {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(245, 155, 26, 0.45);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+}
+
+.ctaStyle4Left {
+    padding: 40px;
+    background: linear-gradient(135deg, #8B0A10 0%, #610509 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+}
+
+.ctaStyle4Medallions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.ctaHeadingCream {
+    font-family: var(--font-heading);
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 800;
+    color: #F3EAD8;
+    line-height: 0.95;
+    margin: 0;
+}
+
+.ctaSubCream {
+    font-size: 0.98rem;
+    color: rgba(243, 234, 216, 0.92);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.ctaSubCream strong {
+    color: #FFFFFF;
+}
+
+.ctaStyle4Right {
+    padding: 40px;
+    background: #14100E;
+    border-left: 2px solid rgba(245, 155, 26, 0.35);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* STYLE 05: Red Butcher Wrapping Paper Frame + Floating Seal Bar */
+.ctaStyle5 {
+    position: relative;
+    padding: 28px;
+    border-radius: 20px;
+    border: 2px solid rgba(245, 155, 26, 0.55);
+    background-color: #8b0a10;
+    background-image:
+        radial-gradient(ellipse 65% 85% at 50% 50%, rgba(139, 10, 16, 0.72) 0%, rgba(88, 5, 9, 0.35) 100%),
+        url('/assets/identity/hofherr-wrapping-paper-tile-red-10-icons.svg');
+    background-size: 100% 100%, 300px auto;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+.ctaStyle5Inner {
+    background: rgba(16, 12, 10, 0.94);
+    border: 1.5px solid rgba(245, 155, 26, 0.5);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.ctaStyle5Main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1 1 420px;
+}
+
+.ctaStyle5Btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+@media (max-width: 960px) {
+    .ctaStyle1,
+    .ctaStyle4 {
+        grid-template-columns: 1fr;
+    }
+
+    .ctaStyle4Right {
+        border-left: none;
+        border-top: 2px solid rgba(245, 155, 26, 0.35);
+    }
 }

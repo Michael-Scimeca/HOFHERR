@@ -1,26 +1,30 @@
-/* ── Admin login — Hofherr brand system ──────────────────────────────────────
- * Charcoal #1C1614 · Oxblood crimson #8B0A10 · Hofherr red #CC0E1D
- * Smokehouse amber #F59B1A · Counter cream #F3EAD8 · Kraft #C8A47E
- * Background: the printed butcher wrapping paper.
- */
+/* ── Admin Login — Obsidian Black & Brushed Gold (1px White/Grey Border) ── */
 .loginContainer {
-    --c-charcoal: #1c1614;
-    --c-charcoal-2: #241d1a;
-    --c-crimson: #8b0a10;
-    --c-red: #cc0e1d;
-    --c-amber: #f59b1a;
-    --c-cream: #f3ead8;
-    --c-tan: #cdbfa8;
-    --c-muted: #9a8f86;
-    --c-line: rgba(243, 234, 216, 0.12);
+    --c-panel-bg: #0a0a0a;
+    --c-input-bg: #121212;
+    --c-input-focus-bg: #181818;
+    --c-text: #f2f2f2;
+    --c-label: #b8b2a8;
+    --c-muted: #888888;
+    --c-placeholder: #5c5852;
+    --c-accent: #a8905f;
+    --c-divider: #a8905f;
+    --c-panel-border: 1px solid rgba(255, 255, 255, 0.18);
+    --c-line: rgba(255, 255, 255, 0.18);
+    --c-btn-bg: #a8905f;
+    --c-btn-hover: #c4ae82;
+    --c-btn-text: #0a0a0a;
+    --c-badge-bg: #0a0a0a;
+    --c-badge-border: #a8905f;
+    --c-fade: rgba(10, 10, 10, 0.92);
 
     position: relative;
     min-height: 100vh;
     display: grid;
     grid-template-columns: 1fr 500px;
     font-family: var(--font-body), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--c-charcoal);
-    color: var(--c-cream);
+    background: var(--c-panel-bg);
+    color: var(--c-text);
 }
 
 /* Left — the wrapping paper */
@@ -30,7 +34,7 @@
     background: #c8a47e;
 }
 
-.illustrationPanel img {
+.illustrationImg {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -38,18 +42,18 @@
     transition: transform 10s ease;
 }
 
-.illustrationPanel:hover img {
+.illustrationPanel:hover .illustrationImg {
     transform: scale(1.04);
 }
 
-/* warm vignette + charcoal fade into the form panel */
+/* warm vignette + fade into the form panel */
 .illustrationPanel::after {
     content: '';
     position: absolute;
     inset: 0;
     background:
         radial-gradient(ellipse at 30% 40%, rgba(28, 22, 20, 0) 0%, rgba(28, 22, 20, 0.35) 100%),
-        linear-gradient(to right, rgba(28, 22, 20, 0) 55%, rgba(28, 22, 20, 0.92) 100%);
+        linear-gradient(to right, rgba(28, 22, 20, 0) 55%, var(--c-fade) 100%);
     pointer-events: none;
 }
 
@@ -59,8 +63,9 @@
     left: 40px;
     z-index: 2;
     padding: 16px 22px;
-    background: var(--c-charcoal);
-    border-left: 6px solid var(--c-amber);
+    background: var(--c-badge-bg);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-left: 6px solid var(--c-badge-border);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
@@ -70,14 +75,14 @@
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--c-cream);
+    color: #f3ead8;
     margin: 0 0 2px;
     line-height: 1;
 }
 
 .illustrationBadge p {
     font-size: 12px;
-    color: var(--c-amber);
+    color: var(--c-badge-border);
     margin: 0;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -90,8 +95,8 @@
     align-items: center;
     justify-content: center;
     padding: 40px 48px;
-    background: var(--c-charcoal);
-    border-left: 4px solid var(--c-crimson);
+    background: var(--c-panel-bg);
+    border-left: var(--c-panel-border);
 }
 
 .loginCard {
@@ -119,15 +124,15 @@
 .subtitle {
     font-family: var(--font-heading), sans-serif;
     font-size: 16px;
-    color: var(--c-amber);
+    color: var(--c-accent);
     text-transform: uppercase;
     letter-spacing: 0.2em;
 }
 
 .divider {
     width: 48px;
-    height: 3px;
-    background: var(--c-red);
+    height: 2px;
+    background: var(--c-divider);
     margin: 18px auto 0;
 }
 
@@ -146,7 +151,7 @@
 .label {
     font-size: 11px;
     font-weight: 700;
-    color: var(--c-tan);
+    color: var(--c-label);
     text-transform: uppercase;
     letter-spacing: 0.14em;
 }
@@ -155,10 +160,10 @@
     width: 100%;
     box-sizing: border-box;
     padding: 13px 15px;
-    background: var(--c-charcoal-2);
+    background: var(--c-input-bg);
     border: 1px solid var(--c-line);
     border-radius: 6px;
-    color: var(--c-cream);
+    color: var(--c-text);
     font-size: 15px;
     font-family: inherit;
     transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
@@ -166,13 +171,13 @@
 }
 
 .input::placeholder {
-    color: #6b605a;
+    color: var(--c-placeholder);
 }
 
 .input:focus {
-    border-color: var(--c-amber);
-    background: #2b2320;
-    box-shadow: 0 0 0 3px rgba(245, 155, 26, 0.16);
+    border-color: var(--c-accent);
+    background: var(--c-input-focus-bg);
+    box-shadow: 0 0 0 3px rgba(168, 144, 95, 0.18);
 }
 
 .forgotRow {
@@ -194,13 +199,14 @@
 }
 
 .forgotLink:hover {
-    color: var(--c-amber);
+    color: var(--c-accent);
 }
 
 .button {
-    background: var(--c-red);
-    color: #fff;
-    border: none;
+    width: 100%;
+    background: var(--c-btn-bg);
+    color: var(--c-btn-text);
+    border: 1px solid var(--c-line);
     border-radius: 6px;
     padding: 15px;
     font-family: var(--font-heading), sans-serif;
@@ -210,14 +216,13 @@
     letter-spacing: 0.1em;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 14px rgba(204, 14, 29, 0.25);
     margin-top: 4px;
 }
 
-.button:hover {
-    background: var(--c-crimson);
+.button:hover:not(:disabled) {
+    background: var(--c-btn-hover);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(139, 10, 16, 0.45);
+    box-shadow: 0 6px 20px rgba(168, 144, 95, 0.28);
 }
 
 .button:active {
@@ -231,10 +236,32 @@
     box-shadow: none;
 }
 
+.godModeBtn {
+    width: 100%;
+    background: transparent;
+    color: var(--c-accent);
+    border: 1px solid var(--c-line);
+    border-radius: 6px;
+    padding: 12px;
+    font-family: var(--font-heading), sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+
+.godModeBtn:hover:not(:disabled) {
+    border-color: var(--c-accent);
+    background: rgba(168, 144, 95, 0.12);
+    color: #fff;
+}
+
 .button:focus-visible,
 .forgotLink:focus-visible,
 .backLink:focus-visible {
-    outline: 2px solid var(--c-amber);
+    outline: 2px solid var(--c-accent);
     outline-offset: 3px;
 }
 
@@ -249,19 +276,28 @@
     margin-bottom: 16px;
 }
 
+.successWrap {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
 .successTitle {
     font-family: var(--font-heading), sans-serif;
     font-size: 26px;
     text-transform: uppercase;
-    color: var(--c-amber);
+    color: var(--c-accent);
     margin: 0 0 12px;
 }
 
 .successText {
-    color: var(--c-tan);
+    color: var(--c-label);
     font-size: 14px;
-    margin: 0 0 24px;
+    margin: 0 0 16px;
     line-height: 1.5;
+}
+
+.centerRow {
+    text-align: center;
 }
 
 .footer {
@@ -279,7 +315,7 @@
 }
 
 .backLink:hover {
-    color: var(--c-amber);
+    color: var(--c-accent);
 }
 
 @media (max-width: 860px) {
@@ -291,10 +327,6 @@
         height: 240px;
     }
 
-    .illustrationPanel::after {
-        background: linear-gradient(to bottom, rgba(28, 22, 20, 0) 45%, rgba(28, 22, 20, 0.95) 100%);
-    }
-
     .illustrationBadge {
         top: auto;
         bottom: 20px;
@@ -304,11 +336,18 @@
     .formPanel {
         padding: 40px 24px;
         border-left: none;
-        border-top: 4px solid var(--c-crimson);
+        border-top: var(--c-panel-border);
     }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

@@ -6,6 +6,16 @@ export const metadata: Metadata = {
     title: 'Sitemap | Hofherr Meat Co.',
     description:
         'Complete visual sitemap of the Hofherr Meat Co. website — browse every page from ordering and catering to our story and gift cards.',
+    alternates: { canonical: 'https://hofherrmeatco.com/sitemap-page' },
+    openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
+        title: 'Sitemap | Hofherr Meat Co.',
+        description: 'Browse every page of the Hofherr Meat Co. website.',
+        url: 'https://hofherrmeatco.com/sitemap-page',
+        images: [{ url: '/OG/og-image.jpg', width: 1200, height: 630, alt: 'Sitemap | Hofherr Meat Co.' }],
+    },
 };
 
 /* ── Site Structure Data ─────────────────────────────────────────────── */
@@ -47,7 +57,6 @@ const SITE_MAP: SiteSection[] = [
         icon: '🧭',
         pages: [
             { name: 'Our Story', path: '/our-story', icon: '📖' },
-            { name: 'Product Identity', path: '/product-identity', icon: '🏷️', badge: 'new' },
             { name: 'Visit Us', path: '/visit', icon: '📍' },
             { name: 'Cut Guide', path: '/cut-guide', icon: '🔪' },
             { name: 'FAQ', path: '/faq', icon: '❓' },
@@ -80,7 +89,7 @@ const totalPages = SITE_MAP.reduce((sum, s) => sum + s.pages.length, 0) + 1; // 
 
 export default function SitemapPage() {
     return (
-        <div className={styles.page}>
+        <main className={styles.page}>
             <div className={`container ${styles.container}`}>
                 {/* Header */}
                 <header className={styles.header}>
@@ -161,6 +170,6 @@ export default function SitemapPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }

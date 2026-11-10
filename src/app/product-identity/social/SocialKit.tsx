@@ -34,9 +34,9 @@ const PHOTOS = [
     { label: 'Rotisserie chickens', src: '/assets/specials-rotisserie.jpg' },
     { label: 'Catering buffet', src: '/assets/catering-buffet.jpg' },
     { label: 'Shop interior', src: '/assets/shop-interior.jpg' },
-    { label: 'Shop exterior', src: '/assets/shop-exterior.jpg' },
-    { label: 'The Depot', src: '/assets/store-depot.jpg' },
-    { label: 'Butcher at work', src: '/assets/Store-butcher.jpg' },
+    { label: 'Shop exterior', src: '/images/visit/northfield-storefront-front.jpg' },
+    { label: 'The Depot', src: '/shops/winnetka.png' },
+    { label: 'Butcher at work', src: '/assets/store-butcher-front.jpg' },
     { label: 'Packaging suite', src: '/assets/identity/butcher-complete-packaging-suite-10-icons.jpg' },
 ];
 
@@ -697,7 +697,7 @@ function ChartImage({ a }: { a: Animal }) {
             </div>
         );
     }
-    return <img src={a.chartSrc} alt={`${a.name} cut chart`} onError={() => setMissing(true)} style={{ ...fill, width: '100%', height: '100%', objectFit: 'contain' }} />;
+    return <img src={`${a.chartSrc}?v=woodcut`} alt={`${a.name} cut chart`} onError={() => setMissing(true)} style={{ ...fill, width: '100%', height: '100%', objectFit: 'contain' }} />;
 }
 
 function CutChartPost({ a }: { a: Animal }) {

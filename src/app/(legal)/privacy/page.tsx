@@ -3,13 +3,28 @@ import styles from '../legal.module.css';
 export const metadata = {
     title: 'Privacy Policy — Hofherr Meat Co.',
     description: 'Learn how Hofherr Meat Co. collects, uses, and protects your personal information when you use our website and services.',
+    alternates: { canonical: 'https://hofherrmeatco.com/privacy' },
+    openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
+        title: 'Privacy Policy | Hofherr Meat Co.',
+        description: 'How Hofherr Meat Co. collects, uses, and protects your personal information.',
+        url: 'https://hofherrmeatco.com/privacy',
+        images: [{ url: '/OG/og-image.jpg', width: 1200, height: 630, alt: 'Privacy Policy | Hofherr Meat Co.' }],
+    },
 };
 
 export default function PrivacyPolicyPage() {
     return (
-        <div className={styles.page}>
-            <h1>Privacy Policy</h1>
-            <span className={styles.effective}>Effective: March 12, 2026</span>
+        <main className={styles.pageWrap}>
+            <header className={styles.hero}>
+                <div className={styles.heroInner}>
+                    <h1 className={styles.title}>Privacy Policy</h1>
+                    <span className={styles.effective}>Effective: March 12, 2026</span>
+                </div>
+            </header>
+            <div className={styles.page}>
 
             <p>We take your privacy as seriously as we take our dry-aging process. Hofherr Meat Co. (&quot;we,&quot; &quot;us,&quot; or &quot;the folks behind the counter&quot;) operates hofherrmeatco.com. This Privacy Policy explains how we handle your information — no funny business.</p>
 
@@ -70,12 +85,13 @@ export default function PrivacyPolicyPage() {
             <p>We guard your data like we guard our dry-aging room. SSL/TLS encryption on every page, Stripe&apos;s 256-bit encryption for payments, and commercially reasonable security measures across the board.</p>
 
             <div className={styles.contact}>
-                <h2 style={{ borderBottom: 'none', marginTop: 0 }}>Questions? We&apos;re an open book.</h2>
+                <h2 className={styles.contactHeading}>Questions? We&apos;re an open book.</h2>
                 <p><strong>Hofherr Meat Co.</strong></p>
-                <p>📍 <a href="https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>300 Happ Rd, Northfield, IL 60093</a></p>
+                <p>📍 <a href="https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093" target="_blank" rel="noopener noreferrer">300 Happ Rd, Northfield, IL 60093</a></p>
                 <p>📞 <a href="tel:8474416328">(847) 441-6328</a></p>
                 <p>✉️ <a href="mailto:info@hofherrmeatco.com">info@hofherrmeatco.com</a></p>
             </div>
-        </div>
+            </div>
+        </main>
     );
 }

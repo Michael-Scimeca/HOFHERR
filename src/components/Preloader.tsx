@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import styles from './Preloader.module.css';
+import { lockScroll } from '@/lib/scrollLock';
 
 // The fire/burn engine is heavy (three.js + per-pixel canvas), so it loads on the client only.
 // The black overlay below is server-rendered, so the page never flashes before it appears.
@@ -27,6 +28,13 @@ export default function Preloader() {
     const [interactiveDrag, setInteractiveDrag] = useState(false);
     const [runKey, setRunKey] = useState(0);
     const syncVerRef = useRef(PRELOADER_SYNC_VERSION);
+
+    // No scrolling while the preloader is on screen.
+    const skipped = SKIP.some(p => pathname?.startsWith(p));
+    useEffect(() => {
+        if (done || skipped) return;
+        return lockScroll();
+    }, [done, skipped]);
 
     useEffect(() => {
         if (syncVerRef.current !== PRELOADER_SYNC_VERSION) {
@@ -112,7 +120,7 @@ export default function Preloader() {
         return () => window.removeEventListener('preloader-hud-command', onHudCommand);
     }, [done]);
 
-    if (done || SKIP.some(p => pathname?.startsWith(p))) return null;
+    if (done || skipped) return null;
 
     return (
         <div

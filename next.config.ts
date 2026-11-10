@@ -47,6 +47,22 @@ const nextConfig: NextConfig = {
   // Hide the Next.js dev indicator
   devIndicators: false,
 
+  // Redirect legacy selections.html URLs to /selections
+  async redirects() {
+    return [
+      {
+        source: '/selections.html',
+        destination: '/selections',
+        permanent: true,
+      },
+      {
+        source: '/hm/selections.html',
+        destination: '/selections',
+        permanent: true,
+      },
+    ];
+  },
+
   // Security headers
   async headers() {
     return [

@@ -6,6 +6,9 @@ export const metadata: Metadata = {
         'Subscribe to The Hofherr Weekly — every Tuesday: featured cuts, butcher picks, seasonal arrivals, and first dibs on holiday pre-orders. One email, no spam.',
     alternates: { canonical: 'https://hofherrmeatco.com/newsletter' },
     openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
         title: 'The Hofherr Weekly Newsletter',
         description:
             'Weekly specials, butcher picks, and holiday pre-order access from Hofherr Meat Co. in Northfield, IL.',

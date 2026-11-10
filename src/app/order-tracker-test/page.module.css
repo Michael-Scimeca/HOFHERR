@@ -1,0 +1,335 @@
+/* ─── Order tracker prototype ─── */
+
+.page {
+    padding: 56px 0 96px;
+}
+
+.inner {
+    /* 920px of content plus the container's own side padding */
+    max-width: calc(920px + 2 * var(--container-px));
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.title {
+    font-size: clamp(2.6rem, 6vw, 4rem);
+    color: #fff;
+    line-height: 1.05;
+    margin: 12px 0 12px;
+}
+
+.title em {
+    font-style: italic;
+    color: var(--red);
+}
+
+.sub {
+    color: var(--text-3);
+    font-size: 15px;
+}
+
+/* ── Card ── */
+.card {
+    background: linear-gradient(165deg, rgba(24, 18, 14, 0.96) 0%, rgba(10, 8, 7, 0.98) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: var(--shadow-lg);
+}
+
+.cardTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+
+.kicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 6px;
+}
+
+.stageTitle {
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: #fff;
+    line-height: 1;
+    margin: 0;
+}
+
+.eta {
+    text-align: right;
+}
+
+.etaValue {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--gold-light);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Segmented progress bar ── */
+.bar {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.seg {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 56px;
+    padding: 0 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    color: var(--text-3);
+    transition: color 0.4s var(--ease-out), border-color 0.4s var(--ease-out);
+}
+
+.seg:first-child {
+    border-radius: 999px 0 0 999px;
+}
+
+.seg:last-child {
+    border-radius: 0 999px 999px 0;
+}
+
+.segFill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--red-dark), var(--red));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.6s var(--ease-out);
+}
+
+.segNum,
+.segLabel {
+    position: relative;
+    z-index: 1;
+}
+
+.segNum {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.segLabel {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.segDone,
+.segActive {
+    color: #fff;
+    border-color: transparent;
+}
+
+.segDone .segFill,
+.segActive .segFill {
+    transform: scaleX(1);
+}
+
+.segActive .segFill {
+    background: linear-gradient(90deg, var(--red-dark), var(--red), var(--red-light), var(--red));
+    background-size: 220% 100%;
+    animation: sweep 2.2s linear infinite;
+}
+
+.segActive {
+    box-shadow: 0 0 24px rgba(204, 14, 29, 0.45);
+}
+
+@keyframes sweep {
+    from {
+        background-position: 100% 0;
+    }
+    to {
+        background-position: -120% 0;
+    }
+}
+
+.cardCancelled .seg {
+    opacity: 0.45;
+}
+
+.message {
+    margin: 24px 0 0;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text-2);
+    min-height: 3.2em;
+}
+
+/* ── Details ── */
+.details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.detailMain {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.detailLink {
+    color: var(--gold-light);
+    font-size: 14px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.detailLink:hover {
+    color: #fff;
+}
+
+.items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: var(--text-2);
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+.qty {
+    color: var(--gold-light);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.note {
+    color: var(--text-3);
+    font-style: italic;
+}
+
+/* ── Test controls ── */
+.controls {
+    margin-top: 32px;
+    padding: 24px 28px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-2);
+}
+
+.controlsTitle {
+    font-size: 1.5rem;
+    color: #fff;
+    margin: 0 0 4px;
+}
+
+.controlsSub {
+    color: var(--text-3);
+    font-size: 14px;
+    margin: 0 0 20px;
+}
+
+.controlRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1 1 220px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-3);
+}
+
+.field select {
+    height: 44px;
+    padding: 0 12px;
+    background: #000;
+    color: var(--text);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.field select:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+}
+
+/* ── Small screens: stack the bar vertically ── */
+@media (max-width: 640px) {
+    .card {
+        padding: 22px 18px;
+    }
+
+    .eta {
+        text-align: left;
+    }
+
+    .bar {
+        grid-template-columns: 1fr;
+    }
+
+    .seg,
+    .seg:first-child,
+    .seg:last-child {
+        border-radius: var(--radius-sm);
+        min-height: 48px;
+    }
+
+    .details {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .segActive .segFill {
+        animation: none;
+    }
+
+    .segFill,
+    .seg {
+        transition: none;
+    }
+}

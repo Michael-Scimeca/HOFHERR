@@ -12,6 +12,7 @@ import FeaturedUserOrder from './FeaturedUserOrder';
 export const metadata: Metadata = {
     title: 'Featured Capabilities | Hofherr Meat Co.',
     description: 'A showcase of our interactive capabilities including chat, email, catering setup, and CMS integrations.',
+    robots: { index: false, follow: false },
 };
 
 export default async function FeaturedPage() {

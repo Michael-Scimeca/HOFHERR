@@ -3,13 +3,28 @@ import styles from '../legal.module.css';
 export const metadata = {
     title: 'Terms of Service — Hofherr Meat Co.',
     description: 'Terms and conditions governing your use of the Hofherr Meat Co. website and online ordering services.',
+    alternates: { canonical: 'https://hofherrmeatco.com/terms' },
+    openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
+        title: 'Terms of Service | Hofherr Meat Co.',
+        description: 'Terms and conditions for the Hofherr Meat Co. website and online ordering.',
+        url: 'https://hofherrmeatco.com/terms',
+        images: [{ url: '/OG/og-image.jpg', width: 1200, height: 630, alt: 'Terms of Service | Hofherr Meat Co.' }],
+    },
 };
 
 export default function TermsPage() {
     return (
-        <div className={styles.page}>
-            <h1>Terms of Service</h1>
-            <span className={styles.effective}>Effective: March 12, 2026</span>
+        <main className={styles.pageWrap}>
+            <header className={styles.hero}>
+                <div className={styles.heroInner}>
+                    <h1 className={styles.title}>Terms of Service</h1>
+                    <span className={styles.effective}>Effective: March 12, 2026</span>
+                </div>
+            </header>
+            <div className={styles.page}>
 
             <p>Welcome to Hofherr Meat Co. — where the steaks are high and the terms are fair. By using our website or placing an order, you agree to these Terms. They&apos;re straightforward, we promise.</p>
 
@@ -50,12 +65,13 @@ export default function TermsPage() {
             <p>Our website is provided &quot;as is.&quot; To the maximum extent permitted by Illinois law, we&apos;re not liable for indirect or consequential damages. Any disputes are governed by Illinois law and settled in Cook County courts.</p>
 
             <div className={styles.contact}>
-                <h2 style={{ borderBottom: 'none', marginTop: 0 }}>Got questions? Just ask.</h2>
+                <h2 className={styles.contactHeading}>Got questions? Just ask.</h2>
                 <p><strong>Hofherr Meat Co.</strong></p>
-                <p>📍 <a href="https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>300 Happ Rd, Northfield, IL 60093</a></p>
+                <p>📍 <a href="https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093" target="_blank" rel="noopener noreferrer">300 Happ Rd, Northfield, IL 60093</a></p>
                 <p>📞 <a href="tel:8474416328">(847) 441-6328</a></p>
                 <p>✉️ <a href="mailto:info@hofherrmeatco.com">info@hofherrmeatco.com</a></p>
             </div>
-        </div>
+            </div>
+        </main>
     );
 }

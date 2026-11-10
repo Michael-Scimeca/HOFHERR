@@ -30,7 +30,7 @@ function parsePriceNum(price: string): number {
 function buildConfirmationEmail(payload: OrderPayload): { subject: string; html: string; text: string } {
     const { items, contact, orderNote, storeId, tipAmount, coupon } = payload;
     const storeName = storeId === 'depot' ? 'The Depot' : 'The Butcher Shop';
-    const storeAddr = storeId === 'depot' ? '780 Elm St, Winnetka, IL' : '300 Happ Rd, Northfield, IL';
+    const storeAddr = storeId === 'depot' ? '754 Elm St, Winnetka, IL' : '300 Happ Rd, Northfield, IL';
     const orderNum = Math.floor(10000000 + Math.random() * 90000000).toString(16).toUpperCase();
 
     const subtotal = items.reduce((s, i) => s + parsePriceNum(i.price) * i.qty, 0);

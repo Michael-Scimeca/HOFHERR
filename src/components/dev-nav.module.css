@@ -9,6 +9,12 @@
     gap: 8px;
 }
 
+.floatingBar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .toggleBtn {
     display: flex;
     align-items: center;
@@ -31,6 +37,70 @@
     transform: scale(1.05);
 }
 
+.godBtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #18181b;
+    color: #a8905f;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    font-family: monospace;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    letter-spacing: 0.08em;
+    transition: transform 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.godBtn:hover:not(:disabled) {
+    transform: scale(1.05);
+    border-color: #a8905f;
+}
+
+.godBtnActive {
+    background: #16a34a;
+    color: #fff;
+    border-color: #4ade80;
+}
+
+.godBanner {
+    column-span: all;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-family: monospace;
+    font-size: 11px;
+    color: #e5e7eb;
+}
+
+.godBannerBtn {
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid #a8905f;
+    background: #a8905f;
+    color: #0a0a0a;
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+}
+
+.godBannerBtnActive {
+    background: #16a34a;
+    border-color: #4ade80;
+    color: #fff;
+}
+
 .toggleLabel {
     font-size: 10px;
     font-weight: 900;
@@ -47,11 +117,12 @@
     border: 1px solid #ffffff1a;
     border-radius: 12px;
     padding: 12px;
-    width: 210px;
+    /* Up to three columns so every page fits on screen; drops to fewer columns on narrow
+       screens and scrolls if it still doesn't fit. */
+    width: min(660px, calc(100vw - 32px));
+    columns: 190px 3;
+    column-gap: 16px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
     max-height: calc(100vh - 100px);
     overflow-y: auto;
     scrollbar-width: thin;
@@ -67,6 +138,8 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
+    break-inside: avoid;
+    margin-bottom: 10px;
 }
 
 .sectionLabel {

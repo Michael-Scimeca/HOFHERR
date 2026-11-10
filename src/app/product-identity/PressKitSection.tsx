@@ -154,8 +154,8 @@ const LOGO_ASSETS: LogoAsset[] = [
         id: 'wrapping-paper-pattern',
         title: 'Signature Butcher Wrapping Paper Pattern',
         format: 'VECTOR .SVG + 300-DPI .JPG',
-        desc: 'Seamless step-and-repeat 10-department woodcut flame pattern on Classic Kraft (#C8A47E) for editorial backgrounds.',
-        src: '/assets/identity/hofherr-wrapping-paper-pattern-10-icons.svg',
+        desc: 'Seamless step-and-repeat 25-department woodcut flame pattern on Classic Kraft (#C8A47E) for editorial backgrounds.',
+        src: '/assets/identity/hofherr-wrapping-paper-pattern-10-icons.svg?v=3',
         downloadName: 'hofherr-wrapping-paper-pattern.svg',
         secondarySrc: '/assets/identity/hofherr-wrapping-paper-print-hd.jpg',
         secondaryLabel: '↓ 300-DPI (.JPG)',
@@ -185,17 +185,17 @@ const PHOTO_ASSETS: PhotoAsset[] = [
     {
         id: 'winnetka-depot',
         title: 'The Depot — Historic Winnetka Metra Station',
-        format: 'HIGH-RES .JPG · SECOND LOCATION',
+        format: 'HIGH-RES .PNG · SECOND LOCATION',
         caption: 'Hofherr Meat Co. at The Depot inside the historic Elm Street Metra Station (754 Elm St, Winnetka).',
-        src: '/assets/store-depot.jpg',
-        downloadName: 'hofherr-the-depot-winnetka.jpg',
+        src: '/shops/winnetka.png',
+        downloadName: 'hofherr-the-depot-winnetka.png',
     },
     {
         id: 'shop-exterior',
-        title: 'Northfield Storefront Exterior',
-        format: 'HIGH-RES .JPG · EXTERIOR',
-        caption: 'Exterior storefront at 300 Happ Rd, Northfield, IL. Credit: Courtesy of Hofherr Meat Co.',
-        src: '/assets/shop-exterior.jpg',
+        title: 'Northfield Storefront Exterior (Front View)',
+        format: 'HIGH-RES .JPG · EXTERIOR (16:9)',
+        caption: 'Front-facing exterior storefront at 300 Happ Rd, Suite 105, Northfield, IL. Credit: Courtesy of Hofherr Meat Co.',
+        src: '/images/visit/northfield-storefront-front.jpg',
         downloadName: 'hofherr-northfield-exterior.jpg',
     },
     {
@@ -243,7 +243,7 @@ const PHOTO_ASSETS: PhotoAsset[] = [
         title: 'Countertop Wrapping Paper & Packaging Suite',
         format: 'HIGH-RES .JPG · BRAND IDENTITY',
         caption: 'Custom printed butcher wrapping paper, die-cut department seals, and stamped kraft carryout bags.',
-        src: '/assets/identity/butcher-complete-packaging-suite-v5.jpg',
+        src: '/assets/identity/packaging/butcher-complete-packaging-suite-10-icons.jpg',
         downloadName: 'hofherr-counter-packaging-suite.jpg',
     },
 ];
@@ -348,31 +348,36 @@ const CHART_ASSETS: LogoAsset[] = [
 ];
 
 const WOODCUT_ICONS: IconAsset[] = [
-    { id: 'cow', name: 'Prime Beef', src: '/icons/cow.svg', downloadName: 'hofherr-icon-beef.svg' },
-    { id: 'pig', name: 'Heritage Pork', src: '/icons/pig.svg', downloadName: 'hofherr-icon-pork.svg' },
-    { id: 'chicken', name: 'Poultry', src: '/icons/chicken.svg', downloadName: 'hofherr-icon-chicken.svg' },
-    { id: 'lamb', name: 'Pasture Lamb', src: '/icons/lamb.svg', downloadName: 'hofherr-icon-lamb.svg' },
-    { id: 'cheese', name: 'Artisanal Cheese', src: '/icons/cheese.svg', downloadName: 'hofherr-icon-cheese.svg' },
-    { id: 'stocksoup', name: 'Stocks & Soups', src: '/icons/stocksoup.svg', downloadName: 'hofherr-icon-stocksoup.svg' },
-    { id: 'fish', name: 'Fresh Catch', src: '/icons/fish.svg', downloadName: 'hofherr-icon-fish.svg' },
-    { id: 'duck', name: 'Specialty Duck', src: '/icons/duck.svg', downloadName: 'hofherr-icon-duck.svg' },
-    { id: 'catering', name: 'Catering Truck', src: '/icons/catering.svg', downloadName: 'hofherr-icon-catering.svg' },
-    { id: 'suage', name: 'House Sausage', src: '/icons/suage.svg', downloadName: 'hofherr-icon-sausage.svg' },
-    { id: 'hamcheese', name: 'Deli Meats', src: '/icons/hamcheese.svg', downloadName: 'hofherr-icon-deli.svg' },
+    // 14 Butcher Shop Sidebar Icons (Exact Online-Orders Order)
+    { id: 'cow', name: 'Beef', src: '/icons/cow.svg', downloadName: 'hofherr-icon-beef.svg' },
+    { id: 'pig', name: 'Pork', src: '/icons/pig.svg', downloadName: 'hofherr-icon-pork.svg' },
+    { id: 'chicken', name: 'Chicken', src: '/icons/chicken.svg', downloadName: 'hofherr-icon-chicken.svg' },
+    { id: 'suage', name: 'Sausage', src: '/icons/suage.svg', downloadName: 'hofherr-icon-sausage.svg' },
+    { id: 'hamcheese', name: 'Deli Meat & Cheese', src: '/icons/hamcheese.svg', downloadName: 'hofherr-icon-deli.svg' },
     { id: 'prepared', name: 'Prepared Foods', src: '/icons/prepared.svg', downloadName: 'hofherr-icon-prepared.svg' },
-    { id: 'veal', name: 'Milk-Fed Veal', src: '/icons/veal.svg', downloadName: 'hofherr-icon-veal.svg' },
-    { id: 'turkey', name: 'Heritage Turkey', src: '/icons/turkey.svg', downloadName: 'hofherr-icon-turkey.svg' },
-    { id: 'game', name: 'Specialty Game', src: '/icons/game.svg', downloadName: 'hofherr-icon-game.svg' },
-    { id: 'hotbeverage', name: 'Hot Coffee', src: '/icons/hotbeverage.svg', downloadName: 'hofherr-icon-hot-beverage.svg' },
-    { id: 'coldbeverage', name: 'Cold Drinks', src: '/icons/coldbeverage.svg', downloadName: 'hofherr-icon-cold-beverage.svg' },
-    { id: 'bread', name: 'Artisan Bread', src: '/icons/bread.svg', downloadName: 'hofherr-icon-bread.svg' },
+    { id: 'lamb', name: 'Lamb', src: '/icons/lamb.svg', downloadName: 'hofherr-icon-lamb.svg' },
+    { id: 'fish', name: 'Seafood', src: '/icons/fish.svg', downloadName: 'hofherr-icon-seafood.svg' },
+    { id: 'veal', name: 'Veal', src: '/icons/veal.svg', downloadName: 'hofherr-icon-veal.svg' },
+    { id: 'turkey', name: 'Turkey', src: '/icons/turkey.svg', downloadName: 'hofherr-icon-turkey.svg' },
+    { id: 'duck', name: 'Duck', src: '/icons/duck.svg', downloadName: 'hofherr-icon-duck.svg' },
+    { id: 'game', name: 'Game', src: '/icons/game.svg', downloadName: 'hofherr-icon-game.svg' },
+    { id: 'stocksoup', name: 'Soups & Stocks', src: '/icons/stocksoup.svg', downloadName: 'hofherr-icon-soups-stocks.svg' },
+    { id: 'catering', name: 'Catering', src: '/icons/catering.svg', downloadName: 'hofherr-icon-catering.svg' },
+    // 12 Winnetka Depot & Specialty Icons + 2 Map Pins
+    { id: 'cheese', name: 'Artisanal Cheese', src: '/icons/cheese.svg', downloadName: 'hofherr-icon-cheese.svg' },
+    { id: 'seafood-lobster', name: 'Shellfish & Crab', src: '/assets/identity/stickers/sticker-seafood-lobster.svg', downloadName: 'hofherr-icon-shellfish-lobster.svg' },
     { id: 'pastries', name: 'Pastries', src: '/icons/pastries.svg', downloadName: 'hofherr-icon-pastries.svg' },
-    { id: 'grabgo', name: 'Grab & Go', src: '/icons/grabgo.svg', downloadName: 'hofherr-icon-grab-and-go.svg' },
-    { id: 'produce', name: 'Local Produce', src: '/icons/produce.svg', downloadName: 'hofherr-icon-produce.svg' },
-    { id: 'dairy', name: 'Farmstead Dairy', src: '/icons/dairy.svg', downloadName: 'hofherr-icon-dairy.svg' },
-    { id: 'pantry', name: 'Pantry & Rubs', src: '/icons/pantry.svg', downloadName: 'hofherr-icon-pantry.svg' },
-    { id: 'swag', name: 'Merch & Swag', src: '/icons/swag.svg', downloadName: 'hofherr-icon-swag.svg' },
-    { id: 'festival', name: 'Seasonal & Fest', src: '/icons/festival.svg', downloadName: 'hofherr-icon-festival.svg' },
+    { id: 'hotbeverage', name: 'Hot Beverages', src: '/icons/hotbeverage.svg', downloadName: 'hofherr-icon-hot-beverage.svg' },
+    { id: 'grabgo', name: 'Grab + Go Hot Foods', src: '/icons/grabgo.svg', downloadName: 'hofherr-icon-grab-and-go.svg' },
+    { id: 'produce', name: 'Produce', src: '/icons/produce.svg', downloadName: 'hofherr-icon-produce.svg' },
+    { id: 'dairy', name: 'Dairy, Eggs & Cheese', src: '/icons/dairy.svg', downloadName: 'hofherr-icon-dairy.svg' },
+    { id: 'pantry', name: 'Pantry & More', src: '/icons/pantry.svg', downloadName: 'hofherr-icon-pantry.svg' },
+    { id: 'bread', name: 'Bread & Bakery', src: '/icons/bread.svg', downloadName: 'hofherr-icon-bread.svg' },
+    { id: 'coldbeverage', name: 'Cold Beverages', src: '/icons/coldbeverage.svg', downloadName: 'hofherr-icon-cold-beverage.svg' },
+    { id: 'swag', name: 'HMC Swag', src: '/icons/swag.svg', downloadName: 'hofherr-icon-swag.svg' },
+    { id: 'festival', name: 'Festival', src: '/icons/festival.svg', downloadName: 'hofherr-icon-festival.svg' },
+    { id: 'butcher-pin', name: 'Butcher Map Pin', src: '/icons/butcher-pin.svg', downloadName: 'hofherr-icon-butcher-pin.svg' },
+    { id: 'depot-pin', name: 'Depot Map Pin', src: '/icons/depot-pin.svg', downloadName: 'hofherr-icon-depot-pin.svg' },
 ];
 
 export default function PressKitSection() {
@@ -773,7 +778,7 @@ export default function PressKitSection() {
                 {showIcons && (
                     <div className={styles.subSection}>
                         <div className={styles.subHeader}>
-                            <h3 className={styles.subTitle}>25 Official Woodcut Flame Department &amp; Category Icons (.SVG)</h3>
+                            <h3 className={styles.subTitle}>28 Official Woodcut Flame Department &amp; Category Icons (.SVG)</h3>
                             <p className={styles.subCaption}>
                                 Two-tone Oxblood Crimson (#8B0A10) and Smokehouse Amber (#F59B1A) linocut vector icons for menus, maps, and press layouts
                             </p>

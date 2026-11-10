@@ -87,7 +87,44 @@
     position: relative;
     overflow: hidden;
     height: 280px;
-    background: var(--bg-2);
+    background: #14171a;
+}
+
+.mapLayer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.25s ease;
+}
+
+.mapLayerActive {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+.mapLayerHidden {
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.mapPreloaderImg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    z-index: 1;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+.mapPreloaderFadeOut {
+    opacity: 0;
 }
 
 .mapIframe {
@@ -97,19 +134,18 @@
     height: 100%;
     border: 0;
     filter: invert(90%) hue-rotate(180deg) saturate(0.6) brightness(0.8);
-    transition: opacity 0.2s ease;
+    transition: opacity 0.35s ease;
+    z-index: 2;
 }
 
-.mapIframeActive {
-    opacity: 1;
-    pointer-events: auto;
-    z-index: 1;
-}
-
-.mapIframeHidden {
+.mapIframeLoading {
     opacity: 0;
+    /* invisible but still on top: don't let it swallow clicks and drags until it is shown */
     pointer-events: none;
-    z-index: 0;
+}
+
+.mapIframeLoaded {
+    opacity: 1;
 }
 
 .mapCanvas {

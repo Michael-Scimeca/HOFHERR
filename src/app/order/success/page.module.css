@@ -1,134 +1,713 @@
 .page {
     position: relative;
     min-height: 100vh;
-    display: flex;
     width: 100%;
-    margin: 0;
-    padding-top: 10px;
-}
-
-.hiringBanner {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 10px;
-  background: #ff0000;
-  color: #fff;
-  text-align: center;
-  line-height: 10px;
-  font-size: 8px;
-  z-index: 1000;
+    background: var(--bg);
 }
 
 .splitLayout {
     display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
     width: 100%;
     min-height: 100vh;
 }
 
 .leftPane {
-    flex: 1;
-    width: 50%;
-    background: #fdfcf0; /* Warm white/beige brand background */
+    flex: 1 1 56%;
+    min-width: 320px;
+    background: var(--bg);
     display: flex;
-    justify-content: center;
-    padding: 40px;
+    align-items: flex-start;
+    justify-content: stretch;
+    padding-top: 32px;
+    padding-bottom: 64px;
+    padding-left: 32px;
+    padding-right: max(var(--container-px), calc((100vw - var(--max-w, 1800px)) / 2 + var(--container-px)));
 }
 
 .contentWrapper {
-    max-width: 520px;
     width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.rightPane {
-    flex: 1;
-    width: 50%;
-    position: relative;
+/* Interactive Layout Switcher */
+.layoutSwitcher {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    background: rgba(20, 15, 12, 0.9);
+    border: 1px solid rgba(245, 155, 26, 0.24);
+    border-radius: var(--radius);
+    padding: 8px;
+}
+
+.layoutTab {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(200, 164, 126, 0.16);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: all 0.2s ease;
+    color: var(--fg-2);
+}
+
+.layoutTab:hover {
+    border-color: rgba(245, 155, 26, 0.45);
+    background: rgba(245, 155, 26, 0.06);
+}
+
+.layoutTabActive {
+    background: linear-gradient(135deg, rgba(139, 10, 16, 0.45) 0%, rgba(245, 155, 26, 0.16) 100%);
+    border-color: var(--gold);
+    color: var(--fg);
+    box-shadow: 0 4px 16px rgba(139, 10, 16, 0.35);
+}
+
+.layoutTabLabel {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.layoutTabDesc {
+    font-size: 0.6875rem;
+    color: var(--fg-muted);
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.videoBg {
-    position: absolute;
-    top: 0;
-    left: 0;
+/* Main Butcher Ticket Card with Smoker-Ember FireBorder */
+.ticketCard {
+    position: relative;
+    background: linear-gradient(165deg, rgba(24, 18, 14, 0.96) 0%, rgba(10, 8, 7, 0.98) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.28);
+    border-radius: 20px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+}
+
+/* ── Live Order Progress Tracker ── */
+.liveTrackerBox {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(200, 164, 126, 0.24);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.liveTrackerHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.liveTrackerKicker {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.liveTrackerTitle {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--fg);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.liveTrackerControls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.demoPlayBtn {
+    appearance: none;
+    background: rgba(204, 14, 29, 0.2);
+    border: 1px solid var(--red);
+    color: var(--fg);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.demoPlayBtn:hover {
+    background: var(--red);
+}
+
+.trackerTestLink {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(200, 164, 126, 0.35);
+    background: rgba(200, 164, 126, 0.08);
+    transition: all 0.2s ease;
+}
+
+.trackerTestLink:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.progressBar {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.progressItem {
+    margin: 0;
+    padding: 0;
+}
+
+.segBtn {
+    position: relative;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    min-height: 48px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    color: var(--fg-3);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s var(--ease-out);
+}
+
+.segFill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--red-dark), var(--red));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.5s var(--ease-out);
+}
+
+.segNum,
+.segLabel {
+    position: relative;
     z-index: 1;
 }
 
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 2;
+.segNum {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    border: 1.5px solid currentColor;
+    font-size: 0.75rem;
+    font-weight: 800;
 }
 
-.state {
-    position: relative;
-    z-index: 3;
-    width: 100%;
-    text-align: center;
+.segLabel {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.segDone,
+.segActive {
+    color: var(--fg);
+    border-color: transparent;
+}
+
+.segDone .segFill,
+.segActive .segFill {
+    transform: scaleX(1);
+}
+
+.segActive {
+    box-shadow: 0 0 20px rgba(204, 14, 29, 0.45);
+    border-color: rgba(245, 155, 26, 0.5);
+}
+
+.segTodo:hover {
+    border-color: rgba(200, 164, 126, 0.45);
+    color: var(--fg-2);
+}
+
+.liveTrackerMessage {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--fg-2);
+}
+
+.accountSyncRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.8125rem;
+    color: var(--fg-3);
+}
+
+.accountSyncLeft {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.accountSyncLeft strong {
+    color: var(--gold);
+}
+
+.accountSyncLeft code {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--fg);
+    background: rgba(255, 255, 255, 0.07);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.accountSyncDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #22c55e;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+    flex-shrink: 0;
+}
+
+.accountDashLink {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.accountDashLink:hover {
+    color: var(--fg);
+}
+
+/* LAYOUT 01: Split Header + 2-Col Body */
+.splitHeaderBanner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(245, 155, 26, 0.2);
+}
+
+.splitTitleCol {
     display: flex;
     flex-direction: column;
+    gap: 4px;
+}
+
+.subCompact {
+    font-size: 0.9375rem;
+    color: var(--fg-2);
+    margin: 0;
+}
+
+.subCompact strong {
+    color: var(--gold);
+}
+
+.emailCalloutPill {
+    display: flex;
     align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, rgba(139, 10, 16, 0.36) 0%, rgba(245, 155, 26, 0.14) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.5);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+}
+
+.emailPillIcon {
+    width: 24px;
+    height: 24px;
+    color: var(--gold);
+    flex-shrink: 0;
+}
+
+.emailPillTitle {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.emailPillSub {
+    font-size: 0.8125rem;
+    color: var(--fg);
+    font-weight: 600;
+}
+
+.splitBodyGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    gap: 24px;
+    align-items: stretch;
+}
+
+.splitReceiptCol {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.splitLogisticsCol {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.infoStack {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
 }
 
-.icon {
-    font-size: 40px;
-    line-height: 1;
-    margin-bottom: -4px;
+/* LAYOUT 02: Butcher Tracker */
+.trackerHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
 }
 
-.successImgWrapper {
+.progressTrack {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(200, 164, 126, 0.22);
+    border-radius: var(--radius);
+    padding: 16px;
+}
+
+.progressStep {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0.6;
+}
+
+.progressStepActive,
+.progressStepCurrent {
+    opacity: 1;
+}
+
+.stepDot {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: rgba(200, 164, 126, 0.14);
+    border: 1px solid rgba(200, 164, 126, 0.35);
+    color: var(--fg-2);
+    flex-shrink: 0;
+}
+
+.progressStepActive .stepDot {
+    background: var(--red);
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.progressStepCurrent .stepDot {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #18120E;
+}
+
+.stepTitle {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg);
+}
+
+.stepSub {
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+}
+
+/* LAYOUT 03: Cream Scale Ticket Hero */
+.creamHeroTicket {
+    background: #F3EAD8;
+    color: #18120E;
+    border-radius: var(--radius);
+    padding: 8px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.creamHeroInner {
+    border: 2px solid #8B0A10;
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.creamHeroTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #8B0A10;
+}
+
+.creamKicker {
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8B0A10;
+    margin-bottom: 4px;
+}
+
+.creamHeadline {
+    font-family: var(--font-heading);
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    color: #18120E;
+    margin: 0;
+    line-height: 0.95;
+    text-transform: uppercase;
+}
+
+.creamHeadline em {
+    font-style: italic;
+    color: #8B0A10;
+}
+
+.creamSub {
+    font-size: 0.875rem;
+    color: #4A3A30;
+    margin: 4px 0 0;
+    font-weight: 600;
+}
+
+.infoBoxFourCol {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.stampedBottomBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+/* Shared Ticket Elements */
+.ticketTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(245, 155, 26, 0.18);
+}
+
+.sealGroup {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sealHeader {
     display: flex;
     justify-content: center;
-    margin-bottom: -4px;
 }
 
-.successImg {
-    width: auto;
-    height: 90px;
+.sealImg {
+    display: block;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.sealMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ticketSerial {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.ticketSub {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+}
+
+.stampBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(139, 10, 16, 0.32);
+    border: 1px solid rgba(245, 155, 26, 0.45);
+    color: var(--fg);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.miniSticker {
+    display: block;
     object-fit: contain;
 }
 
-
-.state h1 {
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 2.1rem;
-    color: #1a1a1a;
+.headline {
+    font-family: var(--font-heading);
+    font-size: clamp(2.25rem, 4vw, 3.5rem);
+    color: var(--fg);
     margin: 0;
-    letter-spacing: -0.02em;
+    line-height: 0.96;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+}
+
+.headline em {
+    font-style: italic;
+    color: var(--red);
 }
 
 .sub {
-    font-size: 15px;
-    color: #4b5563;
-    line-height: 1.5;
+    font-size: 0.9375rem;
+    color: var(--fg-2);
+    line-height: 1.6;
     margin: 0;
 }
 
-.summarySection {
-    width: 100%;
-    border-top: 1px solid #e5e7eb;
-    border-bottom: 1px solid #e5e7eb;
-    padding: 12px 0;
-    text-align: left;
+.sub strong {
+    color: var(--gold);
+    font-weight: 700;
 }
 
-.summaryTitle {
-    font-size: 10px;
+/* Authentic Bone-Cream & Oxblood Scale Label Summary */
+.scaleTicket {
+    background: #F3EAD8;
+    color: #18120E;
+    border-radius: var(--radius);
+    padding: 8px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.scaleTicketInner {
+    border: 2px solid #8B0A10;
+    border-radius: var(--radius-sm);
+    padding: 16px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    flex: 1;
+}
+
+.scaleHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-bottom: 8px;
+    border-bottom: 1.5px solid #8B0A10;
+}
+
+.scaleBrand {
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #9ca3af;
+    color: #8B0A10;
+}
+
+.scaleDept {
+    font-size: 0.75rem;
     font-weight: 800;
-    margin-bottom: 12px;
-    display: block;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: #8B0A10;
+    color: #F3EAD8;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
 }
 
 .summaryList {
@@ -140,156 +719,311 @@
 .summaryItem {
     display: flex;
     justify-content: space-between;
-    font-size: 15px;
-    color: #1f2937;
+    align-items: baseline;
+    gap: 16px;
+    font-size: 0.9375rem;
+    color: #18120E;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed rgba(139, 10, 16, 0.25);
 }
 
-.summaryItem span:first-child {
+.summaryItem:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.itemName {
+    font-weight: 700;
+}
+
+.itemQty {
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #8B0A10;
+    flex-shrink: 0;
+}
+
+.financials {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1.5px solid #8B0A10;
+}
+
+.taxRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: #4A3A30;
     font-weight: 600;
 }
 
+.totalRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.125rem;
+    font-weight: 900;
+    color: #8B0A10;
+}
+
+.scaleFooter {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-top: 8px;
+    border-top: 1px solid rgba(139, 10, 16, 0.28);
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6B4D38;
+}
+
+/* 4-Card Info Grid */
 .infoBox {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
-    margin-top: 4px;
 }
 
 .infoCard {
-    background: transparent;
-    padding: 4px 0;
+    background: rgba(200, 164, 126, 0.06);
+    border: 1px solid rgba(200, 164, 126, 0.22);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     text-align: left;
 }
 
+.infoCardHighlight {
+    background: linear-gradient(145deg, rgba(139, 10, 16, 0.24) 0%, rgba(245, 155, 26, 0.08) 100%);
+    border-color: rgba(245, 155, 26, 0.45);
+}
+
+.infoHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.infoIcon {
+    width: 16px;
+    height: 16px;
+    color: var(--gold);
+    flex-shrink: 0;
+}
+
 .infoLabel {
-    font-size: 10px;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    color: #6b7280;
-    font-weight: 700;
-    margin-bottom: 4px;
-    display: block;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    font-weight: 800;
 }
 
 .infoValue {
-    font-size: 13px;
-    color: #111827;
+    font-size: 0.8125rem;
+    color: var(--fg);
     font-weight: 600;
-    line-height: 1.4;
+    line-height: 1.45;
     display: block;
 }
 
 a.infoValue {
     text-decoration: underline;
-    text-underline-offset: 2px;
-    transition: color 0.15s ease;
+    text-decoration-color: rgba(245, 155, 26, 0.5);
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
 }
 
 a.infoValue:hover {
-    color: #8b0000;
+    color: var(--gold);
 }
 
 .note {
-    font-size: 12px;
-    color: #6b7280;
+    font-size: 0.75rem;
+    color: var(--fg-muted);
     margin: 0;
     font-style: italic;
 }
 
-.btn {
-    display: inline-block;
-    background: #8b0000;
-    color: #fff;
-    font-weight: 700;
-    font-size: 14px;
-    padding: 12px 32px;
-    border-radius: 100px;
-    text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
+.actionsRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
-.btn:hover {
-    background: #a00000;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(139, 0, 0, 0.3);
+.primaryBtn,
+.secondaryBtn {
+    flex: 1 1 160px;
+    text-align: center;
+    justify-content: center;
+}
+
+/* Right Visual Pane (Flipped to Left via row-reverse) */
+.rightPane {
+    flex: 1 1 44%;
+    min-width: 320px;
+    position: relative;
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+}
+
+.imageSticky {
+    position: sticky;
+    top: 88px;
+    height: calc(100vh - 88px);
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+}
+
+.imageSticky::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.92) 0%,
+        rgba(0, 0, 0, 0.45) 45%,
+        rgba(0, 0, 0, 0.15) 100%
+    );
+}
+
+.heroImg {
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+}
+
+.overlayText {
+    position: relative;
+    z-index: 2;
+    padding: 64px;
+}
+
+.overlayText h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.75rem, 5vw, 4.25rem);
+    color: var(--fg);
+    line-height: 0.92;
+    margin: 0 0 16px;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+}
+
+.overlayText p {
+    font-family: var(--font-body);
+    color: var(--gold);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* Loading State */
+.loadingState {
+    min-height: 60vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.loadingText {
+    font-size: 0.9375rem;
+    color: var(--fg-muted);
+    margin: 0;
 }
 
 .spinner {
     width: 48px;
     height: 48px;
-    border: 1px solid #ffffff1a;
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    border: 2px solid rgba(245, 155, 26, 0.2);
+    border-top-color: var(--gold);
+    border-radius: 999px;
+    animation: spin 0.9s linear infinite;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* ── Tablet: stack at 1000px ── */
-@media (max-width: 1000px) {
-    .splitLayout {
-        flex-direction: column;
-        min-height: 100vh;
-    }
-
-    .leftPane {
-        width: 100%;
-        flex: none;
-        padding: 48px 40px;
-        order: 1;
-    }
-
-    .contentWrapper {
-        max-width: 640px;
-        margin: 0 auto;
-    }
-
-    /* Video pane becomes a short cinematic banner on tablet */
-    .rightPane {
-        width: 100%;
-        flex: none;
-        height: 280px;
-        order: 2;
-        position: relative;
+    to {
+        transform: rotate(360deg);
     }
 }
 
-/* ── Mobile: tighter layout at 640px ── */
-@media (max-width: 640px) {
-    .leftPane {
-        padding: 32px 20px;
-    }
-
-    .contentWrapper {
-        max-width: 100%;
-    }
-
-    .state {
-        padding: 0;
-        gap: 16px;
-    }
-
-    .state h1 {
-        font-size: 1.8rem;
-    }
-
-    .sub {
-        font-size: 14px;
-    }
-
-    .infoBox {
+@media (max-width: 1100px) {
+    .splitBodyGrid {
         grid-template-columns: 1fr;
     }
 
-    .summaryItem {
-        font-size: 13px;
+    .infoBoxFourCol {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    /* Hide video on mobile — keep page clean */
+    .layoutSwitcher,
+    .progressBar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1000px) {
+    .splitLayout {
+        flex-direction: column;
+    }
+
+    .leftPane {
+        width: 100%;
+        padding: 40px var(--container-px);
+    }
+
     .rightPane {
-        display: none;
+        width: 100%;
+        border-right: none;
+        border-top: 1px solid var(--border);
+    }
+
+    .imageSticky {
+        position: relative;
+        top: 0;
+        height: 420px;
+    }
+
+    .overlayText {
+        padding: 40px;
+    }
+}
+
+@media (max-width: 640px) {
+    .ticketCard {
+        padding: 24px;
+    }
+
+    .infoBox,
+    .infoStack,
+    .infoBoxFourCol,
+    .progressTrack,
+    .progressBar {
+        grid-template-columns: 1fr;
+    }
+
+    .imageSticky {
+        height: 320px;
+    }
+
+    .overlayText {
+        padding: 24px;
     }
 }

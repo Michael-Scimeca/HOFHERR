@@ -12,6 +12,9 @@ export const metadata: Metadata = {
     description: 'Full-service event catering from Hofherr Meat Co. — whole pig roasts, competition BBQ, rotisserie chicken packages, and custom menus. Serving 20 to 500+ guests across Chicago\'s North Shore.',
     alternates: { canonical: 'https://hofherrmeatco.com/catering' },
     openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
         title: 'Catering | Hofherr Meat Co.',
         description: 'Pig roasts, BBQ catering, rotisserie packages & custom menus for any event. Northfield & Winnetka, IL.',
         url: 'https://hofherrmeatco.com/catering',
