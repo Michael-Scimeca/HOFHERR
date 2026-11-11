@@ -11,15 +11,15 @@ import {
 } from '@/lib/cutCollector';
 
 describe('Cut Map & Collection Data Model', () => {
-    it('has exactly 40 total cuts across 7 animals', () => {
-        expect(TOTAL_CUTS_COUNT).toBe(40);
+    it('has all cuts across 7 animals', () => {
+        expect(TOTAL_CUTS_COUNT).toBe(41);
         expect(CUT_MAP_DATA.beef.cuts.length).toBe(10);
         expect(CUT_MAP_DATA.pork.cuts.length).toBe(7);
         expect(CUT_MAP_DATA.chicken.cuts.length).toBe(6);
         expect(CUT_MAP_DATA.lamb.cuts.length).toBe(6);
         expect(CUT_MAP_DATA.veal.cuts.length).toBe(5);
         expect(CUT_MAP_DATA.turkey.cuts.length).toBe(4);
-        expect(CUT_MAP_DATA.duck.cuts.length).toBe(2);
+        expect(CUT_MAP_DATA.duck.cuts.length).toBe(3);
     });
 
     it('maps specified retail cuts to exact animals and cuts', () => {

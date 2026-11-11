@@ -192,18 +192,6 @@ export default function CutCollector({
     const activeAnimal = CUT_MAP_DATA[selectedAnimalId];
     const activeAnimalProgress = progress.animals[selectedAnimalId];
 
-    // Find currently selected cut definition (only updates on click/select, never on hover)
-    const activeCutDef = useMemo(() => {
-        return (
-            activeAnimal.cuts.find((c) => c.id === selectedCutId) ||
-            activeAnimal.cuts[0]
-        );
-    }, [activeAnimal, selectedCutId]);
-
-    const activeCutKey = `${selectedAnimalId}:${activeCutDef.id}`;
-    const isSelectedCutCollected = progress.collectedCutKeys.has(activeCutKey);
-    const activeCutStats = progress.cutStats[activeCutKey];
-
     const quickOrderCutDef = useMemo(() => {
         if (!quickOrderCutId) return null;
         return activeAnimal.cuts.find((c) => c.id === quickOrderCutId) || null;
@@ -217,20 +205,45 @@ export default function CutCollector({
         return quickOrderCutDef.products;
     }, [quickOrderCutDef, featuredSteakProduct]);
 
-    const pickedOrOrderedProducts = useMemo(() => {
-        const pickedSet = new Set<string>();
+    // Aggregate all cuts ordered on the latest order day (unified across all categories, not split by cut category)
+    const dailyOrderSummary = useMemo(() => {
+        let latestTimestamp = -1;
+        let latestDateLabel = '';
+
         for (const order of effectiveOrders) {
+            if (!order.createdAt || !Array.isArray(order.items) || order.items.length === 0) continue;
+            const ts = new Date(order.createdAt).getTime();
+            if (!Number.isNaN(ts) && ts >= latestTimestamp) {
+                latestTimestamp = ts;
+                latestDateLabel = formatOrderDate(order.createdAt);
+            }
+        }
+
+        const pickedSet = new Set<string>();
+        let totalQtyForDay = 0;
+
+        for (const order of effectiveOrders) {
+            if (!Array.isArray(order.items)) continue;
+            const orderDateLabel = order.createdAt ? formatOrderDate(order.createdAt) : '';
+            if (latestDateLabel && orderDateLabel !== latestDateLabel) continue;
+
             for (const item of order.items) {
-                if (item.qty > 0) {
+                const qty = item.qty ?? 1;
+                if (qty > 0 && item.name) {
                     pickedSet.add(item.name);
+                    totalQtyForDay += qty;
                 }
             }
         }
-        if (featuredSteakProduct && activeCutDef.products.includes(featuredSteakProduct)) {
-            pickedSet.add(featuredSteakProduct);
-        }
-        return activeCutDef.products.filter((prodName) => pickedSet.has(prodName));
-    }, [activeCutDef, effectiveOrders, featuredSteakProduct]);
+
+        return {
+            products: Array.from(pickedSet),
+            totalCount: totalQtyForDay,
+            dateLabel: latestDateLabel || null,
+        };
+    }, [effectiveOrders]);
+
+    const pickedOrOrderedProducts = dailyOrderSummary.products;
 
     // Keyboard navigation helper for SVG cuts
     const handleCutKeyDown = (e: React.KeyboardEvent, cut: CutDefinition) => {
@@ -383,7 +396,10 @@ export default function CutCollector({
                             >
                                 {activeAnimal.woodcutPath && (
                                     <image
-                                        href="/assets/identity/cut-charts/flint-flame-butcher-guide-beef-clean.jpg"
+                                        href={
+                                            activeAnimal.cleanChartImage ??
+                                            '/assets/identity/cut-charts/flint-flame-butcher-guide-beef-clean.jpg'
+                                        }
                                         x="0"
                                         y="0"
                                         width="1200"
@@ -474,9 +490,17 @@ export default function CutCollector({
                                                 const isCollected = progress.collectedCutKeys.has(key);
                                                 const isSelected = cut.id === selectedCutId;
                                                 const isHovered = cut.id === hoveredCutId;
+                                                if (cut.id === 'feet') return null;
                                                 const isHighlighted = isSelected || isHovered;
                                                 const isCompact = cut.id === 'short-loin' || cut.id === 'sirloin';
+                                                const isSmall =
+                                                    cut.id === 'shank' ||
+                                                    cut.id === 'hock-trotter' ||
+                                                    cut.id === 'spare-ribs' ||
+                                                    cut.id === 'drumstick';
+                                                const isMedium = cut.id === 'shoulder' || cut.id === 'belly';
                                                 const isShank = cut.id === 'shank';
+                                                const isHock = cut.id === 'hock-trotter';
 
                                                 return (
                                                     <g key={`ff-label-${cut.id}`}>
@@ -485,7 +509,9 @@ export default function CutCollector({
                                                             y={cut.labelY}
                                                             className={`${styles.woodcutCutLabel} ${
                                                                 isCompact ? styles.woodcutCutLabelCompact : ''
-                                                            } ${isShank ? styles.woodcutCutLabelSmall : ''} ${
+                                                            } ${isSmall ? styles.woodcutCutLabelSmall : ''} ${
+                                                                isMedium ? styles.woodcutCutLabelMedium : ''
+                                                            } ${
                                                                 isHighlighted || isCollected ? styles.woodcutCutLabelHighlighted : ''
                                                             }`}
                                                         >
@@ -494,6 +520,11 @@ export default function CutCollector({
                                                                     <tspan x={cut.labelX} dy="-8">SHORT</tspan>
                                                                     <tspan x={cut.labelX} dy="16">LOIN</tspan>
                                                                 </>
+                                                            ) : cut.id === 'spare-ribs' ? (
+                                                                <>
+                                                                    <tspan x={cut.labelX} dy="-9">SPARE</tspan>
+                                                                    <tspan x={cut.labelX} dy="18">RIBS</tspan>
+                                                                </>
                                                             ) : (
                                                                 cut.name.toUpperCase()
                                                             )}
@@ -501,8 +532,18 @@ export default function CutCollector({
                                                         {isShank && (
                                                             <text
                                                                 x={865}
-                                                                y={506}
-                                                                transform="rotate(-10 865 506)"
+                                                                y={
+                                                                    selectedAnimalId === 'lamb'
+                                                                        ? 534
+                                                                        : selectedAnimalId === 'veal'
+                                                                          ? 518
+                                                                          : 506
+                                                                }
+                                                                transform={
+                                                                    selectedAnimalId === 'beef'
+                                                                        ? 'rotate(-10 865 506)'
+                                                                        : undefined
+                                                                }
                                                                 className={`${styles.woodcutCutLabel} ${styles.woodcutCutLabelSmall} ${
                                                                     isHighlighted || isCollected ? styles.woodcutCutLabelHighlighted : ''
                                                                 }`}
@@ -510,25 +551,28 @@ export default function CutCollector({
                                                                 SHANK
                                                             </text>
                                                         )}
+                                                        {isHock && (
+                                                            <text
+                                                                x={878}
+                                                                y={535}
+                                                                transform="rotate(-10 878 535)"
+                                                                className={`${styles.woodcutCutLabel} ${styles.woodcutCutLabelSmall} ${
+                                                                    isHighlighted || isCollected ? styles.woodcutCutLabelHighlighted : ''
+                                                                }`}
+                                                            >
+                                                                HOCK
+                                                            </text>
+                                                        )}
                                                     </g>
                                                 );
                                             })}
                                         </g>
 
-                                        {/* Interactive Hotspots on Surrounding 8 Illustrated 3D Steaks */}
+                                        {/* Interactive Hotspots on Surrounding 8 Illustrated 3D Cuts */}
                                         <g className={styles.interactiveCutsLayer}>
-                                            {[
-                                                { id: 'rib', label: 'Ribeye Steak', featured: 'Boneless Ribeye', x: 30, y: 55, w: 340, h: 185 },
-                                                { id: 'short-loin', label: 'T-Bone Steak', featured: 'T-Bone', x: 475, y: 50, w: 310, h: 165 },
-                                                { id: 'short-loin', label: 'Porterhouse Steak', featured: 'Porterhouse', x: 880, y: 45, w: 280, h: 305 },
-                                                { id: 'sirloin', label: 'Sirloin Steak', featured: 'Sirloin Steak', x: 15, y: 355, w: 230, h: 195 },
-                                                { id: 'brisket', label: 'Brisket Roast', featured: 'Whole Brisket', x: 125, y: 520, w: 220, h: 145 },
-                                                { id: 'chuck', label: 'Chuck Flat', featured: 'Flat Iron Steak', x: 20, y: 665, w: 280, h: 205 },
-                                                { id: 'round', label: 'Round Roast', featured: 'Rump Roast', x: 965, y: 340, w: 215, h: 350 },
-                                                { id: 'flank', label: 'Flank Steak', featured: 'Marinated Flank Steak', x: 900, y: 695, w: 280, h: 180 },
-                                            ].map((spot) => (
+                                            {(activeAnimal.steakHotspots ?? []).map((spot) => (
                                                 <rect
-                                                    key={`steak-spot-${spot.id}-${spot.x}`}
+                                                    key={`steak-spot-${spot.id}-${spot.x}-${spot.y}`}
                                                     x={spot.x}
                                                     y={spot.y}
                                                     width={spot.w}
@@ -781,13 +825,13 @@ export default function CutCollector({
                     </div>
                 </div>
 
-                {/* ── Right Column: Selected Cut Details & Animal Checklist ── */}
+                {/* ── Right Column: Daily Ordered Cuts Summary ── */}
                 <aside className={styles.sideColumn} aria-label="Cut detail panel">
-                    {/* Selected Cut Drawer Card */}
+                    {/* Unified Daily Order Drawer Card */}
                     <div className={styles.detailCard}>
                         <div className={styles.detailHeader}>
-                            <h4 className={styles.detailCutName}>{activeCutDef.name}</h4>
-                            {isSelectedCutCollected ? (
+                            <h4 className={styles.detailCutName}>Order Summary</h4>
+                            {dailyOrderSummary.totalCount > 0 ? (
                                 <span className={styles.badgeCollected}>✓ Collected</span>
                             ) : (
                                 <span className={styles.badgeUncollected}>Uncollected</span>
@@ -798,15 +842,13 @@ export default function CutCollector({
                             <div className={styles.statItem}>
                                 <span className={styles.statLabel}>Times Ordered</span>
                                 <span className={styles.statValue}>
-                                    {activeCutStats ? `${activeCutStats.count}×` : '0×'}
+                                    {`${dailyOrderSummary.totalCount}×`}
                                 </span>
                             </div>
                             <div className={styles.statItem}>
                                 <span className={styles.statLabel}>Last Ordered</span>
                                 <span className={styles.statValue}>
-                                    {activeCutStats?.lastOrderedDate
-                                        ? formatOrderDate(activeCutStats.lastOrderedDate)
-                                        : 'Never'}
+                                    {dailyOrderSummary.dateLabel ?? 'Never'}
                                 </span>
                             </div>
                         </div>
@@ -874,7 +916,7 @@ export default function CutCollector({
                                 </ul>
                             ) : (
                                 <p className={styles.emptyPickedNote}>
-                                    No cuts picked from {activeCutDef.name} yet — click a cut or steak on the chart to pick &amp; order.
+                                    No cuts picked yet — click any cut or steak on the chart to pick &amp; order.
                                 </p>
                             )}
 
