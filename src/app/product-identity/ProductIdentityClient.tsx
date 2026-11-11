@@ -1108,10 +1108,10 @@ export default function ProductIdentityClient() {
                             <span className={styles.heroNavIndex}>🖨</span>
                             1:1 True-Size Print Kit (PDF)
                         </Link>
-                        <a href="#cut-charts" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="/product-identity#cut-charts" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>✦</span>
                             Primal Cut Charts &amp; Animal Anatomies
-                        </a>
+                        </Link>
                         <Link href="/admin/social" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>⚙</span>
                             Admin Auto-Post &amp; Verification
@@ -1132,14 +1132,14 @@ export default function ProductIdentityClient() {
                             <span className={styles.heroNavIndex}>04</span>
                             Complete Counter Suite
                         </a>
-                        <a href="#cut-charts" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="/product-identity#cut-charts" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>04B</span>
                             Whole-Animal Cut Charts
-                        </a>
-                        <a href="#chicago-lockups" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        </Link>
+                        <Link href="/product-identity#chicago-lockups" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>04C</span>
                             Chicago Lockups &amp; Taglines
-                        </a>
+                        </Link>
                         <Link href="/product-identity#retail-packaging" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>05</span>
                             Retail &amp; Cold Case

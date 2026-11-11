@@ -20,11 +20,13 @@ import { useCartCount, CartItem } from '@/context/CartContext';
 const CART_STORAGE_KEY_V1 = 'hofherr_cart';
 const BUTCHER_CART_KEY_V1 = 'hofherr_cart_butcher';
 const EMPTY_ORDERS: CustomerOrder[] = [];
-const SHORT_DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-});
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function formatOrderDate(isoStr: string): string {
+    const d = new Date(isoStr);
+    if (Number.isNaN(d.getTime())) return isoStr;
+    return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
+}
 
 interface Props {
     orders?: CustomerOrder[];
@@ -803,7 +805,7 @@ export default function CutCollector({
                                 <span className={styles.statLabel}>Last Ordered</span>
                                 <span className={styles.statValue}>
                                     {activeCutStats?.lastOrderedDate
-                                        ? SHORT_DATE_FORMATTER.format(new Date(activeCutStats.lastOrderedDate))
+                                        ? formatOrderDate(activeCutStats.lastOrderedDate)
                                         : 'Never'}
                                 </span>
                             </div>
