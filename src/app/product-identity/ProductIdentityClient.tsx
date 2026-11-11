@@ -1180,14 +1180,14 @@ export default function ProductIdentityClient() {
                             <span className={styles.heroNavIndex}>12</span>
                             Press &amp; Media Kit
                         </Link>
-                        <a href="#pitch-deck" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="/product-identity#pitch-deck" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>13</span>
                             Review Audit &amp; Growth Pitch Deck
-                        </a>
-                        <a href="#vector-library" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        </Link>
+                        <Link href="/product-identity#vector-library" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>14</span>
                             Master Vector Library (.SVG)
-                        </a>
+                        </Link>
                     </nav>
                 </div>
             </header>

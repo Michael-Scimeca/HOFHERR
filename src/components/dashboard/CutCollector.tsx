@@ -19,6 +19,12 @@ import { useCartCount, CartItem } from '@/context/CartContext';
 
 const CART_STORAGE_KEY_V1 = 'hofherr_cart';
 const BUTCHER_CART_KEY_V1 = 'hofherr_cart_butcher';
+const EMPTY_ORDERS: CustomerOrder[] = [];
+const SHORT_DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+});
 
 interface Props {
     orders?: CustomerOrder[];
@@ -28,7 +34,7 @@ interface Props {
 }
 
 export default function CutCollector({
-    orders = [],
+    orders = EMPTY_ORDERS,
     isAuthenticated = true,
     userName = 'Guild Member',
 }: Props) {
@@ -649,7 +655,7 @@ export default function CutCollector({
                                     className={`${styles.quickOrderPopover} ${
                                         quickOrderCutDef.labelX > 650 ? styles.quickOrderPopoverLeft : ''
                                     }`}
-                                    role="dialog"
+                                    role="region"
                                     aria-label={`Quick order ${quickOrderCutDef.name} cuts`}
                                 >
                                     <div className={styles.popoverHeader}>
@@ -797,11 +803,7 @@ export default function CutCollector({
                                 <span className={styles.statLabel}>Last Ordered</span>
                                 <span className={styles.statValue}>
                                     {activeCutStats?.lastOrderedDate
-                                        ? new Date(activeCutStats.lastOrderedDate).toLocaleDateString('en-US', {
-                                              month: 'short',
-                                              day: 'numeric',
-                                              year: 'numeric',
-                                          })
+                                        ? SHORT_DATE_FORMATTER.format(new Date(activeCutStats.lastOrderedDate))
                                         : 'Never'}
                                 </span>
                             </div>

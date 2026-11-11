@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import styles from './CateringDrawer.module.css';
 
 interface CateringDrawerProps {
@@ -29,10 +29,20 @@ const SERVICE_OPTIONS = [
     { id: 'depot', title: '🏪 Winnetka Depot Pickup', sub: 'Convenient North Shore Metra station pickup at 754 Elm St' },
 ];
 
-export default function CateringDrawer({ isOpen: controlledOpen, onClose: controlledClose }: CateringDrawerProps = {}) {
+export default function CateringDrawer({ isOpen: controlledOpen, onClose: controlledClose }: CateringDrawerProps) {
     const [internalOpen, setInternalOpen] = useState(false);
     const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
-    const onClose = controlledClose || (() => setInternalOpen(false));
+    const controlledCloseRef = useRef(controlledClose);
+    useEffect(() => {
+        controlledCloseRef.current = controlledClose;
+    });
+    const onClose = useCallback(() => {
+        if (controlledCloseRef.current) {
+            controlledCloseRef.current();
+        } else {
+            setInternalOpen(false);
+        }
+    }, []);
 
     useEffect(() => {
         const handler = () => setInternalOpen(true);
@@ -81,11 +91,17 @@ export default function CateringDrawer({ isOpen: controlledOpen, onClose: contro
     useEffect(() => {
         if (!isOpen) return;
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
+            if (e.key === 'Escape') {
+                if (controlledCloseRef.current) {
+                    controlledCloseRef.current();
+                } else {
+                    setInternalOpen(false);
+                }
+            }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, onClose]);
+    }, [isOpen]);
 
     // Prevent body scroll when drawer is open
     useEffect(() => {
@@ -179,8 +195,6 @@ export default function CateringDrawer({ isOpen: controlledOpen, onClose: contro
             {/* Drawer */}
             <aside
                 className={`${styles.drawer} ${isOpen ? styles.drawerOpen : ''}`}
-                role="dialog"
-                aria-modal="true"
                 aria-labelledby="catering-drawer-title"
                 aria-hidden={!isOpen}
             >

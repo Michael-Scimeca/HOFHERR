@@ -581,8 +581,8 @@ export default function WebsiteIdentitySection() {
                             </p>
                         </div>
                         <div className={styles.trustGrid}>
-                            {TRUST_QUOTES.map((item, idx) => (
-                                <div key={idx} className={styles.trustCard}>
+                            {TRUST_QUOTES.map((item) => (
+                                <div key={item.name} className={styles.trustCard}>
                                     <span className={styles.trustTag}>Verified Editorial / Customer Quote</span>
                                     <h4 className={styles.trustTitle}>{item.name}</h4>
                                     <p className={styles.trustQuote}>&ldquo;{item.quote}&rdquo;</p>
