@@ -1,11 +1,6 @@
-/* ── Page wrapper (waits for map ready before reveal) ── */
+/* ── Page wrapper ── */
 .page {
-    opacity: 0;
-    transition: opacity 0.25s var(--ease-out);
-}
-
-.pageReady {
-    opacity: 1;
+    position: relative;
 }
 
 /* ── Hero ── */
@@ -44,6 +39,8 @@
     object-fit: cover;
     object-position: center top;
     display: block;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
     will-change: transform;
     pointer-events: none;
 }

@@ -81,12 +81,10 @@ const LOCATIONS = [
 
 export default function VisitClient() {
     const [active, setActive] = useState(0);
-    const [mapReady, setMapReady] = useState(false);
     const mapReadyDispatched = useRef(false);
     const loc = LOCATIONS[active];
 
     const markMapReady = useCallback(() => {
-        setMapReady(true);
         if (!mapReadyDispatched.current && typeof window !== 'undefined') {
             mapReadyDispatched.current = true;
             (window as unknown as { __hofherrMapReady?: boolean }).__hofherrMapReady = true;
@@ -95,13 +93,13 @@ export default function VisitClient() {
     }, []);
 
     useEffect(() => {
-        // Safety fallback so page never stays hidden if Google Maps is slow or blocked
+        // Safety fallback so page transition never stays waiting if Google Maps is slow or blocked
         const t = setTimeout(markMapReady, 650);
         return () => clearTimeout(t);
     }, [markMapReady]);
 
     return (
-        <main className={`${styles.page} ${mapReady ? styles.pageReady : ''}`}>
+        <main className={styles.page}>
 
             {/* ── Hero with toggle ── */}
                 <section id="visit-hero" aria-labelledby="visit-hero-heading" className={styles.hero}>
@@ -109,6 +107,11 @@ export default function VisitClient() {
                         <img
                             src={loc.heroImage}
                             alt={loc.heroAlt}
+                            width={1376}
+                            height={768}
+                            fetchPriority="high"
+                            loading="eager"
+                            decoding="sync"
                             className={styles.heroImg}
                             data-parallax="inset"
                         />

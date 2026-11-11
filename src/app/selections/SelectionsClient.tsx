@@ -362,47 +362,6 @@ export default function SelectionsClient() {
                 className="section-sm"
             >
                 <div className={`container ${styles.sectionStack}`}>
-                    <div className={styles.dualPhotoGrid}>
-                        <figure className={styles.featureBanner}>
-                            <img
-                                src="/assets/identity/signage/farm-source-sign.svg"
-                                alt="Hofherr Meat Co. Midwest Farm Source & 10-Department Story Sign Printable Vector Master"
-                                className={`${styles.featureBannerImg} ${styles.featureBannerVector}`}
-                            />
-                            <figcaption className={styles.featureBannerCapRow}>
-                                <span>
-                                    Directly Traceable Midwest Family Farms — Illinois · Wisconsin · Indiana · Iowa · Michigan
-                                </span>
-                                <div className={styles.featureBannerActions}>
-                                    <a
-                                        href="/assets/identity/signage/farm-source-sign.svg"
-                                        download="hofherr-farm-source-sign-48x27.svg"
-                                        className={styles.vectorBadgeBtn}
-                                    >
-                                        ⬇ Vector (.SVG)
-                                    </a>
-                                    <Link
-                                        href="/product-identity/print?master=farm-source-sign&w=7.5&h=4.18&autoprint=1"
-                                        target="_blank"
-                                        className={styles.vectorBadgeBtn}
-                                    >
-                                        🖨 Print Master
-                                    </Link>
-                                </div>
-                            </figcaption>
-                        </figure>
-                        <figure className={styles.featureBanner}>
-                            <img
-                                src="/assets/identity/butcher-complete-packaging-suite-10-icons.jpg"
-                                alt="Hofherr Meat Co. Complete Butcher Packaging Suite with Kraft Paper & Provenance Seals"
-                                className={styles.featureBannerImg}
-                            />
-                            <figcaption className={styles.featureBannerCap}>
-                                Custom-Cut to Order · Wrapped in Unbleached Kraft Paper &amp; Butcher Twine
-                            </figcaption>
-                        </figure>
-                    </div>
-
                     <div className={styles.sectionHeader}>
                         <h2 id="sourcing-standards-heading" className={styles.sectionTitle}>
                             01 / Midwest Farm Traceability &amp; Standards

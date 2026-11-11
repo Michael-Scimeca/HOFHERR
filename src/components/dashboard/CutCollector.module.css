@@ -396,11 +396,13 @@
 .woodcutMasterArt {
     fill: #6b070b;
     pointer-events: none;
-    transition: fill 0.3s ease;
+    shape-rendering: geometricPrecision;
 }
 
 .woodcutLabelsLayer {
     pointer-events: none;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 /* Interactive Cut Overlay States for Flint & Flame Woodcut Master */
@@ -414,7 +416,7 @@
     stroke-linejoin: round;
     cursor: pointer;
     pointer-events: all !important;
-    transition: fill 0.2s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.2s ease, filter 0.2s ease;
+    transition: fill 0.15s ease;
 }
 
 .woodcutCutLabel {
@@ -425,9 +427,12 @@
     letter-spacing: 0.04em;
     text-anchor: middle;
     dominant-baseline: central;
+    text-rendering: geometricPrecision;
+    transform: translateZ(0);
+    backface-visibility: hidden;
     pointer-events: none;
     user-select: none;
-    transition: fill 0.2s ease, filter 0.2s ease;
+    transition: fill 0.15s ease;
 }
 
 .woodcutCutLabelCompact {
@@ -445,7 +450,6 @@
 
 .woodcutCutLabelHighlighted {
     fill: #faf0e6;
-    filter: drop-shadow(0 1px 2px rgba(107, 7, 11, 0.45));
 }
 
 .woodcutCutOverlay:hover,
@@ -461,8 +465,7 @@
 
 .woodcutCutOverlayCollected.woodcutCutOverlayHighlighted {
     fill: #d4281e !important;
-    stroke: #f7941d !important;
-    stroke-width: 3 !important;
+    stroke: transparent !important;
 }
 
 .steakHotspot {

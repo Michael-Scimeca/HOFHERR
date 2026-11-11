@@ -31,6 +31,16 @@ interface ParallaxEntry {
   img: HTMLElement;    // the element we translate
 }
 
+function getDocumentTop(el: Element): number {
+  let top = 0;
+  let curr: HTMLElement | null = el as HTMLElement;
+  while (curr) {
+    top += curr.offsetTop;
+    curr = curr.offsetParent as HTMLElement | null;
+  }
+  return top;
+}
+
 export default function ParallaxImages() {
   const pathname = usePathname();
 
@@ -42,10 +52,12 @@ export default function ParallaxImages() {
     // ── 1. Function to find and initialize new targets ────────────────────────
     function initTargets() {
       const targets = document.querySelectorAll<HTMLElement>('[data-parallax]:not([data-parallax-init])');
-      
+      let added = false;
+
       targets.forEach((el) => {
         const mode = el.getAttribute('data-parallax');
         el.setAttribute('data-parallax-init', 'true'); // Mark as initialized
+        added = true;
 
         if (mode === 'wrap') {
           const mask = document.createElement('div');
@@ -64,22 +76,40 @@ export default function ParallaxImages() {
           entries.push({ mask, img: el });
         }
       });
+
+      return added;
     }
 
     // ── 2. Tick: calculate & apply transforms ──────────────────────────────
     function tick() {
       ticking = false;
       const vh = window.innerHeight;
+      const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
 
       // Filter out entries whose elements have been removed from DOM
       entries = entries.filter(e => document.body.contains(e.mask));
 
       entries.forEach(({ mask, img }) => {
-        const rect = mask.getBoundingClientRect();
-        const progress = 1 - (rect.bottom / (rect.height + vh));
+        const height = (mask as HTMLElement).offsetHeight || mask.getBoundingClientRect().height;
+        if (height <= 0) return;
+
+        // Measure layout position via offsetTop chain so ancestor CSS transforms
+        // (e.g. .pt-wrap scale/translateY during page-load melt-in) never distort the calculation.
+        const docTop = getDocumentTop(mask);
+        const bottom = docTop + height - scrollY;
+        const progress = 1 - (bottom / (height + vh));
         const clampedProgress = Math.max(0, Math.min(1, progress));
-        const shift = (clampedProgress - 0.5) * 2 * PARALLAX_SPEED * rect.height;
-        (img as HTMLElement).style.transform = `translateY(${shift.toFixed(2)}px)`;
+
+        // For above-the-fold images (like the /visit hero), anchor neutral progress at scrollY = 0
+        // so translateY is strictly 0px on initial page load and never jumps on hydration.
+        const neutralProgress = docTop < vh
+          ? Math.max(0, Math.min(1, 1 - ((docTop + height) / (height + vh))))
+          : 0.5;
+
+        const rawShift = (clampedProgress - neutralProgress) * 2 * PARALLAX_SPEED * height;
+        const maxShift = height * 0.15;
+        const shift = Math.max(-maxShift, Math.min(maxShift, rawShift));
+        (img as HTMLElement).style.transform = `translate3d(0, ${shift.toFixed(2)}px, 0)`;
       });
     }
 
@@ -92,7 +122,9 @@ export default function ParallaxImages() {
 
     // ── 3. Mutation Observer to catch dynamic remounts ──────────────────────
     const observer = new MutationObserver(() => {
-      initTargets();
+      if (initTargets()) {
+        tick();
+      }
     });
 
     observer.observe(document.body, {
