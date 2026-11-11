@@ -1448,14 +1448,15 @@ export default function FireTestClient({
             }
         };
         const inv = new THREE.Matrix4();
-        const timer = new THREE.Clock();
+        const timer = new THREE.Timer();
         let frames = 0;
         let lastFps = performance.now();
         let raf = 0;
 
         const tick = () => {
-            const dt = Math.min(timer.getDelta(), 0.05);
             const now = performance.now();
+            timer.update(now);
+            const dt = Math.min(timer.getDelta(), 0.05);
             updateLoader(now);
             const s = settingsRef.current;
             const slots = s.flames ?? FIVE_FLAME_DEFAULTS;
@@ -1622,6 +1623,7 @@ export default function FireTestClient({
                 u.fireMat.dispose();
                 u.glowMat.dispose();
             });
+            timer.dispose();
             renderer.dispose();
         };
     }, [preloader]);
@@ -1684,14 +1686,14 @@ export default function FireTestClient({
                 {/* the burning logo is the loader */}
                 <span ref={logoRef} className={styles.logo}>
                     {/* invisible image sets the logo's size; the burning logo is drawn on the canvas */}
-                    <Image
+                    <img
                         src="/assets/logo.svg"
-                        alt="Hofherr Meat Co."
+                        alt=""
+                        aria-hidden="true"
                         width={170}
                         height={81}
                         className={styles.logoImg}
                         ref={logoImgRef}
-                        priority
                     />
                     <canvas ref={logoBurnRef} className={styles.burn} aria-hidden="true" />
                 </span>

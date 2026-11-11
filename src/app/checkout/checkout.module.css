@@ -436,6 +436,16 @@
 .contactLeft { display: flex; flex-direction: column; gap: 10px; }
 .contactRight { display: flex; flex-direction: column; gap: 10px; }
 
+.inputRow {
+    display: flex;
+    gap: 10px;
+}
+@media (max-width: 540px) {
+    .inputRow {
+        flex-direction: column;
+    }
+}
+
 .reachLabel { font-size: 10px; font-weight: 700; color: #888; letter-spacing: 0.12em; text-transform: uppercase; margin: 0; }
 
 .prefRow { display: flex; gap: 8px; }

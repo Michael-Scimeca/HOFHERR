@@ -29,20 +29,22 @@ export default function GiftCardsPage() {
             <div className={styles.splitLayout}>
                 {/* Visual Pane */}
                 <div className={styles.visualPane}>
-                    <div className={styles.imageWrapper}>
-                         <Image
-                             src="/assets/gift-cards/gift-card-left-image.webp"
-                             alt="Hofherr Meat Co. craft butcher selection and gift cards"
-                             fill
-                             priority
-                             fetchPriority="high"
-                             sizes="(max-width: 768px) 100vw, 45vw"
-                             className={styles.heroImg}
-                         />
-                         <div className={styles.overlayText}>
-                             <h2>The ultimate<br/>gift for the<br/>meat lover.</h2>
-                             <p>Never expires. Always delicious.</p>
-                         </div>
+                    <div className={styles.imageSticky}>
+                        <div className={styles.imageWrapper}>
+                            <Image
+                                src="/assets/gift-cards/gift-card-left-image.webp"
+                                alt="Hofherr Meat Co. craft butcher selection and gift cards"
+                                fill
+                                priority
+                                fetchPriority="high"
+                                sizes="(max-width: 768px) 100vw, 45vw"
+                                className={styles.heroImg}
+                            />
+                            <div className={styles.overlayText}>
+                                <h2>The ultimate<br/>gift for the<br/>meat lover.</h2>
+                                <p>Never expires. Always delicious.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

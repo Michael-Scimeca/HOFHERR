@@ -1,0 +1,72 @@
+.pageStack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.pageHeader {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: var(--space-4);
+}
+
+.pageTitle {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.pageSubtitle {
+    font-size: var(--text-sm);
+    color: var(--fg-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.headerActions {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+}
+
+.btnSecondary {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--fg);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btnSecondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.btnPrimary {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    background: var(--red);
+    color: #ffffff;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.btnPrimary:hover {
+    opacity: 0.9;
+}

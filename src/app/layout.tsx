@@ -113,7 +113,7 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" className={`${yanone.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${yanone.variable} ${inter.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
       </head>
       <body suppressHydrationWarning>

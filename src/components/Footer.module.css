@@ -25,6 +25,8 @@
 }
 
 .logoImg {
+    width: 134px;
+    height: 64px;
     object-fit: contain;
     filter: brightness(0) invert(1);
 }

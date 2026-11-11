@@ -192,6 +192,15 @@ const PLATFORM_SPECS = [
     },
 ];
 
+const BIO_TAGLINE_OPTIONS = [
+    { id: 'stockyards', label: 'Stockyards (Top Pick)', tagline: 'Born in the Stockyards. Cut for the North Shore.' },
+    { id: 'no-compromise', label: 'No Compromise', tagline: 'Chicago Butchery. No Compromise.' },
+    { id: 'est-1903', label: 'Est. 1903', tagline: 'Chicago Butchery · Est. 1903' },
+    { id: 'midwest', label: 'Midwest Raised', tagline: 'Chicago Made · Midwest Raised' },
+    { id: 'craft-heritage', label: 'Chicago Heritage', tagline: 'Craft Butchery. Chicago Heritage.' },
+    { id: 'original', label: 'Chicago Original', tagline: 'A True Chicago Original.' },
+];
+
 const IG_BIO_TEXT = `🔥 Neighborhood butcher · cut to order since 2018
 🥩 Dry-aged beef · heritage pork · whole-hog BBQ
 📍 300 Happ Rd, Northfield + The Depot, Winnetka
@@ -199,6 +208,7 @@ const IG_BIO_TEXT = `🔥 Neighborhood butcher · cut to order since 2018
 
 export default function AppBrandIdentitySection() {
     const [activeAvatar, setActiveAvatar] = useState(AVATAR_OPTIONS[0]);
+    const [selectedBioTagline, setSelectedBioTagline] = useState(BIO_TAGLINE_OPTIONS[0]);
     const [kraftMode, setKraftMode] = useState(false);
     const [bioCopied, setBioCopied] = useState(false);
     const [activeFbProfile, setActiveFbProfile] = useState(FB_PROFILE_SETS[0]);
@@ -207,7 +217,7 @@ export default function AppBrandIdentitySection() {
     const copyIgBio = async () => {
         try {
             await navigator.clipboard.writeText(
-                `Hofherr Meat Co. · Butcher & Smokehouse\n${IG_BIO_TEXT}\nhttps://hofherrmeatco.com/online-orders`
+                `Hofherr Meat Co. · Butcher & Smokehouse\n"${selectedBioTagline.tagline}"\n${IG_BIO_TEXT}\nhttps://hofherrmeatco.com/online-orders`
             );
             setBioCopied(true);
             setTimeout(() => setBioCopied(false), 1800);
@@ -471,6 +481,7 @@ export default function AppBrandIdentitySection() {
                         <div className={styles.igBioBox}>
                             <span className={styles.igBioName}>Hofherr Meat Co. · Butcher &amp; Smokehouse</span>
                             <span className={styles.igBioCategory}>Meat Shop · Caterer · North Shore, IL</span>
+                            <p className={styles.igBioTagline}>&ldquo;{selectedBioTagline.tagline}&rdquo;</p>
                             <p className={styles.igBioText}>{IG_BIO_TEXT}</p>
                             <Link href="/online-orders" className={styles.igBioLink}>
                                 🔗 hofherrmeatco.com/online-orders
@@ -518,6 +529,19 @@ export default function AppBrandIdentitySection() {
                     {/* Right Column: Interactive Controls + Printable/Downloadable App Assets */}
                     <div className={styles.rightCol}>
                         <div className={styles.controlBar}>
+                            <div className={styles.controlGroup}>
+                                <span className={styles.controlLabel}>Bio Tagline Lockup:</span>
+                                {BIO_TAGLINE_OPTIONS.map((opt) => (
+                                    <button
+                                        key={opt.id}
+                                        type="button"
+                                        onClick={() => setSelectedBioTagline(opt)}
+                                        className={`${styles.chipBtn} ${selectedBioTagline.id === opt.id ? styles.chipBtnActive : ''}`}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
                             <div className={styles.controlGroup}>
                                 <span className={styles.controlLabel}>Avatar Lockup:</span>
                                 {AVATAR_OPTIONS.map((opt) => (

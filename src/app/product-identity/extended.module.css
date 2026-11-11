@@ -67,7 +67,12 @@
 
 .colorGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
 .colorCard { display: flex; flex-direction: column; overflow: hidden; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-lg); }
-.colorChip { height: 96px; background: var(--chip-bg, var(--red)); border-bottom: 1px solid var(--border); }
+.colorChip {
+    height: 96px;
+    background-color: var(--chip-bg, var(--red));
+    background-image: var(--chip-gradient, none);
+    border-bottom: 1px solid var(--border);
+}
 .colorBody { display: flex; flex-direction: column; gap: 6px; padding: 14px; }
 .colorName { font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg); }
 .colorRole { font-size: 0.8rem; color: var(--fg-3); }

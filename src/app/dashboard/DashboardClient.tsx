@@ -3,6 +3,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import styles from './dashboard.module.css';
 import { usePageTransition } from '@/components/PageTransition';
+import CutCollector from '@/components/dashboard/CutCollector';
 
 type TrackerStatus =
     | 'pending'
@@ -552,6 +553,13 @@ export default function DashboardClient({
     return (
         <div className={styles.dashboardContainer}>
             <main className={`container ${styles.mainCanvas}`}>
+                {/* ── Cut Collection Gamified Butcher Chart ── */}
+                <CutCollector
+                    orders={initialOrders}
+                    userName={displayName}
+                    isAuthenticated={true}
+                />
+
                 {/* ── Profile & Order History ── */}
                 <div className={styles.contentGrid}>
                     {/* ── Left Column ── */}

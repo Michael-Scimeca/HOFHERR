@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useTransition, useEffect, useRef, useMemo, Suspense } from 'react';
+import { useState, useCallback, useTransition, useEffect, useRef, useMemo, Suspense, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -814,6 +814,42 @@ const PLACEHOLDER_TEXTS: Record<string, string[]> = {
     ],
 };
 
+const emptySubscribe = () => () => {};
+
+const emptyFavoritesSet = new Set<string>();
+let cachedFavoritesRaw: string | null = null;
+let cachedFavoritesSet: Set<string> = emptyFavoritesSet;
+
+function subscribeFavorites(callback: () => void) {
+    if (typeof window === 'undefined') return () => {};
+    window.addEventListener('storage', callback);
+    window.addEventListener('hofherr_favorites_sync', callback);
+    return () => {
+        window.removeEventListener('storage', callback);
+        window.removeEventListener('hofherr_favorites_sync', callback);
+    };
+}
+
+function getFavoritesSnapshot(): Set<string> {
+    if (typeof window === 'undefined') return emptyFavoritesSet;
+    try {
+        const raw = localStorage.getItem('hofherr_favorites') ?? '';
+        if (raw !== cachedFavoritesRaw) {
+            cachedFavoritesRaw = raw;
+            cachedFavoritesSet = raw ? new Set(JSON.parse(raw)) : emptyFavoritesSet;
+        }
+        return cachedFavoritesSet;
+    } catch {
+        return cachedFavoritesSet;
+    }
+}
+
+function getServerFavoritesSnapshot(): Set<string> {
+    return emptyFavoritesSet;
+}
+
+const ITEM_MAX_QTY = 10;
+
 export default function CustomOrdersPage({
     sanityButcher,
     sanityDepot,
@@ -862,30 +898,34 @@ export default function CustomOrdersPage({
     const [modalNote, setModalNote] = useState('');
     const [orderNote, setOrderNote] = useState('');
     const [restockToast, setRestockToast] = useState(false);
+    const [maxStockToast, setMaxStockToast] = useState<string | null>(null);
+    const maxStockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // ── Favorites State ──────────────────────────────────────────────────
-    const [favorites, setFavorites] = useState<Set<string>>(new Set());
-    const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-
-    // Hydrate favorites from localStorage after mount
-    useEffect(() => {
-        try {
-            const saved = localStorage.getItem('hofherr_favorites');
-            if (saved) setFavorites(new Set(JSON.parse(saved)));
-        } catch { /* ignore */ }
+    const showMaxStockToast = useCallback((itemName: string) => {
+        if (maxStockTimerRef.current) clearTimeout(maxStockTimerRef.current);
+        setMaxStockToast(`Maximum ${ITEM_MAX_QTY} of "${itemName}" per order to keep cuts fresh for everyone.`);
+        maxStockTimerRef.current = setTimeout(() => {
+            setMaxStockToast(null);
+        }, 3500);
     }, []);
 
-    const favoritesRef = useRef(favorites);
-    useEffect(() => {
-        favoritesRef.current = favorites;
-    }, [favorites]);
+    const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+
+    // ── Favorites State ──────────────────────────────────────────────────
+    const favorites = useSyncExternalStore(subscribeFavorites, getFavoritesSnapshot, getServerFavoritesSnapshot);
+    const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
     const toggleFavorite = useCallback((itemName: string) => {
-        const next = new Set(favoritesRef.current);
+        const current = getFavoritesSnapshot();
+        const next = new Set(current);
         if (next.has(itemName)) next.delete(itemName); else next.add(itemName);
-        favoritesRef.current = next;
-        setFavorites(next);
-        try { localStorage.setItem('hofherr_favorites', JSON.stringify([...next])); } catch { }
+        try {
+            const raw = JSON.stringify([...next]);
+            localStorage.setItem('hofherr_favorites', raw);
+            cachedFavoritesRaw = raw;
+            cachedFavoritesSet = next;
+            window.dispatchEvent(new Event('hofherr_favorites_sync'));
+        } catch { }
     }, []);
 
     // ── Tip State ────────────────────────────────────────────────────────
@@ -1514,14 +1554,21 @@ export default function CustomOrdersPage({
 
     const confirmAdd = useCallback((e?: React.MouseEvent) => {
         if (!modal) return;
+        const existingItem = cart.find(i => i.name === modal.name);
+        const currentQty = existingItem ? existingItem.qty : 0;
+        if (currentQty + modalQty >= ITEM_MAX_QTY) {
+            showMaxStockToast(modal.name);
+        }
+
         setCart(prev => {
-            const existing = prev.findIndex(i => i.name === modal.name);
-            if (existing >= 0) {
+            const existingIndex = prev.findIndex(i => i.name === modal.name);
+            if (existingIndex >= 0) {
                 const updated = [...prev];
-                updated[existing] = { ...updated[existing], qty: updated[existing].qty + modalQty, note: modalNote || updated[existing].note };
+                const newQty = Math.min(ITEM_MAX_QTY, updated[existingIndex].qty + modalQty);
+                updated[existingIndex] = { ...updated[existingIndex], qty: newQty, note: modalNote || updated[existingIndex].note };
                 return updated;
             }
-            return [...prev, { ...modal, qty: modalQty, note: modalNote }];
+            return [...prev, { ...modal, qty: Math.min(ITEM_MAX_QTY, modalQty), note: modalNote }];
         });
         setModal(null);
         // Fire fly-to-cart animation from the button position
@@ -1530,12 +1577,22 @@ export default function CustomOrdersPage({
             const rect = btn.getBoundingClientRect();
             triggerFlyAnimation({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
         }
-    }, [modal, modalQty, modalNote, triggerFlyAnimation]);
+    }, [modal, modalQty, modalNote, cart, triggerFlyAnimation, showMaxStockToast]);
 
     const removeItem = (name: string) => setCart(prev => prev.filter(i => i.name !== name));
-    const changeQty = (name: string, delta: number) => setCart(prev =>
-        prev.map(i => i.name === name ? { ...i, qty: Math.max(1, i.qty + delta) } : i)
-    );
+    const changeQty = (name: string, delta: number) => {
+        const target = cart.find(i => i.name === name);
+        if (delta > 0 && target && target.qty >= ITEM_MAX_QTY) {
+            showMaxStockToast(name);
+            return;
+        }
+        setCart(prev =>
+            prev.map(i => {
+                if (i.name !== name) return i;
+                return { ...i, qty: Math.max(1, Math.min(ITEM_MAX_QTY, i.qty + delta)) };
+            })
+        );
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -2211,7 +2268,7 @@ export default function CustomOrdersPage({
 
     {/* ── Add to Cart Modal ── */ }
     {
-        modal && typeof document !== 'undefined' && createPortal((
+        mounted && modal && createPortal((
             <div className={styles.overlay} data-pt-portal data-lenis-prevent onClick={() => setModal(null)}>
                 <BurnModalShell className={styles.modal} maxWidth={460} onClick={e => e.stopPropagation()}>
                     <div className={styles.modalTitle}>{modal.name}</div>
@@ -2244,7 +2301,7 @@ export default function CustomOrdersPage({
 
     {/* ── Cart Drawer ── */ }
     {
-        drawerOpen && typeof document !== 'undefined' && createPortal((
+        mounted && drawerOpen && createPortal((
             <div className={styles.overlay} data-pt-portal data-lenis-prevent onClick={() => setDrawerOpen(false)}>
                 <BurnPanel className={styles.drawer} onClick={e => e.stopPropagation()}>
                     <div style={{ borderTopLeftRadius: '18px', backgroundColor: 'var(--red)', color: 'white', padding: '8px 16px', textAlign: 'center', fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
@@ -2458,7 +2515,7 @@ export default function CustomOrdersPage({
 
     {/* ── Checkout Modal ── */ }
     {
-        checkoutOpen && typeof document !== 'undefined' && createPortal((
+        mounted && checkoutOpen && createPortal((
             <div
                 className={styles.overlay}
                 data-pt-portal
@@ -2963,10 +3020,18 @@ export default function CustomOrdersPage({
     <HelpOrdering />
     {/* Restock success toast */ }
     {
-        typeof document !== 'undefined' && createPortal(
-            <div className={`${styles.restockToast} ${restockToast ? styles.restockToastShow : ''}`}>
-                Restock request sent ✓
-            </div>,
+        mounted && createPortal(
+            <>
+                <div className={`${styles.restockToast} ${restockToast ? styles.restockToastShow : ''}`}>
+                    Restock request sent ✓
+                </div>
+                {maxStockToast && (
+                    <div className={styles.maxStockToast} role="alert">
+                        <span className={styles.maxStockToastIcon}>🥩</span>
+                        <span>{maxStockToast}</span>
+                    </div>
+                )}
+            </>,
             document.body
         )
     }

@@ -59,10 +59,43 @@ export default function NewsletterPage() {
     const [step, setStep] = useState<'form' | 'done'>('form');
     const [firstName, setFirstName] = useState('');
     const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    function handleSubmit(e: React.FormEvent) {
+    const validateEmail = (val: string) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(val.trim());
+    };
+
+    async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        if (email) setStep('done');
+        if (!email.trim()) {
+            setEmailError('Please enter your email address.');
+            return;
+        }
+        if (!validateEmail(email)) {
+            setEmailError('Please enter a valid email address (e.g. name@domain.com).');
+            return;
+        }
+        setEmailError('');
+        setLoading(true);
+        try {
+            const res = await fetch('/api/newsletter-signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email.trim(), name: firstName.trim() }),
+            });
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                setEmailError(data.error || 'Unable to subscribe. Please try again.');
+            } else {
+                setStep('done');
+            }
+        } catch {
+            setEmailError('Network error — please try again.');
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -183,12 +216,29 @@ export default function NewsletterPage() {
                                                 type="email"
                                                 placeholder="john@example.com"
                                                 value={email}
-                                                onChange={e => setEmail(e.target.value)}
+                                                onChange={e => {
+                                                    setEmail(e.target.value);
+                                                    if (emailError) setEmailError('');
+                                                }}
+                                                onBlur={() => {
+                                                    if (email && !validateEmail(email)) {
+                                                        setEmailError('Please enter a valid email address (e.g. name@domain.com).');
+                                                    }
+                                                }}
+                                                className={emailError ? styles.inputError : ''}
                                                 required
+                                                autoComplete="email"
+                                                aria-invalid={!!emailError}
+                                                aria-describedby={emailError ? 'nl-email-error' : undefined}
                                             />
+                                            {emailError && (
+                                                <span id="nl-email-error" className={styles.crimsonError} role="alert">
+                                                    <span>⚠</span> {emailError}
+                                                </span>
+                                            )}
                                         </div>
-                                        <button type="submit" className={`btn btn-primary ${styles.submit}`}>
-                                            Subscribe — It&apos;s Free
+                                        <button type="submit" className={`btn btn-primary ${styles.submit}`} disabled={loading}>
+                                            {loading ? 'Subscribing…' : "Subscribe — It's Free"}
                                         </button>
                                         <p className={styles.legal}>
                                             By subscribing you agree to receive our weekly Tuesday dispatch from Hofherr

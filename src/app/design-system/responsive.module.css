@@ -115,6 +115,7 @@
     border-radius: 8px 8px 0 0;
     border: 1px solid var(--border);
     border-bottom: none;
+    flex-wrap: wrap;
 }
 
 .viewportLabel {
@@ -133,41 +134,303 @@
     border-radius: 4px;
 }
 
-.viewportPath {
-    font-size: 12px;
-    font-family: monospace;
+.viewportTag {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
     color: var(--fg-muted);
+}
+
+.viewportActions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-left: auto;
 }
 
-/* ── Frame ── */
+.launchBtn {
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 4px;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.launchBtn:hover {
+    opacity: 0.88;
+}
+
+.directLink {
+    font-size: 12px;
+    color: var(--fg-3);
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.directLink:hover {
+    color: var(--fg);
+}
+
+/* ── High-Fidelity Static Mock Stage ── */
 .frameWrapper {
     display: flex;
     justify-content: center;
-    background: var(--bg-2);
+    background: #09090b;
     border: 1px solid var(--border);
     border-radius: 0 0 8px 8px;
-    padding: 24px;
-    overflow: hidden;
-    min-height: 500px;
+    padding: 32px 16px;
+    overflow-x: auto;
+    min-height: 520px;
 }
 
-.frameContainer {
-    position: relative;
-    transition: width 0.4s var(--ease-out);
-    border: 1px solid color-mix(in srgb, var(--red) 20%, transparent);
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 0 0 40px rgba(0,0,0,0.5);
-}
-
-.iframe {
-    display: block;
-    border: none;
+.mockDeviceShell {
+    width: var(--container-w, 100%);
+    max-width: 100%;
     background: #000;
+    border: 2px solid #27272a;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s var(--ease-out);
 }
 
-/* ── Mobile Responsive ── */
+.mockStatusBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px;
+    background: #09090b;
+    font-size: 11px;
+    font-family: monospace;
+    color: var(--fg-muted);
+    border-bottom: 1px solid #18181b;
+}
+
+.mockTime {
+    font-weight: 700;
+    color: var(--fg-2);
+}
+
+.mockNotch {
+    width: 60px;
+    height: 12px;
+    background: #18181b;
+    border-radius: 12px;
+}
+
+.mockSignals {
+    font-size: 10px;
+}
+
+.mockUrlBar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #121214;
+    border-bottom: 1px solid #27272a;
+    font-size: 12px;
+    font-family: monospace;
+}
+
+.mockLock {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.mockUrlText {
+    flex: 1;
+    color: var(--fg-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mockExternalIcon {
+    background: transparent;
+    border: none;
+    color: var(--gold);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+}
+
+.mockPageCanvas {
+    padding: 24px 20px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    background: #000;
+    color: var(--fg);
+}
+
+.mockNavbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #27272a;
+}
+
+.mockLogoText {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--red);
+}
+
+.mockNavLinks {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--fg-3);
+}
+
+.mockCartPill {
+    background: var(--red);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.mockMenuIcon {
+    font-size: 18px;
+    color: var(--fg-2);
+}
+
+.mockHero {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mockHeroKicker {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.mockHeroTitle {
+    font-family: var(--font-heading);
+    font-size: clamp(22px, 4vw, 36px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--fg);
+    margin: 0;
+}
+
+.mockHeroDesc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--fg-3);
+    margin: 0;
+    max-width: 640px;
+}
+
+.mockHeroCtaRow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.mockPrimaryBtn {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.mockPrimaryBtn:hover {
+    opacity: 0.9;
+}
+
+.mockSecondaryMeta {
+    font-size: 11px;
+    color: var(--fg-muted);
+    font-family: monospace;
+}
+
+.mockGridSection {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mockSectionHeading {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--fg-muted);
+}
+
+.mockCardGrid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols, 1), 1fr);
+    gap: 14px;
+}
+
+.mockCard {
+    background: #121214;
+    border: 1px solid #27272a;
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mockCardThumb {
+    height: 90px;
+    background: #1c1917;
+    border-radius: 6px;
+    border: 1px dashed #3f3f46;
+}
+
+.mockCardTitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg);
+}
+
+.mockCardPrice {
+    font-size: 11px;
+    color: var(--gold);
+    font-family: monospace;
+}
+
+.mockFooter {
+    text-align: center;
+    padding-top: 16px;
+    border-top: 1px solid #18181b;
+    font-size: 10px;
+    color: var(--fg-muted);
+    letter-spacing: 0.5px;
+}
+
 @media (max-width: 768px) {
     .deviceName {
         display: none;
@@ -178,11 +441,12 @@
     }
 
     .viewportBar {
-        flex-wrap: wrap;
         gap: 8px;
     }
 
-    .viewportPath {
+    .viewportActions {
+        width: 100%;
         margin-left: 0;
+        justify-content: space-between;
     }
 }

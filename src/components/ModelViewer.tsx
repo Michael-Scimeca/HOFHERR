@@ -4,6 +4,31 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, Float } from '@react-three/drei';
 import * as THREE from 'three';
 
+// Suppress upstream @react-three/fiber internal THREE.Clock deprecation warning in Three.js r183
+if (typeof window !== 'undefined') {
+  const origWarn = console.warn;
+  console.warn = (...args: unknown[]) => {
+    if (typeof args[0] === 'string' && args[0].includes('Clock: This module has been deprecated')) {
+      return;
+    }
+    origWarn.apply(console, args);
+  };
+  if (typeof THREE.setConsoleFunction === 'function') {
+    THREE.setConsoleFunction((type, message, ...params) => {
+      if (typeof message === 'string' && message.includes('Clock: This module has been deprecated')) {
+        return;
+      }
+      if (type === 'warn') {
+        origWarn(message, ...params);
+      } else if (type === 'error') {
+        console.error(message, ...params);
+      } else {
+        console.log(message, ...params);
+      }
+    });
+  }
+}
+
 interface ModelViewerProps {
   modelPath: string;
   className?: string;
@@ -16,16 +41,20 @@ function Model({ modelPath, onLoaded }: { modelPath: string; onLoaded: () => voi
   const progress = useRef(0);
   const lastSpinTime = useRef(0);
   const spinProgress = useRef(1);
+  const elapsedTime = useRef(0);
 
   const clonedScene = useMemo(() => scene.clone(), [scene]);
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (!groupRef.current) return;
+    elapsedTime.current += delta;
+    const currentElapsed = elapsedTime.current;
+
     if (progress.current < 1) {
       progress.current += delta * 0.9;
       if (progress.current >= 1) {
         progress.current = 1;
-        lastSpinTime.current = state.clock.elapsedTime;
+        lastSpinTime.current = currentElapsed;
       }
       const p = progress.current;
       const c4 = (2 * Math.PI) / 3;
@@ -33,8 +62,8 @@ function Model({ modelPath, onLoaded }: { modelPath: string; onLoaded: () => voi
       groupRef.current.scale.setScalar(Math.max(0, elasticScale));
       groupRef.current.rotation.y = 0;
     } else {
-      if (state.clock.elapsedTime - lastSpinTime.current > 20) {
-        lastSpinTime.current = state.clock.elapsedTime;
+      if (currentElapsed - lastSpinTime.current > 20) {
+        lastSpinTime.current = currentElapsed;
         spinProgress.current = 0;
       }
       if (spinProgress.current < 1) {

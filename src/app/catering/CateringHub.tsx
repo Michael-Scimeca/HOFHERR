@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import CateringCalendar from '@/components/CateringCalendar';
+import { openCateringDrawer } from '@/components/CateringDrawer';
 import styles from '../specials/CateringHub.module.css';
 
 const PIG_PACKAGES = [
@@ -782,12 +783,13 @@ export default function CateringHub({ events, calendarPricing }: Props) {
                                     </form>
                                 ) : (
                                     <button
-                                        onClick={() => setShowForm(true)}
+                                        type="button"
+                                        onClick={openCateringDrawer}
                                         className="btn btn-primary"
                                         style={{ width: '100%' }}
                                         disabled={eventType !== 'pig' && (selectedMeats.length === 0 || selectedSides.length === 0)}
                                     >
-                                        Send Inquiry
+                                        Open Quick Quote &amp; Inquiry Drawer
                                     </button>
                                 )}
                             </>

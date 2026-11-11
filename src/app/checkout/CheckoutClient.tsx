@@ -366,6 +366,8 @@ export default function CheckoutClient() {
     const [nameInput, setNameInput] = useState('');
     const [phoneInput, setPhoneInput] = useState('');
     const [emailInput, setEmailInput] = useState('');
+    const [addressInput, setAddressInput] = useState('');
+    const [postalCodeInput, setPostalCodeInput] = useState('');
     const [selectedSlotValue, setSelectedSlotValue] = useState('');
     const [contactPref, setContactPref] = useState<'phone' | 'email'>('phone');
     const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'instore'>('stripe');
@@ -378,7 +380,7 @@ export default function CheckoutClient() {
     const [authError, setAuthError] = useState('');
     const [authNotice, setAuthNotice] = useState('');
     const [loginData, setLoginData] = useState({ email: '', password: '' });
-    const [registerData, setRegisterData] = useState({ name: '', email: '', phone: '', address: '', password: '' });
+    const [registerData, setRegisterData] = useState({ name: '', email: '', phone: '', address: '', postalCode: '', password: '' });
     const [forgotEmail, setForgotEmail] = useState('');
     const [forgotSuccess, setForgotSuccess] = useState(false);
 
@@ -558,6 +560,8 @@ export default function CheckoutClient() {
             name: resolvedName,
             phone: resolvedPhone,
             email: resolvedEmail,
+            address: addressInput,
+            postalCode: postalCodeInput,
             pickup: pickupString,
         };
         startTransition(async () => {
@@ -724,7 +728,7 @@ export default function CheckoutClient() {
                                         <p className={styles.successMsg}>✅ Reset link sent! Check your inbox.</p>
                                     ) : (
                                         <>
-                                            <input className={styles.authInput} type="email" placeholder="Your email" value={forgotEmail} onChange={e => setForgotEmail(e.target.value)} required />
+                                            <input className={styles.authInput} type="email" placeholder="Your email" value={forgotEmail} onChange={e => setForgotEmail(e.target.value)} required autoComplete="email" />
                                             {authError && <p className={styles.authError}>⚠️ {authError}</p>}
                                             <button type="submit" className={styles.authBtn} disabled={authLoading}>{authLoading ? 'Sending…' : 'Send Reset Link'}</button>
                                         </>
@@ -737,12 +741,15 @@ export default function CheckoutClient() {
                             {authMode === 'register' && (
                                 <form onSubmit={handleRegister} className={styles.authForm}>
                                     <div className={styles.authGrid}>
-                                        <input className={styles.authInput} type="text" placeholder="Full Name" value={registerData.name} onChange={e => setRegisterData(d => ({ ...d, name: e.target.value }))} required />
-                                        <input className={styles.authInput} type="tel" placeholder="Phone" value={registerData.phone} onChange={e => setRegisterData(d => ({ ...d, phone: formatPhoneNumber(e.target.value) }))} required />
-                                        <input className={styles.authInput} type="email" placeholder="Email" value={registerData.email} onChange={e => setRegisterData(d => ({ ...d, email: e.target.value }))} required />
-                                        <input className={styles.authInput} type="password" placeholder="Password" value={registerData.password} onChange={e => setRegisterData(d => ({ ...d, password: e.target.value }))} required />
+                                        <input className={styles.authInput} type="text" placeholder="Full Name" value={registerData.name} onChange={e => setRegisterData(d => ({ ...d, name: e.target.value }))} required autoComplete="name" />
+                                        <input className={styles.authInput} type="tel" placeholder="Phone" value={registerData.phone} onChange={e => setRegisterData(d => ({ ...d, phone: formatPhoneNumber(e.target.value) }))} required autoComplete="tel" />
+                                        <input className={styles.authInput} type="email" placeholder="Email" value={registerData.email} onChange={e => setRegisterData(d => ({ ...d, email: e.target.value }))} required autoComplete="email" />
+                                        <input className={styles.authInput} type="password" placeholder="Password" value={registerData.password} onChange={e => setRegisterData(d => ({ ...d, password: e.target.value }))} required autoComplete="new-password" />
                                     </div>
-                                    <input className={styles.authInput} type="text" placeholder="Address" value={registerData.address} onChange={e => setRegisterData(d => ({ ...d, address: e.target.value }))} required />
+                                    <div className={styles.authGrid}>
+                                        <input className={styles.authInput} type="text" placeholder="Street Address" value={registerData.address} onChange={e => setRegisterData(d => ({ ...d, address: e.target.value }))} required autoComplete="address-line1" />
+                                        <input className={styles.authInput} type="text" placeholder="ZIP / Postal Code" value={registerData.postalCode} onChange={e => setRegisterData(d => ({ ...d, postalCode: e.target.value }))} autoComplete="postal-code" />
+                                    </div>
                                     {authError && <p className={styles.authError}>⚠️ {authError}</p>}
                                     <button type="submit" className={styles.authBtn} disabled={authLoading}>{authLoading ? 'Creating…' : 'Create Account'}</button>
                                     <div className={styles.switchRow}>
@@ -755,8 +762,8 @@ export default function CheckoutClient() {
                             {/* Login */}
                             {authMode === 'login' && (
                                 <form onSubmit={handleLogin} className={styles.authForm}>
-                                    <input className={styles.authInput} type="email" placeholder="Email" value={loginData.email} onChange={e => setLoginData(d => ({ ...d, email: e.target.value }))} required />
-                                    <input className={styles.authInput} type="password" placeholder="Password" value={loginData.password} onChange={e => setLoginData(d => ({ ...d, password: e.target.value }))} required />
+                                    <input className={styles.authInput} type="email" placeholder="Email" value={loginData.email} onChange={e => setLoginData(d => ({ ...d, email: e.target.value }))} required autoComplete="email" />
+                                    <input className={styles.authInput} type="password" placeholder="Password" value={loginData.password} onChange={e => setLoginData(d => ({ ...d, password: e.target.value }))} required autoComplete="current-password" />
                                     {authError && <p className={styles.authError}>⚠️ {authError}</p>}
                                     <button type="submit" className={styles.authBtn} disabled={authLoading}>{authLoading ? 'Signing in…' : 'Sign In'}</button>
                                     <div className={styles.switchRow}>
@@ -787,7 +794,7 @@ export default function CheckoutClient() {
                                             value={resolvedName}
                                             onChange={e => setNameInput(e.target.value)}
                                         />
-                                        {contactPref === 'phone' ? (
+                                        <div className={styles.inputRow}>
                                             <input
                                                 required
                                                 name="tel"
@@ -799,7 +806,6 @@ export default function CheckoutClient() {
                                                 value={resolvedPhone}
                                                 onChange={e => setPhoneInput(formatPhoneNumber(e.target.value))}
                                             />
-                                        ) : (
                                             <input
                                                 required
                                                 name="email"
@@ -811,7 +817,29 @@ export default function CheckoutClient() {
                                                 value={resolvedEmail}
                                                 onChange={e => setEmailInput(e.target.value)}
                                             />
-                                        )}
+                                        </div>
+                                        <div className={styles.inputRow}>
+                                            <input
+                                                name="address"
+                                                id="checkout-address"
+                                                autoComplete="address-line1"
+                                                type="text"
+                                                className={styles.input}
+                                                placeholder="Street Address (Optional / Billing)"
+                                                value={addressInput}
+                                                onChange={e => setAddressInput(e.target.value)}
+                                            />
+                                            <input
+                                                name="postalCode"
+                                                id="checkout-postal"
+                                                autoComplete="postal-code"
+                                                type="text"
+                                                className={styles.input}
+                                                placeholder="ZIP / Postal Code"
+                                                value={postalCodeInput}
+                                                onChange={e => setPostalCodeInput(e.target.value)}
+                                            />
+                                        </div>
                                     </div>
                                     <div className={styles.contactRight}>
                                         <p className={styles.reachLabel}>HOW SHOULD WE REACH YOU?</p>

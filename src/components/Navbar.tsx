@@ -262,7 +262,7 @@ export default function Navbar() {
                         src="/assets/logo.svg"
                         alt="Hofherr Meat Co."
                         height={56}
-                        width={180}
+                        width={117}
                         className={styles.logoImgMain}
                         priority
                         fetchPriority="high"

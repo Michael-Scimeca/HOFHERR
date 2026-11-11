@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
 import { BBQ_MENU_QUERY, BBQ_SERVICES_QUERY, CATERING_EVENTS_QUERY, CATERING_CALENDAR_PRICING_QUERY } from '@/sanity/queries';
@@ -57,7 +58,7 @@ type MenuItem = { name: string; category: string; image?: string };
 type ServiceItem = { title: string; emoji?: string | null; description?: string | null; linkLabel?: string | null; linkUrl?: string | null };
 
 const FALLBACK_SERVICES: ServiceItem[] = [
-    { title: 'Whole-Pig Roasts', emoji: '🐷', description: 'Our signature backyard whole-pig roast — source to serve. We handle everything. Minimum 2 weeks notice.', linkLabel: 'Get a Quote', linkUrl: 'mailto:catering@hofherrmeatco.com?subject=Whole Pig Roast Inquiry' },
+    { title: 'Whole-Pig Roasts', emoji: '🐷', description: 'Our signature backyard whole-pig roast — source to serve. We handle everything. Minimum 2 weeks notice.', linkLabel: 'Get a Quote', linkUrl: '/catering#inquire' },
     { title: 'Concert Picnic Baskets', emoji: '🧺', description: 'Custom picnic baskets for Ravinia, Millennium Park, and any outdoor event. Charcuterie, sandwiches, and more — packed and ready to go.', linkLabel: 'Order Yours', linkUrl: 'mailto:catering@hofherrmeatco.com?subject=Picnic Basket Order' },
     { title: 'Game Day & Tailgate', emoji: '🏈', description: 'Specialized spreads for football Sundays, tailgates, and watch parties. Brisket, wings, sausages — everything your crew needs.', linkLabel: 'Plan Your Spread', linkUrl: 'mailto:catering@hofherrmeatco.com?subject=Game Day Catering' },
     { title: 'Business Buffets', emoji: '💼', description: 'Professional catering for meetings, offsites, and corporate events. Customized menus, reliable service, and food that impresses.', linkLabel: 'Get Started', linkUrl: 'mailto:catering@hofherrmeatco.com?subject=Corporate Catering' },
@@ -292,9 +293,9 @@ export default async function BBQPage() {
                                                 Email us your event date, estimated headcount, and preferred menu items — we&apos;ll get back to you within 24 hours.
                                             </p>
                                             <div className={styles.ctaBtns}>
-                                                <a href="mailto:catering@hofherrmeatco.com?subject=BBQ Catering Quote" className="btn btn-primary">
-                                                    ✉️ catering@hofherrmeatco.com
-                                                </a>
+                                                <Link href="/catering#inquire" className="btn btn-primary">
+                                                    Interactive Quick Quote
+                                                </Link>
                                                 <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
                                             </div>
                                             <p className={styles.ctaNote}>Minimum 4 days notice required. Subject to availability.</p>

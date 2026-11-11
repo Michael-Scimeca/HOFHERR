@@ -3,6 +3,8 @@ import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
 import { CATERING_EVENTS_QUERY } from '@/sanity/queries';
 import CateringHub from './CateringHub';
+import CateringHeroButtons from './CateringHeroButtons';
+import CateringDrawer from '@/components/CateringDrawer';
 import styles from './page.module.css';
 
 // Email body generation moved to '@/app/api/email/template' module
@@ -59,10 +61,7 @@ export default async function CateringPage() {
                                 From backyard pig roasts to corporate BBQ spreads — Hofherr handles it all.
                                 Custom menus, full-service setup, and food people actually talk about.
                             </p>
-                            <div className={styles.heroBtns}>
-                                <a href="#build-your-package" className="btn btn-primary">Build Your Package</a>
-                                <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
-                            </div>
+                            <CateringHeroButtons />
                     </div>
                 </section>
 
@@ -135,6 +134,7 @@ export default async function CateringPage() {
                     ))}
                 </div>
             </section>
+            <CateringDrawer />
         </main>
-                                    );
+    );
 }

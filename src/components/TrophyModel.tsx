@@ -4,6 +4,31 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, Environment, Float } from '@react-three/drei';
 import * as THREE from 'three';
 
+// Suppress upstream @react-three/fiber internal THREE.Clock deprecation warning in Three.js r183
+if (typeof window !== 'undefined') {
+    const origWarn = console.warn;
+    console.warn = (...args: unknown[]) => {
+        if (typeof args[0] === 'string' && args[0].includes('Clock: This module has been deprecated')) {
+            return;
+        }
+        origWarn.apply(console, args);
+    };
+    if (typeof THREE.setConsoleFunction === 'function') {
+        THREE.setConsoleFunction((type, message, ...params) => {
+            if (typeof message === 'string' && message.includes('Clock: This module has been deprecated')) {
+                return;
+            }
+            if (type === 'warn') {
+                origWarn(message, ...params);
+            } else if (type === 'error') {
+                console.error(message, ...params);
+            } else {
+                console.log(message, ...params);
+            }
+        });
+    }
+}
+
 function Trophy({ onLoaded }: { onLoaded: () => void }) {
     // Load the GLTF model from the public directory
     const { scene } = useGLTF('/assets/trophy.glb');
@@ -11,13 +36,17 @@ function Trophy({ onLoaded }: { onLoaded: () => void }) {
     const progress = useRef(0); // Tracks our single-run entrance physics
     const lastSpinTime = useRef(0); // Tracks the clock time of the last scheduled spin
     const spinProgress = useRef(1); // 1 = fully idle, 0 = actively spinning
+    const elapsedTime = useRef(0); // Custom elapsed time tracker to prevent THREE.Clock deprecation warnings
 
     // Deep-clone the scene to prevent Next.js Fast Refresh from corrupting the cached WebGL graph on unmount
     const clonedScene = useMemo(() => scene.clone(), [scene]);
 
     // Physically simulate a bouncy scale entrance, followed by a scheduled 360 spin every 20 seconds
-    useFrame((state, delta) => {
+    useFrame((_state, delta) => {
         if (!groupRef.current) return;
+
+        elapsedTime.current += delta;
+        const currentElapsed = elapsedTime.current;
 
         // 1. Initial Entrance Pop
         if (progress.current < 1) {
@@ -25,7 +54,7 @@ function Trophy({ onLoaded }: { onLoaded: () => void }) {
             if (progress.current >= 1) {
                 progress.current = 1;
                 // Seed the timer the moment the entrance pop perfectly finishes!
-                lastSpinTime.current = state.clock.elapsedTime;
+                lastSpinTime.current = currentElapsed;
             }
 
             const p = progress.current;
@@ -38,9 +67,9 @@ function Trophy({ onLoaded }: { onLoaded: () => void }) {
         }
         // 2. Scheduled 20-Second Recurring Spin
         else {
-            if (state.clock.elapsedTime - lastSpinTime.current > 20) {
+            if (currentElapsed - lastSpinTime.current > 20) {
                 // Trip the 20-second breaker and reset the clock!
-                lastSpinTime.current = state.clock.elapsedTime;
+                lastSpinTime.current = currentElapsed;
                 spinProgress.current = 0; // Trigger the physical spin sequence
             }
 

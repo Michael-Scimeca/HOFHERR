@@ -1,0 +1,275 @@
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 80ch;
+}
+
+.sectionTitle {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--fg);
+    margin: 0;
+}
+
+.sectionDesc {
+    color: var(--fg-2);
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* Category Filter Tabs */
+.filterBar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.filterBtn {
+    background: transparent;
+    color: var(--fg-muted);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filterBtn:hover {
+    color: var(--fg);
+    border-color: var(--fg-muted);
+}
+
+.filterBtnActive {
+    background: var(--red);
+    color: var(--white, #fff);
+    border-color: var(--red);
+}
+
+/* Grid of Cards */
+.assetGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 24px;
+}
+
+.assetCard {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+}
+
+.cardHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.cardCategory {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+}
+
+.cardRatioBadge {
+    background: var(--bg-subtle, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 2px 8px;
+    font-size: 0.72rem;
+    font-family: monospace;
+    color: var(--fg-muted);
+}
+
+.cardTitle {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    color: var(--fg);
+    margin: 0;
+}
+
+.cardSpec {
+    font-size: 0.82rem;
+    color: var(--fg-2);
+    line-height: 1.4;
+    font-family: monospace;
+    background: var(--bg-subtle, rgba(255, 255, 255, 0.03));
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--red);
+}
+
+/* Prompt Block */
+.promptBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--bg, #0d0a09);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+}
+
+.promptLabelRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.promptLabel {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.copyPromptBtn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--fg-muted);
+    border-radius: var(--radius-sm);
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    font-family: var(--font-heading);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.copyPromptBtn:hover {
+    color: var(--fg);
+    border-color: var(--fg-muted);
+}
+
+.promptText {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--fg-2);
+    margin: 0;
+    font-family: inherit;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Copy Suite Specifics */
+.copySuiteGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 24px;
+}
+
+.copyCard {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.copyHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+}
+
+.copyTitle {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--fg);
+    margin: 0;
+}
+
+.copyContent {
+    background: var(--bg, #0d0a09);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--fg-2);
+    margin: 0;
+    white-space: pre-wrap;
+    font-family: inherit;
+    overflow-x: auto;
+}
+
+/* Trust Items */
+.trustGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.trustCard {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.trustTag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+}
+
+.trustTitle {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    color: var(--fg);
+    margin: 0;
+}
+
+.trustQuote {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--fg-2);
+    font-style: italic;
+    margin: 0;
+}
+
+.trustSource {
+    font-size: 0.78rem;
+    color: var(--fg-muted);
+    margin-top: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .assetGrid,
+    .copySuiteGrid,
+    .trustGrid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import MasterVectorLibrary from './MasterVectorLibrary';
 import styles from './extended.module.css';
 
 /**
@@ -258,18 +259,61 @@ const DEPARTMENT_EMBLEMS: DepartmentEmblem[] = [
     { code: 'DEPT-05 · CHEESE', name: 'Artisanal Cheese', scope: 'Cave-Aged & Deli', svg: '/assets/identity/stickers/sticker-cheese.svg' },
     { code: 'DEPT-06 · SOUP', name: 'Stocks & Soups', scope: 'Kettle Broth & Chili', svg: '/assets/identity/stickers/sticker-soup.svg' },
     { code: 'DEPT-07 · FISH', name: 'Fresh Catch', scope: 'Fillets & Steaks', svg: '/assets/identity/stickers/sticker-fish.svg' },
-    { code: 'DEPT-08 · SEAFOOD', name: 'Shellfish & Crab', scope: 'Shrimp, Crab & Lobster', svg: '/assets/identity/stickers/sticker-seafood-lobster.svg' },
+    { code: 'DEPT-08 · SEAFOOD', name: 'Shellfish & Lobster', scope: 'Shrimp, Crab & Lobster', svg: '/assets/identity/stickers/sticker-seafood-lobster.svg' },
     { code: 'DEPT-09 · DUCK', name: 'Specialty Duck', scope: 'Magret Breast & Confit', svg: '/assets/identity/stickers/sticker-duck.svg' },
     { code: 'DEPT-10 · TRUCK', name: 'Catering & Delivery', scope: 'Whole Hog & Event BBQ', svg: '/assets/identity/stickers/sticker-truck.svg' },
+    { code: 'DEPT-11 · SAUSAGE', name: 'Housemade Sausage', scope: 'Links & Artisan Brats', svg: '/icons/suage.svg' },
+    { code: 'DEPT-12 · DELI', name: 'Deli Meat & Cheese', scope: 'House-Roasted Slices', svg: '/icons/hamcheese.svg' },
+    { code: 'DEPT-13 · PREPARED', name: 'Prepared Foods', scope: 'Scratch Kitchen Ready', svg: '/icons/prepared.svg' },
+    { code: 'DEPT-14 · VEAL', name: 'Midwest Veal', scope: 'Milk-Fed Chops & Cutlets', svg: '/icons/veal.svg' },
+    { code: 'DEPT-15 · TURKEY', name: 'Ferndale Turkey', scope: 'All-Natural Whole Birds', svg: '/icons/turkey.svg' },
+    { code: 'DEPT-16 · GAME', name: 'Wild & Exotic Game', scope: 'Venison, Elk & Boar', svg: '/icons/game.svg' },
+    { code: 'SEAL-01 · BONELESS', name: 'Boneless Trim', scope: 'Boning Knife Craft Cut', svg: '/icons/boneless.svg?v=v16' },
+    { code: 'SEAL-02 · SAFETY', name: 'Tamper-Evident Safety Seal', scope: 'Official Inspected Seal', svg: '/icons/safetyseal.svg?v=v16' },
+    { code: 'SEAL-03 · BONE-IN', name: 'Bone-In Primal', scope: 'Marrow & Primal Flavor', svg: '/icons/bonein.svg?v=v16' },
+    { code: 'SEAL-04 · THICK-CUT', name: 'Thick-Cut 2″', scope: 'Heavyweight Gauge Cut', svg: '/icons/thickcut.svg?v=v16' },
+    { code: 'SEAL-05 · DRY-AGED', name: 'Dry-Aged Vault Reserve', scope: '45-Day Cellar Reserve', svg: '/icons/dryaged.svg?v=v16' },
+    { code: 'SEAL-06 · SMOKED', name: 'House-Smoked Pitmaster', scope: 'Low & Slow Oak Smoked', svg: '/icons/smoked.svg?v=v16' },
+    { code: 'SEAL-07 · GROUND', name: 'Ground Fresh Today', scope: '80/20 Coarse Daily Blend', svg: '/icons/groundfresh.svg?v=v16' },
+    { code: 'SEAL-08 · GRILL', name: 'Grill Tonight / Markdown', scope: 'Peak Bloom 24h Cook', svg: '/icons/grilltonight.svg?v=v16' },
+    { code: 'SEAL-09 · GRASS-FED', name: '100% Grass-Fed & Finished', scope: 'Midwest Pasture Raised', svg: '/icons/grassfed.svg?v=v16' },
+    { code: 'SEAL-10 · SEASONED', name: 'Pre-Seasoned Ready to Grill', scope: 'House Herb Dry Rub', svg: '/icons/seasoned.svg?v=v16' },
+    { code: 'SEAL-11 · ROAST', name: 'Oven-Ready & Tied Roast', scope: 'Seasoned & Twine-Tied', svg: '/icons/ovenready.svg?v=v16' },
+    { code: 'SEAL-12 · SPECIAL', name: 'On Sale / Daily Special', scope: 'Butcher Morning Deal', svg: '/icons/onsale.svg?v=v16' },
 ];
 
-type BrandColor = { name: string; hex: string; role: string; pantone: string; cmyk: string };
+type BrandColor = {
+    name: string;
+    hex: string;
+    role: string;
+    pantone: string;
+    cmyk: string;
+    gradient?: string;
+    surfaceNote?: string;
+};
 
 // Pantone / CMYK values are close matches — confirm with a printer drawdown before production.
 const BRAND_COLORS: BrandColor[] = [
     { name: 'Oxblood Crimson', hex: '#8B0A10', role: 'Primary ink · wrap, stamps, labels', pantone: '≈ PMS 7622 C', cmyk: '0 / 93 / 88 / 45' },
     { name: 'Hofherr Red', hex: '#CC0E1D', role: 'Digital accent · signage highlights', pantone: '≈ PMS 186 C', cmyk: '0 / 93 / 86 / 20' },
     { name: 'Smokehouse Amber', hex: '#F59B1A', role: 'Second spot colour · flames, fills', pantone: '≈ PMS 1375 C', cmyk: '0 / 37 / 89 / 4' },
+    {
+        name: 'Winnetka Depot Green (Solid)',
+        hex: '#142A1E',
+        role: 'Solid spot ink · awnings · packaging ground · flat paint',
+        pantone: '≈ PMS 5535 C',
+        cmyk: '80 / 50 / 70 / 75',
+        surfaceNote: '100% Solid Ink · Matte Surface (No Sheen)',
+    },
+    {
+        name: 'Winnetka Depot Green (Luminous Sheen)',
+        hex: '#142A1E',
+        role: 'Heritage awning · reserve packaging · depot architectural trim',
+        pantone: '≈ PMS 5535 C',
+        cmyk: '80 / 50 / 70 / 75',
+        gradient: 'linear-gradient(135deg, #ffffff14 0%, #0000 70%), radial-gradient(circle, #c4ae821f 0%, #0000 80%)',
+        surfaceNote: '135° Highlight Sheen + Radial Champagne Glow',
+    },
     { name: 'Smokehouse Charcoal', hex: '#1C1614', role: 'Type, gift box, dark grounds', pantone: '≈ PMS Black 7 C', cmyk: '0 / 21 / 29 / 89' },
     { name: 'Butcher Counter Cream', hex: '#F3EAD8', role: 'Label stock, light grounds', pantone: '≈ PMS 7527 C (tint)', cmyk: '0 / 4 / 11 / 5' },
     { name: 'Classic Kraft', hex: '#C8A47E', role: 'Natural substrate reference', pantone: 'Unprinted stock', cmyk: '—' },
@@ -633,9 +677,9 @@ export default function ExtendedIdentityBoards() {
                     <div className={styles.emblemBlock}>
                         <div className={styles.emblemBlockHeader}>
                             <div>
-                                <h3 className={styles.emblemBlockTitle}>Official 10-Department Flame Emblem System (100% Vector .SVG)</h3>
+                                <h3 className={styles.emblemBlockTitle}>Official Department &amp; Counter Packaging Flame Emblem System (100% Vector .SVG)</h3>
                                 <p className={styles.emblemBlockSub}>
-                                    Pure vector Bézier curves — scale from a 16px favicon to a 10-foot storefront sign or vinyl plotter cut with zero pixelation
+                                    Pure vector Bézier curves — all 28 department &amp; counter packaging emblems scale from a 16px favicon to a 10-foot storefront sign or vinyl plotter cut with zero pixelation
                                 </p>
                             </div>
                             <div className={styles.cardActions}>
@@ -649,11 +693,14 @@ export default function ExtendedIdentityBoards() {
                                     ↓ Circular Stamp (.SVG)
                                 </a>
                                 <a href="/assets/identity/hofherr-die-cut-stickers-10-icons.svg" download="hofherr-die-cut-stickers-10-icons.svg" className={styles.actionLinkSecondary}>
-                                    ↓ 10-Sticker Sheet (.SVG)
+                                    ↓ Die-Cut Stickers Sheet (.SVG)
                                 </a>
-                                    <Link href="/product-identity/print?sheet=master-suite&autoprint=1" className={styles.actionLinkSecondary}>
-                                        🖨 Print Vector Master Sheet
-                            </Link>
+                                <Link href="/product-identity/print?sheet=stickers&autoprint=1" className={styles.actionLinkSecondary}>
+                                    🖨 Print 3.00&quot; Die-Cut Stickers
+                                </Link>
+                                <Link href="/product-identity/print?sheet=master-suite&autoprint=1" className={styles.actionLinkSecondary}>
+                                    🖨 Print Vector Master Sheet
+                                </Link>
                         </div>
                     </div>
                     <div className={styles.emblemGrid}>
@@ -683,10 +730,15 @@ export default function ExtendedIdentityBoards() {
 
                 <div className={styles.colorGrid}>
                     {BRAND_COLORS.map((c) => (
-                        <div key={c.hex} className={styles.colorCard}>
+                        <div key={`${c.name}-${c.hex}`} className={styles.colorCard}>
                             <div
                                 className={styles.colorChip}
-                                style={{ '--chip-bg': c.hex } as React.CSSProperties}
+                                style={
+                                    {
+                                        '--chip-bg': c.hex,
+                                        '--chip-gradient': c.gradient || 'none',
+                                    } as React.CSSProperties
+                                }
                             />
                             <div className={styles.colorBody}>
                                 <span className={styles.colorName}>{c.name}</span>
@@ -695,6 +747,11 @@ export default function ExtendedIdentityBoards() {
                                     <dt>HEX</dt><dd>{c.hex}</dd>
                                     <dt>PMS</dt><dd>{c.pantone}</dd>
                                     <dt>CMYK</dt><dd>{c.cmyk}</dd>
+                                    {c.surfaceNote && (
+                                        <>
+                                            <dt>SURFACE</dt><dd>{c.surfaceNote}</dd>
+                                        </>
+                                    )}
                                 </dl>
                             </div>
                         </div>
@@ -740,7 +797,9 @@ export default function ExtendedIdentityBoards() {
                     ))}
                 </div>
             </div>
-        </section >
-                    </>
-                    );
+        </section>
+
+        <MasterVectorLibrary />
+    </>
+    );
 }

@@ -11,7 +11,7 @@ type Product = {
     _id: string; name: string; price: string; salePrice?: string | null;
     stockStatus: string; stockQuantity: number; isFeatured?: boolean; isNew?: boolean;
     hiddenFromShop?: boolean; adminNotes?: string | null; expiryDate?: string | null;
-    categoryName: string; categoryId: string; sales: SalesData;
+    categoryName: string; categoryId: string; sales: SalesData; store?: string;
 };
 type Activity = { product: string; qty: number; date: string; status: string; };
 type PurchaseItem = { name: string; qty: number; price: string | null; };
@@ -43,6 +43,7 @@ export default function InventoryPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [categoryFilter, setCategoryFilter] = useState('all');
+    const [storeFilter, setStoreFilter] = useState<'all' | 'butcher' | 'depot'>('all');
     const [sortBy, setSortBy] = useState<SortOption>('category');
     const [savingStates, setSavingStates] = useState<Record<string, SavingState>>({});
     const [lastFetched, setLastFetched] = useState<Date | null>(null);
@@ -248,7 +249,8 @@ export default function InventoryPage() {
                 : statusFilter === 'featured' ? Boolean(p.isFeatured)
                 : p.stockStatus === statusFilter);
             const matchesCategory = categoryFilter === 'all' || p.categoryName === categoryFilter;
-            return matchesSearch && matchesStatus && matchesCategory;
+            const matchesStore = storeFilter === 'all' || (p.store || 'butcher') === storeFilter;
+            return matchesSearch && matchesStatus && matchesCategory && matchesStore;
         });
 
         // Sort
@@ -266,15 +268,26 @@ export default function InventoryPage() {
         });
 
         return result;
-    }, [products, searchQuery, statusFilter, categoryFilter, sortBy]);
+    }, [products, searchQuery, statusFilter, categoryFilter, storeFilter, sortBy]);
 
     const categories = useMemo(() => filtered.reduce((acc, p) => {
         const cat = p.categoryName || 'Uncategorized';
-        if (!acc[cat]) acc[cat] = { id: p.categoryId, items: [], revenue: 0 };
+        if (!acc[cat]) acc[cat] = { id: p.categoryId, store: p.store || 'butcher', items: [], revenue: 0 };
         acc[cat].items.push(p);
         acc[cat].revenue += p.sales?.revenue || 0;
         return acc;
-    }, {} as Record<string, { id: string; items: Product[]; revenue: number }>), [filtered]);
+    }, {} as Record<string, { id: string; store: string; items: Product[]; revenue: number }>), [filtered]);
+
+    const butcherCount = useMemo(() => products.filter(p => (p.store || 'butcher') === 'butcher').length, [products]);
+    const depotCount = useMemo(() => products.filter(p => p.store === 'depot').length, [products]);
+
+    const butcherCategories = useMemo(() =>
+        [...new Set(products.filter(p => (p.store || 'butcher') === 'butcher').map(p => p.categoryName).filter(Boolean))].sort(),
+        [products]);
+
+    const depotCategories = useMemo(() =>
+        [...new Set(products.filter(p => p.store === 'depot').map(p => p.categoryName).filter(Boolean))].sort(),
+        [products]);
 
     const topSellers = useMemo(() =>
         [...products].filter(p => (p.sales?.totalSold || 0) > 0)
@@ -747,6 +760,32 @@ export default function InventoryPage() {
                     {/* ── Toolbar (stock & sales views) ── */}
                     {(viewTab === 'stock' || viewTab === 'sales') && (
                         <div ref={toolbarRef} className={styles.toolbar}>
+                            <div className={styles.storeFilterRow}>
+                                <button
+                                    type="button"
+                                    className={`${styles.storePill} ${storeFilter === 'all' ? styles.storePillActiveAll : ''}`}
+                                    onClick={() => setStoreFilter('all')}
+                                >
+                                    <span>All Locations</span>
+                                    <span className={styles.storePillBadge}>{totalProducts}</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`${styles.storePill} ${storeFilter === 'butcher' ? styles.storePillActiveButcher : ''}`}
+                                    onClick={() => setStoreFilter('butcher')}
+                                >
+                                    <span>🥩 Northfield Butcher</span>
+                                    <span className={styles.storePillBadge}>{butcherCount}</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`${styles.storePill} ${storeFilter === 'depot' ? styles.storePillActiveDepot : ''}`}
+                                    onClick={() => setStoreFilter('depot')}
+                                >
+                                    <span>🏪 Winnetka Depot</span>
+                                    <span className={styles.storePillBadge}>{depotCount}</span>
+                                </button>
+                            </div>
                             <input
                                 type="text"
                                 placeholder="Search products or categories..."
@@ -760,10 +799,21 @@ export default function InventoryPage() {
                                 className={styles.filterSelect}
                                 aria-label="Filter by category"
                             >
-                                <option value="all">All Categories</option>
-                                {uniqueCategories.map(cat => (
-                                    <option key={cat} value={cat}>{cat}</option>
-                                ))}
+                                <option value="all">All Categories ({uniqueCategories.length})</option>
+                                {storeFilter !== 'depot' && butcherCategories.length > 0 && (
+                                    <optgroup label="🥩 Northfield Butcher Shop">
+                                        {butcherCategories.map(cat => (
+                                            <option key={cat} value={cat}>{cat}</option>
+                                        ))}
+                                    </optgroup>
+                                )}
+                                {storeFilter !== 'butcher' && depotCategories.length > 0 && (
+                                    <optgroup label="🏪 Winnetka Depot">
+                                        {depotCategories.map(cat => (
+                                            <option key={cat} value={cat}>{cat}</option>
+                                        ))}
+                                    </optgroup>
+                                )}
                             </select>
                             <select
                                 value={sortBy}
@@ -790,10 +840,10 @@ export default function InventoryPage() {
                                     </button>
                                 ))}
                             </div>
-                            {(categoryFilter !== 'all' || sortBy !== 'category' || statusFilter !== 'all' || searchQuery) && (
+                            {(categoryFilter !== 'all' || storeFilter !== 'all' || sortBy !== 'category' || statusFilter !== 'all' || searchQuery) && (
                                 <button
                                     className={styles.clearFiltersBtn}
-                                    onClick={() => { setCategoryFilter('all'); setSortBy('category'); setStatusFilter('all'); setSearchQuery(''); }}
+                                    onClick={() => { setCategoryFilter('all'); setStoreFilter('all'); setSortBy('category'); setStatusFilter('all'); setSearchQuery(''); }}
                                 >
                                     ✕ Clear
                                 </button>
@@ -807,21 +857,25 @@ export default function InventoryPage() {
                             <div className={styles.empty}>No products match your search.</div>
                         ) : (
                             <div className={styles.categoriesStack}>
-                                {Object.entries(categories).sort(([a], [b]) => a.localeCompare(b)).map(([catName, { id: catId, items, revenue }]) => {
+                                {Object.entries(categories).sort(([a], [b]) => a.localeCompare(b)).map(([catName, { id: catId, store: catStore, items, revenue }]) => {
+                                    const isDepot = catStore === 'depot';
                                     const isAllInStock = items.length > 0 && items.every(p => p.stockStatus === 'in-stock');
                                     const isAllOut = items.length > 0 && items.every(p => p.stockStatus === 'out-of-stock');
                                     return (
-                                        <div key={catName} className={styles.categoryGroup}>
-                                            <div className={styles.categoryHeader}>
+                                        <div key={catName} className={`${styles.categoryGroup} ${isDepot ? styles.categoryGroupDepot : styles.categoryGroupButcher}`}>
+                                            <div className={`${styles.categoryHeader} ${isDepot ? styles.categoryHeaderDepot : styles.categoryHeaderButcher}`}>
                                                 <span className={styles.categoryName}>
                                                     {catName}
-                                                    <span className={styles.categoryCount}>{items.length}</span>
+                                                    <span className={isDepot ? styles.categoryCountDepot : styles.categoryCountButcher}>{items.length}</span>
+                                                    <span className={`${styles.storeBadge} ${isDepot ? styles.storeBadgeDepot : styles.storeBadgeButcher}`}>
+                                                        {isDepot ? '🏪 Winnetka Depot' : '🥩 Northfield Butcher'}
+                                                    </span>
                                                     {viewTab === 'sales' && revenue > 0 && <span className={styles.categoryRevenue}>${revenue.toFixed(0)}</span>}
                                                 </span>
                                                 <div className={styles.categoryActions}>
                                                     <button
                                                         type="button"
-                                                        className={`${styles.catBtn} ${styles.catBtnGold} ${isAllInStock ? styles.catBtnGoldActive : ''}`}
+                                                        className={`${styles.catBtn} ${isDepot ? styles.catBtnBlue : styles.catBtnGold} ${isAllInStock ? (isDepot ? styles.catBtnBlueActive : styles.catBtnGoldActive) : ''}`}
                                                         onClick={() => bulkUpdate(catId, 'in-stock', 10)}
                                                         title={isAllInStock ? 'Currently all in stock' : 'Set all items in this category to In Stock (10 units)'}
                                                     >
@@ -1065,13 +1119,13 @@ export default function InventoryPage() {
                                                                 )}
                                                                 {viewTab === 'stock' && (
                                                                     <td>
-                                                                        <div className={styles.toggleRow}>
+                                                                        <div className={`${styles.toggleRow} ${p.store === 'depot' ? styles.toggleRowDepot : ''}`}>
                                                                             <Toggle
                                                                                 size="sm"
                                                                                 checked={!p.hiddenFromShop}
                                                                                 onChange={val => updateProduct(p._id, { hiddenFromShop: !val })}
                                                                                 label={p.hiddenFromShop ? 'Hidden' : 'Visible'}
-                                                                                variant="gold"
+                                                                                variant={p.store === 'depot' ? 'blue' : 'gold'}
                                                                                 title={p.hiddenFromShop ? 'Product is hidden from shop' : 'Product is visible on shop'}
                                                                                 infoSnippet={p.hiddenFromShop
                                                                                     ? 'Controls storefront visibility. Currently HIDDEN. Toggle ON to show in shop.'
@@ -1082,7 +1136,7 @@ export default function InventoryPage() {
                                                                                 checked={Boolean(p.isFeatured)}
                                                                                 onChange={val => updateProduct(p._id, { isFeatured: val })}
                                                                                 label="Featured"
-                                                                                variant="gold"
+                                                                                variant={p.store === 'depot' ? 'blue' : 'gold'}
                                                                                 title="Feature on store showcases"
                                                                                 infoSnippet="Spotlights product in Butcher's Specials, signature cut carousels, and homepage showcases."
                                                                             />
@@ -1091,7 +1145,7 @@ export default function InventoryPage() {
                                                                                 checked={Boolean(p.isNew)}
                                                                                 onChange={val => updateProduct(p._id, { isNew: val })}
                                                                                 label="New"
-                                                                                variant="red"
+                                                                                variant={p.store === 'depot' ? 'blue' : 'red'}
                                                                                 title="Mark as new arrival"
                                                                                 infoSnippet="Displays an emerald 'NEW' arrival badge on customer storefront cards."
                                                                             />
@@ -1198,11 +1252,20 @@ export default function InventoryPage() {
                                             className={styles.formInput}
                                         >
                                             <option value="">Select a category...</option>
-                                            {availableCategories.map(cat => (
-                                                <option key={cat._id} value={cat._id}>
-                                                    {cat.label} ({cat.store})
-                                                </option>
-                                            ))}
+                                            <optgroup label="🥩 Northfield Butcher Shop">
+                                                {availableCategories.filter(c => c.store !== 'depot').map(cat => (
+                                                    <option key={cat._id} value={cat._id}>
+                                                        {cat.label}
+                                                    </option>
+                                                ))}
+                                            </optgroup>
+                                            <optgroup label="🏪 Winnetka Depot">
+                                                {availableCategories.filter(c => c.store === 'depot').map(cat => (
+                                                    <option key={cat._id} value={cat._id}>
+                                                        {cat.label}
+                                                    </option>
+                                                ))}
+                                            </optgroup>
                                         </select>
                                     </div>
                                     <div className={styles.formGroup}>

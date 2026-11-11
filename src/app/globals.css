@@ -11,6 +11,13 @@
   --gold-dark: #8a7349;
   --gold-light: #c4ae82;
 
+  /* ── Winnetka Depot / Heritage Forest Green (Brand Complement) ── */
+  --green-depot: #142a1e;
+  --green-depot-dark: #0d1b13;
+  --green-depot-light: #1e3d2c;
+  --green-depot-surface: #142a1e;
+  --green-depot-gradient: linear-gradient(135deg, #ffffff14 0%, #0000 70%), radial-gradient(circle, #c4ae821f 0%, #0000 80%);
+
   --dark: #000;
   --light: #F2F2F2;
 
@@ -68,6 +75,39 @@
   /* ── RGBA helpers (match brand hex exactly) ── */
   --red-rgb: 204, 14, 29;
   --gold-rgb: 168, 144, 95;
+  --green-depot-rgb: 20, 42, 30;
+
+  /* ── Spacing Tokens (8px System) ── */
+  --space-05: 2px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* ── Typography Scale ── */
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+  --text-4xl: 2.25rem;    /* 36px */
+
+  /* ── Card Surfaces ── */
+  --bg-card: rgba(18, 18, 20, 0.75);
+  --bg-card-hover: rgba(28, 28, 32, 0.85);
+}
+
+/* ── Brand Surface Utilities ── */
+.bg-depot-green {
+  background-color: var(--green-depot);
+  background-image: var(--green-depot-gradient);
 }
 
 
@@ -639,5 +679,103 @@ body:has(.pt-wrap.pt-enter) [data-pt-portal] {
     filter: blur(0) contrast(1);
     opacity: 1;
     transform: scale(1) translateY(0);
+  }
+}
+
+
+/* ── 404 Not Found Page ── */
+.notFoundPage {
+  min-height: calc(100vh - 68px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+  padding: 80px 24px;
+}
+
+.notFoundBigNum {
+  position: absolute;
+  bottom: -0.15em;
+  right: -0.05em;
+  font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+  font-size: clamp(18rem, 35vw, 32rem);
+  font-weight: 900;
+  color: var(--bg-2);
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.notFoundInner {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.notFoundTag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+  background: color-mix(in srgb, var(--red) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--red) 20%, transparent);
+  padding: 5px 14px;
+  border-radius: 100px;
+  width: fit-content;
+}
+
+.notFoundHeadline {
+  font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+  font-size: clamp(2.8rem, 7vw, 5rem);
+  color: var(--fg);
+  line-height: 1.1;
+  margin: 0;
+}
+
+.notFoundSub {
+  font-size: 15px;
+  color: var(--fg-muted);
+  line-height: 1.8;
+  margin: 0;
+  max-width: 460px;
+}
+
+.notFoundBtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.notFoundHours {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--fg-muted);
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.notFoundHours a {
+  color: var(--red);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.notFoundHours a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .notFoundBtns {
+    flex-direction: column;
   }
 }

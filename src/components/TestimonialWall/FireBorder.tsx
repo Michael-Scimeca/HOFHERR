@@ -38,8 +38,13 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
         const f = id.current;
 
         const buildSvg = () => {
-            W = host.offsetWidth + P * 2;
-            H = host.offsetHeight + P * 2;
+            const hostW = host.offsetWidth;
+            const hostH = host.offsetHeight;
+            if (hostW <= 0 || hostH <= 0) return false;
+            W = hostW + P * 2;
+            H = hostH + P * 2;
+            const innerW = Math.max(0, hostW - s.thick * 2);
+            const innerH = Math.max(0, hostH - s.thick * 2);
             svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
             svg.innerHTML = `<defs><filter id="${f}" filterUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}" color-interpolation-filters="sRGB">
 <feTurbulence type="fractalNoise" baseFrequency="${s.fy} ${s.fx}" numOctaves="3" seed="17" stitchTiles="stitch" x="0" y="0" width="${TW}" height="${TH}" result="n"/>
@@ -57,34 +62,41 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
 <feComponentTransfer in="lum"><feFuncR type="table" tableValues="${tv(0)}"/><feFuncG type="table" tableValues="${tv(1)}"/><feFuncB type="table" tableValues="${tv(2)}"/><feFuncA type="table" tableValues="${tips}"/></feComponentTransfer>
 <feComponentTransfer><feFuncA type="linear" slope="1" class="fl"/></feComponentTransfer>
 </filter>
-<mask id="${f}m" maskUnits="userSpaceOnUse"><rect width="${W}" height="${H}" fill="#fff"/><rect x="${P + s.thick}" y="${P + s.thick}" width="${W - P * 2 - s.thick * 2}" height="${H - P * 2 - s.thick * 2}" rx="${radius}" fill="#000" fill-opacity="${1 - s.inner}"/></mask></defs>
-<rect x="${P}" y="${P}" width="${W - P * 2}" height="${H - P * 2}" rx="${radius}" fill="none" stroke="#fff" stroke-width="${s.thick}" filter="url(#${f})" mask="url(#${f}m)"/>
+<mask id="${f}m" maskUnits="userSpaceOnUse"><rect width="${W}" height="${H}" fill="#fff"/><rect x="${P + s.thick}" y="${P + s.thick}" width="${innerW}" height="${innerH}" rx="${radius}" fill="#000" fill-opacity="${1 - s.inner}"/></mask></defs>
+<rect x="${P}" y="${P}" width="${hostW}" height="${hostH}" rx="${radius}" fill="none" stroke="#fff" stroke-width="${s.thick}" filter="url(#${f})" mask="url(#${f}m)"/>
 <g class="em"></g>`;
+            return true;
         };
 
         buildSvg();
         let offs = svg.querySelectorAll('feOffset[width]');
-        let fl = svg.querySelector('.fl')!;
-        let em = svg.querySelector('.em')!;
+        let fl = svg.querySelector('.fl');
+        let em = svg.querySelector('.em');
 
         const spawn = (rand: boolean) => {
-            const per = 2 * (W + H - 4 * P); let t = Math.random() * per, x: number, y: number;
-            const w = W - 2 * P, h = H - 2 * P;
+            const per = Math.max(1, 2 * (W + H - 4 * P)); let t = Math.random() * per, x: number, y: number;
+            const w = Math.max(1, W - 2 * P), h = Math.max(1, H - 2 * P);
             if (t < w) { x = P + t; y = P; } else if ((t -= w) < h) { x = W - P; y = P + t; } else if ((t -= h) < w) { x = W - P - t; y = H - P; } else { x = P; y = H - P - (t - w); }
             return { x, y, vx: (Math.random() - 0.5) * 0.4, vy: -(0.3 + Math.random() * 0.9), life: rand ? Math.random() : 1, r: 0.8 + Math.random() * 1.6 };
         };
         const parts = Array.from({ length: s.embers }, () => spawn(true));
-        let dots = parts.map(() => { const c = document.createElementNS(NS, 'circle'); em.appendChild(c); return c; });
+        let dots = em ? parts.map(() => { const c = document.createElementNS(NS, 'circle'); em!.appendChild(c); return c; }) : [];
 
         const ro = new ResizeObserver(() => {
-            const nextW = host.offsetWidth + P * 2;
-            const nextH = host.offsetHeight + P * 2;
+            const hostW = host.offsetWidth;
+            const hostH = host.offsetHeight;
+            if (hostW <= 0 || hostH <= 0) return;
+            const nextW = hostW + P * 2;
+            const nextH = hostH + P * 2;
             if (Math.abs(nextW - W) > 1 || Math.abs(nextH - H) > 1) {
-                buildSvg();
-                offs = svg.querySelectorAll('feOffset[width]');
-                fl = svg.querySelector('.fl')!;
-                em = svg.querySelector('.em')!;
-                dots = parts.map(() => { const c = document.createElementNS(NS, 'circle'); em.appendChild(c); return c; });
+                if (buildSvg()) {
+                    offs = svg.querySelectorAll('feOffset[width]');
+                    fl = svg.querySelector('.fl');
+                    em = svg.querySelector('.em');
+                    if (em) {
+                        dots = parts.map(() => { const c = document.createElementNS(NS, 'circle'); em!.appendChild(c); return c; });
+                    }
+                }
             }
         });
         ro.observe(host);
@@ -94,15 +106,21 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
             const dt = Math.min(50, now - last); last = now;
             if (!reduce) t += dt * 0.06 * s.speed;
             const d = t % TH;
-            offs[0].setAttribute('dy', String(-d)); offs[1].setAttribute('dy', String(TH - d));
-            fl.setAttribute('slope', (1 - s.flicker * 0.5 * (1 + Math.sin(t * 0.21) * Math.sin(t * 0.077)) * 0.6).toFixed(3));
-            parts.forEach((p, k) => {
-                if (!reduce) { p.x += p.vx + Math.sin(t * 0.05 + k) * 0.2; p.y += p.vy * s.speed; p.life -= 0.006 * s.speed; }
-                if (p.life <= 0) Object.assign(p, spawn(false));
-                const c = dots[k];
-                c.setAttribute('cx', p.x.toFixed(1)); c.setAttribute('cy', p.y.toFixed(1)); c.setAttribute('r', String(p.r));
-                c.setAttribute('fill', p.life > 0.6 ? s.ramp[3] : s.ramp[2]); c.setAttribute('opacity', Math.max(0, p.life).toFixed(2));
-            });
+            if (offs.length >= 2 && fl) {
+                offs[0].setAttribute('dy', String(-d)); offs[1].setAttribute('dy', String(TH - d));
+                fl.setAttribute('slope', (1 - s.flicker * 0.5 * (1 + Math.sin(t * 0.21) * Math.sin(t * 0.077)) * 0.6).toFixed(3));
+            }
+            if (dots.length > 0) {
+                parts.forEach((p, k) => {
+                    if (!reduce) { p.x += p.vx + Math.sin(t * 0.05 + k) * 0.2; p.y += p.vy * s.speed; p.life -= 0.006 * s.speed; }
+                    if (p.life <= 0) Object.assign(p, spawn(false));
+                    const c = dots[k];
+                    if (c) {
+                        c.setAttribute('cx', p.x.toFixed(1)); c.setAttribute('cy', p.y.toFixed(1)); c.setAttribute('r', String(p.r));
+                        c.setAttribute('fill', p.life > 0.6 ? s.ramp[3] : s.ramp[2]); c.setAttribute('opacity', Math.max(0, p.life).toFixed(2));
+                    }
+                });
+            }
             raf = requestAnimationFrame(tick);
         };
         raf = requestAnimationFrame(tick);

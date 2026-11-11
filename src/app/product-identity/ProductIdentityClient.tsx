@@ -3,12 +3,15 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css';
-import SizeStudio from './sizes/SizeStudio';
 import ExtendedIdentityBoards from './ExtendedIdentityBoards';
 import AppBrandIdentitySection from './AppBrandIdentitySection';
+import WebsiteIdentitySection from './WebsiteIdentitySection';
 import SocialKit from './social/SocialKit';
 import PressKitSection from './PressKitSection';
 import PitchDeckClient from '../pitch-deck/PitchDeckClient';
+import WrappingPaperColorways from './WrappingPaperColorways';
+import WholeAnimalCutCharts from './WholeAnimalCutCharts';
+import ChicagoLockupsSection from './ChicagoLockupsSection';
 import {
     SCALLOP_OUTER_PATH,
     STAMP_COW_CORAL_PATH,
@@ -59,6 +62,11 @@ type PaperStock = {
     bg: string;
     ink: string;
     spec: string;
+    gradient?: string;
+    swatchGradient?: string;
+    patternSrc?: string;
+    svgDownload?: string;
+    pngDownload?: string;
 };
 
 type FlameSticker = {
@@ -67,7 +75,7 @@ type FlameSticker = {
     dept: string;
     src: string;
     iconSvg?: string;
-    storeGroup?: 'butcher' | 'depot';
+    storeGroup?: 'butcher' | 'depot' | 'counter';
     sampleCut: string;
     sampleWeight: string;
     storageNote: string;
@@ -141,6 +149,9 @@ const PAPER_STOCKS: PaperStock[] = [
         bg: '#c8a47e',
         ink: '#8b0a10',
         spec: '40# Unbleached Natural Kraft Roll · 24" × 16" Seamless Print Sheet (300 DPI / Vector SVG)',
+        patternSrc: '/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg?v=3',
+        svgDownload: '/assets/identity/hofherr-wrapping-paper-10-icons-24x16.svg',
+        pngDownload: '/assets/identity/hofherr-wrapping-paper-print-10-icons-7200x4800.png',
     },
     {
         id: 'peach',
@@ -148,6 +159,9 @@ const PAPER_STOCKS: PaperStock[] = [
         bg: '#d8a46f',
         ink: '#8b0a10',
         spec: '40# FDA Wet-Strength Treated Peach Paper · 18" & 24" Counter Rolls',
+        patternSrc: '/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg?v=3',
+        svgDownload: '/assets/identity/hofherr-wrapping-paper-10-icons-24x16.svg',
+        pngDownload: '/assets/identity/hofherr-wrapping-paper-print-10-icons-7200x4800.png',
     },
     {
         id: 'amber',
@@ -155,6 +169,9 @@ const PAPER_STOCKS: PaperStock[] = [
         bg: '#f59b1a',
         ink: '#8b0a10',
         spec: '35# Uncoated Dyed Butcher Wrap · Soy-Based Oxblood Crimson Ink',
+        patternSrc: '/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg?v=3',
+        svgDownload: '/assets/identity/hofherr-wrapping-paper-10-icons-24x16.svg',
+        pngDownload: '/assets/identity/hofherr-wrapping-paper-print-10-icons-7200x4800.png',
     },
     {
         id: 'cream',
@@ -162,6 +179,61 @@ const PAPER_STOCKS: PaperStock[] = [
         bg: '#f3ead8',
         ink: '#8b0a10',
         spec: '40# Natural Unbleached Deli Wrap · Grease-Resistant Inner Sizing',
+        patternSrc: '/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg?v=3',
+        svgDownload: '/assets/identity/hofherr-wrapping-paper-10-icons-24x16.svg',
+        pngDownload: '/assets/identity/hofherr-wrapping-paper-print-10-icons-7200x4800.png',
+    },
+    {
+        id: 'white',
+        name: 'Bleached Butcher White (#FFFFFF)',
+        bg: '#ffffff',
+        ink: '#8b0a10',
+        spec: '40# Poly-Coated Bleached White Freezer Paper · High-Contrast Deep Crimson Linocut',
+        patternSrc: '/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg?v=3',
+        svgDownload: '/assets/identity/hofherr-wrapping-paper-10-icons-24x16.svg',
+        pngDownload: '/assets/identity/hofherr-wrapping-paper-print-10-icons-7200x4800.png',
+    },
+    {
+        id: 'red-dark-crimson',
+        name: 'Red on Dark Crimson',
+        bg: '#3b0508',
+        ink: '#e0242b',
+        swatchGradient: 'radial-gradient(circle, #E0242B 0%, #E0242B 46%, #3B0508 52%, #3B0508 100%)',
+        spec: '40# Tone-on-Tone Oxblood Butcher Roll · Vibrant Scarlet Linocut & Amber Embers',
+        patternSrc: '/assets/identity/wrapping-paper/colorways/hofherr-wrap-02-red-on-dark-red.svg',
+        svgDownload: '/assets/identity/wrapping-paper/colorways/hofherr-wrap-02-red-on-dark-red.svg',
+        pngDownload: '/assets/identity/wrapping-paper/colorways/hofherr-wrap-02-red-on-dark-red.jpg',
+    },
+    {
+        id: 'depot-green-solid',
+        name: 'Depot Heritage Green (Solid #142A1E · Crisp White Ink)',
+        bg: '#142a1e',
+        ink: '#ffffff',
+        spec: '40# Wet-Strength Forest Kraft · Solid Flat Color · High-Contrast White Ink Linocut · Winnetka Depot Edition',
+        patternSrc: '/assets/identity/wrapping-paper/hofherr-wrap-pattern-white-ink.svg',
+        svgDownload: '/assets/identity/wrapping-paper/colorways/hofherr-wrap-12-depot-green-white-ink.svg',
+        pngDownload: '/assets/identity/wrapping-paper/colorways/hofherr-wrap-12-depot-green-white-ink.jpg',
+    },
+    {
+        id: 'depot-green-sheen',
+        name: 'Depot Heritage Green (Luminous Sheen · Crisp White Ink)',
+        bg: '#142a1e',
+        ink: '#ffffff',
+        gradient: 'linear-gradient(135deg, #ffffff14 0%, #0000 70%), radial-gradient(circle, #c4ae821f 0%, #0000 80%)',
+        spec: '40# Wet-Strength Forest Kraft · High-Contrast White Ink Linocut & Ambient Champagne Glow · Winnetka Depot Edition',
+        patternSrc: '/assets/identity/wrapping-paper/hofherr-wrap-pattern-white-ink.svg',
+        svgDownload: '/assets/identity/wrapping-paper/colorways/hofherr-wrap-12-depot-green-white-ink.svg',
+        pngDownload: '/assets/identity/wrapping-paper/colorways/hofherr-wrap-12-depot-green-white-ink.jpg',
+    },
+    {
+        id: 'depot-green-crimson',
+        name: 'Depot Heritage Green (Solid #142A1E · Crimson Ink)',
+        bg: '#142a1e',
+        ink: '#8b0a10',
+        spec: '40# Wet-Strength Forest Kraft · Heritage Tone-on-Tone Deep Crimson Linocut',
+        patternSrc: '/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg?v=3',
+        svgDownload: '/assets/identity/wrapping-paper/colorways/hofherr-wrap-11-depot-heritage-green.svg',
+        pngDownload: '/assets/identity/wrapping-paper/colorways/hofherr-wrap-11-depot-heritage-green.jpg',
     },
 ];
 
@@ -259,6 +331,204 @@ export const FLAME_STICKERS: FlameSticker[] = [
         sampleCut: 'Oak-Smoked Texas Brisket Catering Pack',
         sampleWeight: '6.50 LB',
         storageNote: 'Hot Insulated Delivery · North Shore & Chicagoland',
+    },
+    {
+        id: 'boneless',
+        name: 'Boneless Trim',
+        dept: 'Counter Spec · 100% Yield',
+        src: '/icons/boneless.svg?v=v16',
+        iconSvg: '/icons/boneless.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Hand-Trimmed Center-Cut Boneless Strip',
+        sampleWeight: '1.25 LB',
+        storageNote: 'Zero Bone Weight · Clean Trim Ready To Portion',
+    },
+    {
+        id: 'safetyseal',
+        name: 'Tamper-Evident Safety Seal',
+        dept: 'Inspected & Sealed Fresh · 100% Guaranteed',
+        src: '/icons/safetyseal.svg?v=v16',
+        iconSvg: '/icons/safetyseal.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Cold-Chain Vacuum Sealed Barrier Pack',
+        sampleWeight: 'VERIFIED',
+        storageNote: 'Do Not Accept If Seal Is Broken Or Damaged',
+    },
+    {
+        id: 'bonein',
+        name: 'Bone-In Primal',
+        dept: 'Marrow & Primal Flavor',
+        src: '/icons/bonein.svg?v=v16',
+        iconSvg: '/icons/bonein.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Dry-Aged Bone-In Cowboy Ribeye Steak',
+        sampleWeight: '2.15 LB',
+        storageNote: 'Sear Bone-Side First For Intense Crust',
+    },
+    {
+        id: 'thickcut',
+        name: 'Thick-Cut 2″',
+        dept: 'Heavyweight Gauge Cut',
+        src: '/icons/thickcut.svg?v=v16',
+        iconSvg: '/icons/thickcut.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: '2.00″ Thick Porterhouse Master Cut',
+        sampleWeight: '2.80 LB',
+        storageNote: 'Reverse Sear Required · 225°F Until 115°F Internal',
+    },
+    {
+        id: 'dryaged',
+        name: 'Dry-Aged Vault Reserve',
+        dept: '45-Day Cellar Reserve · Prime',
+        src: '/icons/dryaged.svg?v=v16',
+        iconSvg: '/icons/dryaged.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: '45-Day Salt Dry-Aged Bone-In Ribeye',
+        sampleWeight: '2.25 LB',
+        storageNote: 'Concentrated Beef Umami · High Direct Heat Sear',
+    },
+    {
+        id: 'smoked',
+        name: 'House-Smoked Pitmaster',
+        dept: 'Low & Slow 225°F · White Oak',
+        src: '/icons/smoked.svg?v=v16',
+        iconSvg: '/icons/smoked.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: '16-Hour Oak-Smoked Prime Brisket & Pastrami',
+        sampleWeight: '1.00 LB',
+        storageNote: 'Smoked In-House Daily · Reheat Gently In Foil',
+    },
+    {
+        id: 'groundfresh',
+        name: 'Ground Fresh Today',
+        dept: 'In-House Daily · 80/20 Blend',
+        src: '/icons/groundfresh.svg?v=v16',
+        iconSvg: '/icons/groundfresh.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Double-Coarse Ground Chuck & Short Rib Blend',
+        sampleWeight: '1.50 LB',
+        storageNote: 'Ground Twice Daily · Never Pre-Packaged Or Frozen',
+    },
+    {
+        id: 'grilltonight',
+        name: 'Grill Tonight / Markdown',
+        dept: 'Peak Bloom · Cook In 24h',
+        src: '/icons/grilltonight.svg?v=v16',
+        iconSvg: '/icons/grilltonight.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Prime Dry-Aged Ribeye · Peak Tenderness Bloom',
+        sampleWeight: 'MARKDOWN 30%',
+        storageNote: 'Butcher Special · Cook Within 24h Or Freeze',
+    },
+    {
+        id: 'grassfed',
+        name: '100% Grass-Fed & Finished',
+        dept: 'Midwest Pasture · Zero Grain',
+        src: '/icons/grassfed.svg?v=v16',
+        iconSvg: '/icons/grassfed.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: '100% Grass-Fed Pasture Ribeye Steak',
+        sampleWeight: '1.35 LB',
+        storageNote: '100% Grass-Finished · Lower Cooking Temp By 25°F',
+    },
+    {
+        id: 'seasoned',
+        name: 'Pre-Seasoned & Ready to Grill',
+        dept: 'House Dry Rub · Ready To Cook',
+        src: '/icons/seasoned.svg?v=v16',
+        iconSvg: '/icons/seasoned.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Rosemary & Garlic Crusted Lamb Chops',
+        sampleWeight: '1.75 LB',
+        storageNote: 'Pre-Seasoned With House Herb Rub · Do Not Salt',
+    },
+    {
+        id: 'ovenready',
+        name: 'Oven-Ready & Tied Roast',
+        dept: 'Seasoned & Tied · Roast At 325°F',
+        src: '/icons/ovenready.svg?v=v16',
+        iconSvg: '/icons/ovenready.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Stuffed Heritage Berkshire Pork Crown Roast',
+        sampleWeight: '4.50 LB',
+        storageNote: 'Pre-Tied In Butcher Twine · Roast Directly In Pan',
+    },
+    {
+        id: 'onsale',
+        name: 'On Sale / Special',
+        dept: 'Daily Feature · Counter Deal',
+        src: '/icons/onsale.svg?v=v16',
+        iconSvg: '/icons/onsale.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Butcher’s Morning Block Surplus Feature',
+        sampleWeight: 'MARKDOWN',
+        storageNote: 'Featured Special Pricing At Counter Today',
+    },
+    {
+        id: 'suage',
+        name: 'Sausage',
+        dept: 'All Housemade Links & Brats',
+        src: '/icons/suage.svg',
+        iconSvg: '/icons/suage.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Traditional Sweet Italian Pork Sausage Links',
+        sampleWeight: '1.20 LB',
+        storageNote: 'Made In-House Daily · Natural Hog Casings',
+    },
+    {
+        id: 'hamcheese',
+        name: 'Deli Meat & Cheese',
+        dept: 'House-Roasted & Cut To Order',
+        src: '/icons/hamcheese.svg',
+        iconSvg: '/icons/hamcheese.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'In-House Herb-Crusted Roasted Turkey Breast',
+        sampleWeight: '0.75 LB',
+        storageNote: 'Sliced Fresh To Order On Northfield Berkel Slicer',
+    },
+    {
+        id: 'prepared',
+        name: 'Prepared Foods',
+        dept: 'Scratch Kitchen · Heat & Serve',
+        src: '/icons/prepared.svg',
+        iconSvg: '/icons/prepared.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Classic Butcher Shepherd’s Pie with Prime Beef',
+        sampleWeight: '2.00 LB',
+        storageNote: 'Fully Cooked In House · 375°F For 25 Min To Reheat',
+    },
+    {
+        id: 'veal',
+        name: 'Veal',
+        dept: 'Midwest Milk-Fed Chops & Cutlets',
+        src: '/icons/veal.svg',
+        iconSvg: '/icons/veal.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Center-Cut Milk-Fed Veal Rib Chop',
+        sampleWeight: '1.10 LB',
+        storageNote: 'Humanely Raised Midwest Veal · Quick Pan Sear',
+    },
+    {
+        id: 'turkey',
+        name: 'Turkey',
+        dept: 'Ferndale Market All-Natural',
+        src: '/icons/turkey.svg',
+        iconSvg: '/icons/turkey.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Free-Range Bone-In Turkey Breast Roast',
+        sampleWeight: '4.80 LB',
+        storageNote: 'Ferndale Market Minnesota · Antibiotic Free',
+    },
+    {
+        id: 'game',
+        name: 'Game',
+        dept: 'Wild & Exotic Proteins',
+        src: '/icons/game.svg',
+        iconSvg: '/icons/game.svg',
+        storeGroup: 'butcher',
+        sampleCut: 'Texas Wild Boar Sausage & Venison Medallions',
+        sampleWeight: '1.50 LB',
+        storageNote: 'Specialty Harvest · High Protein, Lean Wild Game',
     },
 ];
 
@@ -434,8 +704,8 @@ export const ALL_DEPARTMENT_STICKERS: FlameSticker[] = [
         id: 'seafood',
         name: 'Shellfish & Crab',
         dept: 'Shrimp, Crab & Maine Lobster',
-        src: '/assets/identity/stickers/sticker-seafood-lobster.svg',
-        iconSvg: '/assets/identity/stickers/sticker-seafood-lobster.svg',
+        src: '/icons/seafood.svg',
+        iconSvg: '/icons/seafood.svg',
         storeGroup: 'depot',
         sampleCut: 'Wild Maine Lobster Tails & Gulf Shrimp',
         sampleWeight: '1.50 LB',
@@ -551,6 +821,138 @@ export const ALL_DEPARTMENT_STICKERS: FlameSticker[] = [
         sampleWeight: '2.50 LB',
         storageNote: 'Seasonal Event Feature · Smoked Over White Oak & Cherry',
     },
+    {
+        id: 'boneless',
+        name: 'Boneless Trim',
+        dept: 'Counter Spec · 100% Yield',
+        src: '/icons/boneless.svg?v=v16',
+        iconSvg: '/icons/boneless.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Hand-Trimmed Center-Cut Boneless Strip',
+        sampleWeight: '1.25 LB',
+        storageNote: 'Zero Bone Weight · Clean Trim Ready To Portion',
+    },
+    {
+        id: 'onsale',
+        name: 'On Sale / Special',
+        dept: 'Daily Feature · Counter Deal',
+        src: '/icons/onsale.svg?v=v16',
+        iconSvg: '/icons/onsale.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Butcher’s Morning Block Surplus Feature',
+        sampleWeight: 'MARKDOWN',
+        storageNote: 'Featured Special Pricing At Counter Today',
+    },
+    {
+        id: 'bonein',
+        name: 'Bone-In Primal',
+        dept: 'Marrow & Primal Flavor',
+        src: '/icons/bonein.svg?v=v16',
+        iconSvg: '/icons/bonein.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Dry-Aged Bone-In Cowboy Ribeye Steak',
+        sampleWeight: '2.15 LB',
+        storageNote: 'Sear Bone-Side First For Intense Crust',
+    },
+    {
+        id: 'thickcut',
+        name: 'Thick-Cut 2″',
+        dept: 'Heavyweight Gauge Cut',
+        src: '/icons/thickcut.svg?v=v16',
+        iconSvg: '/icons/thickcut.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: '2.00″ Thick Porterhouse Master Cut',
+        sampleWeight: '2.80 LB',
+        storageNote: 'Reverse Sear Required · 225°F Until 115°F Internal',
+    },
+    {
+        id: 'dryaged',
+        name: 'Dry-Aged Vault Reserve',
+        dept: '45-Day Cellar Reserve · Prime',
+        src: '/icons/dryaged.svg?v=v16',
+        iconSvg: '/icons/dryaged.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: '45-Day Salt Dry-Aged Bone-In Ribeye',
+        sampleWeight: '2.25 LB',
+        storageNote: 'Concentrated Beef Umami · High Direct Heat Sear',
+    },
+    {
+        id: 'smoked',
+        name: 'House-Smoked Pitmaster',
+        dept: 'Low & Slow 225°F · White Oak',
+        src: '/icons/smoked.svg?v=v16',
+        iconSvg: '/icons/smoked.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: '16-Hour Oak-Smoked Prime Brisket & Pastrami',
+        sampleWeight: '1.00 LB',
+        storageNote: 'Smoked In-House Daily · Reheat Gently In Foil',
+    },
+    {
+        id: 'groundfresh',
+        name: 'Ground Fresh Today',
+        dept: 'In-House Daily · 80/20 Blend',
+        src: '/icons/groundfresh.svg?v=v16',
+        iconSvg: '/icons/groundfresh.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Double-Coarse Ground Chuck & Short Rib Blend',
+        sampleWeight: '1.50 LB',
+        storageNote: 'Ground Twice Daily · Never Pre-Packaged Or Frozen',
+    },
+    {
+        id: 'grilltonight',
+        name: 'Grill Tonight / Markdown',
+        dept: 'Peak Bloom · Cook In 24h',
+        src: '/icons/grilltonight.svg?v=v16',
+        iconSvg: '/icons/grilltonight.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Prime Dry-Aged Ribeye · Peak Tenderness Bloom',
+        sampleWeight: 'MARKDOWN 30%',
+        storageNote: 'Butcher Special · Cook Within 24h Or Freeze',
+    },
+    {
+        id: 'grassfed',
+        name: '100% Grass-Fed & Finished',
+        dept: 'Midwest Pasture · Zero Grain',
+        src: '/icons/grassfed.svg?v=v16',
+        iconSvg: '/icons/grassfed.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: '100% Grass-Fed Pasture Ribeye Steak',
+        sampleWeight: '1.35 LB',
+        storageNote: '100% Grass-Finished · Lower Cooking Temp By 25°F',
+    },
+    {
+        id: 'seasoned',
+        name: 'Pre-Seasoned & Ready to Grill',
+        dept: 'House Dry Rub · Ready To Cook',
+        src: '/icons/seasoned.svg?v=v16',
+        iconSvg: '/icons/seasoned.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Rosemary & Garlic Crusted Lamb Chops',
+        sampleWeight: '1.75 LB',
+        storageNote: 'Pre-Seasoned With House Herb Rub · Do Not Salt',
+    },
+    {
+        id: 'ovenready',
+        name: 'Oven-Ready & Tied Roast',
+        dept: 'Seasoned & Tied · Roast At 325°F',
+        src: '/icons/ovenready.svg?v=v16',
+        iconSvg: '/icons/ovenready.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Stuffed Heritage Berkshire Pork Crown Roast',
+        sampleWeight: '4.50 LB',
+        storageNote: 'Pre-Tied In Butcher Twine · Roast Directly In Pan',
+    },
+    {
+        id: 'safetyseal',
+        name: 'Tamper-Evident Safety Seal',
+        dept: 'Inspected & Sealed Fresh · 100% Guaranteed',
+        src: '/icons/safetyseal.svg?v=v16',
+        iconSvg: '/icons/safetyseal.svg?v=v16',
+        storeGroup: 'counter',
+        sampleCut: 'Cold-Chain Vacuum Sealed Barrier Pack',
+        sampleWeight: 'VERIFIED',
+        storageNote: 'Do Not Accept If Seal Is Broken Or Damaged',
+    },
 ];
 
 export const STAMP_PRESETS: StampPreset[] = [
@@ -564,6 +966,50 @@ export const STAMP_PRESETS: StampPreset[] = [
         flankTop: 'EST.',
         flankBottom: '2018',
         defaultIconId: 'cow',
+    },
+    {
+        id: 'stockyards',
+        name: 'Stockyards to North Shore Heritage Stamp',
+        shape: 'rect',
+        topText: 'BORN IN THE STOCKYARDS',
+        centerTitle: '• CUT FOR NORTH SHORE •',
+        bottomText: 'HOFHERR MEAT CO. · NORTHFIELD & WINNETKA',
+        flankTop: 'EST.',
+        flankBottom: '1903',
+        defaultIconId: 'cow',
+    },
+    {
+        id: 'chicago-1903',
+        name: 'Chicago Butchery · Est. 1903 Rocker Die',
+        shape: 'rect',
+        topText: 'CHICAGO BUTCHERY',
+        centerTitle: '• EST. 1903 •',
+        bottomText: 'HOFHERR MEAT CO. · 300 HAPP RD',
+        flankTop: '19',
+        flankBottom: '03',
+        defaultIconId: 'pig',
+    },
+    {
+        id: 'chicago-motto',
+        name: 'Chicago Butchery · No Compromise Seal',
+        shape: 'rect',
+        topText: 'CHICAGO BUTCHERY',
+        centerTitle: '• NO COMPROMISE •',
+        bottomText: 'HOFHERR MEAT CO. · CRAFT BUTCHER',
+        flankTop: 'CRAFT',
+        flankBottom: 'MEATS',
+        defaultIconId: 'cow',
+    },
+    {
+        id: 'midwest-raised',
+        name: 'Chicago Made · Midwest Raised',
+        shape: 'rect',
+        topText: 'CHICAGO MADE',
+        centerTitle: '• MIDWEST RAISED •',
+        bottomText: 'HOFHERR MEAT CO. · PASTURE TO BLOCK',
+        flankTop: 'LOCAL',
+        flankBottom: 'FARMS',
+        defaultIconId: 'chicken',
     },
     {
         id: 'prime',
@@ -603,6 +1049,7 @@ export const STAMP_PRESETS: StampPreset[] = [
 const INK_PADS = [
     { id: 'crimson', label: 'Oxblood Crimson (#8B0A10)', hex: '#8b0a10' },
     { id: 'red', label: 'Hofherr Red (#CC0E1D)', hex: '#cc0e1d' },
+    { id: 'depot', label: 'Depot Heritage Green (#142A1E)', hex: '#142a1e' },
     { id: 'charcoal', label: 'Smokehouse Charcoal (#1C1614)', hex: '#1c1614' },
 ];
 
@@ -610,7 +1057,7 @@ export default function ProductIdentityClient() {
     const [activePaper, setActivePaper] = useState<PaperStock>(PAPER_STOCKS[0]);
     const [showTwine, setShowTwine] = useState<boolean>(false);
     const [selectedSticker, setSelectedSticker] = useState<FlameSticker>(ALL_DEPARTMENT_STICKERS[0]);
-    const [stickerGroupFilter, setStickerGroupFilter] = useState<'all' | 'butcher' | 'depot'>('all');
+    const [stickerGroupFilter, setStickerGroupFilter] = useState<'all' | 'butcher' | 'depot' | 'counter'>('all');
     const [stickerShape, setStickerShape] = useState<'circle' | 'rounded'>('circle');
     const [deliStore, setDeliStore] = useState<'butcher' | 'depot'>('butcher');
     const [activeStamp, setActiveStamp] = useState<StampPreset>(STAMP_PRESETS[0]);
@@ -657,18 +1104,14 @@ export default function ProductIdentityClient() {
                             <span className={styles.heroNavIndex}>⬇</span>
                             Press &amp; Media Download Kit
                         </Link>
-                        <Link href="/product-identity/sizes" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
-                            <span className={styles.heroNavIndex}>📐</span>
-                            Print Sizes Editor
-                        </Link>
                         <Link href="/product-identity/print" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>🖨</span>
                             1:1 True-Size Print Kit (PDF)
                         </Link>
-                        <Link href="/product-identity#cuts" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <a href="#cut-charts" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>✦</span>
-                            Know Your Cuts &amp; Social Studio
-                        </Link>
+                            Primal Cut Charts &amp; Animal Anatomies
+                        </a>
                         <Link href="/admin/social" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>⚙</span>
                             Admin Auto-Post &amp; Verification
@@ -688,6 +1131,14 @@ export default function ProductIdentityClient() {
                         <a href="#packaging-suite" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>04</span>
                             Complete Counter Suite
+                        </a>
+                        <a href="#cut-charts" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                            <span className={styles.heroNavIndex}>04B</span>
+                            Whole-Animal Cut Charts
+                        </a>
+                        <a href="#chicago-lockups" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                            <span className={styles.heroNavIndex}>04C</span>
+                            Chicago Lockups &amp; Taglines
                         </a>
                         <Link href="/product-identity#retail-packaging" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>05</span>
@@ -713,6 +1164,10 @@ export default function ProductIdentityClient() {
                             <span className={styles.heroNavIndex}>09B</span>
                             Instagram (@hofherrmeatco) &amp; Apps
                         </Link>
+                        <Link href="/product-identity#website-assets" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                            <span className={styles.heroNavIndex}>09C</span>
+                            Website &amp; Digital Production Kit
+                        </Link>
                         <Link href="/product-identity#brand-standards" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>10</span>
                             Brand Standards
@@ -729,12 +1184,13 @@ export default function ProductIdentityClient() {
                             <span className={styles.heroNavIndex}>13</span>
                             Review Audit &amp; Growth Pitch Deck
                         </a>
+                        <a href="#vector-library" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                            <span className={styles.heroNavIndex}>14</span>
+                            Master Vector Library (.SVG)
+                        </a>
                     </nav>
                 </div>
             </header>
-
-            {/* ── Print Sizes Editor: edit, compare and print every printable item at any size ── */}
-            <SizeStudio embedded />
 
             {/* ── 01 / Butcher Wrapping Paper System ── */}
             <section id="wrapping-paper" aria-labelledby="wrapping-paper-heading" className="section">
@@ -778,7 +1234,12 @@ export default function ProductIdentityClient() {
                                             type="button"
                                             onClick={() => setActivePaper(stock)}
                                             className={`${styles.pillBtn} ${activePaper.id === stock.id ? styles.pillBtnActive : ''}`}
-                                            style={{ '--swatch-bg': stock.bg } as React.CSSProperties}
+                                            style={
+                                                {
+                                                    '--swatch-bg': stock.bg,
+                                                    '--swatch-gradient': stock.swatchGradient || stock.gradient || 'none',
+                                                } as React.CSSProperties
+                                            }
                                         >
                                             <span className={styles.swatchDot} />
                                             {stock.name}
@@ -813,8 +1274,8 @@ export default function ProductIdentityClient() {
                                         🖨 Print 1:1 Swatch (7.50&quot;×4.75&quot;) &amp; Freezer Plate (7.50&quot;×4.40&quot;)
                                     </Link>
                                     <a
-                                        href="/assets/identity/hofherr-wrapping-paper-pattern-10-icons.svg"
-                                        download="hofherr-wrapping-paper-pattern.svg"
+                                        href={activePaper.svgDownload || '/assets/identity/hofherr-wrapping-paper-pattern-10-icons.svg'}
+                                        download={`hofherr-wrapping-paper-${activePaper.id}.svg`}
                                         className={styles.downloadBtn}
                                     >
                                         ⬇ 24.00&quot;×16.00&quot; Vector Sheet (.SVG)
@@ -834,8 +1295,8 @@ export default function ProductIdentityClient() {
                                         ⬇ 5.00&quot;×6.00&quot; Repeat Tile (.SVG)
                                     </a>
                                     <a
-                                        href="/assets/identity/hofherr-wrapping-paper-print-10-icons-7200x4800.png"
-                                        download="hofherr-wrapping-paper-print-7200x4800.png"
+                                        href={activePaper.pngDownload || '/assets/identity/hofherr-wrapping-paper-print-10-icons-7200x4800.png'}
+                                        download={`hofherr-wrapping-paper-${activePaper.id}.png`}
                                         className={styles.downloadBtn}
                                     >
                                         ⬇ 24.00&quot;×16.00&quot; @ 300-DPI Print (.PNG)
@@ -850,11 +1311,12 @@ export default function ProductIdentityClient() {
                                     {
                                         '--paper-bg': activePaper.bg,
                                         '--paper-ink': activePaper.ink,
+                                        '--paper-gradient': activePaper.gradient || 'none',
                                     } as React.CSSProperties
                                 }
                             >
                                 <img
-                                    src="/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg?v=3"
+                                    src={activePaper.patternSrc || '/assets/identity/hofherr-wrapping-paper-ink-only-10-icons.svg?v=3'}
                                     alt="Hofherr Meat Co. true vector step-and-repeat butcher wrapping paper pattern"
                                     className={styles.paperVectorSheet}
                                 />
@@ -875,6 +1337,8 @@ export default function ProductIdentityClient() {
                             </div>
                         </div>
                     </div>
+
+                    <WrappingPaperColorways />
                 </div>
             </section>
 
@@ -888,9 +1352,10 @@ export default function ProductIdentityClient() {
                         <p className={styles.sectionDesc}>
                             Every department across The Butcher Shop in Northfield (all 14 online-ordering sidebar medallions:
                             Beef, Pork, Chicken, Sausage, Deli Meat &amp; Cheese, Prepared Foods, Lamb, Seafood, Veal, Turkey,
-                            Duck, Game, Soups &amp; Stocks, and Catering) and The Depot in Winnetka has its own 100% vector
-                            woodcut flame emblem (<code>.SVG</code>). Click any medallion to preview its counter scale label or
-                            download the standalone vector <code>.SVG</code> directly.
+                            Duck, Game, Soups &amp; Stocks, and Catering), The Depot in Winnetka (12 specialty icons), and our
+                            12 official butcher counter packaging &amp; spec medallions has its own 100% vector woodcut flame
+                            emblem (<code>.SVG</code>). Click any medallion to preview its counter scale label or download the
+                            standalone vector <code>.SVG</code> directly.
                         </p>
                     </div>
 
@@ -903,7 +1368,7 @@ export default function ProductIdentityClient() {
                             onClick={() => setStickerGroupFilter('all')}
                             className={`${styles.pillBtn} ${stickerGroupFilter === 'all' ? styles.pillBtnActive : ''}`}
                         >
-                            All 26 Official Department Icons (.SVG)
+                            All 38 Official Department &amp; Counter Icons (.SVG)
                         </button>
                         <button
                             type="button"
@@ -922,6 +1387,15 @@ export default function ProductIdentityClient() {
                             className={`${styles.pillBtn} ${stickerGroupFilter === 'depot' ? styles.pillBtnActive : ''}`}
                         >
                             Winnetka Depot &amp; Specialty · 12 Icons (.SVG)
+                        </button>
+                        <button
+                            type="button"
+                            role="tab"
+                            aria-selected={stickerGroupFilter === 'counter'}
+                            onClick={() => setStickerGroupFilter('counter')}
+                            className={`${styles.pillBtn} ${stickerGroupFilter === 'counter' ? styles.pillBtnActive : ''}`}
+                        >
+                            Counter &amp; Packaging · 12 Flame Seals (.SVG)
                         </button>
                     </div>
 
@@ -953,7 +1427,7 @@ export default function ProductIdentityClient() {
                                     <span className={styles.stickerDept}>{sticker.dept} · Ø 3.00&quot;</span>
                                 </button>
                                 <a
-                                    href={sticker.src}
+                                    href={sticker.src.split('?')[0]}
                                     download={`hofherr-icon-${sticker.id}.svg`}
                                     className={styles.stickerSvgDlBtn}
                                 >
@@ -968,13 +1442,13 @@ export default function ProductIdentityClient() {
                             <div className={styles.studioImageWrap}>
                                 <img
                                     src="/assets/identity/stickers/butcher-deli-stickers-sheet-10-icons.jpg"
-                                    alt="Hofherr Meat Co. 10 true-SVG die-cut flame-linocut stickers, patterned butcher parcel with circular Flame-Cow seal, and tamper-evident deli scale labels on dark slate"
+                                    alt="Hofherr Meat Co. true-SVG die-cut flame-linocut stickers, patterned butcher parcel with circular Flame-Cow seal, and tamper-evident deli scale labels on dark slate"
                                     className={styles.studioImage}
                                 />
                             </div>
                             <div className={styles.studioMeta}>
                                 <span className={styles.studioLabel}>Board 02 · Matte Vinyl Die-Cuts (Ø 3.00&quot;) &amp; Scale Labels (4.00&quot;×3.00&quot;)</span>
-                                <span className={styles.studioCaption}>Freezer-Grade Adhesive · Kiss-Cut &amp; Roll Format</span>
+                                <span className={styles.studioCaption}>Freezer-Grade Adhesive · Kiss-Cut &amp; Roll Format · All 38 Department &amp; Counter Packaging Seals</span>
                             </div>
                         </div>
 
@@ -1459,11 +1933,20 @@ export default function ProductIdentityClient() {
                 </div>
             </section>
 
+            {/* ── 04B / Whole-Animal Primal Cut Charts & Anatomies (#cut-charts, #cuts) ── */}
+            <WholeAnimalCutCharts />
+
+            {/* ── 04C / Chicago Butchery Tagline System & Short Lockups (#chicago-lockups) ── */}
+            <ChicagoLockupsSection />
+
             {/* ── 05–10 / Extended identity system (images via Gemini Nano Banana) ── */}
             <ExtendedIdentityBoards />
 
             {/* ── 09B / Instagram (@hofherrmeatco) & Multi-App Brand Identity System (#app-identity) ── */}
             <AppBrandIdentitySection />
+
+            {/* ── 09C / Website Media & Digital Production Kit (#website-assets) ── */}
+            <WebsiteIdentitySection />
 
             {/* ── 11 / Merged Social Media Kit, Cut Charts (#cuts), Print & Auto-Post Verification Studio ── */}
             <SocialKit embedded />

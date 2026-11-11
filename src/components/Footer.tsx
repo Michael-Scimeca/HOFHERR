@@ -29,7 +29,7 @@ export default function Footer() {
                             src="/assets/logo.svg"
                             alt={s.shopName}
                             height={64}
-                            width={64}
+                            width={134}
                             className={styles.logoImg}
                         />
                     </div>
@@ -54,7 +54,7 @@ export default function Footer() {
                         <Link href="/catering">Overview</Link>
                         <Link href="/bbq">BBQ Catering</Link>
                         <Link href="/catering#pricing">Pricing</Link>
-                        <Link href="mailto:catering@hofherrmeatco.com?subject=Catering%20Quote&body=Name:%20%0AEmail:%20%0APhone:%20%0AAddress:%20%0ADate%20%26%20Time:%20[Enter%20date%20and%20time]" className={styles.link}>Get a Quote</Link>
+                        <Link href="/catering#inquire" className={styles.link}>Get a Quote</Link>
                     </div>
                     <div className={styles.col}>
                         <div className={styles.colTitle}>Discover</div>

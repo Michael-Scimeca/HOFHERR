@@ -47,6 +47,11 @@
     border-color: var(--gold-light);
 }
 
+.switchCheckedBlue {
+    background: #2563eb;
+    border-color: #60a5fa;
+}
+
 .thumb {
     position: absolute;
     top: 2px;

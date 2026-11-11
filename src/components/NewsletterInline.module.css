@@ -30,6 +30,22 @@
     border-color: var(--red);
 }
 
+.inputError {
+    border-color: var(--red) !important;
+    box-shadow: 0 0 0 1px var(--red) !important;
+}
+
+.crimsonError {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #e63946;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin: -8px 0 4px;
+    text-align: left;
+}
+
 .submit {
     width: 100%;
     justify-content: center;

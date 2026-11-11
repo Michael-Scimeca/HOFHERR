@@ -34,8 +34,8 @@ export type SheetId =
 
 const SHEETS: { id: SheetId; title: string; note: string }[] = [
     { id: 'master-suite', title: 'Master Emblem, App Icon, Stamp & 10-Dept Vector Suite (.SVG)', note: '100% pure vector (.SVG) · print or plot at any size from 16px to 10-ft signage without pixelation' },
-    { id: 'stickers', title: 'Die-Cut Department Stickers (3.00"×3.00")', note: 'Ø 3.00" (3.00" W × 3.00" H) circles · all 10 departments · 2 pages' },
-    { id: 'scale-labels', title: 'Counter Deli Scale Labels (4.00"×3.00")', note: '4.00" W × 3.00" H · all 10 departments · 6 per page' },
+    { id: 'stickers', title: 'Die-Cut Department & Counter Stickers (3.00"×3.00")', note: 'Ø 3.00" (3.00" W × 3.00" H) circles · all official department & counter packaging seals' },
+    { id: 'scale-labels', title: 'Counter Deli Scale Labels (4.00"×3.00")', note: '4.00" W × 3.00" H · all official department & counter cuts · 6 per page' },
     { id: 'tray-labels', title: 'Case-Ready Tray Labels (2.50"×3.50")', note: '2.50" W × 3.50" H thermal overwrap labels · 6 per page' },
     { id: 'vac-labels', title: 'Vacuum-Pack Front & Back (4.00"×3.00" & 4.00"×4.00")', note: 'Front 4.00" W × 3.00" H · Back 4.00" W × 4.00" H with USDA Safe Handling & Nutrition' },
     { id: 'jar-labels', title: 'Broth, Tallow, Rub & Sauce Labels (5.00"×2.125")', note: '5.00" W × 2.125" H wraparound labels · 4 per page' },
@@ -238,11 +238,15 @@ function MasterSuiteSheet() {
 
 /* 1. Die-Cut Department Stickers (3.00" × 3.00" circles, all 10 departments across 2 pages) */
 function StickersSheet() {
-    const pages = [FLAME_STICKERS.slice(0, 6), FLAME_STICKERS.slice(6, 10)];
+    const pageSize = 6;
+    const pages: (typeof FLAME_STICKERS)[] = [];
+    for (let i = 0; i < FLAME_STICKERS.length; i += pageSize) {
+        pages.push(FLAME_STICKERS.slice(i, i + pageSize));
+    }
     return (
         <>
-            {pages.map((group, i) => (
-                <div key={`sticker-page-${group[0].id}`} className={`${s.page} ${s.stickerGrid}`}>
+            {pages.map((group, pageIndex) => (
+                <div key={`sticker-page-${group[0].id}-${group[group.length - 1].id}`} className={`${s.page} ${s.stickerGrid}`}>
                     {group.map((st) => (
                         <div key={st.id} className={s.stickerCut}>
                             <img src={st.src} alt={st.name} className={s.stickerArt} />
@@ -250,7 +254,7 @@ function StickersSheet() {
                         </div>
                     ))}
                     <PageFoot
-                        label={`Die-Cut Stickers ${i + 1}/${pages.length}`}
+                        label={`Die-Cut Stickers ${pageIndex + 1}/${pages.length}`}
                         itemSize='Ø 3.00" CIRCLE (3.00" W × 3.00" H)'
                     />
                 </div>
@@ -259,13 +263,17 @@ function StickersSheet() {
     );
 }
 
-/* 2. Counter Deli Scale Labels (4.00" × 3.00", all 10 departments across 2 pages) */
+/* 2. Counter Deli Scale Labels (4.00" × 3.00", all departments and packaging seals) */
 function ScaleLabelsSheet() {
-    const pages = [FLAME_STICKERS.slice(0, 6), FLAME_STICKERS.slice(6, 10)];
+    const pageSize = 6;
+    const pages: (typeof FLAME_STICKERS)[] = [];
+    for (let i = 0; i < FLAME_STICKERS.length; i += pageSize) {
+        pages.push(FLAME_STICKERS.slice(i, i + pageSize));
+    }
     return (
         <>
-            {pages.map((group, i) => (
-                <div key={`scale-page-${group[0].id}`} className={`${s.page} ${s.labelGrid}`}>
+            {pages.map((group, pageIndex) => (
+                <div key={`scale-page-${group[0].id}-${group[group.length - 1].id}`} className={`${s.page} ${s.labelGrid}`}>
                     {group.map((st) => (
                         <div key={st.id} className={`${s.cut} ${s.scaleLabel}`}>
                             <div className={s.scaleHead}>
@@ -291,7 +299,7 @@ function ScaleLabelsSheet() {
                         </div>
                     ))}
                     <PageFoot
-                        label={`Deli Scale Labels ${i + 1}/${pages.length} (6-Up)`}
+                        label={`Deli Scale Labels ${pageIndex + 1}/${pages.length} (6-Up)`}
                         itemSize='4.00" W × 3.00" H EACH'
                     />
                 </div>

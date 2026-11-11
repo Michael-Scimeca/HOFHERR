@@ -287,6 +287,28 @@
     border-color: var(--red);
 }
 
+.field input.inputError {
+    border-color: var(--red);
+    box-shadow: 0 0 0 1px var(--red);
+}
+
+.crimsonError {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #e63946;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 4px;
+    animation: errorShake 0.3s ease-out;
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+}
+
 .field input::placeholder {
     color: var(--fg-muted);
     opacity: 0.5;

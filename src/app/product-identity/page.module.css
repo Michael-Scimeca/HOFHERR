@@ -261,7 +261,8 @@
     width: 16px;
     height: 16px;
     border-radius: 999px;
-    background: var(--swatch-bg, var(--gold));
+    background-color: var(--swatch-bg, var(--gold));
+    background-image: var(--swatch-gradient, none);
     border: 1px solid rgba(255, 255, 255, 0.35);
     flex-shrink: 0;
 }
@@ -272,7 +273,8 @@
     border-radius: var(--radius-lg);
     overflow: hidden;
     border: 1px solid var(--border);
-    background: var(--paper-bg, #c8a47e);
+    background-color: var(--paper-bg, #c8a47e);
+    background-image: var(--paper-gradient, none);
     aspect-ratio: 3 / 2;
     width: 100%;
     box-shadow: var(--shadow-lg);

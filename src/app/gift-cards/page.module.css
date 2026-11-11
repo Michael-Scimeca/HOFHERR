@@ -17,11 +17,17 @@
     min-width: 300px;
 }
 
-.imageWrapper {
+.imageSticky {
     position: sticky;
     top: 88px;
     margin-top: 0;
     height: calc(100vh - 88px);
+    width: 100%;
+}
+
+.imageWrapper {
+    position: relative;
+    height: 100%;
     width: 100%;
     display: flex;
     align-items: flex-end;
@@ -269,9 +275,9 @@
 }
 
 .cr80CardImg {
-    width: 100%;
-    max-width: 180px;
-    height: auto;
+    display: block;
+    width: 180px;
+    height: 114px;
     border-radius: var(--radius-sm);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.65);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -432,9 +438,12 @@
 }
 
 @media (max-width: 900px) {
+    .imageSticky {
+        position: static;
+        height: auto;
+    }
+
     .imageWrapper {
-        position: relative;
-        top: 0;
         height: 60vh;
         min-height: 400px;
     }

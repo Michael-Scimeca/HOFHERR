@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import HoverVideo from '@/components/HoverVideo';
 import Link from 'next/link';
 import { draftMode } from 'next/headers';
@@ -200,9 +201,11 @@ export default async function OurStoryPage() {
                             <div className="container">
                                 <div className={styles.seanCard}>
                                     <div className={styles.seanImagePart}>
-                                        <img
+                                        <Image
                                             src="/team/sean.jpg"
                                             alt="Sean Hofherr"
+                                            fill
+                                            sizes="(max-width: 900px) 100vw, 50vw"
                                             className={styles.avatarImg}
                                             data-parallax="inset"
                                         />
@@ -254,10 +257,10 @@ export default async function OurStoryPage() {
                                     <div className="container">
                                         <h2 id="visit-cta-heading">Come see what a real butcher shop looks like.</h2>
                                         <p>
-                                            <img src="/icons/butcher-pin-sm.svg" alt="" aria-hidden="true" className={styles.ctaPinIcon} />
+                                            <Image src="/icons/butcher-pin-sm.svg" alt="" aria-hidden="true" width={16} height={16} className={styles.ctaPinIcon} />
                                             <span>The Butcher Shop — 300 Happ Rd, Northfield</span>
                                             <span className={styles.ctaDividerDot}>·</span>
-                                            <img src="/icons/depot-pin-sm.svg" alt="" aria-hidden="true" className={styles.ctaPinIcon} />
+                                            <Image src="/icons/depot-pin-sm.svg" alt="" aria-hidden="true" width={16} height={16} className={styles.ctaPinIcon} />
                                             <span>The Depot — 754 Elm St, Winnetka</span>
                                         </p>
                                         <div className={styles.ctaBtns}>

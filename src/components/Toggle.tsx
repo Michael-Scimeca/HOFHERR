@@ -10,7 +10,7 @@ export interface ToggleProps {
     hideLabel?: boolean;
     'aria-labelledby'?: string;
     size?: 'sm' | 'md';
-    variant?: 'red' | 'gold';
+    variant?: 'red' | 'gold' | 'blue';
     disabled?: boolean;
     title?: string;
     infoSnippet?: string;
@@ -32,7 +32,9 @@ export function Toggle({
     const checkedClass = checked
         ? variant === 'gold'
             ? styles.switchCheckedGold
-            : styles.switchChecked
+            : variant === 'blue'
+                ? styles.switchCheckedBlue
+                : styles.switchChecked
         : '';
 
     return (

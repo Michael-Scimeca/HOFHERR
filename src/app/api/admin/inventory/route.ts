@@ -32,7 +32,8 @@ export async function GET() {
                     adminNotes,
                     expiryDate,
                     "categoryName": category->label,
-                    "categoryId": category->_id
+                    "categoryId": category->_id,
+                    "store": coalesce(category->store, "butcher")
                 }
             `),
             adminClient.fetch(`

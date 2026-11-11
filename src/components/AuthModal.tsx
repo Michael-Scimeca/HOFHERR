@@ -47,7 +47,7 @@ export default function AuthModal() {
     const [loginData, setLoginData] = useState(EMPTY_LOGIN);
     const [registerData, setRegisterData] = useState(EMPTY_REGISTER);
     const [forgotEmail, setForgotEmail] = useState('');
-    const panelRef = useRef<HTMLDivElement>(null);
+    const panelRef = useRef<HTMLDialogElement>(null);
     const returnFocusRef = useRef<HTMLElement | null>(null);
     const open = mode !== null;
 

@@ -10,6 +10,8 @@ type Step = {
     desc: ReactNode;
     img?: string;
     alt?: string;
+    width?: number;
+    height?: number;
     customIcon?: ReactNode;
 };
 
@@ -25,44 +27,52 @@ const STEPS: Step[] = [
             </Link>
             </>
         ),
-img: '/howitworks/cart_sketch.jpg',
-    alt: 'Shopping cart',
+        img: '/howitworks/cart_sketch.jpg',
+        alt: 'Shopping cart',
+        width: 120,
+        height: 120,
     },
-{
-    num: '02',
+    {
+        num: '02',
         title: 'Pick a Pickup Time',
-            desc: 'Select your preferred date and time window from available pickup slots at the shop.',
-                img: '/howitworks/calendar_sketch.jpg',
-                    alt: 'Calendar',
+        desc: 'Select your preferred date and time window from available pickup slots at the shop.',
+        img: '/howitworks/calendar_sketch.jpg',
+        alt: 'Calendar',
+        width: 120,
+        height: 120,
     },
-{
-    num: '03',
+    {
+        num: '03',
         title: 'Pay Online or at Pickup',
-            desc: (
-                <>
-                    Checkout with Visa, Apple Pay, Google Pay, PayPal, or{' '}
-                        <Link href="/gift-cards" style={{ color: 'var(--gold, #A8905F)', fontWeight: 600, textDecoration: 'underline' }}>
-                            a gift card
-                </Link >
+        desc: (
+            <>
+                Checkout with Visa, Apple Pay, Google Pay, PayPal, or{' '}
+                <Link href="/gift-cards" style={{ color: 'var(--gold, #A8905F)', fontWeight: 600, textDecoration: 'underline' }}>
+                    a gift card
+                </Link>
                 — or choose to pay at the store when you pick up.
             </>
         ),
-    img: '/howitworks/payment_sketch.jpg',
+        img: '/howitworks/payment_sketch.jpg',
         alt: 'Payment card',
+        width: 120,
+        height: 107,
     },
-{
-    num: '04',
+    {
+        num: '04',
         title: 'Pick Up at the Shop',
-            desc: (
-                <>
-                    Pull up curbside or walk in. Your order is packed and ready — no waiting around.{' '}
-                    <a href="mailto:butcher@hofherrmeatco.com?subject=Pick up at the store" style={{ color: 'var(--gold, #A8905F)', fontWeight: 600, textDecoration: 'underline' }}>
-                        Questions about pick up at store
-                    </a>
-                </>
-            ),
-                img: '/howitworks/car_sketch.jpg',
-                    alt: 'Curbside pickup car',
+        desc: (
+            <>
+                Pull up curbside or walk in. Your order is packed and ready — no waiting around.{' '}
+                <a href="mailto:butcher@hofherrmeatco.com?subject=Pick up at the store" style={{ color: 'var(--gold, #A8905F)', fontWeight: 600, textDecoration: 'underline' }}>
+                    Questions about pick up at store
+                </a>
+            </>
+        ),
+        img: '/howitworks/car_sketch.jpg',
+        alt: 'Curbside pickup car',
+        width: 120,
+        height: 63,
     },
 ];
 
@@ -88,8 +98,8 @@ export default function Process() {
                                         <Image
                                             src="/howitworks/pointing_hand.jpg"
                                             alt="pointing hand"
-                                            width={80}
-                                            height={53}
+                                            width={88}
+                                            height={57}
                                             className={styles.connectorHand}
                                         />
                                     </div>
@@ -104,8 +114,8 @@ export default function Process() {
                                             <Image
                                                 src={step.img!}
                                                 alt={step.alt!}
-                                                width={120}
-                                                height={120}
+                                                width={step.width ?? 120}
+                                                height={step.height ?? 120}
                                                 className={styles.icon}
                                             />
                                         )}
