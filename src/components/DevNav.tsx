@@ -29,6 +29,7 @@ const SECTIONS = [
             { href: '/catering', icon: '🍖', label: 'Catering' },
             { href: '/bbq', icon: '🌡️', label: 'BBQ' },
             { href: '/cut-guide', icon: '🥩', label: 'Cut Guide' },
+            { href: '/recipes-test', icon: '🍳', label: 'Recipes Test' },
             { href: '/newsletter', icon: '✉️', label: 'Newsletter' },
         ],
     },

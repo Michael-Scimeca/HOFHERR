@@ -14,12 +14,65 @@ type Product = {
 };
 type Activity = { product: string; qty: number; date: string; status: string; };
 type PurchaseItem = { name: string; qty: number; price: string | null; };
-type Purchase = { _id: string; orderNumber: string | null; customerName: string; customerEmail: string | null; items: PurchaseItem[]; total: number; status: string; date: string; };
+type Purchase = {
+    _id: string;
+    orderNumber: string | null;
+    customerName: string;
+    customerEmail: string | null;
+    items: PurchaseItem[];
+    total: number;
+    status: string;
+    date: string;
+    pickedUpAt?: string;
+    archivedAt?: string;
+    archivedFromQueue?: boolean;
+    storeName?: string;
+};
 type Summary = { totalOrders: number; totalRevenue: number; ordersLast7Days: number; ordersLast30Days: number; };
 type SavingState = 'idle' | 'saving' | 'saved';
 type ViewTab = 'stock' | 'sales' | 'activity' | 'purchases';
 type CategoryInfo = { _id: string; label: string; id: string; store: string; };
 type SortOption = 'name-asc' | 'name-desc' | 'qty-asc' | 'qty-desc' | 'price-asc' | 'price-desc' | 'category';
+
+const ARCHIVED_INVENTORY_ORDERS_STORAGE_KEY = 'hofherr_archived_inventory_orders_v1';
+
+const SEED_ARCHIVED_PICKED_UP_PURCHASES: Purchase[] = [
+    {
+        _id: 'demo-completed-1',
+        orderNumber: 'HM-4829',
+        customerName: 'Hofherr Master Admin',
+        customerEmail: 'admin@hofherrmeats.com',
+        storeName: 'The Butcher Shop',
+        items: [
+            { name: 'USDA Prime Dry-Aged Bone-In Ribeye', qty: 2, price: '$42.00' },
+            { name: 'House-Smoked Applewood Thick-Cut Bacon', qty: 2, price: '$16.50' },
+            { name: 'Hofherr Signature Steakhouse Rub', qty: 1, price: '$12.50' },
+        ],
+        total: 168.5,
+        status: 'completed',
+        pickedUpAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        archivedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        archivedFromQueue: true,
+    },
+    {
+        _id: 'demo-completed-archived-2',
+        orderNumber: 'HM-4812',
+        customerName: 'Eleanor Sterling',
+        customerEmail: 'eleanor.sterling@winnetka.org',
+        storeName: 'The Butcher Shop',
+        items: [
+            { name: 'Australian Wagyu BMS 8+ NY Strip', qty: 2, price: '$68.00' },
+            { name: 'Roasted Bone Marrow Canoes', qty: 2, price: '$18.00' },
+        ],
+        total: 172.0,
+        status: 'completed',
+        pickedUpAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        archivedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        archivedFromQueue: true,
+    },
+];
 
 const STATUS_LABELS: Record<string, string> = {
     'in-stock': '✅ In Stock', 'low-stock': '🔥 Low Stock', 'out-of-stock': '🔴 Out of Stock',
@@ -80,8 +133,59 @@ export default function InventoryPage() {
             const data = await res.json();
             setProducts(data.products || []);
             setThreshold(data.threshold ?? 3);
-            setActivity(data.activity || []);
-            setPurchases(data.purchases || []);
+
+            let localArchivedOrders: Purchase[] = [];
+            try {
+                const rawArchived = window.localStorage.getItem(ARCHIVED_INVENTORY_ORDERS_STORAGE_KEY);
+                if (rawArchived) {
+                    const parsed = JSON.parse(rawArchived);
+                    if (Array.isArray(parsed)) {
+                        localArchivedOrders = parsed.map((rec: Record<string, any>) => ({
+                            _id: rec._id || `archived-${rec.orderNumber}`,
+                            orderNumber: rec.orderNumber || 'HM-4895',
+                            customerName: rec.customerName || 'Guest',
+                            customerEmail: rec.customerEmail || null,
+                            storeName: rec.storeName || 'The Butcher Shop',
+                            items: Array.isArray(rec.items) ? rec.items : [],
+                            total: Number(rec.totalDollars || 0),
+                            status: 'completed',
+                            pickedUpAt: rec.pickedUpAt || new Date().toISOString(),
+                            archivedAt: rec.archivedAt || new Date().toISOString(),
+                            date: rec.pickedUpAt || new Date().toISOString(),
+                            archivedFromQueue: true,
+                        }));
+                    }
+                }
+            } catch {
+                // ignore storage parse issues
+            }
+
+            const apiPurchases: Purchase[] = Array.isArray(data.purchases) ? data.purchases : [];
+            const seenOrderNums = new Set<string>();
+            const mergedPurchases: Purchase[] = [];
+
+            [...localArchivedOrders, ...SEED_ARCHIVED_PICKED_UP_PURCHASES, ...apiPurchases].forEach(p => {
+                const key = p.orderNumber || p._id;
+                if (!seenOrderNums.has(key)) {
+                    seenOrderNums.add(key);
+                    mergedPurchases.push(p);
+                }
+            });
+
+            setPurchases(mergedPurchases);
+
+            const archivedActivity: Activity[] = mergedPurchases
+                .filter(p => p.archivedFromQueue)
+                .flatMap(p =>
+                    (p.items || []).map(item => ({
+                        product: `${item.name} (Order #${p.orderNumber} · Archived >24h)`,
+                        qty: item.qty || 1,
+                        date: p.pickedUpAt || p.date,
+                        status: 'completed',
+                    }))
+                );
+
+            setActivity([...archivedActivity, ...(data.activity || [])]);
             setSummary(data.summary || {});
             setAvailableCategories(data.categories || []);
             setLastFetched(new Date());
@@ -89,7 +193,18 @@ export default function InventoryPage() {
         finally { setLoading(false); }
     }, [router]);
 
-    useEffect(() => { fetchInventory(); }, [fetchInventory]);
+    useEffect(() => {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const tabParam = params.get('tab');
+            if (tabParam === 'purchases' || tabParam === 'activity' || tabParam === 'sales' || tabParam === 'stock') {
+                setViewTab(tabParam);
+            }
+        } catch {
+            // ignore
+        }
+        fetchInventory();
+    }, [fetchInventory]);
 
     const updateProduct = async (productId: string, patch: Record<string, any>) => {
         setProducts(prev => prev.map(p => {
@@ -264,7 +379,7 @@ export default function InventoryPage() {
                 <div className={styles.headerActions}>
                     <button className={styles.addProductBtn} onClick={() => setShowAddModal(true)}>+ Add Product</button>
                     <button className={styles.backBtn} onClick={fetchInventory}>↻ Refresh</button>
-                    <button className={styles.backBtn} onClick={() => router.push('/admin')}>← Dashboard</button>
+                    <button className={styles.backBtn} onClick={() => router.push('/admin-dashboard/admin')}>← Dashboard</button>
                 </div>
             </div>
             <div className={styles.lastUpdated}>
@@ -333,7 +448,7 @@ export default function InventoryPage() {
                                     </div>
                                 ))}
                                 {outOfStockItems.length > 12 && (
-                                    <div className={styles.alertItem} style={{ justifyContent: 'center', color: '#64748b' }}>+ {outOfStockItems.length - 12} more…</div>
+                                    <div className={`${styles.alertItem} ${styles.alertItemMore}`}>+ {outOfStockItems.length - 12} more…</div>
                                 )}
                             </div>
                         </div>
@@ -358,27 +473,43 @@ export default function InventoryPage() {
                 <button className={styles.alertCollapsed} onClick={() => setAlertDismissed(false)}>
                     {outOfStockItems.length > 0 && <span className={styles.alertCollapsedBadgeRed}>🔴 {outOfStockItems.length}</span>}
                     {lowAlertItems.length > 0 && <span className={styles.alertCollapsedBadgeYellow}>⚠️ {lowAlertItems.length}</span>}
-                    <span style={{ color: '#64748b', fontSize: 11 }}>Show Alerts</span>
+                    <span className={styles.alertCollapsedText}>Show Alerts</span>
                 </button>
             )}
 
             {/* ═══════════════ PURCHASES TAB ═══════════════ */}
             {viewTab === 'purchases' && (
                 <div className={styles.purchasesPanel}>
-                    <h3 className={styles.purchasesTitle}>🧾 Purchase History</h3>
-                    <p className={styles.purchasesSubtext}>Last 50 orders · {summary.totalOrders} total · ${summary.totalRevenue?.toLocaleString(undefined, { maximumFractionDigits: 0 })} all-time revenue</p>
+                    <div className={styles.purchasesHeaderRow}>
+                        <div>
+                            <h3 className={styles.purchasesTitle}>🧾 Purchase &amp; Picked-Up Inventory History</h3>
+                            <p className={styles.purchasesSubtext}>
+                                Includes completed orders auto-archived <strong>24 hours (1 day)</strong> after customer pickup (no longer shown on the live Admin Queue) · {purchases.length} recorded orders · ${summary.totalRevenue?.toLocaleString(undefined, { maximumFractionDigits: 0 })} all-time revenue
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            className={styles.backToLiveQueueBtn}
+                            onClick={() => router.push('/admin-dashboard/admin')}
+                        >
+                            ← Back to Live Admin Queue
+                        </button>
+                    </div>
                     {purchases.length === 0 ? (
                         <div className={styles.empty}>No purchase records found.</div>
                     ) : (
                         <div className={styles.purchasesTable}>
                             <table className={styles.productTable}>
                                 <thead><tr>
-                                    <th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th>
+                                    <th>Order</th><th>Customer</th><th>Items &amp; Stock Deducted</th><th>Total</th><th>Lifecycle &amp; Archive Status</th><th>Picked Up / Archived</th>
                                 </tr></thead>
                                 <tbody>
                                     {purchases.map(p => (
-                                        <tr key={p._id}>
-                                            <td><span className={styles.orderNumber}>{p.orderNumber || '—'}</span></td>
+                                        <tr key={p._id} className={p.archivedFromQueue ? styles.archivedPurchaseRow : ''}>
+                                            <td>
+                                                <span className={styles.orderNumber}>#{p.orderNumber || '—'}</span>
+                                                {p.storeName && <span className={styles.purchaseStoreSub}>{p.storeName}</span>}
+                                            </td>
                                             <td>
                                                 <span className={styles.customerName}>{p.customerName}</span>
                                                 {p.customerEmail && <span className={styles.customerEmail}>{p.customerEmail}</span>}
@@ -386,20 +517,29 @@ export default function InventoryPage() {
                                             <td>
                                                 <div className={styles.purchaseItems}>
                                                     {p.items.slice(0, 3).map((item, i) => (
-                                                        <span key={i} className={styles.purchaseItem}>{item.name} ×{item.qty}{item.price && <span className={styles.purchaseItemPrice}>{item.price}</span>}</span>
+                                                        <span key={`${p._id}-item-${i}`} className={styles.purchaseItem}>{item.name} ×{item.qty}{item.price && <span className={styles.purchaseItemPrice}>{item.price}</span>}</span>
                                                     ))}
                                                     {p.items.length > 3 && <span className={styles.purchaseItemMore}>+{p.items.length - 3} more</span>}
                                                 </div>
                                             </td>
                                             <td><span className={styles.purchaseTotal}>${p.total.toFixed(2)}</span></td>
                                             <td>
-                                                <span className={`${styles.purchaseStatus} ${styles['purchaseStatus_' + p.status.replace(/[^a-z]/g, '')]}`}>
-                                                    {p.status === 'completed' ? '✅' : p.status === 'paid' ? '💳' : p.status === 'pending' ? '⏳' : '🔄'} {p.status.replace(/_/g, ' ')}
-                                                </span>
+                                                <div className={styles.purchaseStatusStack}>
+                                                    <span className={`${styles.purchaseStatus} ${styles['purchaseStatus_' + p.status.replace(/[^a-z]/g, '')]}`}>
+                                                        {p.status === 'completed' ? '✅ Picked Up' : p.status === 'paid' ? '💳 Paid' : p.status === 'pending' ? '⏳ Pending' : '🔄'} {p.status !== 'completed' ? p.status.replace(/_/g, ' ') : ''}
+                                                    </span>
+                                                    {p.archivedFromQueue && (
+                                                        <span className={styles.archivedQueueBadge}>
+                                                            📦 Expired &gt;24h from Live Queue · Logged in Inventory History
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td>
-                                                <span className={styles.purchaseDate}>{new Date(p.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-                                                <span className={styles.purchaseTime}>{new Date(p.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
+                                                <span className={styles.purchaseDate}>{new Date(p.pickedUpAt || p.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                                                <span className={styles.purchaseTime}>
+                                                    {p.archivedFromQueue ? 'Picked up & archived >1d' : new Date(p.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                                                </span>
                                             </td>
                                         </tr>
                                     ))}
@@ -423,7 +563,7 @@ export default function InventoryPage() {
                                             <span className={`${styles.activityDot} ${a.status === 'completed' ? styles.activityDotGreen : a.status === 'paid' ? styles.activityDotBlue : styles.activityDotYellow}`} />
                                             <span className={styles.activityProduct}>{a.product}</span>
                                             <span className={styles.activityQty}>×{a.qty}</span>
-                                            <span className={styles.activityStatus} style={{ background: a.status === 'completed' ? 'rgba(34,197,94,0.15)' : 'rgba(59,130,246,0.15)', color: a.status === 'completed' ? '#4ade80' : '#60a5fa' }}>{a.status}</span>
+                                            <span className={`${styles.activityStatus} ${a.status === 'completed' ? styles.activityStatusCompleted : styles.activityStatusPaid}`}>{a.status}</span>
                                             <span className={styles.activityDate}>{new Date(a.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} {new Date(a.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
                                         </div>
                                     ))}
@@ -550,11 +690,11 @@ export default function InventoryPage() {
                                             {items.map(p => {
                                                 const trend = getTrend(p);
                                                 return (
-                                                    <tr key={p._id} style={p.hiddenFromShop ? { opacity: 0.5 } : undefined}>
+                                                    <tr key={p._id} className={p.hiddenFromShop ? styles.rowHidden : undefined}>
                                                         <td>
-                                                            <span className={styles.productName} style={p.hiddenFromShop ? { textDecoration: 'line-through' } : undefined}>{p.name}</span>
+                                                            <span className={`${styles.productName} ${p.hiddenFromShop ? styles.productNameHidden : ''}`}>{p.name}</span>
                                                             <div className={styles.productTags}>
-                                                                {p.hiddenFromShop && <span className={`${styles.badge} ${styles.badgeSale}`} style={{ background: 'rgba(239,68,68,0.15)', color: '#f87171' }}>Hidden</span>}
+                                                                {p.hiddenFromShop && <span className={`${styles.badge} ${styles.badgeSale}`}>Hidden</span>}
                                                                 {p.isFeatured && <span className={`${styles.badge} ${styles.badgeFeatured}`}>Featured</span>}
                                                                 {p.isNew && <span className={`${styles.badge} ${styles.badgeNew}`}>New</span>}
                                                                 {p.salePrice && <span className={`${styles.badge} ${styles.badgeSale}`}>Sale</span>}
@@ -689,7 +829,7 @@ export default function InventoryPage() {
                                                             <td>
                                                                 <div className={styles.toggleRow}>
                                                                     <button className={`${styles.toggle} ${p.hiddenFromShop ? styles.toggleOn : styles.toggleOff}`} onClick={() => updateProduct(p._id, { hiddenFromShop: !p.hiddenFromShop })} title={p.hiddenFromShop ? 'Show on Shop' : 'Hide from Shop'} />
-                                                                    <span className={styles.toggleLabel} style={{ fontSize: 13 }}>{p.hiddenFromShop ? '🚫' : '👁️'}</span>
+                                                                    <span className={`${styles.toggleLabel} ${styles.toggleLabelEmoji}`}>{p.hiddenFromShop ? '🚫' : '👁️'}</span>
                                                                     <button className={`${styles.toggle} ${p.isFeatured ? styles.toggleOn : styles.toggleOff}`} onClick={() => updateProduct(p._id, { isFeatured: !p.isFeatured })} title="Toggle Featured" />
                                                                     <span className={styles.toggleLabel}>★</span>
                                                                     <button className={`${styles.toggle} ${p.isNew ? styles.toggleOn : styles.toggleOff}`} onClick={() => updateProduct(p._id, { isNew: !p.isNew })} title="Toggle New badge" />
@@ -698,7 +838,7 @@ export default function InventoryPage() {
                                                             </td>
                                                         )}
                                                         <td>
-                                                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                            <div className={styles.rowActionsCell}>
                                                                 {savingStates[p._id] === 'saving' && <span className={styles.saving}>Saving…</span>}
                                                                 {savingStates[p._id] === 'saved' && <span className={styles.saved}>✓ Saved</span>}
                                                                 <button className={styles.deleteBtn} onClick={() => deleteProduct(p._id, p.name)} title="Delete product">🗑️</button>

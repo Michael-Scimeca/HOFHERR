@@ -103,18 +103,19 @@
 
 /* ── Live Order Progress Tracker ── */
 .liveTrackerBox {
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid rgba(200, 164, 126, 0.24);
+    background: linear-gradient(165deg, rgba(28, 18, 14, 0.96) 0%, rgba(12, 9, 8, 0.98) 100%);
+    border: 1.5px solid rgba(245, 155, 26, 0.42);
     border-radius: var(--radius);
-    padding: 20px;
+    padding: 22px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 }
 
 .liveTrackerHeader {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
     flex-wrap: wrap;
@@ -127,14 +128,45 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--gold);
+    margin-bottom: 4px;
 }
 
 .liveTrackerTitle {
     font-family: var(--font-heading);
-    font-size: 1.5rem;
+    font-size: clamp(1.65rem, 3vw, 2.15rem);
     font-weight: 800;
     color: var(--fg);
     letter-spacing: 0.02em;
+    text-transform: uppercase;
+    line-height: 1.05;
+}
+
+.liveTrackerRight {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.etaBox {
+    text-align: right;
+}
+
+.etaLabel {
+    display: block;
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+.etaValue {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.03em;
     text-transform: uppercase;
     line-height: 1.1;
 }
@@ -148,13 +180,13 @@
 
 .demoPlayBtn {
     appearance: none;
-    background: rgba(204, 14, 29, 0.2);
+    background: var(--red);
     border: 1px solid var(--red);
-    color: var(--fg);
-    padding: 6px 12px;
+    color: #fff;
+    padding: 6px 14px;
     border-radius: var(--radius-sm);
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     cursor: pointer;
@@ -162,7 +194,7 @@
 }
 
 .demoPlayBtn:hover {
-    background: var(--red);
+    background: var(--red-dark);
 }
 
 .trackerTestLink {
@@ -189,7 +221,7 @@
     padding: 0;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 8px;
+    gap: 6px;
 }
 
 .progressItem {
@@ -200,12 +232,12 @@
 .segBtn {
     position: relative;
     width: 100%;
-    min-height: 48px;
-    padding: 8px 12px;
+    min-height: 54px;
+    padding: 8px 14px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.04);
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     overflow: hidden;
@@ -213,6 +245,14 @@
     cursor: pointer;
     text-align: left;
     transition: all 0.3s var(--ease-out);
+}
+
+.progressItem:first-child .segBtn {
+    border-radius: 999px 6px 6px 999px;
+}
+
+.progressItem:last-child .segBtn {
+    border-radius: 6px 999px 999px 6px;
 }
 
 .segFill {
@@ -245,7 +285,7 @@
 .segLabel {
     font-size: 0.75rem;
     font-weight: 800;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     white-space: nowrap;
     overflow: hidden;
@@ -253,19 +293,50 @@
 }
 
 .segDone,
-.segActive {
-    color: var(--fg);
+.segActive,
+.segPickedUp {
+    color: #fff;
     border-color: transparent;
 }
 
 .segDone .segFill,
-.segActive .segFill {
+.segActive .segFill,
+.segPickedUp .segFill {
     transform: scaleX(1);
 }
 
+.segPickedUp {
+    border-color: rgba(34, 197, 94, 0.55);
+    box-shadow: 0 0 18px rgba(22, 163, 74, 0.32);
+}
+
+.segPickedUp .segFill {
+    background: linear-gradient(90deg, var(--green-depot, #142a1e) 0%, #15803d 55%, #16a34a 100%);
+}
+
+.segPickedUp:hover {
+    border-color: #4ade80;
+    box-shadow: 0 0 22px rgba(34, 197, 94, 0.48);
+}
+
+.segActive .segFill {
+    background: linear-gradient(90deg, var(--red-dark), var(--red), #ff3b47, var(--red));
+    background-size: 220% 100%;
+    animation: trackerSweep 2.2s linear infinite;
+}
+
 .segActive {
-    box-shadow: 0 0 20px rgba(204, 14, 29, 0.45);
-    border-color: rgba(245, 155, 26, 0.5);
+    box-shadow: 0 0 24px rgba(204, 14, 29, 0.5);
+    border-color: rgba(245, 155, 26, 0.55);
+}
+
+@keyframes trackerSweep {
+    from {
+        background-position: 100% 0;
+    }
+    to {
+        background-position: -120% 0;
+    }
 }
 
 .segTodo:hover {
@@ -275,9 +346,81 @@
 
 .liveTrackerMessage {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     line-height: 1.55;
-    color: var(--fg-2);
+    color: var(--fg);
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid var(--red);
+    padding: 10px 14px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.processStepsList {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.processStepCard {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.processStepCard:hover {
+    border-color: rgba(245, 155, 26, 0.4);
+}
+
+.processStepCardDone {
+    background: rgba(34, 197, 94, 0.07);
+    border-color: rgba(34, 197, 94, 0.35);
+}
+
+.processStepCardActive {
+    background: rgba(204, 14, 29, 0.16);
+    border-color: var(--gold);
+    box-shadow: 0 4px 14px rgba(204, 14, 29, 0.25);
+}
+
+.processStepTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.processStepBadge {
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.processStepEta {
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: var(--fg-3);
+}
+
+.processStepName {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    color: var(--fg);
+}
+
+.processStepDesc {
+    font-size: 0.6875rem;
+    color: var(--fg-3);
+    line-height: 1.35;
 }
 
 .accountSyncRow {
@@ -943,6 +1086,379 @@ a.infoValue:hover {
     gap: 16px;
 }
 
+/* ── Butcher's Guide to Cuts — Pieces Unlocked Showcase ── */
+.butcherGuideSection {
+    width: 100%;
+    background: linear-gradient(160deg, rgba(28, 20, 16, 0.96) 0%, rgba(18, 13, 10, 0.98) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.38);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.butcherGuideHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(245, 155, 26, 0.22);
+}
+
+.butcherGuideTitleWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.butcherGuideKicker {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.butcherGuideTitle {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.butcherGuideSub {
+    font-size: 0.8125rem;
+    color: var(--fg-2);
+    line-height: 1.45;
+    margin: 0;
+}
+
+.butcherGuideToolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.presetGroup {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.presetBtn {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(245, 155, 26, 0.28);
+    color: var(--fg-2);
+    border-radius: var(--radius-sm);
+    padding: 5px 10px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.presetBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.presetBtnActive {
+    background: rgba(245, 155, 26, 0.18);
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.cutPiecesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 14px;
+}
+
+.cutPieceCard {
+    background: #14100d;
+    border: 1px solid rgba(200, 164, 126, 0.28);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.cutPieceCard:hover {
+    border-color: var(--gold);
+}
+
+.cutPieceStage {
+    position: relative;
+    background: #f3ead8;
+    border-bottom: 2px solid #6b070b;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cutPieceStageTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.cutPieceAnimalTag {
+    font-size: 0.6875rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6b070b;
+    background: rgba(107, 7, 11, 0.1);
+    border: 1px solid rgba(107, 7, 11, 0.35);
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.cutZoomBtn {
+    appearance: none;
+    background: #6b070b;
+    color: #f3ead8;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.18s ease;
+}
+
+.cutZoomBtn:hover {
+    background: #8b0a10;
+}
+
+.cutPieceSvg {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 896;
+    display: block;
+    border-radius: var(--radius-sm);
+}
+
+.cutPieceHighlightPath {
+    fill: #f7941d;
+    fill-opacity: 0.92;
+    stroke: #6b070b;
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+}
+
+.cutPieceWoodcutMaster {
+    fill: #6b070b;
+    pointer-events: none;
+    shape-rendering: geometricPrecision;
+}
+
+.cutPieceSvgLabel {
+    fill: #faf0e6;
+    font-family: Impact, 'Arial Black', 'Helvetica Neue', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+}
+
+.cutPieceSvgLabelCompact {
+    font-size: 16px;
+}
+
+.cutPieceSvgLabelSmall {
+    font-size: 20px;
+}
+
+.cutPieceBody {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.cutPieceTitleRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.cutPieceName {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--fg);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.cutPieceOrderCount {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.cutPieceProductList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.cutPieceProductPill {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #faf0e6;
+    background: rgba(245, 155, 26, 0.14);
+    border: 1px solid rgba(245, 155, 26, 0.38);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+}
+
+.butcherGuideFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.butcherGuideCollectionLink {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+}
+
+.butcherGuideCollectionLink:hover {
+    text-decoration: underline;
+}
+
+.emailPreviewToggleBtn {
+    appearance: none;
+    background: linear-gradient(135deg, #8b0a10 0%, #6b070b 100%);
+    color: #faf0e6;
+    border: 1px solid rgba(245, 155, 26, 0.55);
+    border-radius: var(--radius-sm);
+    padding: 7px 14px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.emailPreviewToggleBtn:hover {
+    border-color: var(--gold);
+    transform: translateY(-1px);
+}
+
+/* ── Live Confirmation Email Test Preview Box ── */
+.emailTestCard {
+    width: 100%;
+    background: #0e0c0b;
+    border: 1.5px solid rgba(245, 155, 26, 0.48);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+}
+
+.emailTestHeader {
+    background: #181310;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(245, 155, 26, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.emailTestMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.emailTestBadge {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.emailTestSubject {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--fg);
+}
+
+.emailTestActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sendTestEmailBtn {
+    appearance: none;
+    background: rgba(245, 155, 26, 0.16);
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    border-radius: var(--radius-sm);
+    padding: 5px 12px;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.sendTestEmailBtn:hover {
+    background: rgba(245, 155, 26, 0.26);
+}
+
+.emailIframeWrap {
+    width: 100%;
+    background: #0a0a0a;
+}
+
+.emailIframe {
+    width: 100%;
+    height: 1480px;
+    border: none;
+    display: block;
+}
+
 .loadingText {
     font-size: 0.9375rem;
     color: var(--fg-muted);
@@ -974,7 +1490,8 @@ a.infoValue:hover {
     }
 
     .layoutSwitcher,
-    .progressBar {
+    .progressBar,
+    .processStepsList {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
@@ -1015,7 +1532,8 @@ a.infoValue:hover {
     .infoStack,
     .infoBoxFourCol,
     .progressTrack,
-    .progressBar {
+    .progressBar,
+    .processStepsList {
         grid-template-columns: 1fr;
     }
 

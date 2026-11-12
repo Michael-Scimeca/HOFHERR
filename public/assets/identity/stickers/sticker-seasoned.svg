@@ -5,7 +5,7 @@
     <style>
       .st0, .st1 { fill: none; }
       .st2 { mask: url(#mask); }
-      .st3 { font-size: 126px; }
+      .st3 { font-size: 108px; }
       .st3, .st4, .st5, .st6, .st7, .st8, .st9, .st10 { fill: #8b0a10; }
       .st3, .st4, .st5, .st11, .st7, .st8, .st12, .st9 { isolation: isolate; }
       .st3, .st4, .st5, .st7, .st8, .st9 {
@@ -16,7 +16,7 @@
         stroke-linejoin: round;
         paint-order: stroke fill;
       }
-      .st4, .st5 { font-size: 127px; }
+      .st4, .st5 { font-size: 116px; }
       .st1 { stroke: #8b0a10; stroke-miterlimit: 16; stroke-width: 28px; }
       .st7, .st8 { font-size: 128px; }
       .st12 { fill: #e85222; opacity: .88; }
@@ -65,20 +65,20 @@
   <g class="st11"><text class="st7" transform="translate(1558.3485 597.1629) rotate(57.04)"><tspan x="0" y="0">.</tspan></text></g>
   <g class="st11"><text class="st7" transform="translate(1610.9194 686.0188) rotate(66.45)"><tspan x="0" y="0">•</tspan></text></g>
   
-  <g class="st11"><text class="st4" transform="translate(559.72, 1631.71) rotate(34.88)"><tspan x="0" y="0">•</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(644.45, 1683.00) rotate(27.50)"><tspan x="0" y="0">P</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(705.33, 1711.39) rotate(22.50)"><tspan x="0" y="0">R</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(768.46, 1734.36) rotate(17.50)"><tspan x="0" y="0">E</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(833.34, 1751.75) rotate(12.50)"><tspan x="0" y="0">-</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(899.49, 1763.41) rotate(7.50)"><tspan x="0" y="0">S</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(966.41, 1769.27) rotate(2.50)"><tspan x="0" y="0">E</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1033.59, 1769.27) rotate(-2.50)"><tspan x="0" y="0">A</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1100.51, 1763.41) rotate(-7.50)"><tspan x="0" y="0">S</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1166.66, 1751.75) rotate(-12.50)"><tspan x="0" y="0">O</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1231.54, 1734.36) rotate(-17.50)"><tspan x="0" y="0">N</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1294.67, 1711.39) rotate(-22.50)"><tspan x="0" y="0">E</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1355.55, 1683.00) rotate(-27.50)"><tspan x="0" y="0">D</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1440.28, 1631.71) rotate(-34.87)"><tspan x="0" y="0">•</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(462.76, 1543.20) rotate(44.68)"><tspan x="0" y="0">•</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(569.52, 1631.18) rotate(34.30)"><tspan x="0" y="0">P</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(641.63, 1674.73) rotate(27.97)"><tspan x="0" y="0">R</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(717.31, 1709.78) rotate(21.72)"><tspan x="0" y="0">E</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(784.74, 1733.05) rotate(16.37)"><tspan x="0" y="0">-</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(854.85, 1750.09) rotate(10.95)"><tspan x="0" y="0">S</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(934.99, 1761.23) rotate(4.88)"><tspan x="0" y="0">E</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1018.77, 1763.77) rotate(-1.41)"><tspan x="0" y="0">A</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1103.16, 1757.00) rotate(-7.76)"><tspan x="0" y="0">S</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1189.11, 1740.22) rotate(-14.33)"><tspan x="0" y="0">O</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1276.47, 1712.22) rotate(-21.22)"><tspan x="0" y="0">N</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1353.94, 1677.07) rotate(-27.60)"><tspan x="0" y="0">E</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1427.03, 1633.52) rotate(-33.98)"><tspan x="0" y="0">D</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1537.24, 1543.20) rotate(-44.68)"><tspan x="0" y="0">•</tspan></text></g>
   <g>
     <g class="st11"><text class="st9" transform="translate(240.39 996.01) rotate(-8)"><tspan x="0" y="0">EST.</tspan></text></g>
     <g class="st11"><text class="st9" transform="translate(241.0249 1092.8677) rotate(-8)"><tspan x="0" y="0">2018</tspan></text></g>
@@ -90,7 +90,7 @@
 
 
     <!-- Central Cut Artwork -->
-    <g transform="translate(1000, 1000) scale(0.88) translate(-512, -512)">
+    <g transform="translate(1000, 990) scale(1.742) translate(-511.5, -519.5)">
 <g transform="translate(64, 64) scale(0.875)">
     <g fill="#E85222" fill-rule="evenodd">
       <path d="M0 0 C0.16 1.1 0.32 2.2 0.48 3.33 C1.72 11.39 3.24 18.29 6.92 25.65 C9.38 31 9.52 36.23 7.86 41.92 C5.26 48.21 0.99 53.45 -4 58 C-10.39 55.47 -13.34 48.6 -16.88 43.06 C-19.92 34.77 -19.47 27.04 -16 19 C-13.62 14.07 -6.23 0 0 0 Z " transform="translate(716,153)"/><path d="M0 0 C0.66 0.33 1.32 0.66 2 1 C1.82 1.63 1.82 1.63 0.94 4.81 C-1.23 14.83 1.1 22.27 6 31 C10.09 38.52 11.43 45.11 9.38 53.57 C6.37 62.13 0.4 68.74 -6 75 C-13.16 72.61 -18.25 61.9 -21.5 55.44 C-25.9 46.24 -26.69 36.09 -23.56 26.25 C-19.38 16.36 -9.72 4.86 0 0 Z " transform="translate(611,171)"/><path d="M0 0 C2 1 2 1 3.07 3.99 C6.65 16.63 7.79 27.28 1.25 39.19 C-6.24 48.55 -15.25 51.77 -26.85 53.8 C-27.2 53.83 -27.2 53.83 -29 54 C-31.26 51.74 -30.31 47.05 -30.32 44 C-30.16 35.64 -27.58 28.81 -21.9 22.64 C-18.75 19.92 -15.17 17.91 -11.62 15.75 C-5.58 11.72 -2.47 6.71 0 0 Z " transform="translate(753,234)"/><path d="M0 0 C7.21 8.83 6.93 21.15 6 32 C4.47 41.67 -0.08 49.76 -5 58.08 C-12.06 70.06 -17.27 83.2 -14.32 97.26 C-9.97 112.81 0.8 121.12 13.59 130.23 C16.36 132.27 18.71 134.44 21 137 C21.85 137.91 22.69 138.81 23.56 139.75 C28.45 145.76 30.45 152.38 31 160 C39.09 156.59 43.02 152.55 46.56 144.56 C49.35 137.55 51.21 130.32 53 123 C55.68 125.68 56.62 128.8 57.93 132.29 C58.07 132.66 58.07 132.66 58.78 134.52 C59.37 136.09 59.96 137.66 60.54 139.23 C61.42 141.57 62.31 143.91 63.21 146.25 C71.4 167.92 74.41 190.22 65.75 212.31 C56.9 231.84 43.48 243.44 23.71 251.31 C9.71 256.29 -5.21 259.6 -20 261 C-19.52 260.21 -19.04 259.43 -18.54 258.62 C-13.31 249.92 -9.59 242.35 -11 232 C-11.93 230.03 -11.93 230.03 -13.06 228.06 C-15.52 223.25 -15.03 218.98 -14.62 213.75 C-13.28 196.28 -17.62 180.44 -28.89 166.7 C-35.04 160.11 -42.29 155.52 -50 151 C-50.9 150.45 -51.8 149.91 -52.72 149.35 C-68.33 140.68 -87.4 136.96 -105 135 C-105.83 134.91 -106.65 134.81 -107.5 134.71 C-114.92 133.95 -122.29 133.85 -129.75 133.88 C-130.98 133.88 -132.2 133.88 -133.47 133.88 C-142.02 133.92 -150.49 134.19 -159 135 C-158.76 134.62 -158.76 134.62 -157.57 132.68 C-153.24 125.42 -149.67 118.12 -146.44 110.31 C-138.19 90.55 -126.28 75.63 -106.31 66.81 C-104 66 -104 66 -101 66 C-101.03 67.11 -101.07 68.22 -101.11 69.37 C-101.38 81.86 -100.49 92.11 -92 102 C-89.46 104.22 -86.83 106.17 -84 108 C-83.9 106.83 -83.8 105.66 -83.7 104.45 C-82.2 88.02 -77.88 74.16 -66 62 C-60.35 57.48 -54.19 53.93 -47.89 50.41 C-42.35 47.27 -36.98 43.89 -31.62 40.44 C-30.79 39.91 -29.96 39.38 -29.1 38.83 C-13.69 28.82 -5.71 17.25 0 0 Z " transform="translate(656,281)"/><path d="M0 0 C-0.2 0.61 -0.41 1.21 -0.62 1.84 C-4.46 13.79 -5.12 24.47 0.06 36.19 C3.44 42.48 8.63 47.06 14.78 50.6 C15.51 51.06 16.25 51.52 17 52 C17 52.66 17 53.32 17 54 C16.26 54.34 15.52 54.68 14.76 55.03 C7.2 58.64 0.51 62.72 -6 68 C-6.78 68.63 -7.56 69.26 -8.37 69.91 C-21.55 81.74 -26.55 98.9 -28 116 C-33.01 112.31 -35.53 108.92 -38.12 103.31 C-38.46 102.6 -38.8 101.89 -39.15 101.16 C-48.51 81.42 -51.48 62.01 -44 41 C-36.87 24.69 -25.09 12.04 -10 2.81 C-9.35 2.41 -8.71 2.01 -8.04 1.6 C-3.38 -1.13 -3.38 -1.13 0 0 Z " transform="translate(439,374)"/><path d="M0 0 C0.33 0 0.66 0 1 0 C1 26.73 1 53.46 1 81 C0.67 81 0.34 81 0 81 C0 54.27 0 27.54 0 0 Z " transform="translate(599,645)"/><path d="M0 0 C0.33 0 0.66 0 1 0 C1 21.78 1 43.56 1 66 C0.67 66 0.34 66 0 66 C0 44.22 0 22.44 0 0 Z " transform="translate(444,660)"/>

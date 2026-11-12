@@ -1176,6 +1176,10 @@
     gap: 4px;
 }
 
+.restockContactInput {
+    flex: 1;
+}
+
 .restockContactToggle {
     width: 30px;
     height: 30px;
@@ -1364,7 +1368,8 @@
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, var(--pt-overlay-opacity, 0.25));
+    backdrop-filter: blur(var(--pt-overlay-blur, 0px));
     z-index: 1100;
     display: flex;
     align-items: flex-start;
@@ -1372,6 +1377,10 @@
     padding: 24px;
     overflow-y: auto;
     animation: melt-in var(--pt-enter-ms, 320ms) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.overlayClosing {
+    pointer-events: none;
 }
 
 /* Modal */
@@ -1388,6 +1397,37 @@
     flex-direction: column;
     gap: 2px;
     overflow: visible;
+}
+
+.modalHeaderRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.modalHeaderText {
+    flex: 1;
+    min-width: 0;
+}
+
+.modalPreviewBadge {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-sm, 6px);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+}
+
+.modalPreviewImg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 @keyframes modalSlideUp {
@@ -1545,6 +1585,40 @@
     z-index: 601;
     border-radius: 20px 0 0 20px;
     border-left: 2px solid var(--border);
+}
+
+.drawerPickupBanner {
+    border-top-left-radius: 18px;
+    background-color: var(--red);
+    color: var(--fg);
+    padding: 8px 16px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.drawerBasketLabel {
+    margin-top: 12px;
+}
+
+.drawerLineEst {
+    color: var(--fg-3);
+    margin-left: 6px;
+    font-size: 11px;
+}
+
+.drawerTipPrefix {
+    color: var(--fg);
+    font-weight: 700;
+}
+
+.drawerUpsellLabel {
+    color: var(--red);
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    margin-top: 10px;
 }
 
 .drawerHead {
@@ -3601,3 +3675,43 @@
     font-size: 18px;
     flex-shrink: 0;
 }
+
+/* ── Signed-in Contact Summary Card (Checkout Modal) ──────────────────────── */
+.signedInContactCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid rgba(212, 168, 83, 0.35);
+    border-radius: var(--radius-sm, 8px);
+    background: rgba(212, 168, 83, 0.08);
+    margin-bottom: 12px;
+}
+
+.signedInContactInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.signedInContactLabel {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold, #d4a853);
+}
+
+.signedInContactName {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--fg, #f0ece4);
+}
+
+.signedInContactMeta {
+    font-size: 12px;
+    color: var(--fg-muted, #a49f90);
+}
+

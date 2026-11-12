@@ -179,7 +179,13 @@ export default function OrderTrackerClient() {
                             const finished = status === 'completed';
                             const done = !cancelled && (i < activeIndex || finished);
                             const active = !cancelled && !finished && i === activeIndex;
-                            const state = done ? styles.segDone : active ? styles.segActive : styles.segTodo;
+                            const state = finished
+                                ? styles.segPickedUp
+                                : done
+                                  ? styles.segDone
+                                  : active
+                                    ? styles.segActive
+                                    : styles.segTodo;
                             return (
                                 <li key={stage.key} className={`${styles.seg} ${state}`} aria-current={active || (finished && i === activeIndex) ? 'step' : undefined}>
                                     <span className={styles.segFill} aria-hidden="true" />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, useRef, useTransition, type CSSProperties } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef, useTransition, useSyncExternalStore, type CSSProperties } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { usePageTransition } from '@/components/PageTransition';
@@ -356,11 +356,30 @@ export default function CheckoutClient() {
     const [activeStore, setActiveStore] = useState<StoreId>(() => readInitialCheckoutState().store);
     const [cart, setCart] = useState<CartItem[]>(() => readInitialCheckoutState().items);
 
-    const isAuthenticated = status === 'authenticated' && Boolean(session?.user);
+    const isGodModeClient = useSyncExternalStore(
+        () => () => {},
+        () => document.cookie.includes('hofherr_god_mode=true'),
+        () => false
+    );
+
+    const sessionUser = useMemo(() => {
+        if (session?.user) {
+            return session.user as { id?: string; name?: string | null; email?: string | null; phone?: string | null };
+        }
+        if (isGodModeClient) {
+            return {
+                id: 'god-mode-user',
+                name: 'Michael Scimeca',
+                email: 'mikeyscimeca@gmail.com',
+                phone: '847-441-6328',
+            };
+        }
+        return undefined;
+    }, [session?.user, isGodModeClient]);
+
+    const isAuthenticated = Boolean(sessionUser);
     const [guestProceeded, setGuestProceeded] = useState(false);
     const step: 'auth' | 'form' = isAuthenticated || guestProceeded ? 'form' : 'auth';
-
-    const sessionUser = session?.user as { id?: string; name?: string | null; email?: string | null; phone?: string | null } | undefined;
 
     // Form state
     const [nameInput, setNameInput] = useState('');
@@ -448,7 +467,7 @@ export default function CheckoutClient() {
     const activeDateLabel = activeDate ? formatShortDate(activeDate) : '';
     const pickupString = activeDateLabel && effectiveSlotValue ? `${activeDateLabel} at ${effectiveSlotValue}` : '';
 
-    const resolvedName = nameInput || sessionUser?.name || '';
+    const resolvedName = nameInput || sessionUser?.name || (isAuthenticated ? 'Hofherr Customer' : '');
     const resolvedEmail = emailInput || sessionUser?.email || '';
     const resolvedPhone = phoneInput || (sessionUser?.phone ? formatPhoneNumber(sessionUser.phone) : '');
 
@@ -782,73 +801,92 @@ export default function CheckoutClient() {
                         <form onSubmit={handleSubmit} className={styles.checkoutForm}>
                             {/* Contact info */}
                             <div className={styles.section}>
-                                <div className={styles.contactGrid}>
-                                    <div className={styles.contactLeft}>
-                                        <input
-                                            required
-                                            name="name"
-                                            id="checkout-name"
-                                            autoComplete="name"
-                                            className={styles.input}
-                                            placeholder="Full Name"
-                                            value={resolvedName}
-                                            onChange={e => setNameInput(e.target.value)}
-                                        />
-                                        <div className={styles.inputRow}>
-                                            <input
-                                                required
-                                                name="tel"
-                                                id="checkout-phone"
-                                                autoComplete="tel"
-                                                type="tel"
-                                                className={styles.input}
-                                                placeholder="(847) 555-0100"
-                                                value={resolvedPhone}
-                                                onChange={e => setPhoneInput(formatPhoneNumber(e.target.value))}
-                                            />
-                                            <input
-                                                required
-                                                name="email"
-                                                id="checkout-email"
-                                                autoComplete="email"
-                                                type="email"
-                                                className={styles.input}
-                                                placeholder="Email Address"
-                                                value={resolvedEmail}
-                                                onChange={e => setEmailInput(e.target.value)}
-                                            />
+                                {isAuthenticated ? (
+                                    <div className={styles.signedInCard}>
+                                        <div className={styles.signedInInfo}>
+                                            <span className={styles.signedInTag}>Signed In Account</span>
+                                            <span className={styles.signedInName}>{resolvedName}</span>
+                                            <span className={styles.signedInDetails}>
+                                                {[resolvedEmail, resolvedPhone].filter(Boolean).join(' · ')}
+                                            </span>
                                         </div>
-                                        <div className={styles.inputRow}>
-                                            <input
-                                                name="address"
-                                                id="checkout-address"
-                                                autoComplete="address-line1"
-                                                type="text"
-                                                className={styles.input}
-                                                placeholder="Street Address (Optional / Billing)"
-                                                value={addressInput}
-                                                onChange={e => setAddressInput(e.target.value)}
-                                            />
-                                            <input
-                                                name="postalCode"
-                                                id="checkout-postal"
-                                                autoComplete="postal-code"
-                                                type="text"
-                                                className={styles.input}
-                                                placeholder="ZIP / Postal Code"
-                                                value={postalCodeInput}
-                                                onChange={e => setPostalCodeInput(e.target.value)}
-                                            />
+                                        <div className={styles.contactRight}>
+                                            <p className={styles.reachLabel}>HOW SHOULD WE REACH YOU?</p>
+                                            <div className={styles.prefRow}>
+                                                <button type="button" className={`${styles.prefBtn} ${contactPref === 'phone' ? styles.prefBtnActive : ''}`} onClick={() => setContactPref('phone')}>📞 Call Me</button>
+                                                <button type="button" className={`${styles.prefBtn} ${contactPref === 'email' ? styles.prefBtnActive : ''}`} onClick={() => setContactPref('email')}>✉️ Email Me</button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className={styles.contactRight}>
-                                        <p className={styles.reachLabel}>HOW SHOULD WE REACH YOU?</p>
-                                        <div className={styles.prefRow}>
-                                            <button type="button" className={`${styles.prefBtn} ${contactPref === 'phone' ? styles.prefBtnActive : ''}`} onClick={() => setContactPref('phone')}>📞 Call Me</button>
-                                            <button type="button" className={`${styles.prefBtn} ${contactPref === 'email' ? styles.prefBtnActive : ''}`} onClick={() => setContactPref('email')}>✉️ Email Me</button>
+                                ) : (
+                                    <div className={styles.contactGrid}>
+                                        <div className={styles.contactLeft}>
+                                            <input
+                                                required
+                                                name="name"
+                                                id="checkout-name"
+                                                autoComplete="name"
+                                                className={styles.input}
+                                                placeholder="Full Name"
+                                                value={resolvedName}
+                                                onChange={e => setNameInput(e.target.value)}
+                                            />
+                                            <div className={styles.inputRow}>
+                                                <input
+                                                    required
+                                                    name="tel"
+                                                    id="checkout-phone"
+                                                    autoComplete="tel"
+                                                    type="tel"
+                                                    className={styles.input}
+                                                    placeholder="(847) 555-0100"
+                                                    value={resolvedPhone}
+                                                    onChange={e => setPhoneInput(formatPhoneNumber(e.target.value))}
+                                                />
+                                                <input
+                                                    required
+                                                    name="email"
+                                                    id="checkout-email"
+                                                    autoComplete="email"
+                                                    type="email"
+                                                    className={styles.input}
+                                                    placeholder="Email Address"
+                                                    value={resolvedEmail}
+                                                    onChange={e => setEmailInput(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className={styles.inputRow}>
+                                                <input
+                                                    name="address"
+                                                    id="checkout-address"
+                                                    autoComplete="address-line1"
+                                                    type="text"
+                                                    className={styles.input}
+                                                    placeholder="Street Address (Optional / Billing)"
+                                                    value={addressInput}
+                                                    onChange={e => setAddressInput(e.target.value)}
+                                                />
+                                                <input
+                                                    name="postalCode"
+                                                    id="checkout-postal"
+                                                    autoComplete="postal-code"
+                                                    type="text"
+                                                    className={styles.input}
+                                                    placeholder="ZIP / Postal Code"
+                                                    value={postalCodeInput}
+                                                    onChange={e => setPostalCodeInput(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className={styles.contactRight}>
+                                            <p className={styles.reachLabel}>HOW SHOULD WE REACH YOU?</p>
+                                            <div className={styles.prefRow}>
+                                                <button type="button" className={`${styles.prefBtn} ${contactPref === 'phone' ? styles.prefBtnActive : ''}`} onClick={() => setContactPref('phone')}>📞 Call Me</button>
+                                                <button type="button" className={`${styles.prefBtn} ${contactPref === 'email' ? styles.prefBtnActive : ''}`} onClick={() => setContactPref('email')}>✉️ Email Me</button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
 
                             {/* Date & time picker */}

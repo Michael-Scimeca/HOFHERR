@@ -522,7 +522,7 @@
     padding: 24px;
     box-shadow: 0 10px 30px rgba(209, 72, 54, 0.3);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     z-index: 1;
     border: 2px solid transparent;
     transition: all 0.3s ease;
@@ -531,17 +531,60 @@
     gap: 16px;
 }
 
+/* Shine: a diagonal glint sweeps across the red card every 10 seconds.
+   Drawn as a moving background so it stays inside the card's rounded shape
+   while the gift card image is free to overflow the top edge. */
 .giftCardCard::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transform: skewX(-20deg);
-    animation: shine 12s infinite linear;
+    inset: -2px;
+    border-radius: inherit;
+    background-image: linear-gradient(
+        100deg,
+        rgba(255, 255, 255, 0) 42%,
+        rgba(255, 255, 255, 0.1) 46%,
+        rgba(255, 255, 255, 0.28) 50%,
+        rgba(255, 255, 255, 0) 55%
+    );
+    background-repeat: no-repeat;
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    animation: giftCardShine 10s ease-in-out infinite;
+    pointer-events: none;
     z-index: 2;
+}
+
+@keyframes giftCardShine {
+    0% {
+        background-position: 100% 0;
+    }
+
+    18%,
+    100% {
+        background-position: 0% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .giftCardCard::before {
+        animation: none;
+    }
+}
+
+.giftCardFloatingImg {
+    position: absolute;
+    top: -42px;
+    right: -6px;
+    width: 186px;
+    height: auto;
+    pointer-events: none;
+    z-index: 3;
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.45));
+    transition: transform 0.3s ease;
+}
+
+.giftCardCard:hover .giftCardFloatingImg {
+    transform: translateY(-4px) rotate(1.5deg);
 }
 
 .giftCardCard:hover {
@@ -817,15 +860,19 @@
 
 /* ── Member Specials ── */
 .specialsSection {
-    margin-top: 48px;
-    padding-top: 32px;
-    border-top: 1px solid var(--card-border);
+    margin-bottom: 32px;
 }
 
 .specialsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 24px;
+}
+
+@media (max-width: 900px) {
+    .specialsGrid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .specialCard {
@@ -838,6 +885,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    gap: 16px;
 }
 
 .specialCard:hover {
@@ -901,7 +949,7 @@
 }
 
 .specialContent {
-    padding: 20px;
+    padding: 0;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -1251,6 +1299,236 @@
     font-size: 14px;
 }
 
+.restockNotificationsSection {
+    margin-bottom: 24px;
+    padding: 20px 24px;
+    border-radius: var(--radius-lg, 14px);
+    background: linear-gradient(145deg, rgba(22, 18, 17, 0.96), rgba(14, 12, 12, 0.96));
+    border: 1px solid rgba(212, 175, 55, 0.26);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+}
+
+.restockSectionHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.restockSectionSub {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--fg-2, #c9bfb5);
+    line-height: 1.5;
+}
+
+.restockSectionSub strong {
+    color: #fff;
+}
+
+.restockFilledPillCount {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: rgba(16, 185, 129, 0.18);
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    color: #6ee7b7;
+    white-space: nowrap;
+}
+
+.restockToastAlert {
+    margin-bottom: 14px;
+    padding: 12px 16px;
+    border-radius: var(--radius, 10px);
+    background: rgba(16, 185, 129, 0.14);
+    border: 1px solid rgba(16, 185, 129, 0.45);
+    color: #a7f3d0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.restockCardsStack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.restockAlertCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 16px 18px;
+    border-radius: var(--radius, 10px);
+    transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.restockAlertCardFilled {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(20, 28, 24, 0.92));
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12);
+}
+
+.restockAlertCardPending {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.restockAlertMain {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.restockAlertBadgeRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.restockBadgeFilled {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(16, 185, 129, 0.22);
+    border: 1px solid rgba(16, 185, 129, 0.55);
+    color: #6ee7b7;
+}
+
+.restockBadgePending {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.42);
+    color: #fcd34d;
+}
+
+.restockStoreTag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e5e5e5;
+}
+
+.restockEmailSentTag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(212, 175, 55, 0.14);
+    border: 1px solid rgba(212, 175, 55, 0.38);
+    color: var(--gold, #d4af37);
+}
+
+.restockItemHeading {
+    margin: 0;
+    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #fff;
+}
+
+.restockItemMeta {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--fg-2, #c9bfb5);
+    line-height: 1.45;
+}
+
+.restockItemMeta strong {
+    color: #fff;
+}
+
+.restockAlertActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.restockOrderNowBtn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: var(--red, #cc0e1d);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.restockOrderNowBtn:hover {
+    background: #a50b17;
+    transform: translateY(-1px);
+}
+
+.restockSimulateFillBtn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.45);
+    color: #6ee7b7;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.restockSimulateFillBtn:hover {
+    background: rgba(16, 185, 129, 0.26);
+    border-color: rgba(16, 185, 129, 0.75);
+}
+
+.restockDismissBtn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #bdbdbd;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.restockDismissBtn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
 .noTopMarginBtn {
     margin-top: 0;
     white-space: nowrap;
@@ -1594,15 +1872,247 @@
     gap: 18px;
 }
 
+.dashAvatarShowcase {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.dashAvatarShowcaseAllComplete .dashAvatarFrame {
+    border-color: var(--gold);
+    box-shadow:
+        0 0 36px rgba(var(--gold-rgb), 0.55),
+        0 12px 36px rgba(0, 0, 0, 0.85);
+}
+
+.dashAvatarHaloSvg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 2;
+}
+
+.dashHaloTrackArc {
+    fill: none;
+    stroke: rgba(var(--gold-rgb), 0.16);
+    stroke-width: 6;
+    stroke-linecap: round;
+}
+
+.dashHaloFillArc {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.45s ease, stroke 0.3s ease;
+}
+
+.dashHaloFillArcPartial {
+    stroke: var(--red);
+    filter: drop-shadow(0 0 6px rgba(var(--red-rgb), 0.55));
+}
+
+.dashHaloFillArcComplete {
+    stroke: var(--gold);
+    filter: drop-shadow(0 0 8px rgba(var(--gold-rgb), 0.7));
+}
+
+/* ── 7 Orbital Animal Badges around Avatar Ring ── */
+.dashOrbitalBadge {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #171310;
+    border: 1.5px solid rgba(var(--gold-rgb), 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    padding: 0;
+    cursor: pointer;
+    z-index: 6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.65);
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.dashOrbitalBadge:hover,
+.dashOrbitalBadge:focus-visible {
+    transform: translate(-50%, -50%) scale(1.16);
+    border-color: var(--gold);
+    box-shadow: 0 0 16px rgba(var(--gold-rgb), 0.45), 0 6px 16px rgba(0, 0, 0, 0.8);
+    outline: none;
+    z-index: 15;
+}
+
+.dashOrbitalEmpty {
+    opacity: 0.72;
+}
+
+.dashOrbitalPartial {
+    border-color: rgba(var(--red-rgb), 0.65);
+    background: linear-gradient(160deg, #241212 0%, #14100e 100%);
+    box-shadow: 0 0 12px rgba(var(--red-rgb), 0.28), 0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+.dashOrbitalComplete {
+    border-color: var(--gold);
+    background: linear-gradient(160deg, #2d2310 0%, #17120a 100%);
+    box-shadow: 0 0 14px rgba(var(--gold-rgb), 0.45), 0 4px 12px rgba(0, 0, 0, 0.75);
+}
+
+.dashOrbitalPos0 {
+    left: 11.27%;
+    top: 70.10%;
+}
+
+.dashOrbitalPos1 {
+    left: 7.27%;
+    top: 41.14%;
+}
+
+.dashOrbitalPos2 {
+    left: 22.45%;
+    top: 16.16%;
+}
+
+.dashOrbitalPos3 {
+    left: 50.00%;
+    top: 6.36%;
+}
+
+.dashOrbitalPos4 {
+    left: 77.55%;
+    top: 16.16%;
+}
+
+.dashOrbitalPos5 {
+    left: 92.73%;
+    top: 41.14%;
+}
+
+.dashOrbitalPos6 {
+    left: 88.73%;
+    top: 70.10%;
+}
+
+.dashOrbitalEmoji {
+    font-size: 13px;
+    line-height: 1;
+}
+
+.dashOrbitalCount {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    color: var(--fg-2);
+    font-variant-numeric: tabular-nums;
+}
+
+.dashOrbitalComplete .dashOrbitalCount {
+    color: var(--gold);
+}
+
+.dashOrbitalPartial .dashOrbitalCount {
+    color: #fca5a5;
+}
+
+.dashOrbitalTooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #14110f;
+    border: 1px solid rgba(var(--gold-rgb), 0.45);
+    border-radius: var(--radius-sm);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--fg-2);
+    white-space: nowrap;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.85);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+    z-index: 30;
+}
+
+.dashOrbitalTooltip strong {
+    color: var(--gold);
+}
+
+.dashOrbitalBadge:hover .dashOrbitalTooltip,
+.dashOrbitalBadge:focus-visible .dashOrbitalTooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ── Bottom Order Count & Rank Crest on Avatar ── */
+.dashAvatarOrderCrest {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #211811 0%, #120e0b 100%);
+    border: 1.5px solid var(--gold);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), 0 0 14px rgba(var(--gold-rgb), 0.28);
+    z-index: 8;
+    white-space: nowrap;
+}
+
+.dashOrderCrestIcon {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.dashOrderCrestCount {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+}
+
+.dashOrderCrestDivider {
+    color: rgba(var(--gold-rgb), 0.55);
+    font-size: 10px;
+}
+
+.dashOrderCrestRank {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+}
+
 .dashAvatarFrame {
     position: relative;
-    width: 140px;
-    height: 140px;
+    width: 132px;
+    height: 132px;
     border-radius: 50%;
     border: 3px solid var(--gold);
-    box-shadow: 0 0 30px rgba(var(--gold-rgb), 0.3), 0 12px 36px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 28px rgba(var(--gold-rgb), 0.28), 0 12px 32px rgba(0, 0, 0, 0.8);
     background: var(--bg-3);
-    margin-bottom: 4px;
+    z-index: 4;
 }
 
 .dashAvatarImg {
@@ -1620,7 +2130,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 56px;
+    font-size: 52px;
     font-weight: 900;
     color: var(--gold);
     background: var(--bg-4);
@@ -1629,10 +2139,10 @@
 
 .dashAvatarEditBtn {
     position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 34px;
-    height: 34px;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: var(--gold);
     color: var(--dark);
@@ -1649,6 +2159,330 @@
 .dashAvatarEditBtn:hover {
     transform: scale(1.1);
     background: #fff;
+}
+
+/* ── Profile Reward System Panel (Orders + 7 Animals) ── */
+.dashRewardPanel {
+    width: 100%;
+    background: rgba(20, 16, 13, 0.82);
+    border: 1px solid rgba(var(--gold-rgb), 0.24);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+    margin-top: 4px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.dashOrderRewardSection,
+.dashAnimalMasterySection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dashAnimalMasterySection {
+    padding-top: 12px;
+    border-top: 1px solid rgba(var(--gold-rgb), 0.16);
+}
+
+.dashRewardHeaderRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.dashRewardSectionLabel {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--gold);
+}
+
+.dashRewardNextText {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--fg-3);
+    font-variant-numeric: tabular-nums;
+}
+
+.dashOrderProgressTrack {
+    width: 100%;
+    height: 7px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(var(--gold-rgb), 0.2);
+}
+
+.dashOrderProgressFill {
+    height: 100%;
+    width: var(--reward-pct, 0%);
+    background: linear-gradient(90deg, var(--red) 0%, var(--gold) 100%);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+.dashOrderMilestonesRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.dashMilestonePill {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.dashMilestonePillUnlocked {
+    background: rgba(var(--gold-rgb), 0.14);
+    border-color: rgba(var(--gold-rgb), 0.45);
+    color: var(--gold);
+}
+
+.dashRewardPerkNote {
+    font-size: 11px;
+    color: var(--fg-2);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.dashAnimalMasteryGrid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 6px;
+}
+
+@media (max-width: 480px) {
+    .dashAnimalMasteryGrid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.dashAnimalMiniCard {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.dashAnimalMiniCard:hover,
+.dashAnimalMiniCard:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--gold);
+    background: rgba(var(--gold-rgb), 0.1);
+    outline: none;
+}
+
+.dashAnimalMiniCardPartial {
+    border-color: rgba(var(--red-rgb), 0.45);
+    background: rgba(var(--red-rgb), 0.08);
+}
+
+.dashAnimalMiniCardComplete {
+    border-color: var(--gold);
+    background: rgba(var(--gold-rgb), 0.16);
+    box-shadow: 0 0 10px rgba(var(--gold-rgb), 0.2);
+}
+
+.dashAnimalMiniTop {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.dashAnimalMiniEmoji {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.dashAnimalMiniCheck {
+    position: absolute;
+    top: -3px;
+    right: 2px;
+    font-size: 9px;
+    color: var(--gold);
+    line-height: 1;
+}
+
+.dashAnimalMiniName {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--fg-2);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashAnimalMiniCardComplete .dashAnimalMiniName {
+    color: var(--gold);
+}
+
+.dashAnimalMiniParts {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--fg-3);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.dashAnimalMiniCardComplete .dashAnimalMiniParts {
+    color: var(--fg);
+}
+
+.dashAnimalMiniBarTrack {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 2px;
+}
+
+.dashAnimalMiniBarFill {
+    height: 100%;
+    width: var(--animal-pct, 0%);
+    background: var(--red);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+}
+
+.dashAnimalMiniCardComplete .dashAnimalMiniBarFill {
+    background: var(--gold);
+}
+
+/* ── Profile Card Tangible Completion Payoffs Locker ── */
+.dashTangibleLockerSection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(var(--gold-rgb), 0.16);
+}
+
+.dashContactDetailsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(var(--gold-rgb), 0.16);
+}
+
+.dashMergedDetailsStack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.dashMergedDetailsStack .infoItem {
+    margin-bottom: 0;
+}
+
+.dashTangibleMiniList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dashTangibleMiniRow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    text-align: left;
+}
+
+.dashTangibleMiniRowUnlocked {
+    background: linear-gradient(135deg, rgba(245, 155, 26, 0.16) 0%, rgba(139, 10, 16, 0.2) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.55);
+}
+
+.dashTangibleMiniRowLocked {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.dashTangibleMiniIcon {
+    font-size: 16px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.dashTangibleMiniBody {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.dashTangibleMiniTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.dashTangibleMiniTitle {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--fg);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dashTangibleBadgeEarned {
+    font-family: var(--font-mono, monospace);
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #4ade80;
+    background: rgba(34, 197, 94, 0.16);
+    border: 1px solid rgba(74, 222, 128, 0.45);
+    padding: 1px 6px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.dashTangibleBadgeLocked {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--fg-3);
+    background: rgba(255, 255, 255, 0.06);
+    padding: 1px 6px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.dashTangibleMiniSub {
+    font-size: 10px;
+    color: var(--gold);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .dashProfileName {
@@ -1991,28 +2825,30 @@
 }
 
 .giftCardTopOffset {
-    margin-top: 16px;
+    margin-top: 32px;
 }
 
 .giftCardLabel {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.78);
     font-weight: 700;
+    max-width: 55%;
 }
 
 .giftCardBody {
-    margin: 8px 0;
+    margin: 6px 0 4px;
 }
 
 .giftCardHeading {
-    font-size: 20px;
+    font-size: 22px;
     color: #fff;
     margin-bottom: 8px;
     font-family: var(--font-heading);
+    max-width: 58%;
 }
 
 .giftCardDesc {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.92);
     line-height: 1.5;
 }
 
@@ -2153,6 +2989,11 @@
     margin-bottom: 32px;
 }
 
+.liveTrackerCardGreen {
+    border-color: rgba(34, 197, 94, 0.65);
+    box-shadow: 0 12px 40px rgba(22, 163, 74, 0.18);
+}
+
 .liveTrackerTop {
     display: flex;
     justify-content: space-between;
@@ -2176,6 +3017,11 @@
     background: var(--red);
     box-shadow: 0 0 10px var(--red);
     animation: trackerPulse 1.8s ease-in-out infinite;
+}
+
+.liveTrackerPulseDotGreen {
+    background: #22c55e;
+    box-shadow: 0 0 12px #22c55e;
 }
 
 @keyframes trackerPulse {
@@ -2220,6 +3066,10 @@
     color: var(--accent-gold);
     font-variant-numeric: tabular-nums;
     margin-top: 4px;
+}
+
+.liveTrackerEtaValueGreen {
+    color: #4ade80;
 }
 
 .liveTrackerBar {
@@ -2299,14 +3149,30 @@
 }
 
 .liveSegDone,
-.liveSegActive {
+.liveSegActive,
+.liveSegPickedUp {
     color: #fff;
     border-color: transparent;
 }
 
 .liveSegDone .liveSegFill,
-.liveSegActive .liveSegFill {
+.liveSegActive .liveSegFill,
+.liveSegPickedUp .liveSegFill {
     transform: scaleX(1);
+}
+
+.liveSegPickedUp {
+    border-color: rgba(34, 197, 94, 0.55);
+    box-shadow: 0 0 18px rgba(22, 163, 74, 0.32);
+}
+
+.liveSegPickedUp .liveSegFill {
+    background: linear-gradient(90deg, var(--green-depot, #142a1e) 0%, #15803d 55%, #16a34a 100%);
+}
+
+.liveSegPickedUp:hover {
+    border-color: #4ade80;
+    box-shadow: 0 0 22px rgba(34, 197, 94, 0.48);
 }
 
 .liveSegActive .liveSegFill {
@@ -2389,6 +3255,70 @@
 .liveTrackerItemNote {
     color: var(--text-secondary);
     font-style: italic;
+}
+
+/* Change or cancel: self-serve cancel while the order is only placed,
+   a call-the-shop line once cutting has started. */
+.liveTrackerHelp {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #1e1e1e;
+}
+
+.liveTrackerHelpRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.liveTrackerHelpText {
+    margin: 0;
+    color: #d4d4d4;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.liveTrackerHelpText strong {
+    color: #fff;
+}
+
+.liveTrackerHelpActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.liveTrackerCancelBtn {
+    min-height: 40px;
+    padding: 0 16px;
+    background: transparent;
+    color: #d4d4d4;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.liveTrackerCancelBtn:hover {
+    border-color: var(--red);
+    color: #fff;
+}
+
+.liveTrackerCancelBtn:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+}
+
+.liveTrackerCancelBtnDanger {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
 }
 
 .liveTrackerControls {
@@ -2479,6 +3409,170 @@
 .liveTrackerDemoBtn:hover {
     background: var(--red-dark);
     transform: translateY(-1px);
+}
+
+/* ── 4-Step Order Tracking Process Cards + Butcher Guide Pieces on Account Tracker ── */
+.trackerStepsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.trackerStepCard {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.trackerStepCard:hover {
+    border-color: rgba(245, 155, 26, 0.45);
+}
+
+.trackerStepCardDone {
+    background: rgba(34, 197, 94, 0.08);
+    border-color: rgba(34, 197, 94, 0.38);
+}
+
+.trackerStepCardActive {
+    background: rgba(204, 14, 29, 0.16);
+    border-color: var(--gold);
+    box-shadow: 0 4px 16px rgba(204, 14, 29, 0.28);
+}
+
+.trackerStepTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.trackerStepNum {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.trackerStepStatus {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.trackerStepName {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.trackerStepDesc {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.35;
+}
+
+.trackerCutsShowcase {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.trackerCutsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.trackerCutsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.trackerCutCard {
+    background: #14100d;
+    border: 1px solid rgba(245, 155, 26, 0.32);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.trackerCutStage {
+    background: #f3ead8;
+    border-bottom: 2px solid #6b070b;
+    padding: 6px;
+}
+
+.trackerCutSvg {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 896;
+    display: block;
+    border-radius: 6px;
+}
+
+.trackerCutHighlight {
+    fill: #f7941d;
+    fill-opacity: 0.92;
+    stroke: #6b070b;
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+}
+
+.trackerCutWoodcut {
+    fill: #6b070b;
+    pointer-events: none;
+}
+
+.trackerCutLabel {
+    fill: #faf0e6;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+}
+
+.trackerCutMeta {
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.trackerCutBadge {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.trackerCutTitle {
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.trackerCutProduct {
+    font-size: 12px;
+    color: #d6c7b8;
 }
 
 /* ── Responsive Mobile ── */

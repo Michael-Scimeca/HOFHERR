@@ -519,8 +519,8 @@
 }
 
 .cta {
-    background: var(--gold);
-    color: var(--dark);
+    background: var(--red);
+    color: #fff;
     padding: 9px 18px;
     border-radius: 6px;
     font-size: 11px;
@@ -532,16 +532,16 @@
 }
 
 .cta:hover {
-    background: var(--gold-light);
-    color: var(--dark);
+    background: var(--red-dark);
+    color: #fff;
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(168, 144, 95, 0.4);
+    box-shadow: 0 4px 16px rgba(204, 14, 29, 0.45);
 }
 
 .ctaActive {
-    background: var(--gold-dark);
-    color: var(--dark);
-    box-shadow: 0 0 0 3px rgba(168, 144, 95, 0.35), 0 4px 12px rgba(168, 144, 95, 0.3);
+    background: var(--red-dark);
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(204, 14, 29, 0.35), 0 4px 12px rgba(204, 14, 29, 0.3);
 }
 
 /* ─── Cart Icon ─── */

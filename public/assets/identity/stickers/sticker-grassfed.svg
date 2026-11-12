@@ -5,7 +5,7 @@
     <style>
       .st0, .st1 { fill: none; }
       .st2 { mask: url(#mask); }
-      .st3 { font-size: 126px; }
+      .st3 { font-size: 108px; }
       .st3, .st4, .st5, .st6, .st7, .st8, .st9, .st10 { fill: #8b0a10; }
       .st3, .st4, .st5, .st11, .st7, .st8, .st12, .st9 { isolation: isolate; }
       .st3, .st4, .st5, .st7, .st8, .st9 {
@@ -16,7 +16,7 @@
         stroke-linejoin: round;
         paint-order: stroke fill;
       }
-      .st4, .st5 { font-size: 127px; }
+      .st4, .st5 { font-size: 116px; }
       .st1 { stroke: #8b0a10; stroke-miterlimit: 16; stroke-width: 28px; }
       .st7, .st8 { font-size: 128px; }
       .st12 { fill: #e85222; opacity: .88; }
@@ -65,21 +65,21 @@
   <g class="st11"><text class="st7" transform="translate(1558.3485 597.1629) rotate(57.04)"><tspan x="0" y="0">.</tspan></text></g>
   <g class="st11"><text class="st7" transform="translate(1610.9194 686.0188) rotate(66.45)"><tspan x="0" y="0">•</tspan></text></g>
   
-  <g class="st11"><text class="st4" transform="translate(524.62, 1605.73) rotate(38.13)"><tspan x="0" y="0">•</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(596.24, 1655.65) rotate(31.63)"><tspan x="0" y="0">1</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(644.45, 1683.00) rotate(27.50)"><tspan x="0" y="0">0</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(705.33, 1711.39) rotate(22.50)"><tspan x="0" y="0">0</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(768.46, 1734.36) rotate(17.50)"><tspan x="0" y="0">%</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(876.23, 1759.99) rotate(9.25)"><tspan x="0" y="0">G</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(942.94, 1767.88) rotate(4.25)"><tspan x="0" y="0">R</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1010.08, 1769.93) rotate(-0.75)"><tspan x="0" y="0">A</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1077.14, 1766.13) rotate(-5.75)"><tspan x="0" y="0">S</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1143.62, 1756.49) rotate(-10.75)"><tspan x="0" y="0">S</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1209.01, 1741.09) rotate(-15.75)"><tspan x="0" y="0">-</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1272.80, 1720.05) rotate(-20.75)"><tspan x="0" y="0">F</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1334.52, 1693.54) rotate(-25.75)"><tspan x="0" y="0">E</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1393.70, 1661.74) rotate(-30.75)"><tspan x="0" y="0">D</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1475.38, 1605.73) rotate(-38.12)"><tspan x="0" y="0">•</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(459.91, 1540.37) rotate(44.99)"><tspan x="0" y="0">•</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(549.85, 1617.30) rotate(36.10)"><tspan x="0" y="0">1</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(606.34, 1654.77) rotate(31.01)"><tspan x="0" y="0">0</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(670.63, 1689.36) rotate(25.54)"><tspan x="0" y="0">0</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(751.97, 1722.62) rotate(18.94)"><tspan x="0" y="0">%</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(893.79, 1756.58) rotate(7.99)"><tspan x="0" y="0">G</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(973.18, 1763.53) rotate(2.01)"><tspan x="0" y="0">R</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(1051.01, 1762.30) rotate(-3.83)"><tspan x="0" y="0">A</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(1126.10, 1753.52) rotate(-9.50)"><tspan x="0" y="0">S</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(1197.43, 1738.05) rotate(-14.98)"><tspan x="0" y="0">S</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(1258.92, 1718.79) rotate(-19.81)"><tspan x="0" y="0">-</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(1316.54, 1695.34) rotate(-24.48)"><tspan x="0" y="0">F</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(1378.87, 1663.44) rotate(-29.73)"><tspan x="0" y="0">E</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(1442.89, 1622.53) rotate(-35.43)"><tspan x="0" y="0">D</tspan></text></g>
+  <g class="st11"><text class="st3" text-anchor="middle" transform="translate(1540.09, 1540.37) rotate(-44.99)"><tspan x="0" y="0">•</tspan></text></g>
   <g>
     <g class="st11"><text class="st9" transform="translate(240.39 996.01) rotate(-8)"><tspan x="0" y="0">EST.</tspan></text></g>
     <g class="st11"><text class="st9" transform="translate(241.0249 1092.8677) rotate(-8)"><tspan x="0" y="0">2018</tspan></text></g>
@@ -91,7 +91,7 @@
 
 
     <!-- Central Cut Artwork -->
-    <g transform="translate(1000, 1000) scale(0.88) translate(-512, -512)">
+    <g transform="translate(1000, 990) scale(1.812) translate(-511.5, -507.0)">
 <g transform="translate(64, 64) scale(0.875)">
     <g fill="#E85222" fill-rule="evenodd">
       <path d="M0 0 C0.05 0.45 0.05 0.45 0.3 2.71 C1.25 10.42 2.77 16.96 6 24 C8.75 30.14 9.2 36.19 7.16 42.66 C4.28 48.94 0.13 53.44 -5 58 C-12 51.62 -17.21 44.14 -18.44 34.59 C-18.82 23.16 -15.45 15.47 -8.38 6.44 C-2.1 0 -2.1 0 0 0 Z " transform="translate(716,153)"/><path d="M0 0 C1.28 2.55 0.78 3.25 0 5.94 C-2.7 17.91 1.74 26.73 7.17 37.16 C9.55 42.42 9.89 48.01 8.25 53.53 C6.36 58.44 4.15 62.76 1 67 C0.38 67.87 -0.24 68.73 -0.88 69.62 C-3.3 72.34 -5.95 74.03 -9 76 C-19.69 61.96 -27.35 51.31 -26 33 C-23.12 18.87 -11.57 7.79 0 0 Z " transform="translate(612,170)"/><path d="M0 0 C5.4 8.1 7.33 18.92 5.54 28.45 C3.38 36.72 -0.35 42.56 -7.56 47.25 C-13.94 50.79 -21.63 54 -29 54 C-31.57 46.28 -30.37 37.32 -27 30 C-23.77 24.37 -20.03 21.37 -14.5 18.12 C-8.34 14.29 -4.63 10.94 -2 4 C-1.34 2.66 -0.68 1.33 0 0 Z " transform="translate(753,234)"/><path d="M0 0 C5.34 4.32 5.62 12.53 6.33 18.96 C6.92 34.39 1.19 46.43 -6.32 59.49 C-13.95 72.8 -17.06 84.95 -12.97 100.04 C-8.79 112.77 0.18 119.27 10.69 126.66 C20.91 133.86 28.66 142.28 31 155 C31 156.32 31 157.64 31 159 C31.55 158.71 32.11 158.42 32.68 158.12 C33.4 157.75 34.13 157.38 34.88 157 C35.59 156.63 36.31 156.26 37.05 155.88 C39 155 39 155 41 155 C41.28 154.43 41.56 153.85 41.85 153.26 C42.58 151.83 43.34 150.41 44.15 149.02 C47.6 142.8 49.24 136.63 50.66 129.71 C51.81 124.19 51.81 124.19 54 122 C55.81 126.62 57.6 131.24 59.39 135.87 C60 137.44 60.61 139 61.22 140.57 C70.38 164.01 75.14 186.73 65.88 211.12 C57.75 229.23 44.5 240.85 26.69 249 C26.02 249.32 25.35 249.63 24.66 249.96 C20.36 251.84 17.53 252.28 13 251 C12.34 250.67 11.68 250.34 11 250 C12.52 245.95 14.43 242.2 16.44 238.38 C24.42 222.46 25.73 204.79 20.39 187.68 C15.83 175.58 10.43 164.93 2 155 C1.58 154.51 1.58 154.51 -0.52 152.02 C-11.96 138.89 -25.8 128.74 -39.84 118.57 C-71.65 95.46 -71.65 95.46 -76 86 C-76.9 77.13 -72.6 69.73 -67.39 62.88 C-60.01 54.75 -49.57 49.57 -40.12 44.23 C-20.84 33.33 -6.67 21.83 0 0 Z " transform="translate(656,282)"/><path d="M0 0 C0.33 0.17 0.33 0.17 2 1 C1.39 1.89 0.77 2.79 0.14 3.71 C-0.68 4.93 -1.5 6.15 -2.31 7.38 C-2.51 7.67 -2.51 7.67 -3.54 9.14 C-8.88 17.22 -10.55 25.54 -10.44 35.12 C-10.43 36.04 -10.42 36.95 -10.41 37.89 C-9.77 63.16 3.41 83.36 19.58 101.79 C33 117.22 33 117.22 33 122 C27.37 124.21 21.94 125.44 15.94 126.19 C15.28 126.27 14.62 126.35 13.94 126.44 C5.78 127.38 -0.27 127.4 -7.69 123.75 C-32.94 112.04 -61.88 109.53 -88.56 117.81 C-98.17 120.74 -106.11 119.29 -115.8 117.39 C-126.67 115.47 -137.35 117.91 -148 120 C-150 120.34 -152 120.68 -154 121 C-161.48 103.94 -162.27 86.57 -156 69 C-152.44 59.94 -147.5 52.21 -141 45 C-140.47 44.39 -139.94 43.78 -139.39 43.15 C-132.58 35.77 -123 29.4 -114 25 C-113.34 25.33 -112.68 25.66 -112 26 C-112.14 26.44 -112.14 26.44 -112.88 28.64 C-116.68 40.86 -117.86 51.2 -112 63 C-107.39 70.87 -100.53 76.97 -91.68 79.53 C-80.82 81.44 -70.05 80.74 -60.76 74.49 C-51.65 67.1 -46.67 56.34 -42.19 45.75 C-38.33 36.66 -34.37 28.66 -28 21 C-27.7 20.61 -27.7 20.61 -26.18 18.65 C-19.35 10.31 -10.14 3.71 0 0 Z " transform="translate(551,347)"/>

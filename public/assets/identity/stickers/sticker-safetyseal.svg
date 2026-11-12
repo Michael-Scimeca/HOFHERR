@@ -5,7 +5,7 @@
     <style>
       .st0, .st1 { fill: none; }
       .st2 { mask: url(#mask); }
-      .st3 { font-size: 126px; }
+      .st3 { font-size: 108px; }
       .st3, .st4, .st5, .st6, .st7, .st8, .st9, .st10 { fill: #8b0a10; }
       .st3, .st4, .st5, .st11, .st7, .st8, .st12, .st9 { isolation: isolate; }
       .st3, .st4, .st5, .st7, .st8, .st9 {
@@ -16,7 +16,7 @@
         stroke-linejoin: round;
         paint-order: stroke fill;
       }
-      .st4, .st5 { font-size: 127px; }
+      .st4, .st5 { font-size: 116px; }
       .st1 { stroke: #8b0a10; stroke-miterlimit: 16; stroke-width: 28px; }
       .st7, .st8 { font-size: 128px; }
       .st12 { fill: #e85222; opacity: .88; }
@@ -65,18 +65,18 @@
   <g class="st11"><text class="st7" transform="translate(1558.3485 597.1629) rotate(57.04)"><tspan x="0" y="0">.</tspan></text></g>
   <g class="st11"><text class="st7" transform="translate(1610.9194 686.0188) rotate(66.45)"><tspan x="0" y="0">•</tspan></text></g>
   
-  <g class="st11"><text class="st4" transform="translate(577.44, 1643.70) rotate(33.28)"><tspan x="0" y="0">•</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(668.62, 1695.05) rotate(25.49)"><tspan x="0" y="0">S</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(734.03, 1722.60) rotate(20.21)"><tspan x="0" y="0">A</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(801.69, 1744.02) rotate(14.92)"><tspan x="0" y="0">F</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(871.04, 1759.12) rotate(9.64)"><tspan x="0" y="0">E</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(941.48, 1767.77) rotate(4.36)"><tspan x="0" y="0">T</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1012.42, 1769.90) rotate(-0.92)"><tspan x="0" y="0">Y</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1128.96, 1759.12) rotate(-9.64)"><tspan x="0" y="0">S</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1198.31, 1744.02) rotate(-14.92)"><tspan x="0" y="0">E</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1265.97, 1722.60) rotate(-20.21)"><tspan x="0" y="0">A</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1331.38, 1695.05) rotate(-25.49)"><tspan x="0" y="0">L</tspan></text></g>
-  <g class="st11"><text class="st4" transform="translate(1422.56, 1643.70) rotate(-33.28)"><tspan x="0" y="0">•</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(485.11, 1564.43) rotate(42.37)"><tspan x="0" y="0">•</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(601.77, 1652.00) rotate(31.42)"><tspan x="0" y="0">S</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(680.54, 1694.01) rotate(24.72)"><tspan x="0" y="0">A</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(761.17, 1725.71) rotate(18.22)"><tspan x="0" y="0">F</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(841.00, 1747.27) rotate(12.01)"><tspan x="0" y="0">E</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(924.44, 1760.25) rotate(5.68)"><tspan x="0" y="0">T</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1011.44, 1763.91) rotate(-0.86)"><tspan x="0" y="0">Y</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1161.58, 1746.72) rotate(-12.21)"><tspan x="0" y="0">S</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1243.84, 1724.04) rotate(-18.61)"><tspan x="0" y="0">E</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1325.84, 1691.03) rotate(-25.24)"><tspan x="0" y="0">A</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1401.23, 1650.16) rotate(-31.68)"><tspan x="0" y="0">L</tspan></text></g>
+  <g class="st11"><text class="st4" text-anchor="middle" transform="translate(1514.89, 1564.43) rotate(-42.37)"><tspan x="0" y="0">•</tspan></text></g>
   <g>
     <g class="st11"><text class="st9" transform="translate(240.39 996.01) rotate(-8)"><tspan x="0" y="0">EST.</tspan></text></g>
     <g class="st11"><text class="st9" transform="translate(241.0249 1092.8677) rotate(-8)"><tspan x="0" y="0">2018</tspan></text></g>

@@ -5,6 +5,19 @@
 
 import { WOODCUT_MASTER_PATHS } from './woodcutSilhouettes';
 
+export interface CutRecipe {
+    title: string;
+    prepTime: string;
+    cookTime: string;
+    method: string;
+    internalTemp?: string;
+    woodOrPan?: string;
+    rubOrSeasoning?: string;
+    summary: string;
+    steps: string[];
+    chefTip: string;
+}
+
 export interface CutDefinition {
     id: string;
     name: string;
@@ -14,6 +27,9 @@ export interface CutDefinition {
     labelX: number;
     labelY: number;
     products: string[];
+    preparedProducts?: string[];
+    isAdventurousCut?: boolean;
+    recipe?: CutRecipe;
     callout?: {
         x: number;
         y: number;
@@ -83,7 +99,29 @@ export const CUT_MAP_DATA: Record<AnimalId, AnimalDefinition> = {
                 svgPath: 'M 310.8 167.7 c -0.2 0.4 -0.3 7.5 -0.3 15.8 0.0 12.9 -0.2 14.9 -1.5 14.5 -0.8 -0.3 -10.7 -0.5 -22.0 -0.6 -16.8 -0.0 -21.0 -0.3 -23.6 -1.6 -5.1 -2.8 -11.4 -10.6 -15.5 -19.4 -3.8 -8.2 -4.0 -8.4 -7.4 -8.4 -4.4 -0.0 -5.5 2.0 -5.5 10.3 0.0 11.4 5.8 25.4 14.6 35.5 3.5 4.0 4.3 5.6 3.5 6.6 -0.9 1.1 -2.0 1.1 -6.4 -0.1 -5.8 -1.6 -16.1 -1.0 -21.4 1.2 -3.0 1.3 -3.3 1.8 -3.3 6.0 0.0 4.8 2.7 11.3 6.2 15.1 1.9 2.2 1.9 2.2 -0.6 6.3 -1.4 2.2 -2.6 4.7 -2.6 5.4 0.0 0.7 -0.9 4.0 -2.0 7.4 -3.7 10.7 -25.0 35.5 -43.0 49.9 -9.9 7.9 -11.7 11.5 -10.2 20.2 0.6 3.5 2.3 9.0 3.9 12.1 2.2 4.4 3.8 6.1 7.5 8.2 2.7 1.4 6.0 3.7 7.5 5.2 7.5 7.1 19.2 8.6 32.9 4.1 10.0 -3.2 13.9 -2.8 29.2 3.2 14.4 5.6 20.6 7.1 31.7 7.9 10.5 0.8 19.5 4.3 19.5 7.6 0.0 1.4 0.7 1.9 2.5 1.9 4.0 -0.0 25.8 22.5 38.5 39.7 l 10.5 14.3 4.2 -0.0 4.3 -0.0 20.1 -30.2 20.2 -30.2 10.3 -30.8 10.2 -30.7 0.7 -34.4 0.8 -34.5 -9.3 0.8 c -18.0 -1.5 -34.0 -6.0 -47.0 -11.0 l -2.0 -9.0 c -8.0 -4.5 -20.0 -5.5 -29.9 -7.4 -3.0 1.3 -3.6 1.2 -5.2 -0.2 -1.6 -1.4 -1.6 -1.9 -0.2 -6.1 2.1 -6.0 1.3 -18.9 -1.6 -26.4 -1.2 -3.1 -3.9 -8.5 -6.0 -12.0 -3.6 -6.0 -4.1 -6.4 -8.0 -6.7 -2.2 -0.2 -4.2 -0.0 -4.3 0.5 z',
                 labelX: 278,
                 labelY: 312,
-                products: ['Beef Cheek'],
+                isAdventurousCut: true,
+                products: [
+                    'Beef Cheek',
+                    'Braised Beef Cheek Barbacoa (Prepared)',
+                    'Red-Wine Braised Beef Cheeks (Prepared)',
+                ],
+                preparedProducts: [
+                    'Braised Beef Cheek Barbacoa (Prepared)',
+                    'Red-Wine Braised Beef Cheeks (Prepared)',
+                ],
+                recipe: {
+                    title: '6-Hour Cabernet Braised Beef Cheeks',
+                    prepTime: '15 mins',
+                    cookTime: '3.5 hrs at 300°F',
+                    method: 'Dutch Oven Braise',
+                    summary: 'Beef cheek is the most collagen-rich muscle on the steer—once slow-braised, it turns into spoon-tender velvet for tacos or polenta.',
+                    steps: [
+                        'Pat dry 2 lbs Beef Cheeks, season generously with kosher salt & cracked black pepper, and sear in beef tallow until deeply crusted.',
+                        'Sweat mirepoix, smashed garlic, and tomato paste in the Dutch oven, then deglaze with 2 cups Cabernet Sauvignon and 2 cups roasted beef bone broth.',
+                        'Cover tightly and braise at 300°F for 3.5 hours until fork-shreddable; strain and reduce the jus into a mirror glaze.',
+                    ],
+                    chefTip: 'Not ready to braise raw cheeks at home? Order our Heat-&-Serve Braised Beef Cheek Barbacoa and it counts 100% toward your Head stamp!',
+                },
             },
             {
                 id: 'chuck',
@@ -220,7 +258,31 @@ export const CUT_MAP_DATA: Record<AnimalId, AnimalDefinition> = {
                 svgPath: 'M 439 491 L 440 490 L 441 490 L 442 489 L 443 489 L 444 489 L 445 488 L 446 486 L 447 485 L 448 483 L 449 482 L 450 480 L 451 479 L 452 478 L 453 477 L 454 476 L 455 475 L 456 474 L 457 473 L 458 473 L 459 473 L 460 472 L 461 472 L 462 472 L 463 472 L 464 471 L 465 471 L 466 471 L 467 471 L 468 471 L 469 471 L 470 471 L 471 471 L 472 471 L 473 471 L 474 471 L 475 471 L 476 471 L 477 471 L 478 471 L 479 471 L 480 471 L 481 471 L 482 471 L 483 471 L 484 471 L 485 471 L 486 471 L 487 471 L 488 471 L 489 472 L 490 472 L 491 472 L 492 472 L 493 472 L 494 473 L 495 473 L 496 473 L 497 473 L 498 474 L 499 474 L 500 475 L 501 476 L 502 476 L 503 477 L 504 478 L 505 478 L 506 479 L 507 480 L 508 480 L 509 481 L 510 482 L 511 482 L 512 483 L 513 484 L 514 484 L 515 485 L 515 491 L 514 501 L 513 511 L 512 518 L 511 523 L 510 528 L 509 533 L 508 538 L 507 543 L 506 544 L 505 544 L 504 544 L 503 545 L 502 547 L 501 547 L 500 547 L 499 547 L 498 547 L 497 547 L 496 547 L 495 547 L 494 547 L 493 547 L 492 548 L 491 548 L 490 548 L 489 548 L 488 549 L 487 549 L 486 550 L 485 550 L 484 550 L 483 550 L 482 550 L 481 550 L 480 549 L 479 549 L 478 549 L 477 549 L 476 548 L 475 548 L 474 548 L 473 547 L 472 547 L 471 547 L 470 547 L 469 547 L 468 547 L 467 547 L 466 547 L 465 544 L 464 545 L 463 546 L 462 546 L 461 546 L 460 544 L 459 542 L 458 540 L 457 538 L 456 536 L 455 534 L 454 532 L 453 530 L 452 528 L 451 526 L 450 524 L 449 522 L 448 520 L 447 518 L 446 516 L 445 514 L 444 511 L 443 507 L 442 504 L 441 500 L 440 497 L 439 493 Z M 808 488 L 809 488 L 810 488 L 811 488 L 812 489 L 813 489 L 814 489 L 815 489 L 816 489 L 817 489 L 818 488 L 819 487 L 820 487 L 821 487 L 822 486 L 823 486 L 824 486 L 825 486 L 826 488 L 827 487 L 828 487 L 829 487 L 830 487 L 831 487 L 832 486 L 833 484 L 834 484 L 835 484 L 836 483 L 837 483 L 838 483 L 839 483 L 840 485 L 841 484 L 842 484 L 843 483 L 844 481 L 845 481 L 846 481 L 847 481 L 848 481 L 849 482 L 850 482 L 851 481 L 852 481 L 853 479 L 854 479 L 855 479 L 856 478 L 857 478 L 858 478 L 859 478 L 860 478 L 861 476 L 862 476 L 863 475 L 864 475 L 865 475 L 866 475 L 867 474 L 868 474 L 869 473 L 870 473 L 871 473 L 872 472 L 873 471 L 874 471 L 875 470 L 876 469 L 877 468 L 878 468 L 879 467 L 880 466 L 881 465 L 882 465 L 883 464 L 884 463 L 885 462 L 886 462 L 887 461 L 888 460 L 889 460 L 890 460 L 891 460 L 892 491 L 893 493 L 894 496 L 895 499 L 896 501 L 897 504 L 898 507 L 899 509 L 900 512 L 901 515 L 902 517 L 903 518 L 904 520 L 905 522 L 906 523 L 907 525 L 908 527 L 909 529 L 910 531 L 911 533 L 912 535 L 913 537 L 913 539 L 912 540 L 911 541 L 910 541 L 909 542 L 908 542 L 907 542 L 906 539 L 905 536 L 904 545 L 903 546 L 902 546 L 901 547 L 900 547 L 899 548 L 898 548 L 897 549 L 896 549 L 895 549 L 894 550 L 893 550 L 892 550 L 891 551 L 890 551 L 889 552 L 888 552 L 887 552 L 886 552 L 885 552 L 884 552 L 883 552 L 882 552 L 881 552 L 880 552 L 879 552 L 878 552 L 877 553 L 876 553 L 875 553 L 874 553 L 873 554 L 872 554 L 871 554 L 870 554 L 869 553 L 868 552 L 867 551 L 866 550 L 865 549 L 864 548 L 863 547 L 862 546 L 861 545 L 860 544 L 859 543 L 858 542 L 857 541 L 856 540 L 855 540 L 854 539 L 853 538 L 852 537 L 851 536 L 850 535 L 849 534 L 848 533 L 847 532 L 846 531 L 845 530 L 844 529 L 843 528 L 842 527 L 841 526 L 840 525 L 839 524 L 838 523 L 837 522 L 836 522 L 835 522 L 834 522 L 833 521 L 832 519 L 831 518 L 830 515 L 829 514 L 828 513 L 827 512 L 826 511 L 825 510 L 824 509 L 823 508 L 822 506 L 821 505 L 820 504 L 819 503 L 818 502 L 817 500 L 816 499 L 815 498 L 814 497 L 813 496 L 812 494 L 811 493 L 810 492 L 809 491 L 808 490 Z',
                 labelX: 480,
                 labelY: 509,
-                products: ['Beef Shank', 'Marrow Bones', 'Beef Knuckle Bones'],
+                isAdventurousCut: true,
+                products: [
+                    'Beef Shank',
+                    'Marrow Bones',
+                    'Beef Knuckle Bones',
+                    'Red-Wine Braised Beef Shank Osso Buco (Prepared)',
+                    '24-Hour Roasted Beef Bone Broth (Prepared)',
+                ],
+                preparedProducts: [
+                    'Red-Wine Braised Beef Shank Osso Buco (Prepared)',
+                    '24-Hour Roasted Beef Bone Broth (Prepared)',
+                ],
+                recipe: {
+                    title: 'Milanese Braised Beef Shank Osso Buco & Gremolata',
+                    prepTime: '20 mins',
+                    cookTime: '3 hrs at 325°F',
+                    method: 'Cross-Cut Braise',
+                    summary: 'Cross-cut beef shanks hold a center marrow pipe that melts into the braising liquid, creating the richest sauce in the butcher shop.',
+                    steps: [
+                        'Tie kitchen twine around the circumference of each cross-cut Beef Shank so the meat stays hugged around the marrow bone.',
+                        'Dredge lightly in seasoned flour, sear golden-brown in olive oil & butter, and braise with white wine, crushed San Marzano tomatoes, and beef stock.',
+                        'Finish with bright lemon-zest, parsley & garlic gremolata and serve with a marrow spoon over saffron risotto.',
+                    ],
+                    chefTip: 'Skip the 3-hour braise—our prepared Red-Wine Braised Beef Shank Osso Buco or 24-Hour Roasted Beef Bone Broth unlocks the Shank cut immediately!',
+                },
             },
         ],
     },
@@ -254,7 +316,30 @@ export const CUT_MAP_DATA: Record<AnimalId, AnimalDefinition> = {
                 svgPath: 'M 338.2 181.7 c -4.0 1.9 -6.4 5.3 -14.7 20.4 -6.6 12.0 -8.9 18.1 -10.0 26.1 -0.3 2.7 -1.0 4.8 -1.5 4.8 -0.5 -0.0 -3.1 -2.3 -5.7 -5.1 -5.8 -6.2 -14.5 -12.5 -23.3 -16.9 -8.7 -4.3 -15.2 -10.0 -20.2 -17.4 -2.3 -3.4 -4.6 -6.4 -5.1 -6.8 -3.0 -1.9 -6.3 3.3 -7.3 11.4 -0.5 4.7 -0.1 6.9 3.0 15.9 2.0 5.7 4.3 15.0 5.1 20.6 1.8 12.1 4.3 19.5 9.0 25.6 1.9 2.5 3.5 5.2 3.5 6.0 0.0 0.7 -1.4 2.4 -3.1 3.6 l -3.2 2.4 -4.5 -2.2 c -2.4 -1.2 -4.6 -2.0 -4.8 -1.8 -0.2 0.2 1.4 1.2 3.6 2.2 2.2 1.0 4.0 2.3 4.0 3.0 0.0 0.6 -1.4 2.4 -3.1 4.1 -1.7 1.6 -4.2 4.9 -5.7 7.4 -6.0 10.4 -10.2 13.7 -23.9 18.7 -5.4 1.9 -12.0 4.4 -14.8 5.4 -6.2 2.3 -17.8 2.5 -22.9 0.4 -4.6 -1.9 -7.6 -1.2 -11.4 2.8 -4.2 4.5 -5.1 8.4 -5.4 23.7 -0.1 11.8 0.1 14.1 1.9 18.2 2.5 5.4 8.6 10.4 15.1 12.1 3.5 0.9 4.8 1.9 6.2 4.8 4.1 8.0 13.0 13.9 37.4 24.8 5.7 2.6 6.7 3.4 6.3 5.1 -0.4 1.7 -0.1 1.9 2.0 1.4 1.7 -0.5 3.3 -0.0 5.2 1.4 3.5 2.6 18.7 10.2 22.6 11.4 1.7 0.5 7.3 1.7 12.6 2.8 8.5 1.6 12.6 3.3 33.9 13.9 13.3 6.7 24.4 12.1 24.6 12.1 0.2 -0.0 0.4 -1.2 0.4 -2.6 0.0 -2.0 4.6 -7.5 19.6 -23.5 18.1 -19.3 20.6 -22.5 32.8 -41.2 12.6 -19.4 13.5 -21.0 20.6 -39.7 l 7.4 -19.5 1.1 -21.0 c 0.9 -18.3 0.8 -23.2 -0.7 -38.5 -1.0 -9.6 -2.2 -17.7 -2.6 -18.1 -1.3 -1.3 -27.3 -3.9 -38.9 -3.9 l -11.1 -0.0 -1.1 -3.1 c -0.6 -1.8 -4.2 -8.6 -8.0 -15.3 -4.2 -7.3 -8.2 -16.1 -10.2 -22.1 -2.1 -6.6 -4.2 -10.9 -6.0 -12.7 -3.2 -3.2 -4.2 -3.4 -8.7 -1.1 z M 231.0 257.5 c 2.5 1.3 5.0 2.4 5.5 2.4 0.6 -0.0 -1.0 -1.1 -3.5 -2.4 -2.5 -1.3 -4.9 -2.4 -5.5 -2.4 -0.5 -0.0 1.0 1.1 3.5 2.4 z M 246.0 264.5 c 1.4 0.8 3.0 1.4 3.5 1.4 0.6 -0.0 -0.1 -0.6 -1.5 -1.4 -1.4 -0.8 -2.9 -1.4 -3.5 -1.4 -0.5 -0.0 0.1 0.6 1.5 1.4 z M 227.7 407.2 c -3.2 1.1 -5.6 2.2 -5.4 2.4 0.4 0.5 12.7 -3.6 12.7 -4.2 0.0 -0.6 -1.1 -0.4 -7.3 1.8 z M 218.0 410.7 c -0.8 0.3 -3.9 1.5 -6.8 2.5 -2.9 1.1 -5.2 2.2 -5.0 2.4 0.4 0.3 13.9 -4.4 14.7 -5.2 0.6 -0.5 -1.0 -0.4 -2.9 0.3 z',
                 labelX: 305,
                 labelY: 365,
-                products: ['Smoked Pork Jowl', 'Smoked Pig Ears'],
+                isAdventurousCut: true,
+                products: [
+                    'Smoked Pork Jowl',
+                    'Smoked Pig Ears',
+                    'House-Cured Crispy Guanciale Lardons (Prepared)',
+                    'Braised Pork Cheek Carnitas (Prepared)',
+                ],
+                preparedProducts: [
+                    'House-Cured Crispy Guanciale Lardons (Prepared)',
+                    'Braised Pork Cheek Carnitas (Prepared)',
+                ],
+                recipe: {
+                    title: 'Roman Pasta Carbonara with Crispy Smoked Pork Jowl',
+                    prepTime: '10 mins',
+                    cookTime: '15 mins',
+                    method: 'Skillet Render',
+                    summary: 'Pork jowl (guanciale) has sweeter, silkier fat than belly bacon—rendering it into crispy golden cubes makes effortless weeknight pasta.',
+                    steps: [
+                        'Dice ½ lb Smoked Pork Jowl into ¼-inch batonnet strips and start in a cold cast-iron skillet over medium-low heat.',
+                        'Render slowly for 10 minutes until glass-crisp outside and tender inside; reserve 3 tbsp of the liquid gold pork fat.',
+                        'Toss hot rigatoni off-heat with Pecorino Romano, egg yolks, toasted black pepper, and the crispy jowl.',
+                    ],
+                    chefTip: 'Not sure about whole jowl or ears? Grab our pre-diced Guanciale Lardons or Braised Pork Cheek Carnitas to check off Pork Head!',
+                },
             },
             {
                 id: 'shoulder',
@@ -350,7 +435,31 @@ export const CUT_MAP_DATA: Record<AnimalId, AnimalDefinition> = {
                 svgPath: 'M 449.5 472.8 c -9.2 4.3 -10.6 5.4 -17.6 13.3 l -7.7 8.5 -10.0 1.9 -10.0 1.8 3.3 3.1 c 2.9 2.8 3.6 4.6 6.5 16.9 1.7 7.6 3.0 14.8 2.8 16.1 -0.3 1.2 0.1 2.7 0.7 3.3 1.4 1.3 4.9 18.2 7.0 33.8 0.8 6.0 1.7 12.6 2.1 14.6 0.5 2.9 0.1 4.1 -2.2 7.0 -1.6 1.9 -1.9 2.6 -0.8 1.6 1.1 -0.9 2.9 -1.7 3.8 -1.7 1.7 -0.0 1.8 1.0 1.3 13.7 -0.4 12.8 -0.7 14.7 -4.7 26.8 -4.9 14.9 -6.0 17.4 -13.4 28.7 -3.0 4.6 -6.1 10.1 -7.0 12.3 -1.6 3.7 -1.6 4.0 0.0 5.2 1.0 0.7 2.1 1.3 2.6 1.3 0.4 -0.0 0.8 0.7 0.8 1.5 0.0 5.3 21.7 4.4 31.5 -1.4 2.3 -1.3 3.5 -3.2 5.2 -8.5 1.2 -3.8 2.5 -8.8 2.9 -11.2 0.7 -4.9 1.7 -5.4 4.4 -2.2 1.8 2.2 1.8 2.3 3.9 0.4 3.4 -3.1 4.3 -8.1 4.9 -30.3 0.4 -11.6 1.0 -21.5 1.4 -21.8 3.4 -3.5 6.4 9.7 5.5 24.0 -0.4 4.9 -1.7 13.3 -3.1 18.7 -2.4 9.5 -4.7 13.9 -17.5 34.3 -4.3 6.9 -5.4 11.1 -3.5 13.0 0.9 0.8 2.4 1.5 3.4 1.5 1.2 -0.0 2.0 0.8 2.2 2.2 0.2 1.7 1.5 2.7 4.6 3.8 3.7 1.3 5.3 1.3 13.7 -0.2 11.2 -1.9 18.3 -5.1 20.7 -9.4 1.0 -1.6 2.2 -6.4 2.8 -10.5 1.3 -9.2 1.8 -10.9 3.3 -10.9 0.7 -0.0 2.0 1.4 2.9 3.0 7.3 12.8 12.5 -7.9 8.4 -33.0 -0.9 -5.2 -1.6 -14.2 -1.6 -20.0 0.0 -8.8 0.5 -11.7 2.6 -17.5 4.6 -12.7 5.2 -15.2 7.8 -33.2 2.3 -15.9 7.6 -40.2 10.5 -47.6 0.9 -2.2 1.7 -2.7 4.6 -2.7 2.8 -0.0 3.5 -0.4 3.5 -2.0 0.0 -1.4 -0.7 -2.0 -2.3 -2.0 -1.9 -0.0 -3.1 -1.8 -7.5 -10.5 -2.9 -5.8 -8.7 -15.2 -12.9 -20.8 l -7.7 -10.2 -10.5 -4.8 c -10.6 -4.7 -10.6 -4.7 -21.1 -4.6 -10.3 0.1 -10.7 0.2 -20.5 4.7 z M 901.0 491.6 c -8.1 3.5 -18.1 6.9 -28.2 9.4 -14.4 3.7 -16.8 4.0 -29.2 4.0 l -13.5 -0.0 -12.9 -5.6 -13.0 -5.5 -21.3 10.6 c -11.8 5.9 -21.6 10.9 -21.8 11.0 -1.1 1.1 10.9 24.4 19.2 37.5 11.6 18.3 11.2 17.3 11.1 28.5 0.0 8.6 -0.5 11.3 -3.4 19.9 -4.4 12.8 -16.5 37.4 -22.4 45.4 l -4.6 6.2 0.0 15.1 0.0 15.1 6.3 -0.7 c 9.7 -1.1 19.4 -3.5 21.9 -5.5 2.3 -1.8 4.2 -6.3 7.3 -17.3 1.7 -6.2 4.2 -7.6 6.0 -3.5 0.6 1.3 1.9 2.3 2.9 2.3 3.0 -0.0 5.5 -4.4 7.7 -14.0 6.4 -27.5 6.8 -28.5 14.4 -43.8 4.2 -8.3 9.1 -17.6 11.0 -20.6 5.1 -8.5 5.8 -12.4 4.0 -21.7 -1.8 -9.7 -1.9 -13.4 -0.2 -13.4 1.2 -0.0 11.8 10.4 23.4 23.2 12.1 13.3 15.2 24.1 16.0 55.8 0.7 26.3 -0.3 31.0 -10.1 50.3 -10.0 19.5 -10.4 22.5 -3.8 24.2 1.5 0.4 3.6 1.6 4.6 2.7 1.7 1.8 2.7 2.0 8.5 1.5 6.7 -0.6 20.9 -5.0 25.4 -7.9 4.3 -2.9 5.7 -7.5 5.7 -19.2 0.0 -11.3 0.8 -12.7 4.5 -8.6 2.2 2.4 4.8 2.6 6.5 0.4 2.3 -2.7 2.3 -15.9 0.1 -28.8 -2.4 -13.7 -2.9 -29.6 -0.8 -29.6 0.7 -0.0 1.9 0.6 2.7 1.2 0.7 0.7 0.1 -0.3 -1.4 -2.3 l -2.6 -3.6 1.1 -12.4 c 1.0 -11.6 1.5 -15.0 5.4 -32.8 1.7 -8.1 0.7 -12.9 -4.3 -20.9 -9.8 -15.3 -12.8 -27.6 -10.0 -41.0 0.9 -4.2 1.9 -8.5 2.3 -9.5 1.1 -2.6 -0.7 -2.1 -14.5 3.9 z M 416.4 602.2 l -2.9 3.3 3.3 -2.9 c 3.0 -2.8 3.7 -3.6 2.9 -3.6 -0.2 -0.0 -1.6 1.5 -3.3 3.2 z M 407.4 612.7 c -3.3 3.7 -5.4 6.4 -4.8 6.0 1.5 -0.9 11.8 -12.7 11.1 -12.7 -0.2 -0.0 -3.1 3.0 -6.3 6.7 z M 394.4 627.7 c -3.3 3.7 -5.4 6.4 -4.8 6.0 1.5 -0.9 11.8 -12.7 11.1 -12.7 -0.2 -0.0 -3.1 3.0 -6.3 6.7 z',
                 labelX: 472,
                 labelY: 500,
-                products: ['Smoked Ham Hock', 'Pork Shanks', 'Trotter'],
+                isAdventurousCut: true,
+                products: [
+                    'Smoked Ham Hock',
+                    'Pork Shanks',
+                    'Trotter',
+                    'Hardwood-Smoked Braised Pork Shank (Prepared)',
+                    'Smokehouse Ham Hock & White Bean Soup (Prepared)',
+                ],
+                preparedProducts: [
+                    'Hardwood-Smoked Braised Pork Shank (Prepared)',
+                    'Smokehouse Ham Hock & White Bean Soup (Prepared)',
+                ],
+                recipe: {
+                    title: 'Bavarian Crispy-Skin Braised Pork Shank (Schweinshaxe)',
+                    prepTime: '15 mins',
+                    cookTime: '2.5 hrs',
+                    method: 'Braise + High-Heat Broil',
+                    summary: 'Slow-simmering a pork shank or smoked ham hock infuses broths and greens with deep smokehouse savoriness.',
+                    steps: [
+                        'Score the skin of Pork Shanks in a diamond pattern and season with caraway, garlic, and coarse sea salt.',
+                        'Simmer gently with dark lager, onions, and bay leaf for 2 hours until tender, then roast at 450°F for 20 minutes until the rind puffs and crackles.',
+                        'For Smoked Ham Hock, simmer 90 minutes in white beans or collard greens, then shred the smoky meat right back into the pot.',
+                    ],
+                    chefTip: 'Our ready-to-heat Hardwood-Smoked Braised Pork Shank or quart of Smokehouse Ham Hock & Bean Soup counts directly toward Hock!',
+                },
             },
         ],
     },
@@ -454,7 +563,29 @@ export const CUT_MAP_DATA: Record<AnimalId, AnimalDefinition> = {
                 svgPath: 'M 640.3 581.1 c 5.0 2.9 -1.7 48.1 -8.0 54.1 -2.3 2.2 -3.2 2.3 -15.1 2.3 -14.1 -0.0 -17.9 1.0 -20.4 5.3 -1.1 1.8 -3.4 3.3 -6.9 4.6 -5.4 1.9 -11.9 7.2 -11.9 9.8 0.0 1.1 3.5 1.3 19.6 1.2 l 19.6 -0.1 -0.7 7.8 c -0.3 4.4 -0.4 7.9 -0.1 7.9 0.3 -0.0 2.0 -0.9 3.8 -2.0 1.8 -1.1 4.5 -2.0 6.0 -2.0 3.0 -0.0 18.5 -10.0 23.2 -14.9 2.3 -2.4 3.8 -3.1 6.7 -3.1 2.4 -0.0 3.9 0.5 4.3 1.5 0.8 2.2 8.4 5.5 12.7 5.5 1.9 -0.0 4.0 0.5 4.7 1.2 0.9 0.9 1.3 0.7 1.8 -0.5 1.2 -3.3 -0.8 -6.9 -8.1 -14.8 -4.1 -4.4 -8.2 -9.4 -9.1 -11.1 -2.9 -5.5 -1.2 -21.4 5.0 -47.6 l 1.4 -6.2 -15.1 -0.0 c -10.8 0.1 -14.7 0.4 -13.4 1.1 z M 597.0 588.3 c -9.6 2.8 -12.1 3.1 -29.5 3.6 l -19.0 0.6 3.8 2.3 c 3.2 2.1 3.7 2.8 3.7 6.3 0.0 4.5 -9.9 26.9 -17.6 39.9 -8.3 14.0 -12.1 15.9 -28.4 14.0 -20.0 -2.4 -23.1 -2.3 -28.0 0.2 -3.3 1.7 -4.7 3.1 -5.5 5.5 -0.5 1.8 -1.5 3.3 -2.3 3.3 -0.8 -0.0 -3.9 0.7 -6.9 1.6 -6.1 1.8 -11.6 6.1 -13.1 10.2 l -0.9 2.7 7.1 0.2 c 3.9 0.2 9.4 0.4 12.1 0.5 2.8 0.1 10.1 -0.2 16.3 -0.7 l 11.2 -0.8 0.0 3.4 c 0.0 1.9 -0.9 4.7 -2.0 6.4 -2.6 3.8 -4.3 10.0 -3.5 12.6 0.6 1.9 0.7 1.9 3.5 -0.4 1.7 -1.5 4.8 -2.7 7.8 -3.1 3.5 -0.4 7.7 -2.3 14.3 -6.3 5.2 -3.1 13.4 -7.4 18.3 -9.5 4.9 -2.1 9.7 -4.5 10.6 -5.3 2.2 -2.0 9.3 -1.9 13.3 0.2 2.3 1.3 5.7 1.7 12.4 1.8 10.2 -0.0 11.0 -0.6 7.6 -5.5 -2.4 -3.5 -4.9 -5.2 -11.8 -7.7 -7.5 -2.8 -9.5 -5.1 -9.5 -11.3 0.0 -5.6 6.6 -19.8 17.4 -37.5 9.3 -15.1 11.0 -17.1 16.3 -19.5 7.0 -3.1 17.2 -11.3 13.6 -10.9 -0.5 -0.0 -5.5 1.4 -11.3 3.2 z M 633.6 680.5 c -2.1 3.1 -2.2 3.0 3.0 5.1 3.8 1.6 3.9 1.6 2.3 -0.2 -0.9 -1.1 -2.1 -3.2 -2.6 -4.8 l -0.9 -2.9 -1.8 2.8 z M 681.0 706.6 c 0.0 3.4 0.0 3.4 4.5 3.4 3.7 -0.0 4.5 -0.3 4.5 -1.9 0.0 -1.9 -1.0 -2.6 -6.2 -4.1 -2.7 -0.8 -2.8 -0.7 -2.8 2.6 z',
                 labelX: 733,
                 labelY: 621,
-                products: ['Chicken Feet'],
+                isAdventurousCut: true,
+                products: [
+                    'Chicken Feet',
+                    'Golden Collagen Chicken Bone Broth (Prepared)',
+                    'Soy-Ginger Braised Dim Sum Chicken Feet (Prepared)',
+                ],
+                preparedProducts: [
+                    'Golden Collagen Chicken Bone Broth (Prepared)',
+                    'Soy-Ginger Braised Dim Sum Chicken Feet (Prepared)',
+                ],
+                recipe: {
+                    title: 'Liquid-Gold Roasted Chicken Feet Collagen Stock',
+                    prepTime: '10 mins',
+                    cookTime: '4 hrs Simmer',
+                    method: 'Roast & Slow Simmer',
+                    summary: 'You never have to eat chicken feet whole—butchers use them as the secret ingredient to turn ordinary soup into restaurant-grade, velvety bone broth.',
+                    steps: [
+                        'Blanch 1 lb Chicken Feet in boiling water for 3 minutes, rinse cold, then roast at 425°F for 25 minutes until deeply mahogany.',
+                        'Transfer to a stockpot with charred onion, ginger, garlic, and peppercorns; cover with cold water and simmer gently for 4 hours.',
+                        'Strain through a fine mesh sieve—chilled, it sets into pure culinary gelatin that transforms ramen, risotto, and pan sauces.',
+                    ],
+                    chefTip: 'Don’t want to simmer raw chicken feet? Ordering our prepared Golden Collagen Chicken Bone Broth (made with roasted feet in-house) completes the Feet cut!',
+                },
             },
         ],
     },
@@ -542,7 +673,27 @@ export const CUT_MAP_DATA: Record<AnimalId, AnimalDefinition> = {
                 svgPath: 'M 452.0 477.7 l -10.5 6.6 -8.3 15.7 -8.2 15.8 0.0 8.1 c 0.0 7.4 -0.2 8.1 -2.0 8.1 -2.5 -0.0 -2.5 0.7 -0.1 4.7 1.1 1.7 2.5 5.0 3.1 7.2 0.6 2.1 2.8 6.3 5.0 9.2 3.7 5.0 4.0 5.8 4.0 11.8 0.0 5.3 -0.4 6.9 -2.2 8.8 l -2.1 2.3 2.4 -0.0 c 2.1 -0.0 2.7 0.9 4.9 8.3 2.3 7.5 2.5 9.8 2.5 27.7 0.0 25.1 -2.2 35.8 -9.8 48.4 -5.5 9.1 -12.7 23.0 -12.7 24.6 0.0 0.5 1.2 1.3 2.6 1.6 1.5 0.4 3.6 1.6 4.7 2.7 1.8 1.8 2.8 1.9 12.5 1.3 l 10.5 -0.7 -0.6 6.1 -0.7 6.1 3.3 1.4 c 1.9 0.8 3.9 2.1 4.7 2.9 2.4 3.0 23.4 1.0 31.0 -2.9 3.6 -1.9 7.0 -8.4 7.7 -14.9 1.1 -10.3 1.2 -10.6 4.3 -10.6 5.8 -0.0 7.8 -4.8 6.2 -14.8 -3.6 -21.4 -3.9 -57.1 -0.8 -68.2 0.9 -3.0 2.3 -9.3 3.1 -13.9 1.3 -7.3 2.0 -8.8 4.9 -11.7 1.9 -1.9 3.8 -4.4 4.2 -5.6 0.4 -1.3 1.5 -3.3 2.4 -4.5 1.0 -1.3 2.1 -4.0 2.5 -6.0 0.4 -2.0 1.5 -4.7 2.5 -6.0 1.0 -1.3 2.4 -4.7 3.0 -7.6 0.7 -2.8 1.8 -5.9 2.6 -6.7 0.7 -0.8 1.4 -3.3 1.6 -5.5 0.2 -3.4 0.7 -4.1 2.9 -4.5 2.5 -0.5 2.5 -0.6 -7.2 -18.3 l -9.7 -17.8 -11.5 -8.0 -11.6 -7.9 -15.3 0.1 -15.3 0.1 -10.5 6.5 z M 766.9 471.2 c 0.0 0.2 -0.6 4.3 -1.3 9.3 -1.0 8.3 -1.3 9.0 -3.4 8.9 -1.2 -0.0 -2.2 0.5 -2.2 1.3 0.0 0.7 0.9 1.3 2.1 1.3 1.8 -0.0 2.0 0.4 1.4 4.7 -0.3 2.7 -0.8 6.0 -1.1 7.4 -0.4 2.0 0.0 2.8 1.4 3.1 1.2 0.3 4.2 4.5 7.5 10.4 8.1 14.3 8.5 14.8 23.8 32.0 8.6 9.6 10.4 14.8 9.6 27.8 -0.7 13.0 -5.1 28.7 -15.2 54.6 -2.8 7.4 -6.0 15.6 -6.9 18.2 -0.9 2.6 -3.3 6.7 -5.2 9.2 -4.5 5.9 -12.8 22.2 -11.9 23.5 0.3 0.6 1.3 1.1 2.2 1.1 0.9 -0.0 2.2 0.8 2.9 1.7 1.0 1.5 2.9 1.8 12.1 1.8 5.9 -0.0 12.5 -0.4 14.5 -0.8 5.6 -1.2 9.4 -5.6 10.8 -12.5 1.9 -9.4 1.8 -9.2 5.8 -9.2 7.4 -0.0 8.0 -1.1 11.2 -20.8 1.3 -8.2 12.6 -42.5 19.0 -57.7 2.3 -5.5 5.2 -12.4 6.4 -15.2 2.0 -5.1 2.3 -5.3 5.8 -5.3 6.6 -0.0 10.2 2.6 14.7 10.4 6.4 11.3 8.0 15.8 9.7 26.8 1.8 11.7 1.4 47.3 -0.6 58.8 -0.7 3.8 -3.8 12.3 -7.6 20.8 -7.7 17.0 -8.1 19.2 -3.9 20.6 1.7 0.6 3.6 1.9 4.3 2.8 1.7 2.3 10.6 2.4 20.2 0.2 12.1 -2.7 16.1 -7.1 17.5 -18.9 0.8 -7.5 1.7 -9.0 6.5 -11.5 6.7 -3.4 7.0 -5.4 4.0 -29.0 -2.1 -16.9 -0.7 -51.2 3.1 -73.9 2.7 -16.4 2.2 -18.8 -6.4 -31.5 -5.4 -8.1 -8.7 -15.9 -8.7 -20.7 0.0 -2.2 -0.7 -5.6 -1.5 -7.6 -0.8 -1.9 -1.5 -6.2 -1.5 -9.5 0.0 -5.2 -0.2 -5.9 -1.7 -5.4 -1.0 0.3 -8.3 2.1 -16.3 4.0 -12.9 3.0 -16.7 3.5 -34.0 4.1 l -19.5 0.7 -17.5 -5.0 c -9.6 -2.8 -24.8 -6.5 -33.8 -8.3 -13.5 -2.7 -16.2 -3.5 -15.8 -4.8 0.3 -0.9 0.7 -4.5 1.1 -8.1 0.4 -3.6 0.9 -7.3 1.1 -8.3 0.4 -1.1 0.0 -1.7 -1.0 -1.7 -0.9 -0.0 -1.6 0.1 -1.7 0.2 z M 537.8 515.0 c -0.4 4.1 -0.5 7.6 -0.3 7.9 1.2 1.1 1.6 -1.2 1.3 -8.0 l -0.3 -7.4 -0.7 7.5 z M 532.9 707.8 c -2.4 1.6 -5.3 3.9 -6.3 5.0 l -1.9 2.2 7.1 -0.0 7.2 -0.0 0.0 -5.0 c 0.0 -2.8 -0.4 -5.0 -0.8 -5.0 -0.4 -0.0 -2.8 1.3 -5.3 2.8 z',
                 labelX: 484,
                 labelY: 515,
-                products: ['Lamb Shank'],
+                isAdventurousCut: true,
+                products: [
+                    'Lamb Shank',
+                    'Rosemary & Barolo Braised Lamb Shank (Prepared)',
+                ],
+                preparedProducts: [
+                    'Rosemary & Barolo Braised Lamb Shank (Prepared)',
+                ],
+                recipe: {
+                    title: 'Pomegranate & Rosemary Braised Lamb Shanks',
+                    prepTime: '15 mins',
+                    cookTime: '2.5 hrs at 325°F',
+                    method: 'Dutch Oven Braise',
+                    summary: 'Hard-working lamb foreshanks reward slow heat with fall-off-the-bone tenderness and a glossy, aromatic reduction.',
+                    steps: [
+                        'Brown whole Lamb Shanks on all sides in olive oil, then add shallots, whole garlic cloves, cinnamon stick, and fresh rosemary.',
+                        'Pour in 1.5 cups dry red wine, ½ cup pomegranate juice, and 2 cups stock; cover and braise at 325°F for 2.5 hours.',
+                        'Baste shanks with the reduced glaze until lacquered and serve over creamy garlic mashed potatoes.',
+                    ],
+                    chefTip: 'Short on time? Order our prepared Rosemary & Barolo Braised Lamb Shank—just warm for 20 minutes and unlock your Lamb Shank stamp!',
+                },
             },
         ],
     },
@@ -614,7 +765,31 @@ export const CUT_MAP_DATA: Record<AnimalId, AnimalDefinition> = {
                 svgPath: 'M 451.5 478.0 c -6.0 3.8 -12.2 8.4 -13.7 10.2 -2.7 3.1 -2.8 3.6 -2.8 15.0 l 0.0 11.8 -5.6 -0.0 c -6.2 -0.0 -6.1 -0.2 -2.7 8.0 3.4 8.3 5.4 19.8 6.0 34.8 l 0.6 15.4 -2.9 2.4 -2.9 2.3 4.1 0.1 4.1 -0.0 3.1 10.2 c 1.7 5.7 3.4 12.9 3.7 16.0 0.8 7.7 -1.2 27.7 -3.6 35.2 -1.0 3.4 -2.3 9.0 -2.9 12.6 -0.7 5.2 -2.4 9.1 -7.9 19.0 -7.0 12.7 -9.2 18.0 -7.3 18.0 0.6 -0.0 2.5 1.2 4.3 2.7 3.2 2.7 3.6 2.8 15.7 2.7 l 12.4 -0.1 -0.6 4.1 c -1.4 9.1 -1.3 10.1 1.4 10.4 1.3 0.2 3.8 1.5 5.4 2.9 2.9 2.4 3.5 2.5 12.6 2.0 14.8 -0.7 24.0 -5.1 26.9 -13.0 0.6 -1.6 1.1 -6.4 1.1 -10.8 l 0.0 -7.9 3.5 -0.0 c 2.6 -0.0 3.9 -0.6 5.2 -2.6 1.6 -2.5 1.6 -3.5 -0.8 -20.3 -1.9 -13.7 -2.4 -21.6 -2.3 -35.6 l 0.1 -18.0 4.0 -12.0 c 3.0 -8.7 4.2 -14.5 4.7 -21.0 1.5 -20.1 11.3 -62.1 15.1 -64.9 1.4 -1.0 0.6 -2.4 -5.7 -10.8 -6.5 -8.6 -8.6 -10.7 -19.0 -17.8 l -11.7 -8.0 -15.3 0.1 -15.3 0.1 -11.0 6.8 z M 762.6 472.7 c -2.2 7.8 -2.6 10.5 -1.7 12.1 1.1 2.0 1.3 1.7 3.1 -5.8 0.6 -2.5 1.3 -5.3 1.6 -6.3 0.4 -1.1 0.0 -1.7 -1.0 -1.7 -0.8 -0.0 -1.7 0.8 -2.0 1.7 z M 898.8 472.5 c -0.3 1.1 -0.9 3.2 -1.2 4.7 -0.6 2.5 -2.1 3.1 -24.8 10.7 l -24.3 8.0 -24.5 0.7 -24.5 0.6 -16.0 -3.1 c -8.8 -1.8 -16.9 -3.5 -18.0 -3.8 -1.9 -0.6 -1.9 -0.5 0.0 2.3 1.0 1.6 5.2 9.2 9.3 16.9 4.1 7.7 10.3 18.8 13.8 24.6 3.5 5.8 7.1 13.3 7.9 16.5 2.3 8.1 3.1 30.6 1.5 38.6 -2.3 11.9 -9.1 32.3 -13.9 41.8 -2.7 5.2 -5.8 12.5 -7.0 16.2 -1.2 3.7 -3.3 8.2 -4.6 10.0 -1.3 1.8 -4.7 6.9 -7.5 11.3 -4.4 6.9 -5.0 8.6 -5.0 13.2 0.0 2.9 0.5 5.3 1.0 5.3 0.6 -0.0 2.0 1.0 3.1 2.1 2.1 2.1 2.9 2.1 14.5 1.6 18.0 -0.7 22.3 -3.4 24.5 -15.2 1.5 -8.0 2.4 -9.5 5.8 -9.5 5.1 -0.0 7.1 -2.7 8.2 -11.0 1.5 -10.9 8.2 -36.9 12.9 -49.9 2.2 -6.2 7.3 -19.0 11.4 -28.4 4.1 -9.5 7.7 -18.2 8.1 -19.5 0.5 -1.7 1.4 -2.2 3.9 -2.2 2.9 -0.0 3.6 0.6 7.0 6.2 7.7 12.8 15.7 30.6 18.2 40.4 1.5 6.3 2.9 15.5 3.5 25.1 1.0 13.9 0.9 16.5 -0.9 28.1 -1.1 7.0 -2.3 14.6 -2.6 17.0 -0.4 2.3 -3.5 10.2 -7.0 17.5 -8.9 18.2 -9.3 20.6 -3.2 20.7 1.0 -0.0 2.9 1.1 4.2 2.5 1.9 2.1 3.2 2.5 7.9 2.5 7.1 -0.0 20.1 -2.6 24.0 -4.9 5.3 -3.0 7.5 -7.5 7.5 -15.1 0.0 -9.1 1.4 -12.5 6.1 -15.2 l 3.9 -2.2 0.0 -7.0 c 0.0 -3.9 -0.7 -10.7 -1.5 -15.1 -1.7 -9.3 -1.9 -46.4 -0.4 -66.5 0.5 -6.9 1.2 -20.6 1.5 -30.6 0.6 -16.1 0.5 -18.4 -1.1 -20.8 -0.9 -1.4 -2.6 -2.6 -3.6 -2.6 -1.5 -0.0 -1.9 -0.7 -1.9 -3.5 0.0 -2.1 -1.5 -6.5 -3.5 -10.6 -6.1 -12.0 -9.3 -23.4 -10.8 -37.5 -0.7 -7.1 -1.6 -12.0 -1.9 -10.9 z M 531.4 708.8 c -2.1 1.6 -4.5 3.6 -5.3 4.5 -1.2 1.5 -0.9 1.7 3.6 1.7 l 5.0 -0.0 0.7 -4.1 c 0.4 -2.3 0.5 -4.3 0.3 -4.5 -0.2 -0.2 -2.1 0.9 -4.3 2.4 z',
                 labelX: 484,
                 labelY: 515,
-                products: ['Veal Shank', 'Veal Bones', 'Veal Stock'],
+                isAdventurousCut: true,
+                products: [
+                    'Veal Shank',
+                    'Veal Bones',
+                    'Veal Stock',
+                    'Classic Braised Veal Osso Buco (Prepared)',
+                    '24-Hour Roasted Veal Demi-Glace (Prepared)',
+                ],
+                preparedProducts: [
+                    'Classic Braised Veal Osso Buco (Prepared)',
+                    '24-Hour Roasted Veal Demi-Glace (Prepared)',
+                ],
+                recipe: {
+                    title: 'Trattoria Veal Osso Buco in White Wine & Saffron',
+                    prepTime: '20 mins',
+                    cookTime: '2.5 hrs at 300°F',
+                    method: 'Covered Braise',
+                    summary: 'Center-cut hindshank is the crown jewel of Northern Italian braising—delicate, gelatinous, and rich with marrow.',
+                    steps: [
+                        'Season 2-inch thick cross-cut Veal Shanks, dust lightly in Wondra flour, and sear gently in clarified butter.',
+                        'Add finely diced carrot, celery, sweet onion, dry Pinot Grigio, and warm veal stock to come halfway up the shanks.',
+                        'Braise covered for 2.5 hours until fork-tender and top with fresh lemon-anchovy gremolata.',
+                    ],
+                    chefTip: 'Want the reward without the prep? Our prepared Classic Braised Veal Osso Buco or 24-Hour Veal Demi-Glace counts toward your Veal Shank cut!',
+                },
             },
         ],
     },
@@ -963,4 +1138,57 @@ export const COUNTER_CUT_DETAILS: Record<string, { price: string; desc: string }
     'Smoked Duck Breast': { price: '$35.99/lb', desc: 'Housemade smoked.' },
     'Duck Stock': { price: '$10.99', desc: 'Slow-simmered roasted duck bone stock.' },
     'Duck Fat': { price: '$10.99', desc: 'Perfect for roasting potatoes.' },
+    // Prepared & Heat-and-Serve Items (Count toward Adventurous / Hard-Sell Cuts!)
+    'Braised Beef Cheek Barbacoa (Prepared)': {
+        price: '$24.99/pk',
+        desc: 'Heat-&-serve 6-hour braised beef cheek barbacoa (16 oz). Counts for Beef Head!',
+    },
+    'Red-Wine Braised Beef Cheeks (Prepared)': {
+        price: '$28.99/pk',
+        desc: 'Prepared Cabernet-braised whole beef cheeks in demi-glace. Counts for Beef Head!',
+    },
+    'Red-Wine Braised Beef Shank Osso Buco (Prepared)': {
+        price: '$29.99/ea',
+        desc: 'Prepared cross-cut braised beef shank in rich marrow jus. Counts for Beef Shank!',
+    },
+    '24-Hour Roasted Beef Bone Broth (Prepared)': {
+        price: '$12.99/qt',
+        desc: 'Simmered in-house from roasted shank & marrow bones. Counts for Beef Shank!',
+    },
+    'House-Cured Crispy Guanciale Lardons (Prepared)': {
+        price: '$14.99/pk',
+        desc: 'Pre-diced cured pork jowl strips ready for Carbonara or Amatriciana. Counts for Pork Head!',
+    },
+    'Braised Pork Cheek Carnitas (Prepared)': {
+        price: '$19.99/pk',
+        desc: 'Slow-confit heritage pork cheek & jowl carnitas (16 oz). Counts for Pork Head!',
+    },
+    'Hardwood-Smoked Braised Pork Shank (Prepared)': {
+        price: '$22.99/ea',
+        desc: 'Fully cooked applewood-smoked & beer-braised pork shank. Counts for Pork Hock!',
+    },
+    'Smokehouse Ham Hock & White Bean Soup (Prepared)': {
+        price: '$14.99/qt',
+        desc: 'Housemade hearty white bean soup loaded with pulled smoked ham hock. Counts for Pork Hock!',
+    },
+    'Golden Collagen Chicken Bone Broth (Prepared)': {
+        price: '$11.99/qt',
+        desc: 'Rich, velvety stock simmered with roasted chicken feet for pure collagen. Counts for Chicken Feet!',
+    },
+    'Soy-Ginger Braised Dim Sum Chicken Feet (Prepared)': {
+        price: '$12.99/pk',
+        desc: 'Heat-&-serve black-bean & star-anise braised phoenix claws. Counts for Chicken Feet!',
+    },
+    'Rosemary & Barolo Braised Lamb Shank (Prepared)': {
+        price: '$26.99/ea',
+        desc: 'Prepared fall-off-the-bone braised pasture lamb foreshank in rosemary jus. Counts for Lamb Shank!',
+    },
+    'Classic Braised Veal Osso Buco (Prepared)': {
+        price: '$38.99/ea',
+        desc: 'Prepared Milanese braised veal hindshank with saffron & white wine jus. Counts for Veal Shank!',
+    },
+    '24-Hour Roasted Veal Demi-Glace (Prepared)': {
+        price: '$16.99/pt',
+        desc: 'Restaurant-grade reduced veal shank & bone demi-glace for pan sauces. Counts for Veal Shank!',
+    },
 };

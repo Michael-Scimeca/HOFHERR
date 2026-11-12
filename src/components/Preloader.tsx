@@ -10,8 +10,8 @@ import { lockScroll } from '@/lib/scrollLock';
 // The black overlay below is server-rendered, so the page never flashes before it appears.
 const FireTestClient = dynamic(() => import('@/app/fire-test/FireTestClient'), { ssr: false });
 
-/** Routes that skip the automatic initial preloader (CMS, admin, and the fire test page). */
-const SKIP = ['/studio', '/admin', '/fire-test'];
+/** Routes that skip the automatic initial preloader (CMS, admin, dashboard, and the fire test page). */
+const SKIP = ['/studio', '/admin', '/dashboard', '/fire-test'];
 const PRELOADER_SYNC_VERSION = 6;
 
 /**

@@ -9,6 +9,16 @@ export default {
       type: 'string',
     },
     {
+      name: 'customerEmail',
+      title: 'Customer Email',
+      type: 'string',
+    },
+    {
+      name: 'customerId',
+      title: 'Customer ID',
+      type: 'string',
+    },
+    {
       name: 'contactType',
       title: 'Contact Type',
       type: 'string',
@@ -45,6 +55,11 @@ export default {
     {
       name: 'createdAt',
       title: 'Created At',
+      type: 'datetime',
+    },
+    {
+      name: 'notifiedAt',
+      title: 'Notified At',
       type: 'datetime',
     },
   ],

@@ -252,29 +252,29 @@ export default async function OurStoryPage() {
                             <AccoladesVariants accolades={accolades} />
 
 
-                            {/* ── CTA ── */}
-                                <section id="visit-cta" aria-labelledby="visit-cta-heading" className={styles.cta}>
-                                    <div className="container">
-                                        <h2 id="visit-cta-heading">Come see what a real butcher shop looks like.</h2>
-                                        <p>
-                                            <Image src="/icons/butcher-pin-sm.svg" alt="" aria-hidden="true" width={16} height={16} className={styles.ctaPinIcon} />
-                                            <span>The Butcher Shop — 300 Happ Rd, Northfield</span>
-                                            <span className={styles.ctaDividerDot}>·</span>
-                                            <Image src="/icons/depot-pin-sm.svg" alt="" aria-hidden="true" width={16} height={16} className={styles.ctaPinIcon} />
-                                            <span>The Depot — 754 Elm St, Winnetka</span>
-                                        </p>
-                                        <div className={styles.ctaBtns}>
-                                            <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
-                                            <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
-                                        </div>
-                                    </div>
-                                </section>
+                            {/* ── Reviews wall — live 5-star Google reviews + Yelp reviews supplied by the owner (REVIEWS above). ── */}
+                            <TestimonialWall
+                                reviews={wallReviews}
+                                summary={google ? { rating: google.rating, count: google.count, url: google.url, source: 'Google' } : null}
+                            />
 
-                                {/* ── Reviews wall — live 5-star Google reviews + Yelp reviews supplied by the owner (REVIEWS above). ── */}
-                                <TestimonialWall
-                                    reviews={wallReviews}
-                                    summary={google ? { rating: google.rating, count: google.count, url: google.url, source: 'Google' } : null}
-                                />
+                            {/* ── CTA ── */}
+                            <section id="visit-cta" aria-labelledby="visit-cta-heading" className={styles.cta}>
+                                <div className="container">
+                                    <h2 id="visit-cta-heading">Come see what a real butcher shop looks like.</h2>
+                                    <p>
+                                        <Image src="/icons/butcher-pin-sm.svg" alt="" aria-hidden="true" width={16} height={16} className={styles.ctaPinIcon} />
+                                        <span>The Butcher Shop — 300 Happ Rd, Northfield</span>
+                                        <span className={styles.ctaDividerDot}>·</span>
+                                        <Image src="/icons/depot-pin-sm.svg" alt="" aria-hidden="true" width={16} height={16} className={styles.ctaPinIcon} />
+                                        <span>The Depot — 754 Elm St, Winnetka</span>
+                                    </p>
+                                    <div className={styles.ctaBtns}>
+                                        <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
+                                        <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
+                                    </div>
+                                </div>
+                            </section>
 
                             </main>
                             );

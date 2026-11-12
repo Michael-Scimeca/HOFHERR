@@ -310,6 +310,92 @@
 .purchaseStatus_readypending { background: rgba(245,158,11,0.12); color: #fbbf24; }
 .purchaseDate { font-size: 12px; color: #e2e8f0; display: block; }
 .purchaseTime { font-size: 10px; color: #64748b; display: block; }
+.purchasesHeaderRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+.backToLiveQueueBtn {
+    background: rgba(168, 144, 95, 0.16);
+    color: #fde68a;
+    border: 1px solid rgba(168, 144, 95, 0.48);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    font-family: inherit;
+    white-space: nowrap;
+}
+.backToLiveQueueBtn:hover {
+    background: rgba(168, 144, 95, 0.28);
+    color: #fff;
+}
+.archivedPurchaseRow {
+    background: rgba(245, 158, 11, 0.05);
+}
+.purchaseStoreSub {
+    display: block;
+    font-size: 10px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+.purchaseStatusStack {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+}
+.archivedQueueBadge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fde68a;
+    background: rgba(245, 158, 11, 0.16);
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    padding: 2px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+.alertItemMore {
+    justify-content: center;
+    color: #64748b;
+}
+.alertCollapsedText {
+    color: #64748b;
+    font-size: 11px;
+}
+.activityStatusCompleted {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+}
+.activityStatusPaid {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+}
+.rowHidden {
+    opacity: 0.5;
+}
+.productNameHidden {
+    text-decoration: line-through;
+}
+.toggleLabelEmoji {
+    font-size: 13px;
+}
+.rowActionsCell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
 /* ── Alert Notification Panel ── */
 .alertBanner {

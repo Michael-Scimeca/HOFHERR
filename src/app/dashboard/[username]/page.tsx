@@ -40,7 +40,28 @@ export default async function CustomerDashboardPage({ params }: Props) {
         cookieStore.get('hofherr_god_mode')?.value === 'true';
 
     // Fetch customer by username
-    const customerRecord = await client.fetch(CUSTOMER_BY_USERNAME_QUERY, { username: cleanUsername }).catch(() => null);
+    const fetchedCustomer = await client.fetch(CUSTOMER_BY_USERNAME_QUERY, { username: cleanUsername }).catch(() => null);
+    const isAdminOrPreview =
+        process.env.NODE_ENV !== 'production' ||
+        isGodMode ||
+        !!session?.user?.isAdmin ||
+        cleanUsername.toLowerCase() === 'mikeyscimeca' ||
+        cleanUsername.toLowerCase() === 'michaelscimeca';
+    const customerRecord = fetchedCustomer || (isAdminOrPreview ? {
+        _id: '',
+        name: 'Michael Scimeca',
+        username: cleanUsername,
+        email: 'mikeyscimeca@gmail.com',
+        phone: '847-441-6328',
+        address: '300 Happ Rd, Northfield, IL 60093',
+        avatar: '/assets/avatars/avatar-angus-bull.jpg',
+        birthday: '1984-10-14',
+        newsletter: true,
+        preferredPickupTime: '2:00 PM',
+        bio: 'Hofherr Butcher Guild Member • Northfield, IL',
+        favoriteCut: 'USDA Prime Dry-Aged Ribeye',
+        createdAt: '2024-01-15T00:00:00.000Z',
+    } : null);
 
     if (!customerRecord) {
         return (
@@ -77,6 +98,29 @@ export default async function CustomerDashboardPage({ params }: Props) {
     const finalOrders = hasRealOrders ? orderHistory : DEMO_ORDERS;
     const finalSpecials = Array.isArray(cmsSpecials) && cmsSpecials.length > 0 ? cmsSpecials : DEMO_SPECIALS;
 
+    const restockRequests = await client
+        .fetch(
+            `*[_type == "restockRequest" && (
+                (defined(customerEmail) && lower(customerEmail) == lower($email)) ||
+                (contactType == "email" && lower(contactValue) == lower($email)) ||
+                (defined(customerName) && lower(customerName) == lower($name))
+            )] | order(createdAt desc) {
+                _id,
+                customerName,
+                customerEmail,
+                contactType,
+                contactValue,
+                item,
+                qty,
+                store,
+                status,
+                createdAt,
+                notifiedAt
+            }`,
+            { email, name: userName }
+        )
+        .catch(() => []);
+
     const address = customerRecord.address || '300 Happ Rd, Northfield, IL 60093';
     const phone = customerRecord.phone || '847-441-6328';
     const avatar = customerRecord.avatar || '/assets/avatars/avatar-angus-bull.jpg';
@@ -105,6 +149,7 @@ export default async function CustomerDashboardPage({ params }: Props) {
             bio={bio}
             favoriteCut={favoriteCut}
             memberSince={memberSince}
+            initialRestockRequests={Array.isArray(restockRequests) ? restockRequests : []}
         />
     );
 }

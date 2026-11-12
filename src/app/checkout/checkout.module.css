@@ -749,3 +749,43 @@
     border-top: 1px solid #1e1e1e;
 }
 .summaryNote { font-size: 11px; color: #555; margin-top: 10px; }
+
+/* ── Signed-in Contact Summary Card ───────────────────────────────────────── */
+.signedInCard {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    background: rgba(212, 168, 83, 0.08);
+    border: 1px solid rgba(212, 168, 83, 0.35);
+    border-radius: var(--radius, 12px);
+}
+
+.signedInInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.signedInTag {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold, #d4a853);
+}
+
+.signedInName {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--fg, #f0ece4);
+}
+
+.signedInDetails {
+    font-size: 13px;
+    color: var(--fg-2, #c8c0b4);
+}
+

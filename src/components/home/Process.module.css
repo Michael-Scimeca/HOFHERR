@@ -1,48 +1,135 @@
 .section {
-    padding: 96px 0 48px;
     background: var(--bg);
-    border-top: 1px solid var(--border-soft, #ece8d8);
+    border-top: 1px solid var(--border);
+}
+
+/* ── Interactive Switcher Control Bar ── */
+.switcherBar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3, 12px) var(--space-4, 24px);
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-2, 8px) var(--space-3, 16px);
+    margin-bottom: var(--space-7, 48px);
+}
+
+.switcherGroup {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2, 8px);
+}
+
+.switcherLabel {
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    text-transform: uppercase;
+}
+
+.switcherPills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.switcherPill {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    color: var(--fg-muted);
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.switcherPill:hover {
+    color: var(--fg);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.switcherPillActive {
+    background: rgba(204, 14, 29, 0.18);
+    border-color: var(--red);
+    color: var(--fg);
+}
+
+.switcherPillGold {
+    background: rgba(245, 155, 26, 0.16);
+    border-color: var(--gold);
+    color: var(--fg);
 }
 
 /* ── Header ── */
 .header {
     text-align: center;
-    margin-bottom: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3, 12px);
+    padding-bottom: var(--space-8, 64px);
 }
 
 .title {
     font-size: clamp(2.2rem, 5vw, 3.4rem);
-    color: var(--text, #1a1210);
-    margin: 12px 0 18px;
+    color: var(--fg);
+    margin: 0;
     font-family: var(--font-heading);
     line-height: 1.1;
 }
 
 .title em {
     font-style: italic;
-    color: var(--red, #8b0000);
+    color: var(--red);
     font-weight: 400;
 }
 
 .subtitle {
-    font-size: 1rem;
-    color: var(--text-2, #5c4a3c);
+    font-size: var(--text-base, 1rem);
+    color: var(--fg-muted);
     max-width: 480px;
     margin: 0 auto;
     line-height: 1.7;
-    opacity: 0.85;
 }
 
-/* ── Grid ── */
+.ctaWrap {
+    padding-top: var(--space-2, 8px);
+}
+
+.ctaBtn {
+    display: inline-flex;
+}
+
+.inlineLink {
+    color: var(--gold);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease;
+}
+
+.inlineLink:hover {
+    color: var(--fg);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LAYOUT 1: 4-Column Dark Card Row with Pointing Hand Connectors
+   ══════════════════════════════════════════════════════════════════════════ */
 .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 0 32px;
+    gap: 0 var(--space-6, 48px);
     position: relative;
     align-items: stretch;
 }
 
-/* ── Step wrapper (holds card + connector) ── */
 .step {
     position: relative;
     padding: 0;
@@ -50,13 +137,12 @@
     flex-direction: column;
 }
 
-/* ── Connector arrow ── */
 .connector {
     position: absolute;
-    top: 44px;
-    /* aligned to center of icon circle */
-    right: -44px;
-    width: 88px;
+    top: 96px;
+    right: -56px;
+    width: 64px;
+    height: 64px;
     z-index: 3;
     pointer-events: none;
     display: flex;
@@ -64,33 +150,42 @@
     justify-content: center;
 }
 
+.connectorBadge {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .connectorHand {
-    width: 88px;
-    height: 57px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    mix-blend-mode: multiply;
-    opacity: 0.9;
     display: block;
 }
 
-/* ── Card ── */
 .card {
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    padding: 32px 16px 24px;
+    background: var(--bg-card, rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-6, 32px) var(--space-4, 24px) var(--space-5, 28px);
     text-align: center;
     position: relative;
     height: 100%;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3, 12px);
+    transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 .card:hover {
-    transform: none;
-    box-shadow: none;
+    border-color: rgba(245, 155, 26, 0.45);
+    transform: translateY(-2px);
 }
 
-/* ── Step number badge ── */
 .stepNum {
     position: absolute;
     top: -20px;
@@ -98,136 +193,485 @@
     transform: translateX(-50%);
     width: 40px;
     height: 40px;
-    background: var(--red, #b81d24);
-    color: #fff;
-    border-radius: 50%;
+    background: var(--red);
+    color: var(--fg);
+    border-radius: 999px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: var(--text-xs, 13px);
     font-weight: 800;
     letter-spacing: 0.04em;
-    border: 3px solid var(--red, #b81d24);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    border: 2px solid #f4ebd9;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
     z-index: 2;
 }
 
-/* ── Icon ── */
 .iconWrap {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 22px;
+    width: 168px;
+    height: 168px;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .icon {
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    max-width: 100%;
-    max-height: 100%;
+    display: block;
 }
 
-/* ── HTML Payment Icon (step 03) ── */
-.paymentIcon {
+.sceneThumbWrap {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 4px 0;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
 }
 
-.paymentRow {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: nowrap;
-}
-
-.paypal {
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 800;
-    font-size: 1.25rem;
-    line-height: 1;
-    letter-spacing: -0.02em;
-}
-
-.visa {
-    font-family: 'Arial Black', Arial, sans-serif;
-    font-weight: 900;
-    font-size: 1.35rem;
-    font-style: italic;
-    color: #1a1f71;
-    letter-spacing: -0.03em;
-    line-height: 1;
-}
-
-.applePay {
-    display: inline-flex;
-    align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 600;
-    font-size: 1rem;
-    color: #111;
-    line-height: 1;
-    gap: 3px;
-}
-
-.paymentDivider {
+.sceneThumb {
     width: 100%;
-    height: 1px;
-    background: #ccc8b8;
-    margin: 2px 0;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
-.giftText {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: #2a1a0e;
-    white-space: nowrap;
-}
-
-/* ── Card text ── */
 .cardTitle {
-    font-size: 1.05rem;
+    font-size: var(--text-lg, 1.125rem);
     font-weight: 700;
-    color: var(--text, #1a1210);
-    margin-bottom: 10px;
+    color: var(--fg);
+    margin: 0;
     line-height: 1.3;
 }
 
 .cardDesc {
-    font-size: 0.875rem;
-    color: var(--text-2, #5c4a3c);
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--fg-muted);
     line-height: 1.65;
-    opacity: 0.85;
+    margin: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LAYOUT 2: Open Embers Strip (Borderless Floating Artwork + Track)
+   ══════════════════════════════════════════════════════════════════════════ */
+.stripLayout {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-5, 32px);
+    position: relative;
+}
+
+.stripTrackLine {
+    position: absolute;
+    top: 20px;
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(204, 14, 29, 0.15), rgba(245, 155, 26, 0.45), rgba(204, 14, 29, 0.15));
+    z-index: 1;
+}
+
+.stripItem {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-3, 12px);
+}
+
+.stripNode {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: var(--red);
+    color: var(--fg);
+    border: 2px solid #f4ebd9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-xs, 13px);
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+.stripVisualRow {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2, 8px) 0;
+}
+
+.stripIconFrame {
+    width: 196px;
+    height: 196px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stripSceneFrame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.stripHand {
+    position: absolute;
+    right: -44px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 56px;
+    height: 56px;
+    pointer-events: none;
+}
+
+.stripTitle {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl, 1.35rem);
+    color: var(--fg);
+    margin: 0;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LAYOUT 3: Editorial Story Cards (Wide 16:9 Lithograph Banner Cards)
+   ══════════════════════════════════════════════════════════════════════════ */
+.editorialGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4, 24px);
+    align-items: stretch;
+}
+
+.editorialCard {
+    background: var(--bg-card, rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.editorialCard:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+}
+
+.editorialMedia {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: #0a0a0a;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.editorialImgCover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.editorialImgContain {
+    width: 78%;
+    height: 78%;
+    object-fit: contain;
+    display: block;
+}
+
+.editorialStepPill {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--red);
+    color: var(--fg);
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid #f4ebd9;
+}
+
+.editorialBody {
+    padding: var(--space-4, 24px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2, 8px);
+    flex: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LAYOUT 4: Asymmetric Split Left Hero + Right 2×2 Bento Matrix
+   ══════════════════════════════════════════════════════════════════════════ */
+.bentoLayout {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: var(--space-6, 48px);
+    align-items: center;
+}
+
+.bentoAside {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4, 24px);
+}
+
+.bentoHeading {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 4.5vw, 3.75rem);
+    color: var(--fg);
+    line-height: 1.05;
+    margin: 0;
+}
+
+.bentoHeading em {
+    font-style: italic;
+    color: var(--red);
+    font-weight: 400;
+}
+
+.bentoLead {
+    font-size: var(--text-base, 1rem);
+    color: var(--fg-muted);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.bentoPerks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2, 8px);
+}
+
+.bentoPerkItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 8px);
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--fg-2, #e5dfd5);
+}
+
+.bentoPerkDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--gold);
+    flex-shrink: 0;
+}
+
+.bentoActions {
+    padding-top: var(--space-1, 4px);
+}
+
+.bentoMatrix {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4, 24px);
+}
+
+.bentoCell {
+    background: var(--bg-card, rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4, 24px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-3, 16px);
+    transition: border-color 0.2s ease;
+}
+
+.bentoCell:hover {
+    border-color: rgba(245, 155, 26, 0.45);
+}
+
+.bentoCellTop {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3, 16px);
+}
+
+.bentoCellNum {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    line-height: 1;
+    color: var(--red);
+    font-weight: 700;
+}
+
+.bentoArtWrap {
+    width: 112px;
+    height: 112px;
+    flex-shrink: 0;
+}
+
+.bentoSceneWrap {
+    width: 180px;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.bentoCellCopy {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LAYOUT 5: Horizontal Butcher Ticket Ledger (2×2 Ticket Strips)
+   ══════════════════════════════════════════════════════════════════════════ */
+.ledgerGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4, 24px);
+}
+
+.ledgerRow {
+    background: var(--bg-card, rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4, 24px);
+    display: grid;
+    grid-template-columns: 72px auto 1fr;
+    align-items: center;
+    gap: var(--space-4, 24px);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.ledgerRow:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+.ledgerStub {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px dashed rgba(244, 235, 217, 0.22);
+    padding-right: var(--space-3, 16px);
+    height: 100%;
+}
+
+.ledgerStubLabel {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--fg-muted);
+}
+
+.ledgerStubNum {
+    font-family: var(--font-heading);
+    font-size: 2.25rem;
+    line-height: 1;
+    color: var(--red);
+    font-weight: 700;
+}
+
+.ledgerArtWrap {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+}
+
+.ledgerSceneWrap {
+    width: 196px;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.ledgerCopy {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+
+.ledgerMeta {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+}
+
+.ledgerTitle {
+    font-size: var(--text-lg, 1.125rem);
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0;
 }
 
 /* ── Responsive ── */
-@media (max-width: 992px) {
-    .grid {
+@media (max-width: 1080px) {
+    .grid,
+    .stripLayout,
+    .editorialGrid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 52px 32px;
+        gap: var(--space-6, 40px) var(--space-4, 24px);
     }
 
-    .connector {
+    .connector,
+    .stripTrackLine,
+    .stripHand {
         display: none;
+    }
+
+    .bentoLayout {
+        grid-template-columns: 1fr;
+    }
+
+    .ledgerGrid {
+        grid-template-columns: 1fr;
     }
 }
 
-@media (max-width: 600px) {
-    .grid {
+@media (max-width: 640px) {
+    .grid,
+    .stripLayout,
+    .editorialGrid,
+    .bentoMatrix {
         grid-template-columns: 1fr;
-        gap: 48px;
     }
 
-    .section {
-        padding: 64px 0;
+    .ledgerRow {
+        grid-template-columns: 1fr;
+        text-align: center;
+        justify-items: center;
     }
 
-    .step {
-        padding: 0 4px;
+    .ledgerStub {
+        border-right: none;
+        border-bottom: 1px dashed rgba(244, 235, 217, 0.22);
+        padding-right: 0;
+        padding-bottom: var(--space-2, 8px);
+        width: 100%;
+    }
+
+    .ledgerCopy {
+        text-align: center;
     }
 }

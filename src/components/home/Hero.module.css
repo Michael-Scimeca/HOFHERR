@@ -16,79 +16,51 @@
     z-index: 0;
 }
 
-/* ─── Right-column video ─── */
+/* ─── Full-bleed background video ─── */
 .heroVideoCol {
-    position: relative;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.heroVideoCol::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.88) 0%,
+        rgba(0, 0, 0, 0.72) 42%,
+        rgba(0, 0, 0, 0.35) 75%,
+        rgba(0, 0, 0, 0.55) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
 }
 
 .heroVideoPlayer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    object-position: center center;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    aspect-ratio: auto;
 }
 
-/* Mobile: hero video becomes background */
 @media (max-width: 1200px) {
-    .heroVideoCol {
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-        overflow: hidden;
-    }
-
     .heroVideoCol::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to bottom,
-                rgba(0, 0, 0, 0.9) 0%,
-                rgba(0, 0, 0, 0.85) 50%,
-                rgba(0, 0, 0, 0.92) 100%);
-        z-index: 1;
-    }
-
-    .heroVideoPlayer {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        border-radius: 0;
-        border: none;
-        box-shadow: none;
-        aspect-ratio: auto;
-    }
-}
-
-/* Desktop: hero video in right column */
-@media (min-width: 1201px) {
-    .heroVideoCol {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        margin: auto;
-        height: fit-content;
-        right: 0;
-        width: 45%;
-        z-index: 1;
-        overflow: hidden;
-    }
-
-    .heroVideoCol::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to right, #000 0%, rgba(0, 0, 0, 0.6) 30%, transparent 70%);
-        z-index: 2;
-        pointer-events: none;
-    }
-
-    .heroVideoCol::after {
-        display: none;
-    }
-
-    .heroVideoPlayer {
-        width: 100%;
-        border-radius: 16px;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-        aspect-ratio: 16 / 9;
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.88) 0%,
+            rgba(0, 0, 0, 0.78) 50%,
+            rgba(0, 0, 0, 0.9) 100%
+        );
     }
 }
 
@@ -298,6 +270,11 @@
 .stat {
     display: flex;
     flex-direction: column;
+}
+
+.statLink {
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .accent {

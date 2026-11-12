@@ -16,13 +16,18 @@
     animation: melt-in var(--pt-enter-ms, 320ms) cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.overlayClosing {
+    pointer-events: none;
+}
+
 .modal {
+    position: relative;
     background: #000;
     border-radius: 16px;
     border: 2px solid var(--red);
-    padding: 12px 18px;
+    padding: 20px 22px;
     width: 100%;
-    max-width: 460px;
+    max-width: 480px;
     margin: auto;
     box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0,0,0,0.04);
     display: flex;
@@ -32,6 +37,9 @@
 }
 
 .choiceView {
+    position: relative;
+    inset: auto;
+    display: block;
     padding: 2px 0;
     border: none;
     background: transparent;
@@ -351,4 +359,30 @@
 
 .centered {
     text-align: center;
+}
+
+.registerSubmitBtn {
+    margin-top: 4px;
+    padding: 12px;
+}
+
+.forgotSentWrap {
+    padding: 20px 0;
+}
+
+.forgotSentTitle {
+    color: var(--red);
+    margin-bottom: 8px;
+}
+
+.forgotSentDesc {
+    color: var(--text-muted);
+}
+
+.forgotBackBtn {
+    margin-top: 24px;
+}
+
+.forgotRememberWrap {
+    margin-top: 12px;
 }

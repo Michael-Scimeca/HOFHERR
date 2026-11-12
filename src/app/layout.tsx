@@ -12,6 +12,7 @@ import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import ClientProviders from "@/components/ClientProviders";
 import Navbar from "@/components/Navbar";
 import AuthModal from "@/components/AuthModal";
+import GlobalCartDrawer from "@/components/GlobalCartDrawer";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -148,6 +149,7 @@ export default async function RootLayout({
               <ScrollToTop />
               <Navbar />
               <AuthModal />
+              <GlobalCartDrawer />
               <PageTransition>
                 <div className="site-shell">
                   {children}

@@ -1,17 +1,22 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { adminClient } from '@/sanity/adminClient';
 import { auth } from '@/auth';
 
 export async function GET() {
     try {
         const session = await auth();
+        const cookieStore = await cookies();
+        const isGodMode =
+            process.env.NODE_ENV !== 'production' &&
+            cookieStore.get('hofherr_god_mode')?.value === 'true';
 
-        if (!session?.user) {
+        if (!session?.user && !isGodMode) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         // Secure check: Must be an admin
-        if (!session.user.isAdmin) {
+        if (!session?.user?.isAdmin && !isGodMode) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
 

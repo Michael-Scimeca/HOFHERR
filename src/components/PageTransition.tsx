@@ -62,7 +62,7 @@ export const MELT_TIMELINE_STEPS = [
     },
 ] as const;
 
-const PRELOADER_SKIP_ROUTES = ['/studio', '/admin', '/fire-test'];
+const PRELOADER_SKIP_ROUTES = ['/studio', '/admin', '/dashboard', '/fire-test'];
 const MELT_STORAGE_KEY = 'hofherr_melt_settings_v1';
 
 interface MeltConfig {

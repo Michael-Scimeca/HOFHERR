@@ -68,6 +68,15 @@ export interface BuildOptions {
     scale?: number;
 }
 
+export interface BurnerDrawTuning {
+    flameBoost?: number;
+    flameHeight?: number;
+    flameRadius?: number;
+    flameFlickerSpeed?: number;
+    edgeRaggedness?: number;
+    direction?: 'left-to-right' | 'right-to-left';
+}
+
 export interface Burner {
     build: (opts: BuildOptions) => void;
     /** Front position (canvas fraction) for a 0–1 progress through the shape. */
@@ -78,7 +87,7 @@ export interface Burner {
      * Draws a frame. Returns ink totals, or null before the first build.
      * mode 'in' lights the shape up; mode 'out' burns it away to nothing.
      */
-    draw: (front: number, time: number, finished: boolean, mode?: 'in' | 'out') => { burnt: number; total: number } | null;
+    draw: (front: number, time: number, finished: boolean, mode?: 'in' | 'out', tuning?: BurnerDrawTuning) => { burnt: number; total: number } | null;
     /** Lets a settled (finished) burner draw again, e.g. when relighting. */
     wake: () => void;
 }
@@ -194,11 +203,15 @@ export function createBurner(canvas: HTMLCanvasElement, cooled: RGB): Burner {
     const frontFor = (progress: number) => shapeStart - 0.08 + progress * (shapeEnd - shapeStart + 0.16);
     const across = (front: number) => Math.min(1, Math.max(0, (front - shapeStart) / (shapeEnd - shapeStart)));
 
-    const draw = (front: number, time: number, finished: boolean, mode: 'in' | 'out' = 'in') => {
+    const draw = (front: number, time: number, finished: boolean, mode: 'in' | 'out' = 'in', tuning?: BurnerDrawTuning) => {
         if (!ctx || !image || bw === 0) return null;
         if (finished && settled) return lastTotals;
         const px = image.data;
-        const flick = 0.85 + 0.15 * Math.sin(time * 23) * Math.sin(time * 7.3);
+        const speedMul = tuning?.flameFlickerSpeed ?? 1;
+        const tScaled = time * speedMul;
+        const flick = 0.85 + 0.15 * Math.sin(tScaled * 23) * Math.sin(tScaled * 7.3);
+        const ragged = tuning?.edgeRaggedness ?? 0.14;
+        const rtl = tuning?.direction === 'right-to-left';
         const feather = Math.max(4, Math.round(bh * 0.08));
         let total = 0;
         let burnt = 0;
@@ -207,7 +220,8 @@ export function createBurner(canvas: HTMLCanvasElement, cooled: RGB): Burner {
                 const i = y * bw + x;
                 const o = i * 4;
                 const a = mask[i];
-                const u = x / bw + (edgeNoise[i] - 0.5) * 0.14; // ragged front
+                const xNorm = rtl ? (bw - 1 - x) / bw : x / bw;
+                const u = xNorm + (edgeNoise[i] - 0.5) * ragged; // ragged front
                 const s = front - u; // > 0 means this pixel has caught
                 let r = 0, g = 0, b = 0, alpha = 0;
 
@@ -249,11 +263,14 @@ export function createBurner(canvas: HTMLCanvasElement, cooled: RGB): Burner {
                 }
 
                 // flame tongues rise from the shape upward, never hang below it
-                const near = Math.exp(-Math.abs(s) / 0.03);
+                const nearRadius = tuning?.flameRadius ?? (mode === 'out' ? 0.052 : 0.03);
+                const near = Math.exp(-Math.abs(s) / nearRadius);
                 if (near > 0.02 && inkTop[x] >= 0 && y <= inkBottom[x] && !finished) {
-                    const above = Math.max(0, (inkTop[x] - y) / (bh * 0.32));
-                    const n = sampleNoise(field, (x / bw) * 5, (y / bh) * 2.2 + time * 1.7);
-                    const fl = near * colWeight[x] * Math.max(0, n * 1.7 - 0.45 - above * 1.3);
+                    const heightSpan = tuning?.flameHeight ?? (mode === 'out' ? 0.42 : 0.32);
+                    const above = Math.max(0, (inkTop[x] - y) / (bh * heightSpan));
+                    const n = sampleNoise(field, (x / bw) * 5, (y / bh) * 2.2 + tScaled * 1.7);
+                    const boost = tuning?.flameBoost ?? (mode === 'out' ? 1.35 : 1);
+                    const fl = near * colWeight[x] * boost * Math.max(0, n * 1.7 - 0.42 - above * 1.25);
                     if (fl > 0) {
                         const f = Math.min(1, fl);
                         flameColor(Math.min(1, f * 1.2), flame);

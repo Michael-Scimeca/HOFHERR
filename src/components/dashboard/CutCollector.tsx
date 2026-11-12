@@ -45,7 +45,24 @@ export default function CutCollector({
     const [hoveredCutId, setHoveredCutId] = useState<string | null>(null);
     const [quickOrderCutId, setQuickOrderCutId] = useState<string | null>(null);
     const [featuredSteakProduct, setFeaturedSteakProduct] = useState<string | null>(null);
+    const [simulationMode, setSimulationMode] = useState<'none' | 'animal' | 'grand_slam'>('none');
+    const [activeRecipeCutId, setActiveRecipeCutId] = useState<string | null>(null);
     const popoverRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const handleSelectAnimalEvent = (e: Event) => {
+            const detail = (e as CustomEvent<{ animalId?: AnimalId }>).detail;
+            if (detail?.animalId && ANIMAL_IDS.includes(detail.animalId)) {
+                setSelectedAnimalId(detail.animalId);
+                setSelectedCutId(null);
+                setHoveredCutId(null);
+                setQuickOrderCutId(null);
+                setFeaturedSteakProduct(null);
+            }
+        };
+        window.addEventListener('select-cut-animal', handleSelectAnimalEvent);
+        return () => window.removeEventListener('select-cut-animal', handleSelectAnimalEvent);
+    }, []);
 
     useEffect(() => {
         if (!quickOrderCutId && !selectedCutId) return;
@@ -170,7 +187,7 @@ export default function CutCollector({
         [cartQtyByName, removeCartItem, changeCartQty, cartItems]
     );
 
-    // Merge active cart items into effective orders so ordering lights up the cut immediately
+    // Merge active cart items + optional completion preview into effective orders so ordering lights up the cut immediately
     const effectiveOrders = useMemo(() => {
         const merged = [...orders];
         if (cartItems.length > 0) {
@@ -181,8 +198,33 @@ export default function CutCollector({
                 items: cartItems.map((item) => ({ name: item.name, qty: item.qty })),
             });
         }
+        if (simulationMode === 'animal') {
+            const animalDef = CUT_MAP_DATA[selectedAnimalId];
+            merged.push({
+                orderNumber: `SIM-${selectedAnimalId.toUpperCase()}-COMPLETE`,
+                status: 'completed',
+                createdAt: new Date().toISOString(),
+                items: animalDef.cuts.map((c) => ({
+                    name: c.products[0] || c.name,
+                    qty: 1,
+                })),
+            });
+        } else if (simulationMode === 'grand_slam') {
+            const allItems: { name: string; qty: number }[] = [];
+            for (const aId of ANIMAL_IDS) {
+                for (const c of CUT_MAP_DATA[aId].cuts) {
+                    allItems.push({ name: c.products[0] || c.name, qty: 1 });
+                }
+            }
+            merged.push({
+                orderNumber: 'SIM-GRAND-SLAM-40',
+                status: 'completed',
+                createdAt: new Date().toISOString(),
+                items: allItems,
+            });
+        }
         return merged;
-    }, [orders, cartItems]);
+    }, [orders, cartItems, simulationMode, selectedAnimalId]);
 
     // Calculate progress strictly from qualifying completed orders
     const progress = useMemo(() => {
@@ -192,15 +234,40 @@ export default function CutCollector({
     const activeAnimal = CUT_MAP_DATA[selectedAnimalId];
     const activeAnimalProgress = progress.animals[selectedAnimalId];
 
+    const adventurousCutsForAnimal = useMemo(() => {
+        return activeAnimal.cuts.filter((c) => Boolean(c.recipe));
+    }, [activeAnimal]);
+
+    const activeRecipeCut = useMemo(() => {
+        if (selectedCutId) {
+            const fromSelected = activeAnimal.cuts.find((c) => c.id === selectedCutId && c.recipe);
+            if (fromSelected) return fromSelected;
+        }
+        if (activeRecipeCutId) {
+            const fromTab = adventurousCutsForAnimal.find((c) => c.id === activeRecipeCutId);
+            if (fromTab) return fromTab;
+        }
+        return adventurousCutsForAnimal[0] || null;
+    }, [activeAnimal, selectedCutId, activeRecipeCutId, adventurousCutsForAnimal]);
+
     const quickOrderCutDef = useMemo(() => {
         if (!quickOrderCutId) return null;
         return activeAnimal.cuts.find((c) => c.id === quickOrderCutId) || null;
     }, [activeAnimal, quickOrderCutId]);
 
+    const preparedProductsSetForPopover = useMemo(() => {
+        return new Set(quickOrderCutDef?.preparedProducts ?? []);
+    }, [quickOrderCutDef]);
+
     const orderedProductsForPopover = useMemo(() => {
         if (!quickOrderCutDef) return [];
         if (featuredSteakProduct && quickOrderCutDef.products.includes(featuredSteakProduct)) {
             return [featuredSteakProduct];
+        }
+        if (quickOrderCutDef.preparedProducts && quickOrderCutDef.preparedProducts.length > 0) {
+            const prepSet = new Set(quickOrderCutDef.preparedProducts);
+            const rawList = quickOrderCutDef.products.filter((p) => !prepSet.has(p));
+            return [...quickOrderCutDef.preparedProducts, ...rawList];
         }
         return quickOrderCutDef.products;
     }, [quickOrderCutDef, featuredSteakProduct]);
@@ -243,7 +310,10 @@ export default function CutCollector({
         };
     }, [effectiveOrders]);
 
-    const pickedOrOrderedProducts = dailyOrderSummary.products;
+    const pickedOrOrderedProducts = useMemo(
+        () => dailyOrderSummary.products.slice(0, 8),
+        [dailyOrderSummary.products]
+    );
 
     // Keyboard navigation helper for SVG cuts
     const handleCutKeyDown = (e: React.KeyboardEvent, cut: CutDefinition) => {
@@ -261,39 +331,6 @@ export default function CutCollector({
             aria-labelledby="cut-collection-heading"
             className={styles.container}
         >
-            {/* ── Top Header Card with Overall Score ── */}
-            <div className={styles.headerCard}>
-                <div className={styles.headerTop}>
-                    <div className={styles.titleArea}>
-                        <h2 id="cut-collection-heading" className={styles.title}>
-                            {userName}&apos;s Cut Collection
-                        </h2>
-                        <p className={styles.subtitle}>
-                            Every whole animal ordered at the counter or online unlocks on your guild chart. Complete every cut to claim the whole animal stamp.
-                        </p>
-                    </div>
-
-                    <div className={styles.scoreBadge} aria-label={`${progress.totalCollected} of ${TOTAL_CUTS_COUNT} cuts collected`}>
-                        <span className={styles.scoreCurrent}>{progress.totalCollected}</span>
-                        <span className={styles.scoreTotal}>/ {TOTAL_CUTS_COUNT}</span>
-                        <span className={styles.scoreLabel}>Cuts Collected</span>
-                    </div>
-                </div>
-
-                <div className={styles.progressBarWrap}>
-                    <div className={styles.progressBarTrack} role="progressbar" aria-valuenow={progress.overallPercent} aria-valuemin={0} aria-valuemax={100} aria-label="Overall cuts progress">
-                        <div
-                            className={styles.progressBarFill}
-                            style={{ '--progress-pct': `${progress.overallPercent}%` } as React.CSSProperties}
-                        />
-                    </div>
-                    <div className={styles.progressMeta}>
-                        <span>{progress.overallPercent}% Master Butcher Guild Completion</span>
-                        <span>{TOTAL_CUTS_COUNT - progress.totalCollected} Cuts Remaining</span>
-                    </div>
-                </div>
-            </div>
-
             {/* ── Signed-Out / Empty State Banners ── */}
             {!isAuthenticated && (
                 <div className={styles.noticeBanner}>
@@ -306,7 +343,7 @@ export default function CutCollector({
                 </div>
             )}
 
-            {isAuthenticated && progress.qualifyingOrderCount === 0 && simulatedItems.length === 0 && (
+            {isAuthenticated && progress.qualifyingOrderCount === 0 && simulationMode === 'none' && (
                 <div className={styles.noticeBanner}>
                     <p className={styles.noticeText}>
                         <strong>Start Your Collection:</strong> You haven&apos;t placed a qualifying butcher order yet. Choose any prime cut on online orders to light up your first cut!
@@ -317,49 +354,97 @@ export default function CutCollector({
                 </div>
             )}
 
-            {/* ── Animal Selector Tabs ── */}
-            <div className={styles.tabsList} role="tablist" aria-label="Select Animal Anatomy">
-                {ANIMAL_IDS.map((animalId) => {
-                    const animal = CUT_MAP_DATA[animalId];
-                    const animalProg = progress.animals[animalId];
-                    const isActive = animalId === selectedAnimalId;
+            {/* ── Main Stage Grid: 3-Column Widescreen (Left Animal Rail + Center Cut Map + Right Order & Recipe Setup) ── */}
+            <div
+                id={`animal-panel-${selectedAnimalId}`}
+                role="tabpanel"
+                className={`${styles.stageGrid} ${styles.stageGridThreeCol}`}
+            >
+                {/* ── Left Rail: Vertical Animal Selector + Overall Score ── */}
+                <aside className={styles.leftRailCard} aria-label="Animal selector and guild score">
+                    <div className={styles.leftRailScoreBlock}>
+                        <h2 id="cut-collection-heading" className={styles.leftRailTitle}>
+                            {userName}&apos;s Cut Collection
+                        </h2>
+                        <div className={styles.leftRailScoreRow}>
+                            <span className={styles.leftRailScoreBig}>{progress.totalCollected}</span>
+                            <span className={styles.leftRailScoreSub}>/ {TOTAL_CUTS_COUNT} Cuts ({progress.overallPercent}%)</span>
+                        </div>
+                        <div className={styles.progressBarTrack} role="progressbar" aria-valuenow={progress.overallPercent} aria-valuemin={0} aria-valuemax={100} aria-label="Overall cuts progress">
+                            <div
+                                className={styles.progressBarFill}
+                                style={{ '--progress-pct': `${progress.overallPercent}%` } as React.CSSProperties}
+                            />
+                        </div>
+                    </div>
 
-                    return (
-                        <button
-                            key={animalId}
-                            type="button"
-                            role="tab"
-                            aria-selected={isActive}
-                            aria-controls={`animal-panel-${animalId}`}
-                            className={`${styles.tabBtn} ${isActive ? styles.tabBtnActive : ''} ${animalProg.isComplete ? styles.tabComplete : ''}`}
-                            onClick={() => {
-                                setSelectedAnimalId(animalId);
-                                setSelectedCutId(null);
-                                setHoveredCutId(null);
-                                setQuickOrderCutId(null);
-                                setFeaturedSteakProduct(null);
-                            }}
-                        >
-                            <div className={styles.tabHeader}>
-                                <span className={styles.tabName}>{animal.name}</span>
-                                <span className={styles.tabBadge}>
-                                    {animalProg.collectedCount}/{animalProg.totalCount}
-                                </span>
-                            </div>
-                            <div className={styles.tabMiniTrack}>
-                                <div
-                                    className={styles.tabMiniFill}
-                                    style={{ '--tab-mini-pct': `${animalProg.percent}%` } as React.CSSProperties}
-                                />
-                            </div>
-                        </button>
-                    );
-                })}
-            </div>
+                    <div className={styles.leftRailTabsList} role="tablist" aria-label="Select Animal Anatomy">
+                        {ANIMAL_IDS.map((animalId) => {
+                            const animal = CUT_MAP_DATA[animalId];
+                            const animalProg = progress.animals[animalId];
+                            const isActive = animalId === selectedAnimalId;
+                            return (
+                                <button
+                                    key={animalId}
+                                    type="button"
+                                    role="tab"
+                                    aria-selected={isActive}
+                                    className={`${styles.leftRailTabBtn} ${isActive ? styles.tabBtnActive : ''} ${animalProg.isComplete ? styles.tabComplete : ''}`}
+                                    onClick={() => {
+                                        setSelectedAnimalId(animalId);
+                                        setSelectedCutId(null);
+                                        setHoveredCutId(null);
+                                        setQuickOrderCutId(null);
+                                        setFeaturedSteakProduct(null);
+                                        setActiveRecipeCutId(null);
+                                    }}
+                                >
+                                    <div className={styles.tabHeader}>
+                                        <span className={styles.tabName}>{animal.name}</span>
+                                        <span className={styles.tabBadge}>
+                                            {animalProg.collectedCount}/{animalProg.totalCount}
+                                        </span>
+                                    </div>
+                                    <div className={styles.tabMiniTrack}>
+                                        <div
+                                            className={styles.tabMiniFill}
+                                            style={{ '--tab-mini-pct': `${animalProg.percent}%` } as React.CSSProperties}
+                                        />
+                                    </div>
+                                </button>
+                            );
+                        })}
+                    </div>
 
-            {/* ── Main Stage Grid: Interactive Silhouette + Cut Details ── */}
-            <div id={`animal-panel-${selectedAnimalId}`} role="tabpanel" className={styles.stageGrid}>
-                {/* ── Left Column: Interactive Vector Silhouette ── */}
+                    <div className={styles.leftRailSimBlock}>
+                        <span className={styles.leftRailSimLabel}>PREVIEW PROGRESS:</span>
+                        <div className={styles.leftRailSimBtns}>
+                            <button
+                                type="button"
+                                className={`${styles.simBtnCompact} ${simulationMode === 'none' ? styles.simBtnActive : ''}`}
+                                onClick={() => setSimulationMode('none')}
+                            >
+                                Real ({orders.length})
+                            </button>
+                            <button
+                                type="button"
+                                className={`${styles.simBtnCompact} ${simulationMode === 'animal' ? styles.simBtnActive : ''}`}
+                                onClick={() => setSimulationMode(simulationMode === 'animal' ? 'none' : 'animal')}
+                            >
+                                ⚡ {activeAnimal.name}
+                            </button>
+                            <button
+                                type="button"
+                                className={`${styles.simBtnCompact} ${simulationMode === 'grand_slam' ? styles.simBtnActiveGold : ''}`}
+                                onClick={() => setSimulationMode(simulationMode === 'grand_slam' ? 'none' : 'grand_slam')}
+                            >
+                                🏆 All 7
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+
+                {/* ── Center/Left Column: Interactive Vector Silhouette ── */}
                 <div className={styles.chartPanel}>
                     <div className={styles.chartHeader}>
                         <div className={styles.chartTitleRow}>
@@ -453,7 +538,13 @@ export default function CutCollector({
                                                     className={
                                                         activeAnimal.woodcutPath
                                                             ? `${styles.woodcutCutOverlay} ${
-                                                                  isCollected ? styles.woodcutCutOverlayCollected : ''
+                                                                  cut.isAdventurousCut ? styles.woodcutCutOverlayGoingForGold : ''
+                                                              } ${
+                                                                  isCollected
+                                                                      ? cut.isAdventurousCut
+                                                                          ? styles.woodcutCutOverlayGoldCollected
+                                                                          : styles.woodcutCutOverlayCollected
+                                                                      : ''
                                                               } ${isHighlighted ? styles.woodcutCutOverlayHighlighted : ''}`
                                                             : `${styles.cutPath} ${
                                                                   isCollected ? styles.cutPathCollected : ''
@@ -562,6 +653,29 @@ export default function CutCollector({
                                                             >
                                                                 HOCK
                                                             </text>
+                                                        )}
+                                                        {cut.isAdventurousCut && (
+                                                            <g className={styles.goingForGoldSvgBadgeGroup}>
+                                                                <rect
+                                                                    x={cut.labelX - 44}
+                                                                    y={cut.labelY - 36}
+                                                                    width="88"
+                                                                    height="18"
+                                                                    rx="9"
+                                                                    className={
+                                                                        isCollected
+                                                                            ? styles.goingForGoldSvgPillCollected
+                                                                            : styles.goingForGoldSvgPill
+                                                                    }
+                                                                />
+                                                                <text
+                                                                    x={cut.labelX}
+                                                                    y={cut.labelY - 27}
+                                                                    className={styles.goingForGoldSvgText}
+                                                                >
+                                                                    {isCollected ? '★ GOLD EARNED' : '🏅 GO FOR GOLD'}
+                                                                </text>
+                                                            </g>
                                                         )}
                                                     </g>
                                                 );
@@ -707,7 +821,9 @@ export default function CutCollector({
                                     <div className={styles.popoverHeader}>
                                         <div className={styles.popoverTitleGroup}>
                                             <span className={styles.popoverKicker}>
-                                                {activeAnimal.name} · Instant Counter Order
+                                                {quickOrderCutDef.isAdventurousCut
+                                                    ? `🏅 GOING FOR GOLD CUT · RAW OR PREPARED COUNTS!`
+                                                    : `${activeAnimal.name} · Instant Counter Order`}
                                             </span>
                                             <h4 className={styles.popoverTitle}>
                                                 {featuredSteakProduct || `${quickOrderCutDef.name} Cuts`}
@@ -727,6 +843,17 @@ export default function CutCollector({
                                         </button>
                                     </div>
 
+                                    {quickOrderCutDef.isAdventurousCut && (
+                                        <div className={styles.popoverAdventurousBanner}>
+                                            <span className={styles.popoverAdventurousTitle}>
+                                                🏅 Going for Gold on a Less-Desired Cut — Prepared Items Count!
+                                            </span>
+                                            <span className={styles.popoverAdventurousSub}>
+                                                {quickOrderCutDef.name} is a bold butcher&apos;s cut! You don&apos;t have to cook it raw—order a prepared heat-&amp;-serve dish below or use our Chef&apos;s Braising Recipe to claim Gold on this piece.
+                                            </span>
+                                        </div>
+                                    )}
+
                                     <div className={styles.popoverProductsList}>
                                         {orderedProductsForPopover.map((prodName) => {
                                             const detail = COUNTER_CUT_DETAILS[prodName] || {
@@ -734,19 +861,25 @@ export default function CutCollector({
                                                 desc: 'Hand-trimmed by Hofherr master butchers.',
                                             };
                                             const inBagQty = cartQtyByName[prodName] || 0;
+                                            const isPreparedOption = preparedProductsSetForPopover.has(prodName);
 
                                             return (
                                                 <div
                                                     key={`popover-prod-${prodName}`}
                                                     className={`${styles.productRowCard} ${
                                                         inBagQty > 0 ? styles.productRowCardActive : ''
-                                                    }`}
+                                                    } ${isPreparedOption ? styles.productRowCardPrepared : ''}`}
                                                 >
                                                     <div className={styles.productInfoCol}>
                                                         <div className={styles.productTitleLine}>
                                                             <span className={styles.productNameText}>
                                                                 {prodName}
                                                             </span>
+                                                            {isPreparedOption && (
+                                                                <span className={styles.preparedCountBadge}>
+                                                                    🍲 Prepared · Counts!
+                                                                </span>
+                                                            )}
                                                             <span className={styles.productPriceTag}>
                                                                 {detail.price}
                                                             </span>
@@ -793,6 +926,30 @@ export default function CutCollector({
                                             );
                                         })}
                                     </div>
+
+                                    {quickOrderCutDef.recipe && (
+                                        <div className={styles.popoverRecipeBox}>
+                                            <div className={styles.popoverRecipeHeader}>
+                                                <span className={styles.popoverRecipeBadge}>
+                                                    📖 BUTCHER&apos;S RECIPE CARD · {quickOrderCutDef.recipe.method.toUpperCase()}
+                                                </span>
+                                                <span className={styles.popoverRecipeTime}>
+                                                    ⏱ {quickOrderCutDef.recipe.cookTime}
+                                                </span>
+                                            </div>
+                                            <strong className={styles.popoverRecipeTitle}>
+                                                {quickOrderCutDef.recipe.title}
+                                            </strong>
+                                            <p className={styles.popoverRecipeSummary}>
+                                                {quickOrderCutDef.recipe.summary}
+                                            </p>
+                                            <ol className={styles.popoverRecipeSteps}>
+                                                {quickOrderCutDef.recipe.steps.map((stepText) => (
+                                                    <li key={stepText}>{stepText}</li>
+                                                ))}
+                                            </ol>
+                                        </div>
+                                    )}
 
                                     <div className={styles.popoverFooter}>
                                         <Link
@@ -941,6 +1098,116 @@ export default function CutCollector({
                             )}
                         </div>
                     </div>
+
+                    {/* ── Docked Butcher's Recipe Setup Card (Right Column in 3-Column Layout) ── */}
+                    {activeRecipeCut?.recipe && (
+                        <div className={styles.recipeSetupCard}>
+                            <div className={styles.recipeSetupTopRow}>
+                                <div className={styles.recipeSetupHeadingCol}>
+                                    <span className={styles.recipeSetupEyebrow}>
+                                        📖 BUTCHER&apos;S RECIPE SETUP
+                                    </span>
+                                    <h4 className={styles.recipeSetupCutTitle}>
+                                        {activeAnimal.name} {activeRecipeCut.name} ·{' '}
+                                        <span>{activeRecipeCut.recipe.method}</span>
+                                    </h4>
+                                </div>
+                                {adventurousCutsForAnimal.length > 1 && (
+                                    <div
+                                        className={styles.recipeCutSwitchRow}
+                                        role="tablist"
+                                        aria-label="Select cut recipe"
+                                    >
+                                        {adventurousCutsForAnimal.map((advCut) => {
+                                            const isCutActive = advCut.id === activeRecipeCut.id;
+                                            return (
+                                                <button
+                                                    key={advCut.id}
+                                                    type="button"
+                                                    role="tab"
+                                                    aria-selected={isCutActive}
+                                                    className={`${styles.recipeCutPill} ${
+                                                        isCutActive ? styles.recipeCutPillActive : ''
+                                                    }`}
+                                                    onClick={() => {
+                                                        setActiveRecipeCutId(advCut.id);
+                                                        setSelectedCutId(advCut.id);
+                                                    }}
+                                                >
+                                                    🏅 {advCut.name}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+
+                            <strong className={styles.recipeDishName}>
+                                {activeRecipeCut.recipe.title}
+                            </strong>
+
+                            <div className={styles.recipeSpecsGrid}>
+                                <div className={styles.recipeSpecPill}>
+                                    <span className={styles.recipeSpecLabel}>PREP</span>
+                                    <span className={styles.recipeSpecValue}>
+                                        {activeRecipeCut.recipe.prepTime}
+                                    </span>
+                                </div>
+                                <div className={styles.recipeSpecPill}>
+                                    <span className={styles.recipeSpecLabel}>COOK</span>
+                                    <span className={styles.recipeSpecValue}>
+                                        {activeRecipeCut.recipe.cookTime}
+                                    </span>
+                                </div>
+                                <div className={styles.recipeSpecPill}>
+                                    <span className={styles.recipeSpecLabel}>SETUP</span>
+                                    <span className={styles.recipeSpecValue}>
+                                        {activeRecipeCut.recipe.method}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <ol className={styles.recipeSetupStepsList}>
+                                {activeRecipeCut.recipe.steps.map((stepText, idx) => (
+                                    <li key={stepText} className={styles.recipeSetupStepItem}>
+                                        <span className={styles.recipeStepNum}>{idx + 1}</span>
+                                        <span className={styles.recipeStepBody}>{stepText}</span>
+                                    </li>
+                                ))}
+                            </ol>
+
+                            <div className={styles.recipeSetupTipBanner}>
+                                <span className={styles.recipeSetupTipText}>
+                                    <strong>💡 Butcher&apos;s Shortcut:</strong> {activeRecipeCut.recipe.chefTip}
+                                </span>
+                            </div>
+
+                            <div className={styles.recipeSetupActionsRow}>
+                                {activeRecipeCut.preparedProducts?.[0] && (
+                                    <button
+                                        type="button"
+                                        className={styles.recipeOrderPrepBtn}
+                                        onClick={(e) =>
+                                            addCutProductToCart(activeRecipeCut.preparedProducts![0], e)
+                                        }
+                                    >
+                                        🍲 + Order Prepared ({activeRecipeCut.name})
+                                    </button>
+                                )}
+                                {activeRecipeCut.products[0] && (
+                                    <button
+                                        type="button"
+                                        className={styles.recipeOrderRawBtn}
+                                        onClick={(e) =>
+                                            addCutProductToCart(activeRecipeCut.products[0], e)
+                                        }
+                                    >
+                                        🥩 + Raw {activeRecipeCut.products[0]}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </aside>
             </div>
         </section>

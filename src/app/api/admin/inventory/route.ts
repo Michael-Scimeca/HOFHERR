@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/sanity/adminClient';
 import { auth } from '@/auth';
+import { sendCustomerRestockFilledEmail } from '@/app/api/restock-request/route';
 
 const IS_DEV = process.env.NODE_ENV === 'development';
 
@@ -252,9 +253,66 @@ export async function PATCH(req: Request) {
 
         await adminClient.patch(productId).set(patch).commit();
 
+        // If the product is now back in stock (in-stock or low-stock, or stockQuantity > 0),
+        // automatically fulfill any pending restock requests for this item and email the customers.
+        const isNowRestocked =
+            patch.stockStatus === 'in-stock' ||
+            patch.stockStatus === 'low-stock' ||
+            (typeof patch.stockQuantity === 'number' && patch.stockQuantity > 0 && patch.stockStatus !== 'out-of-stock');
+
+        let notifiedRestockCount = 0;
+        if (isNowRestocked) {
+            try {
+                const productDoc = await adminClient.fetch(
+                    `*[_id == $id && _type == "product"][0]{ name }`,
+                    { id: productId }
+                );
+                if (productDoc?.name) {
+                    const pendingRequests = await adminClient.fetch(
+                        `*[_type == "restockRequest" && status == "pending" && lower(item) == lower($itemName)]{
+                            _id,
+                            customerName,
+                            customerEmail,
+                            contactType,
+                            contactValue,
+                            item,
+                            qty,
+                            store
+                        }`,
+                        { itemName: productDoc.name }
+                    );
+
+                    const notifiedAt = new Date().toISOString();
+                    for (const reqDoc of pendingRequests || []) {
+                        await adminClient
+                            .patch(reqDoc._id)
+                            .set({ status: 'notified', notifiedAt })
+                            .commit();
+
+                        const toEmail =
+                            reqDoc.customerEmail ||
+                            (reqDoc.contactType === 'email' ? reqDoc.contactValue : '') ||
+                            '';
+
+                        await sendCustomerRestockFilledEmail({
+                            toEmail,
+                            customerName: reqDoc.customerName || 'Customer',
+                            item: reqDoc.item || productDoc.name,
+                            qty: reqDoc.qty || 1,
+                            store: reqDoc.store || 'butcher',
+                        });
+                        notifiedRestockCount++;
+                    }
+                }
+            } catch (notifyErr) {
+                console.error('[Inventory] Failed to notify restock requests:', notifyErr);
+            }
+        }
+
         return NextResponse.json({
             ok: true,
             productId,
+            notifiedRestockCount,
             ...patch,
         });
     } catch (error) {

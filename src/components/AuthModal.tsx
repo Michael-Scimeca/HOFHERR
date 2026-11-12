@@ -47,16 +47,22 @@ export default function AuthModal() {
     const [loginData, setLoginData] = useState(EMPTY_LOGIN);
     const [registerData, setRegisterData] = useState(EMPTY_REGISTER);
     const [forgotEmail, setForgotEmail] = useState('');
+    const [closing, setClosing] = useState(false);
     const panelRef = useRef<HTMLDialogElement>(null);
     const returnFocusRef = useRef<HTMLElement | null>(null);
     const open = mode !== null;
 
-    const close = useCallback(() => {
+    const finalizeClose = useCallback(() => {
+        setClosing(false);
         setMode(null);
         setError('');
         setNotice('');
         setLoading(false);
         setForgotSent(false);
+    }, []);
+
+    const close = useCallback(() => {
+        setClosing(true);
     }, []);
 
     const switchMode = (next: AuthMode) => {
@@ -71,6 +77,7 @@ export default function AuthModal() {
             if (status === 'authenticated') return;
             const requested = (e as CustomEvent<{ mode?: 'login' | 'register' }>).detail?.mode;
             returnFocusRef.current = document.activeElement as HTMLElement | null;
+            setClosing(false);
             setError('');
             setNotice('');
             setForgotSent(false);
@@ -80,10 +87,15 @@ export default function AuthModal() {
         return () => window.removeEventListener(OPEN_EVENT, onOpen);
     }, [status]);
 
-    // While open: lock page scroll, Escape to close, keep Tab inside.
+    // Lock page scroll only while open and not in the middle of burning out.
+    useEffect(() => {
+        if (!open || closing) return;
+        return lockScroll();
+    }, [open, closing]);
+
+    // While open: Escape to close, keep Tab inside.
     useEffect(() => {
         if (!open) return;
-        const unlockScroll = lockScroll();
 
         const onKey = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
@@ -106,7 +118,6 @@ export default function AuthModal() {
         window.addEventListener('keydown', onKey);
         return () => {
             window.removeEventListener('keydown', onKey);
-            unlockScroll();
             returnFocusRef.current?.focus();
         };
     }, [open, close]);
@@ -119,7 +130,7 @@ export default function AuthModal() {
     }, [mode]);
 
     const finishSignedIn = () => {
-        close();
+        finalizeClose();
         navigateTo('/dashboard');
     };
 
@@ -209,13 +220,18 @@ export default function AuthModal() {
 
     return createPortal(
         <div
-            className={styles.overlay}
-            data-lenis-prevent
+            className={`${styles.overlay} ${closing ? styles.overlayClosing : ''}`}
+            data-lenis-prevent={closing ? undefined : true}
             onMouseDown={(e) => {
                 if (e.target === e.currentTarget && !loading) close();
             }}
         >
-            <BurnModalShell className={styles.modal} maxWidth={480} style={{ maxWidth: 480, position: 'relative' }}>
+            <BurnModalShell
+                className={styles.modal}
+                maxWidth={480}
+                closing={closing}
+                onCloseComplete={finalizeClose}
+            >
                 <dialog ref={panelRef} open aria-modal="true" aria-labelledby="auth-modal-title" className={styles.choiceView}>
                     <button type="button" className={styles.closeBtn} onClick={close} aria-label="Close">×</button>
                     <h2 id="auth-modal-title" className={styles.title}>{title}</h2>
@@ -237,7 +253,7 @@ export default function AuthModal() {
                                         <div className={styles.authField}><label htmlFor="am-reg-address">Address</label><input required type="text" id="am-reg-address" name="address" autoComplete="street-address" className={styles.authInput} placeholder="123 Meat St, Northfield, IL" value={registerData.address} onChange={e => setRegisterData(d => ({ ...d, address: e.target.value }))} /></div>
 
                                         {error && <p className={styles.authErrorLine} role="alert">⚠️ {error}</p>}
-                                        <button type="submit" className={styles.loginBtn} style={{ marginTop: '4px', padding: '12px' }} disabled={loading}>{loading ? 'Creating...' : 'Create Account'}</button>
+                                        <button type="submit" className={`${styles.loginBtn} ${styles.registerSubmitBtn}`} disabled={loading}>{loading ? 'Creating...' : 'Create Account'}</button>
                                     </form>
 
                                     {social('or sign up with')}
@@ -252,10 +268,10 @@ export default function AuthModal() {
                         {mode === 'forgot' && (
                             <div className={styles.choiceColLogin}>
                                 {forgotSent ? (
-                                    <div className={styles.centered} style={{ padding: '20px 0' }}>
-                                        <h3 style={{ color: 'var(--red)', marginBottom: '8px' }}>Check Your Email</h3>
-                                        <p style={{ color: 'var(--text-muted)' }}>If an account exists for that email, we&apos;ve sent a password reset link.</p>
-                                        <button type="button" className={styles.loginBtn} onClick={() => { setForgotSent(false); switchMode('login'); }} style={{ marginTop: '24px' }}>Back to Login</button>
+                                    <div className={`${styles.centered} ${styles.forgotSentWrap}`}>
+                                        <h3 className={styles.forgotSentTitle}>Check Your Email</h3>
+                                        <p className={styles.forgotSentDesc}>If an account exists for that email, we&apos;ve sent a password reset link.</p>
+                                        <button type="button" className={`${styles.loginBtn} ${styles.forgotBackBtn}`} onClick={() => { setForgotSent(false); switchMode('login'); }}>Back to Login</button>
                                     </div>
                                 ) : (
                                     <form className={styles.loginFields} onSubmit={handleForgot}>
@@ -265,7 +281,7 @@ export default function AuthModal() {
                                         </div>
                                         {error && <p className={styles.authErrorLine} role="alert">⚠️ {error}</p>}
                                         <button type="submit" className={styles.loginBtn} disabled={loading}>{loading ? 'Sending...' : 'Send Reset Link'}</button>
-                                        <div className={`${styles.forgotPass} ${styles.centered}`} style={{ marginTop: '12px' }}>
+                                        <div className={`${styles.forgotPass} ${styles.centered} ${styles.forgotRememberWrap}`}>
                                             <button type="button" className={styles.linkBtn} onClick={() => switchMode('login')}>Nevermind, I remember it</button>
                                         </div>
                                     </form>

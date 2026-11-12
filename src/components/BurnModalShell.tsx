@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef, type CSSProperties, type MouseEventHandler, type ReactNode } from 'react';
 import { createBurner } from '@/lib/burner';
+import { getAddToOrderAnimConfig, hexToRgbTuple } from '@/lib/addToOrderAnimConfig';
 import styles from './BurnModalShell.module.css';
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -20,6 +21,7 @@ import styles from './BurnModalShell.module.css';
    ───────────────────────────────────────────────────────────────────────── */
 
 const BURN_IN_MS = 700;
+const BURN_OUT_MS = 820;
 /** Keep the front moving past the right edge so the last of the frame can cool before we stop. */
 const OVERRUN = 1.22;
 const HOFHERR_RED: [number, number, number] = [204, 14, 29];
@@ -31,34 +33,78 @@ interface BurnPanelProps {
     style?: CSSProperties;
     /** Stacking order for the flame canvas; must sit above the panel's overlay. */
     zIndex?: number;
+    /** When set to true, plays the burn-out exit animation and then calls onCloseComplete. */
+    closing?: boolean;
+    /** Fired once the burn-out exit animation finishes. */
+    onCloseComplete?: () => void;
     onClick?: MouseEventHandler<HTMLDivElement>;
     children: ReactNode;
 }
 
-export function BurnPanel({ className, style, zIndex = 1101, onClick, children }: BurnPanelProps) {
+export function BurnPanel({
+    className,
+    style,
+    zIndex = 1101,
+    closing = false,
+    onCloseComplete,
+    onClick,
+    children,
+}: BurnPanelProps) {
     const panelRef = useRef<HTMLDivElement>(null);
+    const onCloseCompleteRef = useRef(onCloseComplete);
+    useLayoutEffect(() => {
+        onCloseCompleteRef.current = onCloseComplete;
+    });
 
-    // Layout effect: the panel must be hidden behind the burn front before its first paint.
+    // Layout effect: the panel must be hidden behind the burn front before its first paint,
+    // and when `closing` flips to true, it burns out from left to right before unmounting.
     useLayoutEffect(() => {
         const panel = panelRef.current;
         if (!panel) return;
 
-        const showPanel = () => {
+        const cfg = getAddToOrderAnimConfig();
+        const mode: 'in' | 'out' = closing ? 'out' : 'in';
+        const direction = mode === 'out' ? cfg.burnOutDirection : cfg.burnInDirection;
+        const durationMs = mode === 'out' ? cfg.burnOutMs : cfg.burnInMs;
+        const overrun = cfg.overrun || OVERRUN;
+        const cooledRgb = hexToRgbTuple(cfg.borderColorHex || '#CC0E1D');
+        const flamesOn = cfg.burnFlamesEnabled !== false;
+        const drawTuning = {
+            flameBoost: !flamesOn ? 0 : mode === 'out' ? cfg.flameBoost : Math.max(0.5, cfg.flameBoost * 0.74),
+            flameHeight: mode === 'out' ? cfg.flameHeight : Math.max(0.18, cfg.flameHeight * 0.76),
+            flameRadius: mode === 'out' ? cfg.flameRadius : Math.max(0.015, cfg.flameRadius * 0.58),
+            flameFlickerSpeed: cfg.flameFlickerSpeed ?? 1,
+            edgeRaggedness: cfg.edgeRaggedness ?? 0.14,
+            direction,
+        };
+
+        const finishIn = () => {
             panel.dataset.burn = 'done';
         };
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            showPanel();
+            if (mode === 'out') {
+                onCloseCompleteRef.current?.();
+            } else {
+                finishIn();
+            }
             return;
         }
 
         // Read the panel's real border and corners before the burn rule hides the border.
         const cs = getComputedStyle(panel);
         const px = (v: string) => parseFloat(v) || 0;
-        const radii = [px(cs.borderTopLeftRadius), px(cs.borderTopRightRadius), px(cs.borderBottomRightRadius), px(cs.borderBottomLeftRadius)];
-        const lineWidth = Math.max(2, px(cs.borderTopWidth), px(cs.borderLeftWidth));
+        const radii = [
+            px(cs.borderTopLeftRadius),
+            px(cs.borderTopRightRadius),
+            px(cs.borderBottomRightRadius),
+            px(cs.borderBottomLeftRadius),
+        ];
+        const lineWidth = Math.max(1, cfg.borderWidth || px(cs.borderTopWidth) || px(cs.borderLeftWidth) || 2);
 
+        panel.style.setProperty('--burn-angle', direction === 'right-to-left' ? '270deg' : '90deg');
+        panel.style.setProperty('--burn-feather', `${Math.max(1, cfg.burnMaskFeatherPct ?? 10)}%`);
         panel.style.setProperty('--burn-front', '-20%');
-        panel.dataset.burn = 'in';
+        panel.dataset.burn = mode;
 
         const canvas = document.createElement('canvas');
         canvas.setAttribute('aria-hidden', 'true');
@@ -66,7 +112,7 @@ export function BurnPanel({ className, style, zIndex = 1101, onClick, children }
         canvas.style.zIndex = String(zIndex);
         document.body.appendChild(canvas);
 
-        const burner = createBurner(canvas, HOFHERR_RED);
+        const burner = createBurner(canvas, cooledRgb);
 
         let boxW = 0;
         let padX = 56;
@@ -101,7 +147,13 @@ export function BurnPanel({ className, style, zIndex = 1101, onClick, children }
                     c.lineWidth = lineWidth;
                     c.strokeStyle = '#fff';
                     c.beginPath();
-                    c.roundRect(x + lineWidth / 2, y + lineWidth / 2, bw - lineWidth, bh - lineWidth, radii);
+                    c.roundRect(
+                        x + lineWidth / 2,
+                        y + lineWidth / 2,
+                        bw - lineWidth,
+                        bh - lineWidth,
+                        radii
+                    );
                     c.stroke();
                 },
             });
@@ -113,37 +165,72 @@ export function BurnPanel({ className, style, zIndex = 1101, onClick, children }
             built = true;
         };
         build();
-        const ro = new ResizeObserver(build);
-        ro.observe(panel);
-
         const start = performance.now();
         let raf = 0;
         let fadeTimer = 0;
+
+        // Paint the first frame synchronously before the browser paints [data-burn='out'] / [data-burn='in'],
+        // so the red frame on the canvas immediately takes over from the CSS border without a single-frame blink.
+        let lastFront = burner.frontFor(0);
+        let lastTime = start / 1000;
+        if (built) {
+            const frontInBox0 = (lastFront * (boxW + padX * 2) - padX) / boxW;
+            place();
+            burner.draw(lastFront, lastTime, false, mode, drawTuning);
+            panel.style.setProperty('--burn-front', `${frontInBox0 * 100}%`);
+        }
+
+        const ro = new ResizeObserver(() => {
+            build();
+            if (built) {
+                burner.draw(lastFront, lastTime, false, mode, drawTuning);
+            }
+        });
+        ro.observe(panel);
 
         const tick = (now: number) => {
             if (!built) {
                 raf = requestAnimationFrame(tick);
                 return;
             }
-            const p = Math.min(OVERRUN, (now - start) / BURN_IN_MS);
+            const p = Math.min(overrun, (now - start) / durationMs);
             const front = burner.frontFor(p);
             const frontInBox = (front * (boxW + padX * 2) - padX) / boxW;
+            lastFront = front;
+            lastTime = now / 1000;
 
             place();
-            burner.draw(front, now / 1000, false, 'in');
+            burner.draw(front, lastTime, false, mode, drawTuning);
             panel.style.setProperty('--burn-front', `${frontInBox * 100}%`);
+        };
 
-            if (p >= OVERRUN) {
-                // Burn finished: hand over to the panel's own CSS border and drop the canvas.
-                showPanel();
-                ro.disconnect();
-                canvas.style.opacity = '0';
-                fadeTimer = window.setTimeout(() => canvas.remove(), 260);
+        const step = (now: number) => {
+            if (!built) {
+                raf = requestAnimationFrame(step);
                 return;
             }
-            raf = requestAnimationFrame(tick);
+            const p = Math.min(overrun, (now - start) / durationMs);
+            tick(now);
+
+            if (p >= overrun) {
+                ro.disconnect();
+                canvas.style.opacity = '0';
+                if (mode === 'out') {
+                    panel.style.setProperty('--burn-front', '130%');
+                    fadeTimer = window.setTimeout(() => {
+                        canvas.remove();
+                        onCloseCompleteRef.current?.();
+                    }, 180);
+                } else {
+                    // Burn finished: hand over to the panel's own CSS border and drop the canvas.
+                    finishIn();
+                    fadeTimer = window.setTimeout(() => canvas.remove(), 260);
+                }
+                return;
+            }
+            raf = requestAnimationFrame(step);
         };
-        raf = requestAnimationFrame(tick);
+        raf = requestAnimationFrame(step);
 
         return () => {
             cancelAnimationFrame(raf);
@@ -151,7 +238,7 @@ export function BurnPanel({ className, style, zIndex = 1101, onClick, children }
             ro.disconnect();
             canvas.remove();
         };
-    }, [zIndex]);
+    }, [zIndex, closing]);
 
     return (
         <div ref={panelRef} className={className} style={style} onClick={onClick}>

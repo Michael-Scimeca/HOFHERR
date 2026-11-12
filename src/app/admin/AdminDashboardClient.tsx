@@ -6,6 +6,7 @@ import { signOut, useSession } from 'next-auth/react';
 import type * as RechartsModule from 'recharts';
 import styles from './admin.module.css';
 import Pagination from '@/components/shared/Pagination';
+import { resolveOrderCutPieces } from '@/lib/cutCollector';
 
 interface OrderItem {
     name: string;
@@ -22,6 +23,7 @@ interface Order {
     total: number;
     status: string;
     createdAt: string;
+    pickedUpAt?: string;
     items: OrderItem[];
     pickupTime?: string;
     couponCode?: string;
@@ -60,9 +62,11 @@ interface RestockRequestItem {
     qty: number;
     store: string;
     customerName: string;
+    customerEmail?: string;
     contactType: string;
     contactValue?: string;
     status?: string;
+    notifiedAt?: string;
 }
 
 const SEED_ADMIN_ORDERS: Order[] = [
@@ -174,7 +178,7 @@ const SEED_ADMIN_ORDERS: Order[] = [
         _id: 'demo-active-2',
         orderNumber: 'HM-4893',
         customer: {
-            name: 'claire.bennett@glencoe.net',
+            name: 'Claire Bennett',
             email: 'claire.bennett@glencoe.net',
             phone: '847-555-0319',
         },
@@ -236,8 +240,33 @@ const SEED_ADMIN_ORDERS: Order[] = [
             customer_phone: '847-555-0582',
         },
         items: [
-            { name: 'Rotisserie Heritage Half Chicken Meal', qty: 2, price: 24 },
+            { name: 'Rotisserie Chicken', qty: 2, price: 24 },
             { name: 'Charred Broccolini with Chili & Lemon', qty: 2, price: 8 },
+        ],
+    },
+    {
+        _id: 'demo-picked-up-fresh',
+        orderNumber: 'HM-4895',
+        customer: {
+            name: 'Michael Scimeca',
+            email: 'mikeyscimeca@gmail.com',
+            phone: '847-441-6328',
+        },
+        total: 18600,
+        status: 'completed',
+        createdAt: '2026-11-11T18:10:00.000Z',
+        pickedUpAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // Picked up 2 hours ago (22h left before 24h auto-archive)
+        pickupTime: '1:30 PM',
+        metadata: {
+            store_id: 'butcher',
+            customer_name: 'Michael Scimeca',
+            customer_email: 'mikeyscimeca@gmail.com',
+            customer_phone: '847-441-6328',
+            order_note: 'Picked up at Northfield counter • Auto-archives to Inventory History in 24h.',
+        },
+        items: [
+            { name: 'USDA Prime Dry-Aged Bone-In Ribeye', qty: 2, price: 44, note: '1.75" thick cut' },
+            { name: 'Whole Brisket', qty: 1, price: 98, note: 'Full packer brisket' },
         ],
     },
     {
@@ -251,6 +280,7 @@ const SEED_ADMIN_ORDERS: Order[] = [
         total: 16850,
         status: 'completed',
         createdAt: '2026-11-06T18:30:00.000Z',
+        pickedUpAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // Picked up 5 days ago (Expired > 24h -> Archived to Inventory History)
         pickupTime: '4:00 PM',
         couponCode: 'BUTCHER10',
         metadata: {
@@ -266,6 +296,71 @@ const SEED_ADMIN_ORDERS: Order[] = [
         ],
     },
 ];
+
+const SEED_HISTORICAL_SPEND_CENTS: Record<string, { spendCents: number; extraOrders: number }> = {
+    'mvance@northshore.io': { spendCents: 112500, extraOrders: 8 },
+    'eleanor.sterling@winnetka.org': { spendCents: 148000, extraOrders: 11 },
+    'dkovacs@kovacspartners.com': { spendCents: 46500, extraOrders: 5 },
+    'admin@hofherrmeats.com': { spendCents: 185000, extraOrders: 14 },
+    'mikeyscimeca@gmail.com': { spendCents: 142000, extraOrders: 9 },
+    'claire.bennett@glencoe.net': { spendCents: 62000, extraOrders: 4 },
+    'rhalstead@halsteadlaw.com': { spendCents: 24500, extraOrders: 2 },
+};
+
+export interface CustomerSpendBadge {
+    tierKey: 'vip' | 'gold' | 'regular' | 'first';
+    stars: string;
+    hasGoldStar: boolean;
+    label: string;
+    shortLabel: string;
+    lifetimeDollars: number;
+    orderCount: number;
+}
+
+function getCustomerSpendBadge(lifetimeDollars: number, orderCount: number): CustomerSpendBadge {
+    if (lifetimeDollars >= 1000 || orderCount >= 10) {
+        return {
+            tierKey: 'vip',
+            stars: '★★★',
+            hasGoldStar: true,
+            label: '★ Gold Star VIP · Master Patron',
+            shortLabel: '★ VIP Master',
+            lifetimeDollars,
+            orderCount,
+        };
+    }
+    if (lifetimeDollars >= 400 || orderCount >= 4) {
+        return {
+            tierKey: 'gold',
+            stars: '★★',
+            hasGoldStar: true,
+            label: '★ Gold Star · Prime Regular',
+            shortLabel: '★ Gold Star Customer',
+            lifetimeDollars,
+            orderCount,
+        };
+    }
+    if (lifetimeDollars >= 150 || orderCount >= 2) {
+        return {
+            tierKey: 'regular',
+            stars: '★',
+            hasGoldStar: true,
+            label: '★ Valued Repeat Customer',
+            shortLabel: '★ Good Customer',
+            lifetimeDollars,
+            orderCount,
+        };
+    }
+    return {
+        tierKey: 'first',
+        stars: '✦',
+        hasGoldStar: false,
+        label: 'New / First-Time Customer',
+        shortLabel: 'New Customer',
+        lifetimeDollars,
+        orderCount,
+    };
+}
 
 const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -291,6 +386,68 @@ function formatCurrency(amountDollars: number): string {
     return `$${amountDollars.toFixed(2)}`;
 }
 
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+const INITIAL_ADMIN_NOW_MS = Date.now();
+export const ARCHIVED_INVENTORY_ORDERS_STORAGE_KEY = 'hofherr_archived_inventory_orders_v1';
+
+export interface ArchivedInventoryOrderRecord {
+    _id: string;
+    orderNumber: string;
+    customerName: string;
+    customerEmail: string;
+    customerPhone: string;
+    storeName: string;
+    items: Array<{ name: string; qty: number; price: string | null }>;
+    totalDollars: number;
+    pickedUpAt: string;
+    archivedAt: string;
+}
+
+function getOrderPickedUpTimestamp(order: Order): number {
+    const raw = order.pickedUpAt || order.createdAt;
+    const ts = new Date(raw).getTime();
+    return Number.isNaN(ts) ? INITIAL_ADMIN_NOW_MS : ts;
+}
+
+function isOrderExpiredToInventoryHistory(order: Order): boolean {
+    if (order.status !== 'completed') return false;
+    return INITIAL_ADMIN_NOW_MS - getOrderPickedUpTimestamp(order) >= ONE_DAY_MS;
+}
+
+function getHoursUntilArchive(order: Order): number {
+    const elapsed = INITIAL_ADMIN_NOW_MS - getOrderPickedUpTimestamp(order);
+    const remainingMs = Math.max(0, ONE_DAY_MS - elapsed);
+    return Math.max(1, Math.ceil(remainingMs / (60 * 60 * 1000)));
+}
+
+function getHoursSincePickedUp(order: Order): number {
+    const elapsed = Math.max(0, INITIAL_ADMIN_NOW_MS - getOrderPickedUpTimestamp(order));
+    return Math.max(0, Math.floor(elapsed / (60 * 60 * 1000)));
+}
+
+function toArchivedInventoryRecord(order: Order): ArchivedInventoryOrderRecord {
+    const storeKey = order.metadata?.store_id === 'depot' ? 'depot' : 'butcher';
+    return {
+        _id: order._id,
+        orderNumber: order.orderNumber || 'HM-0000',
+        customerName: order.customer?.name || order.metadata?.customer_name || 'Guest',
+        customerEmail: order.customer?.email || order.metadata?.customer_email || '',
+        customerPhone: order.customer?.phone || order.metadata?.customer_phone || '',
+        storeName: ADMIN_STORE_INFO[storeKey]?.name || 'The Butcher Shop',
+        items: (order.items || []).map(item => ({
+            name: item.name || 'Butcher Cut',
+            qty: item.qty || item.quantity || 1,
+            price:
+                typeof item.price === 'number'
+                    ? `$${item.price.toFixed(2)}`
+                    : item.price || null,
+        })),
+        totalDollars: (order.total || 0) / 100,
+        pickedUpAt: order.pickedUpAt || order.createdAt,
+        archivedAt: new Date(getOrderPickedUpTimestamp(order) + ONE_DAY_MS).toISOString(),
+    };
+}
+
 function isOrderInProgress(status: string): boolean {
     return (
         status === 'pending' ||
@@ -310,10 +467,42 @@ function getStageIndex(status: string): number {
 }
 
 const ADMIN_TRACKER_STAGES = [
-    { key: 'placed', short: 'Placed', title: 'Order Placed', targetStatus: 'paid' },
-    { key: 'cutting', short: 'Cutting', title: 'On the Block', targetStatus: 'processing' },
-    { key: 'ready', short: 'Ready', title: 'Ready for Pickup', targetStatus: 'ready_paid' },
-    { key: 'done', short: 'Picked Up', title: 'Picked Up', targetStatus: 'completed' },
+    {
+        key: 'placed',
+        stepNum: '01',
+        short: 'Placed',
+        title: 'Order Placed',
+        stepName: 'Ticket Verified',
+        stepDetail: 'Ticket printed at counter & queued for trimming.',
+        targetStatus: 'paid',
+    },
+    {
+        key: 'cutting',
+        stepNum: '02',
+        short: 'Cutting',
+        title: 'On the Block',
+        stepName: 'On the Block',
+        stepDetail: 'Hand-cut, weighed on scale & wrapped in kraft paper.',
+        targetStatus: 'processing',
+    },
+    {
+        key: 'ready',
+        stepNum: '03',
+        short: 'Ready',
+        title: 'Ready for Pickup',
+        stepName: 'Ready for Pickup',
+        stepDetail: 'Twine-tied parcel waiting in the cold case.',
+        targetStatus: 'ready_paid',
+    },
+    {
+        key: 'done',
+        stepNum: '04',
+        short: 'Picked Up',
+        title: 'Picked Up',
+        stepName: 'Picked Up',
+        stepDetail: 'Picked up & logged in customer Butcher Guide.',
+        targetStatus: 'completed',
+    },
 ] as const;
 
 const ADMIN_STORE_INFO: Record<string, { name: string; address: string; mapsUrl: string }> = {
@@ -338,7 +527,8 @@ export default function AdminDashboard({ username }: { username?: string } = {})
     const [restocks, setRestocks] = useState<RestockRequestItem[]>([]);
     const [activeTab, setActiveTab] = useState<'orders' | 'users' | 'restocks'>('orders');
     const [orderFilter, setOrderFilter] = useState<string>('all');
-    const [inProgressStageFilter, setInProgressStageFilter] = useState<'all' | 'placed' | 'cutting' | 'ready'>('all');
+    const [inProgressStageFilter, setInProgressStageFilter] = useState<'all' | 'behind' | 'placed' | 'cutting' | 'ready' | 'done'>('all');
+    const [progressSortBy, setProgressSortBy] = useState<'stage_asc' | 'stage_desc' | 'urgent_first' | 'total_desc' | 'newest'>('stage_asc');
     const [storeFilter, setStoreFilter] = useState<'all' | 'butcher' | 'depot'>('all');
     const { data: session } = useSession();
     const isRestrictedAdmin =
@@ -367,8 +557,8 @@ export default function AdminDashboard({ username }: { username?: string } = {})
         return rawOrders.filter(o => (o.metadata?.store_id || 'butcher') === storeFilter);
     }, [rawOrders, storeFilter]);
 
-    const [sortField, setSortField] = useState<'orderNumber' | 'customer' | 'createdAt' | 'items' | 'total' | 'status'>('createdAt');
-    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+    const [sortField, setSortField] = useState<'orderNumber' | 'customer' | 'createdAt' | 'items' | 'total' | 'status'>('status');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
     const [selectedCustomerMeta, setSelectedCustomerMeta] = useState<{
         user: { name: string; email: string; phone?: string };
         orders: Order[];
@@ -451,6 +641,10 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                 return {
                     ...o,
                     status: newStatus,
+                    pickedUpAt:
+                        newStatus === 'completed'
+                            ? new Date(INITIAL_ADMIN_NOW_MS - 60 * 60 * 1000).toISOString()
+                            : undefined,
                     minutesBehind: shouldClearBehind ? undefined : o.minutesBehind,
                 };
             })
@@ -474,15 +668,74 @@ export default function AdminDashboard({ username }: { username?: string } = {})
         }
     };
 
+    const handleExpireOrderToInventory = (orderId: string) => {
+        const expiredTimestamp = new Date(INITIAL_ADMIN_NOW_MS - 26 * 60 * 60 * 1000).toISOString();
+        const nextOrders = rawOrders.map(o => {
+            if (o._id !== orderId) return o;
+            return {
+                ...o,
+                status: 'completed',
+                pickedUpAt: expiredTimestamp,
+                minutesBehind: undefined,
+            };
+        });
+        try {
+            const expiredRecords = nextOrders
+                .filter(o => isOrderExpiredToInventoryHistory(o))
+                .map(toArchivedInventoryRecord);
+            window.localStorage.setItem(
+                ARCHIVED_INVENTORY_ORDERS_STORAGE_KEY,
+                JSON.stringify(expiredRecords)
+            );
+        } catch {
+            // ignore storage write failures
+        }
+        setRawOrders(nextOrders);
+    };
+
     const handleResetDemoQueue = () => {
+        try {
+            window.localStorage.removeItem(ARCHIVED_INVENTORY_ORDERS_STORAGE_KEY);
+        } catch {
+            // ignore
+        }
         setRawOrders(prev => {
             const nonDemo = prev.filter(o => !o._id.startsWith('demo-'));
             return [...SEED_ADMIN_ORDERS, ...nonDemo];
         });
     };
 
+    const handleFillRestock = async (reqItem: RestockRequestItem) => {
+        try {
+            const res = await fetch('/api/restock-request', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: reqItem._id,
+                    item: reqItem.item,
+                    customerName: reqItem.customerName,
+                    customerEmail: reqItem.customerEmail,
+                    qty: reqItem.qty,
+                    store: reqItem.store,
+                }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setRestocks(prev =>
+                    prev.map(r =>
+                        r._id === reqItem._id
+                            ? { ...r, status: 'notified', notifiedAt: data.notifiedAt || new Date().toISOString() }
+                            : r
+                    )
+                );
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const handleDeleteRestock = async (id: string) => {
-        if (!confirm('Mark this restock request as resolved and remove it from the list?')) return;
+        if (!confirm('Remove this restock request from the list?')) return;
         try {
             const res = await fetch(`/api/restock-request?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
@@ -502,25 +755,125 @@ export default function AdminDashboard({ username }: { username?: string } = {})
         [orders]
     );
 
-    const activeInProgressOrders = useMemo(() => {
-        const list = orders.filter(o => isOrderInProgress(o.status));
-        if (inProgressStageFilter === 'placed') {
-            return list.filter(o => o.status === 'pending' || o.status === 'paid');
-        }
-        if (inProgressStageFilter === 'cutting') {
-            return list.filter(o => o.status === 'processing');
-        }
-        if (inProgressStageFilter === 'ready') {
-            return list.filter(o => o.status === 'ready_paid' || o.status === 'ready_pending');
-        }
-        return list;
-    }, [orders, inProgressStageFilter]);
+    const recentPickedUpOrders = useMemo(
+        () => orders.filter(o => o.status === 'completed' && !isOrderExpiredToInventoryHistory(o)),
+        [orders]
+    );
 
+    const expiredToInventoryOrders = useMemo(
+        () => orders.filter(o => isOrderExpiredToInventoryHistory(o)),
+        [orders]
+    );
+
+    const activeBoardOrders = useMemo(
+        () => orders.filter(o => !isOrderExpiredToInventoryHistory(o)),
+        [orders]
+    );
+
+    const placedCount = orders.filter(o => o.status === 'pending' || o.status === 'paid').length;
     const allInProgressCount = orders.filter(o => isOrderInProgress(o.status)).length;
     const onTheBlockCount = orders.filter(o => o.status === 'processing').length;
     const readyForPickupCount = orders.filter(
         o => o.status === 'ready_paid' || o.status === 'ready_pending'
     ).length;
+    const pickedUpCount = recentPickedUpOrders.length;
+
+    const handleSelectProgressFilter = (
+        stageKey: 'all' | 'behind' | 'placed' | 'cutting' | 'ready' | 'done'
+    ) => {
+        setInProgressStageFilter(stageKey);
+        if (stageKey === 'all') setOrderFilter('all');
+        else if (stageKey === 'behind') setOrderFilter('behind');
+        else if (stageKey === 'placed') setOrderFilter('placed');
+        else if (stageKey === 'cutting') setOrderFilter('processing');
+        else if (stageKey === 'ready') setOrderFilter('ready');
+        else if (stageKey === 'done') setOrderFilter('completed');
+        setOrderPage(1);
+    };
+
+    const activeInProgressOrders = useMemo(() => {
+        let baseList: Order[] = activeBoardOrders;
+        if (inProgressStageFilter === 'behind') {
+            baseList = runningBehindOrders;
+        } else if (inProgressStageFilter === 'placed') {
+            baseList = activeBoardOrders.filter(o => o.status === 'pending' || o.status === 'paid');
+        } else if (inProgressStageFilter === 'cutting') {
+            baseList = activeBoardOrders.filter(o => o.status === 'processing');
+        } else if (inProgressStageFilter === 'ready') {
+            baseList = activeBoardOrders.filter(
+                o => o.status === 'ready_paid' || o.status === 'ready_pending'
+            );
+        } else if (inProgressStageFilter === 'done') {
+            baseList = recentPickedUpOrders;
+        }
+
+        return [...baseList].sort((a, b) => {
+            if (progressSortBy === 'stage_asc') {
+                const diff = getStageIndex(a.status) - getStageIndex(b.status);
+                if (diff !== 0) return diff;
+                return (b.minutesBehind || 0) - (a.minutesBehind || 0);
+            }
+            if (progressSortBy === 'stage_desc') {
+                const diff = getStageIndex(b.status) - getStageIndex(a.status);
+                if (diff !== 0) return diff;
+                return (b.minutesBehind || 0) - (a.minutesBehind || 0);
+            }
+            if (progressSortBy === 'urgent_first') {
+                const behindDiff = (b.minutesBehind || 0) - (a.minutesBehind || 0);
+                if (behindDiff !== 0) return behindDiff;
+                return getStageIndex(a.status) - getStageIndex(b.status);
+            }
+            if (progressSortBy === 'total_desc') {
+                return (b.total || 0) - (a.total || 0);
+            }
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
+    }, [activeBoardOrders, inProgressStageFilter, progressSortBy, recentPickedUpOrders, runningBehindOrders]);
+
+    const groupedStageSections = useMemo(() => {
+        const stageDefs = [
+            {
+                stageIndex: 0,
+                key: 'placed' as const,
+                stepBadge: 'STEP 01 OF 04',
+                title: '1 · Order Placed — Ticket Verified & In Queue',
+                subtitle: 'Tickets printed at counter waiting for a butcher to bring to the block.',
+                accent: 'placed',
+                orders: activeInProgressOrders.filter(o => getStageIndex(o.status) === 0),
+            },
+            {
+                stageIndex: 1,
+                key: 'cutting' as const,
+                stepBadge: 'STEP 02 OF 04',
+                title: '2 · Cutting — On the Block',
+                subtitle: 'Being hand-cut, trimmed, weighed on the scale, and wrapped in kraft butcher paper.',
+                accent: 'cutting',
+                orders: activeInProgressOrders.filter(o => getStageIndex(o.status) === 1),
+            },
+            {
+                stageIndex: 2,
+                key: 'ready' as const,
+                stepBadge: 'STEP 03 OF 04',
+                title: '3 · Ready for Pickup — Cold Case Counter',
+                subtitle: 'Twine-tied parcels tagged and waiting in the cold case for customer arrival.',
+                accent: 'ready',
+                orders: activeInProgressOrders.filter(o => getStageIndex(o.status) === 2),
+            },
+            {
+                stageIndex: 3,
+                key: 'done' as const,
+                stepBadge: 'STEP 04 OF 04 • THEME GREEN',
+                title: '4 · Picked Up (<24h Retention Before Inventory Archive)',
+                subtitle: 'Completed pickups stay visible in green for 24 hours before auto-archiving to Inventory History.',
+                accent: 'done',
+                orders: activeInProgressOrders.filter(o => getStageIndex(o.status) === 3),
+            },
+        ];
+        if (progressSortBy === 'stage_desc') {
+            return [...stageDefs].reverse().filter(g => g.orders.length > 0);
+        }
+        return stageDefs.filter(g => g.orders.length > 0);
+    }, [activeInProgressOrders, progressSortBy]);
 
     const totalRevenue = orders.reduce((acc, o) => acc + (o.total || 0), 0) / 100;
 
@@ -673,13 +1026,15 @@ export default function AdminDashboard({ username }: { username?: string } = {})
         setOrderPage(1);
     };
 
-    const filteredOrders = orders.filter(o => {
+    const filteredOrders = activeBoardOrders.filter(o => {
         let matchesStatus = true;
         if (orderFilter !== 'all') {
             if (orderFilter === 'behind') {
                 matchesStatus = isOrderInProgress(o.status) && (o.minutesBehind || 0) > 0;
             } else if (orderFilter === 'in_progress') {
                 matchesStatus = isOrderInProgress(o.status);
+            } else if (orderFilter === 'placed') {
+                matchesStatus = o.status === 'pending' || o.status === 'paid';
             } else if (orderFilter === 'ready') {
                 matchesStatus = o.status === 'ready_paid' || o.status === 'ready_pending';
             } else {
@@ -726,8 +1081,11 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                 valB = b.total || 0;
                 break;
             case 'status':
-                valA = (a.status || 'pending').toLowerCase();
-                valB = (b.status || 'pending').toLowerCase();
+                valA = getStageIndex(a.status || 'pending');
+                valB = getStageIndex(b.status || 'pending');
+                if (valA === valB) {
+                    return (b.minutesBehind || 0) - (a.minutesBehind || 0);
+                }
                 break;
             default:
                 valA = new Date(a.createdAt).getTime();
@@ -836,7 +1194,11 @@ export default function AdminDashboard({ username }: { username?: string } = {})
             }
         });
         const result = Array.from(customerMap.values()).map(c => {
-            const points = c.lifetimeSpend + 50;
+            const hist = SEED_HISTORICAL_SPEND_CENTS[c.email] || { spendCents: 0, extraOrders: 0 };
+            const totalLifetimeSpend = c.lifetimeSpend + hist.spendCents / 100;
+            const totalOrderCount = c.orders.length + hist.extraOrders;
+            const spendBadge = getCustomerSpendBadge(totalLifetimeSpend, totalOrderCount);
+            const points = totalLifetimeSpend + 50;
             let tierName = 'Sausage';
             if (points >= 1000) tierName = 'Master';
             else if (points >= 500) tierName = 'Ribeye';
@@ -850,7 +1212,15 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                 return acc;
             }, {} as Record<string, number>);
             const itemStrings = Object.entries(itemAggregation).map(([name, qty]) => `${qty}x ${name}`);
-            return { ...c, points, tierName, itemStrings };
+            return {
+                ...c,
+                lifetimeSpend: totalLifetimeSpend,
+                totalOrderCount,
+                spendBadge,
+                points,
+                tierName,
+                itemStrings,
+            };
         });
 
         let finalResult = result;
@@ -874,6 +1244,34 @@ export default function AdminDashboard({ username }: { username?: string } = {})
     const totalOrderPages = Math.max(1, Math.ceil(sortedOrders.length / 50));
     const paginatedOrders = sortedOrders.slice((orderPage - 1) * 50, orderPage * 50);
 
+    const customerSpendByEmail = useMemo(() => {
+        const map = new Map<string, CustomerSpendBadge>();
+        const agg = new Map<string, { spendCents: number; count: number }>();
+        rawOrders.forEach(o => {
+            const em = (o.customer?.email || o.metadata?.customer_email || '').toLowerCase();
+            if (!em) return;
+            const prev = agg.get(em) || { spendCents: 0, count: 0 };
+            prev.spendCents += o.total || 0;
+            prev.count += 1;
+            agg.set(em, prev);
+        });
+        agg.forEach((val, em) => {
+            const hist = SEED_HISTORICAL_SPEND_CENTS[em] || { spendCents: 0, extraOrders: 0 };
+            const lifetimeDollars = (val.spendCents + hist.spendCents) / 100;
+            const orderCount = val.count + hist.extraOrders;
+            map.set(em, getCustomerSpendBadge(lifetimeDollars, orderCount));
+        });
+        return map;
+    }, [rawOrders]);
+
+    const getOrderCustomerBadge = (order: Order): CustomerSpendBadge => {
+        const em = (order.customer?.email || order.metadata?.customer_email || '').toLowerCase();
+        if (em && customerSpendByEmail.has(em)) {
+            return customerSpendByEmail.get(em)!;
+        }
+        return getCustomerSpendBadge((order.total || 0) / 100, 1);
+    };
+
     const renderOrderTrackerCard = (order: Order, isUrgentCard = false) => {
         const stageIdx = getStageIndex(order.status);
         const stageObj = ADMIN_TRACKER_STAGES[stageIdx] || ADMIN_TRACKER_STAGES[0];
@@ -881,7 +1279,10 @@ export default function AdminDashboard({ username }: { username?: string } = {})
         const storeInfo = ADMIN_STORE_INFO[storeKey];
         const isBehind = (order.minutesBehind || 0) > 0;
         const phoneStr = order.customer?.phone || order.metadata?.customer_phone || '';
+        const emailStr = order.customer?.email || order.metadata?.customer_email || '';
         const customerName = order.customer?.name || order.metadata?.customer_name || 'Guest';
+        const customerBadge = getOrderCustomerBadge(order);
+        const ticketCutPieces = resolveOrderCutPieces(order.items || []);
 
         let etaText = order.pickupTime ? `Pickup · ${order.pickupTime}` : 'In Queue';
         if (stageIdx === 1 && order.pickupTime) {
@@ -890,28 +1291,46 @@ export default function AdminDashboard({ username }: { username?: string } = {})
             etaText = `~25 MINS · ${order.pickupTime}`;
         } else if (stageIdx === 2) {
             etaText = 'READY NOW';
+        } else if (stageIdx === 3) {
+            etaText = 'PICKED UP ✓';
         }
 
         return (
             <article
                 key={`${isUrgentCard ? 'urgent' : 'active'}-${order._id}`}
-                className={`${styles.trackerCard} ${isBehind ? styles.trackerCardBehind : ''}`}
+                className={`${styles.trackerCard} ${isBehind ? styles.trackerCardBehind : ''} ${
+                    stageIdx === 2 ? styles.trackerCardReady : ''
+                } ${stageIdx === 3 ? styles.trackerCardCompleted : ''}`}
             >
                 <div className={styles.trackerTop}>
                     <div>
                         <div className={styles.trackerKickerRow}>
                             <span
                                 className={`${styles.trackerDot} ${
-                                    isBehind ? styles.trackerDotUrgent : ''
+                                    isBehind
+                                        ? styles.trackerDotUrgent
+                                        : stageIdx === 2 || stageIdx === 3
+                                          ? styles.trackerDotReady
+                                          : ''
                                 }`}
                                 aria-hidden="true"
                             />
                             <span className={styles.trackerKicker}>
-                                ACTIVE ORDER #{order.orderNumber} • STEP {stageIdx + 1} OF 4
+                                {stageIdx === 3 ? 'COMPLETED' : 'ACTIVE'} ORDER #{order.orderNumber} • STEP {stageIdx + 1} OF 4
                             </span>
                             {isBehind && (
                                 <span className={styles.overduePill}>
                                     ⚠ +{order.minutesBehind}M BEHIND
+                                </span>
+                            )}
+                            {stageIdx === 2 && !isBehind && (
+                                <span className={styles.readyPickupBadge}>
+                                    📦 WRAPPED &amp; READY AT COUNTER
+                                </span>
+                            )}
+                            {stageIdx === 3 && (
+                                <span className={styles.pickedUpBadge}>
+                                    ✓ HANDED OFF &amp; LOGGED IN BUTCHER GUIDE
                                 </span>
                             )}
                         </div>
@@ -919,11 +1338,21 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                     </div>
                     <div className={styles.trackerEtaBox}>
                         <div className={styles.trackerKicker}>
-                            {isBehind ? 'SLA OVERDUE TARGET' : 'ESTIMATED READY TIME'}
+                            {isBehind
+                                ? 'SLA OVERDUE TARGET'
+                                : stageIdx === 2
+                                  ? 'PICKUP STATUS'
+                                  : stageIdx === 3
+                                    ? 'HANDOFF STATUS'
+                                    : 'ESTIMATED READY TIME'}
                         </div>
                         <div
                             className={`${styles.trackerEtaValue} ${
-                                isBehind ? styles.trackerEtaUrgent : ''
+                                isBehind
+                                    ? styles.trackerEtaUrgent
+                                    : stageIdx === 2 || stageIdx === 3
+                                      ? styles.trackerEtaReady
+                                      : ''
                             }`}
                         >
                             {etaText}
@@ -931,17 +1360,78 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                     </div>
                 </div>
 
+                {/* ── Ordered By: Customer Name, Gold Star Spend Tier, Phone & Email Strip ── */}
+                <div className={styles.trackerCustomerStrip}>
+                    <div className={styles.trackerCustomerIdentity}>
+                        <div className={styles.trackerCustomerTopRow}>
+                            <span className={styles.trackerCustomerLabel}>ORDERED BY</span>
+                            <span
+                                className={`${styles.customerTierPill} ${
+                                    styles[`customerTier_${customerBadge.tierKey}`]
+                                }`}
+                                title={`${customerBadge.label} • ${formatCurrency(customerBadge.lifetimeDollars)} lifetime spend across ${customerBadge.orderCount} orders`}
+                            >
+                                <span className={styles.goldStarIcon} aria-hidden="true">
+                                    {customerBadge.stars}
+                                </span>{' '}
+                                {customerBadge.label}
+                            </span>
+                        </div>
+                        <div className={styles.trackerCustomerNameRow}>
+                            <span className={styles.trackerCustomerName}>
+                                {customerBadge.hasGoldStar && (
+                                    <span className={styles.customerNameGoldStar} title="Gold Star Valued Customer">
+                                        ★
+                                    </span>
+                                )}{' '}
+                                {customerName}
+                            </span>
+                            <span className={styles.trackerCustomerSpendMeta}>
+                                {formatCurrency(customerBadge.lifetimeDollars)} spent • {customerBadge.orderCount}{' '}
+                                {customerBadge.orderCount === 1 ? 'order' : 'orders'}
+                            </span>
+                        </div>
+                    </div>
+                    <div className={styles.trackerCustomerContacts}>
+                        {phoneStr && (
+                            <a
+                                href={`tel:${phoneStr.replace(/\D/g, '')}`}
+                                className={styles.trackerContactPill}
+                                title={`Call ${customerName} at ${phoneStr}`}
+                            >
+                                📞 {phoneStr}
+                            </a>
+                        )}
+                        {emailStr && (
+                            <a
+                                href={`mailto:${emailStr}`}
+                                className={styles.trackerContactPill}
+                                title={`Email ${customerName} at ${emailStr}`}
+                            >
+                                ✉️ {emailStr}
+                            </a>
+                        )}
+                    </div>
+                </div>
+
                 {/* 4-Stage Interactive Pill Progress Bar (matches /dashboard tracker) */}
-                <ol className={styles.trackerBar} aria-label={`Order ${order.orderNumber} progress`}>
+                <ol
+                    className={`${styles.trackerBar} ${
+                        order.status === 'completed' ? styles.trackerBarPickedUp : ''
+                    }`}
+                    aria-label={`Order ${order.orderNumber} progress`}
+                >
                     {ADMIN_TRACKER_STAGES.map((stage, i) => {
                         const finished = order.status === 'completed';
                         const done = i < stageIdx || finished;
                         const active = !finished && i === stageIdx;
-                        const stateClass = done
-                            ? styles.trackerSegDone
-                            : active
-                              ? styles.trackerSegActive
-                              : styles.trackerSegTodo;
+                        const stateClass = finished
+                            ? styles.trackerSegPickedUp
+                            : done
+                              ? styles.trackerSegDone
+                              : active
+                                ? styles.trackerSegActive
+                                : styles.trackerSegTodo;
                         return (
                             <li key={stage.key} className={styles.trackerSegItem}>
                                 <button
@@ -968,6 +1458,129 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                     </div>
                 )}
 
+                {stageIdx === 2 && !isBehind && (
+                    <div className={styles.readyPickupBanner}>
+                        <strong>📦 Ready for Pickup:</strong> Twine-tied parcel is wrapped in kraft butcher paper and waiting in the cold case at <strong>{storeInfo.name}</strong>{order.pickupTime ? ` (Scheduled pickup: ${order.pickupTime})` : ''}.
+                    </div>
+                )}
+
+                {stageIdx === 3 && (
+                    <div className={styles.pickedUpLifecycleStack}>
+                        <div className={styles.readyPickupBanner}>
+                            <strong>✓ Order Picked Up &amp; Complete:</strong> Handed off to <strong>{customerName}</strong> at <strong>{storeInfo.name}</strong>. Primal cuts from this ticket have been unlocked in their Butcher Guide.
+                        </div>
+                        <div className={styles.expiryCountdownStrip}>
+                            <div className={styles.expiryCountdownCopy}>
+                                <span className={styles.expiryCountdownBadge}>
+                                    ⏳ EXPIRES IN {getHoursUntilArchive(order)}H (1 DAY RETENTION)
+                                </span>
+                                <span className={styles.expiryCountdownText}>
+                                    Picked up {getHoursSincePickedUp(order) <= 1 ? '1h' : `${getHoursSincePickedUp(order)}h`} ago • Automatically expires from this live board after <strong>24 hours</strong> and archives into <strong>Inventory History</strong> so completed orders don&apos;t clutter the counter queue.
+                                </span>
+                            </div>
+                            <button
+                                type="button"
+                                className={styles.expireNowBtn}
+                                onClick={() => handleExpireOrderToInventory(order._id)}
+                            >
+                                ⚡ Simulate 24h Expiry → Move to Inventory History
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ── 4-Step Order Tracking Process Cards (Admin / Butcher Control) ── */}
+                <div className={styles.adminStepsGrid} role="group" aria-label={`4-step tracking control for order ${order.orderNumber}`}>
+                    {ADMIN_TRACKER_STAGES.map((stage, i) => {
+                        const finished = order.status === 'completed';
+                        const done = i < stageIdx || finished;
+                        const active = !finished && i === stageIdx;
+                        return (
+                            <button
+                                key={`admin-step-${order._id}-${stage.key}`}
+                                type="button"
+                                onClick={() => handleStatusChange(order._id, stage.targetStatus, true)}
+                                className={`${styles.adminStepCard} ${
+                                    done
+                                        ? styles.adminStepCardDone
+                                        : active
+                                          ? styles.adminStepCardActive
+                                          : ''
+                                }`}
+                            >
+                                <div className={styles.adminStepTop}>
+                                    <span className={styles.adminStepNum}>Step {stage.stepNum}</span>
+                                    <span className={styles.adminStepStatus}>
+                                        {done ? '✓ Done' : active ? '● Active' : 'Pending'}
+                                    </span>
+                                </div>
+                                <div className={styles.adminStepName}>{stage.stepName}</div>
+                                <div className={styles.adminStepDesc}>{stage.stepDetail}</div>
+                            </button>
+                        );
+                    })}
+                </div>
+
+                {/* ── Butcher's Guide to Cuts — Primal Cuts on Ticket ── */}
+                {ticketCutPieces.length > 0 && (
+                    <div className={styles.adminCutsShowcase}>
+                        <div className={styles.trackerKicker}>
+                            🥩 BUTCHER&apos;S GUIDE TO CUTS — PRIMAL PIECES ON TICKET ({ticketCutPieces.length})
+                        </div>
+                        <div className={styles.adminCutsGrid}>
+                            {ticketCutPieces.map(piece => (
+                                <div key={`${order._id}-${piece.key}`} className={styles.adminCutCard}>
+                                    <div className={styles.adminCutStage}>
+                                        <svg
+                                            viewBox={piece.pieceViewBox}
+                                            className={styles.adminCutSvg}
+                                            role="img"
+                                            aria-label={`${piece.animalName} — ${piece.cutName} piece`}
+                                        >
+                                            <image
+                                                href={piece.cleanChartImage}
+                                                x="0"
+                                                y="0"
+                                                width="1200"
+                                                height="896"
+                                                preserveAspectRatio="xMidYMid meet"
+                                            />
+                                            <path
+                                                d={piece.svgPath}
+                                                className={styles.adminCutHighlight}
+                                            />
+                                            {piece.woodcutPath && (
+                                                <path
+                                                    d={piece.woodcutPath}
+                                                    className={styles.adminCutWoodcut}
+                                                />
+                                            )}
+                                            <text
+                                                x={piece.labelX}
+                                                y={piece.labelY}
+                                                className={styles.adminCutLabel}
+                                            >
+                                                {piece.cutName.toUpperCase()}
+                                            </text>
+                                        </svg>
+                                    </div>
+                                    <div className={styles.adminCutMeta}>
+                                        <span className={styles.adminCutBadge}>
+                                            ★ {piece.animalName} Guide · Cut #{piece.cutOrderIndex}/{piece.totalAnimalCuts}
+                                        </span>
+                                        <span className={styles.adminCutTitle}>
+                                            {piece.animalName}: {piece.cutName}
+                                        </span>
+                                        <span className={styles.adminCutProduct}>
+                                            {piece.matchedItems.map(m => `${m.orderedName} ×${m.qty}`).join(', ')}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 <div className={styles.trackerDetailsGrid}>
                     <div>
                         <div className={styles.trackerKicker}>PICKUP LOCATION &amp; CUSTOMER</div>
@@ -981,13 +1594,29 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                             {storeInfo.address}
                         </a>
                         <div className={styles.trackerCustomerMeta}>
-                            <strong>👤 {customerName}</strong>
+                            <strong>
+                                {customerBadge.hasGoldStar && (
+                                    <span className={styles.customerNameGoldStar}>★ </span>
+                                )}
+                                👤 {customerName}{' '}
+                                <span className={styles.inlineSpendNote}>
+                                    ({customerBadge.shortLabel} · {formatCurrency(customerBadge.lifetimeDollars)})
+                                </span>
+                            </strong>
                             {phoneStr && (
                                 <a
                                     href={`tel:${phoneStr.replace(/\D/g, '')}`}
                                     className={styles.urgentCustomerPhone}
                                 >
                                     📞 {phoneStr}
+                                </a>
+                            )}
+                            {emailStr && (
+                                <a
+                                    href={`mailto:${emailStr}`}
+                                    className={styles.urgentCustomerEmail}
+                                >
+                                    ✉️ {emailStr}
                                 </a>
                             )}
                         </div>
@@ -1045,6 +1674,24 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                         >
                             ✓ Confirm Picked Up (Step 4 · Complete)
                         </button>
+                    )}
+                    {order.status === 'completed' && (
+                        <>
+                            <button
+                                type="button"
+                                className={styles.actionBtnCompleted}
+                                onClick={() => handleStatusChange(order._id, 'ready_paid', true)}
+                            >
+                                ✓ Order Picked Up (Click to Reopen Step 3)
+                            </button>
+                            <button
+                                type="button"
+                                className={styles.actionBtnArchiveNow}
+                                onClick={() => handleExpireOrderToInventory(order._id)}
+                            >
+                                📦 Expire 1 Day → Archive to Inventory History
+                            </button>
+                        </>
                     )}
                     <select
                         aria-label={`Change status for order ${order.orderNumber}`}
@@ -1105,7 +1752,7 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                     </button>
                     <button
                         type="button"
-                        onClick={() => router.push('/dashboard')}
+                        onClick={() => router.push('/dashboard/mikeyscimeca')}
                         className={styles.headerBtn}
                     >
                         👤 Customer View
@@ -1194,39 +1841,205 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                 </div>
             </div>
 
-            {/* ── KPI Summary Row ── */}
+            {/* ── KPI Summary Row (Interactive Progress Filters) ── */}
             <div className={styles.statsGrid}>
-                <div className={`${styles.statCard} ${runningBehindOrders.length > 0 ? styles.statCardAlert : ''}`}>
+                <button
+                    type="button"
+                    onClick={() => handleSelectProgressFilter('behind')}
+                    className={`${styles.statCard} ${styles.statCardClickable} ${
+                        runningBehindOrders.length > 0 ? styles.statCardAlert : ''
+                    } ${inProgressStageFilter === 'behind' ? styles.statCardSelected : ''}`}
+                >
                     <span className={styles.statLabel}>🚨 Running Behind SLA</span>
                     <span className={`${styles.statValue} ${runningBehindOrders.length > 0 ? styles.statValueDanger : ''}`}>
                         {runningBehindOrders.length} {runningBehindOrders.length === 1 ? 'Order' : 'Orders'}
                     </span>
-                    <span className={styles.statSub}>Needs immediate butcher / counter action</span>
-                </div>
-                <div className={`${styles.statCard} ${styles.statCardActive}`}>
-                    <span className={styles.statLabel}>🔪 Active In-Progress</span>
+                    <span className={styles.statSub}>Click to isolate overdue orders</span>
+                </button>
+                <button
+                    type="button"
+                    onClick={() => handleSelectProgressFilter('placed')}
+                    className={`${styles.statCard} ${styles.statCardClickable} ${
+                        inProgressStageFilter === 'placed' ? styles.statCardSelected : ''
+                    }`}
+                >
+                    <span className={styles.statLabel}>01 · Order Placed</span>
+                    <span className={styles.statValue}>{placedCount} Orders</span>
+                    <span className={styles.statSub}>Ticket verified &amp; waiting in queue</span>
+                </button>
+                <button
+                    type="button"
+                    onClick={() => handleSelectProgressFilter('cutting')}
+                    className={`${styles.statCard} ${styles.statCardActive} ${styles.statCardClickable} ${
+                        inProgressStageFilter === 'cutting' ? styles.statCardSelected : ''
+                    }`}
+                >
+                    <span className={styles.statLabel}>02 · Cutting (On the Block)</span>
                     <span className={`${styles.statValue} ${styles.statValueGold}`}>
-                        {allInProgressCount} Orders
+                        {onTheBlockCount} Orders
                     </span>
-                    <span className={styles.statSub}>
-                        {onTheBlockCount} on the block • {readyForPickupCount} ready at counter
-                    </span>
-                </div>
-                <div className={styles.statCard}>
-                    <span className={styles.statLabel}>📦 Ready for Pickup</span>
+                    <span className={styles.statSub}>Hand-cutting, weighing &amp; wrapping</span>
+                </button>
+                <button
+                    type="button"
+                    onClick={() => handleSelectProgressFilter('ready')}
+                    className={`${styles.statCard} ${styles.statCardClickable} ${
+                        inProgressStageFilter === 'ready' ? styles.statCardSelected : ''
+                    }`}
+                >
+                    <span className={styles.statLabel}>03 · Ready for Pickup</span>
                     <span className={styles.statValue}>{readyForPickupCount} Orders</span>
-                    <span className={styles.statSub}>Wrapped &amp; waiting for customer arrival</span>
-                </div>
-                <div className={styles.statCard}>
-                    <span className={styles.statLabel}>💰 Active &amp; Recent Volume</span>
-                    <span className={styles.statValue}>{formatCurrency(totalRevenue)}</span>
-                    <span className={styles.statSub}>Across {orders.length} tracked orders</span>
-                </div>
+                    <span className={styles.statSub}>Wrapped &amp; waiting at cold case</span>
+                </button>
+                <button
+                    type="button"
+                    onClick={() => handleSelectProgressFilter('done')}
+                    className={`${styles.statCard} ${styles.statCardGreen} ${styles.statCardClickable} ${
+                        inProgressStageFilter === 'done' ? styles.statCardSelectedGreen : ''
+                    }`}
+                >
+                    <span className={styles.statLabel}>04 · Picked Up (&lt;24h)</span>
+                    <span className={`${styles.statValue} ${styles.statValueGreen}`}>
+                        {pickedUpCount} {pickedUpCount === 1 ? 'Order' : 'Orders'}
+                    </span>
+                    <span className={styles.statSub}>Green bar • Auto-archives after 1 day</span>
+                </button>
             </div>
 
             {activeTab === 'orders' && (
                 <>
+                    {/* ── 🎛️ MASTER PROGRESS STAGE FILTER & SORT BAR ── */}
+                    <section className={styles.progressControlBar} aria-label="Filter and sort orders by progress stage">
+                        <div className={styles.progressControlHeaderRow}>
+                            <div className={styles.progressControlTitleGroup}>
+                                <span className={styles.progressControlKicker}>
+                                    4-STAGE ORDER PROGRESS FILTER &amp; STAGE SORTER
+                                </span>
+                                <h2 className={styles.progressControlTitle}>
+                                    Filter &amp; Sort Out Each Progress Stage
+                                </h2>
+                            </div>
+                            <div className={styles.progressSortWrap}>
+                                <span className={styles.progressSortLabel}>Sort Progress By:</span>
+                                <div className={styles.progressSortBtnGroup}>
+                                    {[
+                                        { key: 'stage_asc', label: '↑ Stage 1 → 4 (Placed → Picked Up)' },
+                                        { key: 'stage_desc', label: '↓ Stage 4 → 1 (Picked Up → Placed)' },
+                                        { key: 'urgent_first', label: '🚨 Urgent / Behind First' },
+                                        { key: 'total_desc', label: '💰 Highest Total' },
+                                    ].map(opt => (
+                                        <button
+                                            key={opt.key}
+                                            type="button"
+                                            onClick={() =>
+                                                setProgressSortBy(
+                                                    opt.key as
+                                                        | 'stage_asc'
+                                                        | 'stage_desc'
+                                                        | 'urgent_first'
+                                                        | 'total_desc'
+                                                )
+                                            }
+                                            className={`${styles.progressSortBtn} ${
+                                                progressSortBy === opt.key ? styles.progressSortBtnActive : ''
+                                            }`}
+                                        >
+                                            {opt.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles.progressStagePillGrid}>
+                            {[
+                                {
+                                    key: 'all' as const,
+                                    step: 'ALL',
+                                    label: 'All Stages (Sorted 1 → 4)',
+                                    sub: 'Every active & <24h order grouped by progress',
+                                    count: activeBoardOrders.length,
+                                    tone: 'neutral',
+                                },
+                                {
+                                    key: 'behind' as const,
+                                    step: 'SLA',
+                                    label: '🚨 Running Behind',
+                                    sub: 'Overdue pickup window',
+                                    count: runningBehindOrders.length,
+                                    tone: 'danger',
+                                },
+                                {
+                                    key: 'placed' as const,
+                                    step: 'STEP 01',
+                                    label: 'Order Placed',
+                                    sub: 'Ticket Verified • In Queue',
+                                    count: placedCount,
+                                    tone: 'stage1',
+                                },
+                                {
+                                    key: 'cutting' as const,
+                                    step: 'STEP 02',
+                                    label: 'Cutting · On the Block',
+                                    sub: 'Hand-Cut & Scale Weighed',
+                                    count: onTheBlockCount,
+                                    tone: 'stage2',
+                                },
+                                {
+                                    key: 'ready' as const,
+                                    step: 'STEP 03',
+                                    label: 'Ready for Pickup',
+                                    sub: 'Waiting in Cold Case',
+                                    count: readyForPickupCount,
+                                    tone: 'stage3',
+                                },
+                                {
+                                    key: 'done' as const,
+                                    step: 'STEP 04',
+                                    label: 'Picked Up (<24h)',
+                                    sub: 'Theme Green • 1-Day Retention',
+                                    count: pickedUpCount,
+                                    tone: 'stage4',
+                                },
+                            ].map(pill => {
+                                const isActive = inProgressStageFilter === pill.key;
+                                return (
+                                    <button
+                                        key={pill.key}
+                                        type="button"
+                                        onClick={() => handleSelectProgressFilter(pill.key)}
+                                        className={`${styles.progressStageCardBtn} ${
+                                            pill.tone === 'stage4' ? styles.progressStageCardBtnGreen : ''
+                                        } ${pill.tone === 'danger' ? styles.progressStageCardBtnDanger : ''} ${
+                                            isActive
+                                                ? pill.tone === 'stage4'
+                                                    ? styles.progressStageCardBtnActiveGreen
+                                                    : styles.progressStageCardBtnActive
+                                                : ''
+                                        }`}
+                                    >
+                                        <div className={styles.progressStageCardTop}>
+                                            <span
+                                                className={`${styles.progressStageStepTag} ${
+                                                    pill.tone === 'stage4'
+                                                        ? styles.progressStageStepTagGreen
+                                                        : ''
+                                                }`}
+                                            >
+                                                {pill.step}
+                                            </span>
+                                            <span className={styles.progressStageCountBadge}>{pill.count}</span>
+                                        </div>
+                                        <span className={styles.progressStageCardTitle}>{pill.label}</span>
+                                        <span className={styles.progressStageCardSub}>{pill.sub}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </section>
+
                     {/* ── 🚨 1. ORDERS RUNNING BEHIND & NEEDING IMMEDIATE ATTENTION ── */}
+                    {(inProgressStageFilter === 'all' || inProgressStageFilter === 'behind') && (
                     <section className={styles.urgentSection} aria-labelledby="urgent-orders-heading">
                         <div className={styles.sectionHeaderRow}>
                             <div className={styles.sectionTitleWrap}>
@@ -1264,39 +2077,58 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                             </div>
                         )}
                     </section>
+                    )}
 
-                    {/* ── 🔪 2. ALL ORDERS CURRENTLY IN PROGRESS ── */}
+                    {/* ── 🔪 2. ALL ORDERS SORTED BY PROGRESS STAGE ── */}
                     <section className={styles.inProgressSection} aria-labelledby="in-progress-heading">
                         <div className={styles.sectionHeaderRow}>
                             <div className={styles.sectionTitleWrap}>
                                 <h2 id="in-progress-heading" className={styles.sectionHeading}>
-                                    🔪 All Orders Currently In Progress ({activeInProgressOrders.length})
+                                    {inProgressStageFilter === 'all' &&
+                                        `🔪 All Orders Sorted by Progress Stage (${activeInProgressOrders.length})`}
+                                    {inProgressStageFilter === 'behind' &&
+                                        `🚨 Filtered: Orders Running Behind (${activeInProgressOrders.length})`}
+                                    {inProgressStageFilter === 'placed' &&
+                                        `01 · Filtered: Order Placed — Ticket Verified (${activeInProgressOrders.length})`}
+                                    {inProgressStageFilter === 'cutting' &&
+                                        `02 · Filtered: Cutting — On the Block (${activeInProgressOrders.length})`}
+                                    {inProgressStageFilter === 'ready' &&
+                                        `03 · Filtered: Ready for Pickup (${activeInProgressOrders.length})`}
+                                    {inProgressStageFilter === 'done' &&
+                                        `04 · Filtered: Picked Up <24h — Theme Green (${activeInProgressOrders.length})`}
                                 </h2>
                                 <p className={styles.sectionSubtext}>
-                                    Live 4-stage progress trackers for every order currently placed, on the block, or waiting for pickup. Click any step on a bar to update its stage.
+                                    Live 4-stage progress trackers sorted out by stage (Step 1 Placed → Step 2 Cutting → Step 3 Ready → Step 4 Picked Up). Click any filter tab above or step on a bar to update its stage.
                                 </p>
                             </div>
                             <div className={styles.stageFilterRow}>
                                 {[
-                                    { key: 'all', label: `All In Progress (${allInProgressCount})` },
-                                    {
-                                        key: 'placed',
-                                        label: `1 · Placed (${orders.filter(o => o.status === 'pending' || o.status === 'paid').length})`,
-                                    },
+                                    { key: 'all', label: `All Stages (${activeBoardOrders.length})` },
+                                    { key: 'behind', label: `🚨 Behind (${runningBehindOrders.length})` },
+                                    { key: 'placed', label: `1 · Placed (${placedCount})` },
                                     { key: 'cutting', label: `2 · Cutting (${onTheBlockCount})` },
                                     { key: 'ready', label: `3 · Ready (${readyForPickupCount})` },
+                                    { key: 'done', label: `4 · Picked Up (${pickedUpCount})` },
                                 ].map(tab => (
                                     <button
                                         key={tab.key}
                                         type="button"
                                         onClick={() =>
-                                            setInProgressStageFilter(
-                                                tab.key as 'all' | 'placed' | 'cutting' | 'ready'
+                                            handleSelectProgressFilter(
+                                                tab.key as
+                                                    | 'all'
+                                                    | 'behind'
+                                                    | 'placed'
+                                                    | 'cutting'
+                                                    | 'ready'
+                                                    | 'done'
                                             )
                                         }
                                         className={`${styles.stageFilterBtn} ${
                                             inProgressStageFilter === tab.key
-                                                ? styles.stageFilterBtnActive
+                                                ? tab.key === 'done'
+                                                    ? styles.stageFilterBtnActiveGreen
+                                                    : styles.stageFilterBtnActive
                                                 : ''
                                         }`}
                                     >
@@ -1306,9 +2138,119 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                             </div>
                         </div>
 
-                        <div className={styles.trackerCardsGrid}>
-                            {activeInProgressOrders.map(order => renderOrderTrackerCard(order, false))}
-                        </div>
+                        {activeInProgressOrders.length > 0 ? (
+                            inProgressStageFilter === 'all' &&
+                            (progressSortBy === 'stage_asc' || progressSortBy === 'stage_desc') ? (
+                                <div className={styles.stageGroupsStack}>
+                                    {groupedStageSections.map(group => (
+                                        <div
+                                            key={group.key}
+                                            className={`${styles.stageGroupBlock} ${
+                                                group.accent === 'done' ? styles.stageGroupBlockGreen : ''
+                                            }`}
+                                        >
+                                            <div className={styles.stageGroupHeader}>
+                                                <div className={styles.stageGroupHeaderLeft}>
+                                                    <span
+                                                        className={`${styles.stageGroupStepPill} ${
+                                                            group.accent === 'done'
+                                                                ? styles.stageGroupStepPillGreen
+                                                                : ''
+                                                        }`}
+                                                    >
+                                                        {group.stepBadge}
+                                                    </span>
+                                                    <div>
+                                                        <h3 className={styles.stageGroupTitle}>
+                                                            {group.title}{' '}
+                                                            <span className={styles.stageGroupCountInline}>
+                                                                ({group.orders.length}{' '}
+                                                                {group.orders.length === 1 ? 'Order' : 'Orders'})
+                                                            </span>
+                                                        </h3>
+                                                        <p className={styles.stageGroupSubtitle}>
+                                                            {group.subtitle}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    className={styles.stageGroupIsolateBtn}
+                                                    onClick={() => handleSelectProgressFilter(group.key)}
+                                                >
+                                                    Filter Only {group.stepBadge.slice(0, 7)} →
+                                                </button>
+                                            </div>
+                                            <div className={styles.trackerCardsGrid}>
+                                                {group.orders.map(order =>
+                                                    renderOrderTrackerCard(order, false)
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className={styles.trackerCardsGrid}>
+                                    {activeInProgressOrders.map(order =>
+                                        renderOrderTrackerCard(order, inProgressStageFilter === 'behind')
+                                    )}
+                                </div>
+                            )
+                        ) : (
+                            <div className={styles.archivedEmptyQueueBox}>
+                                <div className={styles.archivedEmptyQueueCopy}>
+                                    <span className={styles.archivedEmptyQueueBadge}>
+                                        ✓ LIVE BOARD CLEAR • EXPIRED ORDERS MOVED TO INVENTORY HISTORY
+                                    </span>
+                                    <h3 className={styles.archivedEmptyQueueTitle}>
+                                        No Picked-Up Orders Within the Last 24 Hours
+                                    </h3>
+                                    <p className={styles.archivedEmptyQueueDesc}>
+                                        Completed pickups automatically expire after <strong>1 day (24 hours)</strong> so they no longer appear on this live board, and are permanently logged inside <strong>Inventory History</strong>.
+                                    </p>
+                                </div>
+                                <div className={styles.archivedEmptyQueueActions}>
+                                    <button
+                                        type="button"
+                                        className={styles.archiveGoInventoryBtn}
+                                        onClick={() => router.push('/admin/inventory?tab=purchases')}
+                                    >
+                                        📦 View Archived Orders in Inventory History →
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={styles.actionBtnSecondary}
+                                        onClick={handleResetDemoQueue}
+                                    >
+                                        ↺ Restore Demo Picked-Up Orders
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {expiredToInventoryOrders.length > 0 && (
+                            <div className={styles.inventoryArchiveNotice}>
+                                <div className={styles.inventoryArchiveNoticeLeft}>
+                                    <span className={styles.inventoryArchivePill}>
+                                        📦 AUTO-ARCHIVED TO INVENTORY HISTORY (&gt;24H POST-PICKUP)
+                                    </span>
+                                    <p className={styles.inventoryArchiveText}>
+                                        <strong>
+                                            {expiredToInventoryOrders.length}{' '}
+                                            {expiredToInventoryOrders.length === 1 ? 'picked-up order' : 'picked-up orders'}
+                                        </strong>{' '}
+                                        ({expiredToInventoryOrders.map(o => `#${o.orderNumber} ${o.customer?.name || o.metadata?.customer_name || 'Guest'}`).join(' • ')}) expired after 1 day and moved to Inventory History so they are no longer shown on this active board.
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    className={styles.archiveGoInventoryBtn}
+                                    onClick={() => router.push('/admin/inventory?tab=purchases')}
+                                >
+                                    🧾 Open Inventory History ({expiredToInventoryOrders.length}) →
+                                </button>
+                            </div>
+                        )}
                     </section>
                 </>
             )}
@@ -1319,6 +2261,15 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                     <>
                         <div className={styles.tableSectionHeader}>
                             <h2 className={styles.sectionHeading}>All Orders Log ({filteredOrders.length})</h2>
+                            {expiredToInventoryOrders.length > 0 && (
+                                <button
+                                    type="button"
+                                    className={styles.archiveHeaderPillBtn}
+                                    onClick={() => router.push('/admin/inventory?tab=purchases')}
+                                >
+                                    📦 {expiredToInventoryOrders.length} Picked-Up {expiredToInventoryOrders.length === 1 ? 'Order' : 'Orders'} Expired (&gt;24h) → Moved to Inventory History
+                                </button>
+                            )}
                         </div>
                         <div className={styles.filterContainer}>
                             <div className={styles.searchInputWrapper}>
@@ -1335,25 +2286,49 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                             </div>
                             <div className={styles.filterTabs}>
                                 {[
-                                    { key: 'all', label: `All (${orders.length})` },
-                                    { key: 'behind', label: `🚨 Running Behind (${runningBehindOrders.length})` },
-                                    { key: 'in_progress', label: `🔪 In Progress (${allInProgressCount})` },
-                                    { key: 'processing', label: `On the Block (${onTheBlockCount})` },
-                                    { key: 'ready', label: `Ready (${readyForPickupCount})` },
+                                    {
+                                        key: 'all',
+                                        stageKey: 'all' as const,
+                                        label: `All Active & Recent (${activeBoardOrders.length})`,
+                                    },
+                                    {
+                                        key: 'behind',
+                                        stageKey: 'behind' as const,
+                                        label: `🚨 Running Behind (${runningBehindOrders.length})`,
+                                    },
+                                    {
+                                        key: 'placed',
+                                        stageKey: 'placed' as const,
+                                        label: `1 · Placed (${placedCount})`,
+                                    },
+                                    {
+                                        key: 'processing',
+                                        stageKey: 'cutting' as const,
+                                        label: `2 · Cutting / Block (${onTheBlockCount})`,
+                                    },
+                                    {
+                                        key: 'ready',
+                                        stageKey: 'ready' as const,
+                                        label: `3 · Ready (${readyForPickupCount})`,
+                                    },
                                     {
                                         key: 'completed',
-                                        label: `Completed (${orders.filter(o => o.status === 'completed').length})`,
+                                        stageKey: 'done' as const,
+                                        label: `4 · Picked Up <24h (${pickedUpCount})`,
                                     },
                                 ].map(f => (
                                     <button
                                         key={f.key}
                                         type="button"
                                         onClick={() => {
-                                            setOrderFilter(f.key);
-                                            setOrderPage(1);
+                                            handleSelectProgressFilter(f.stageKey);
                                         }}
                                         className={`${styles.filterPillBtn} ${
-                                            orderFilter === f.key ? styles.filterPillBtnActive : ''
+                                            orderFilter === f.key
+                                                ? f.key === 'completed'
+                                                    ? styles.filterPillBtnActiveGreen
+                                                    : styles.filterPillBtnActive
+                                                : ''
                                         }`}
                                     >
                                         {f.label}
@@ -1389,6 +2364,7 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                                     {paginatedOrders.map(order => {
                                         const isBehind =
                                             isOrderInProgress(order.status) && (order.minutesBehind || 0) > 0;
+                                        const rowBadge = getOrderCustomerBadge(order);
                                         return (
                                             <tr
                                                 key={order._id}
@@ -1406,10 +2382,24 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                                                     )}
                                                 </td>
                                                 <td>
-                                                    <div>
-                                                        {order.customer?.name ||
-                                                            order.metadata?.customer_name ||
-                                                            'Guest'}
+                                                    <div className={styles.tableCustomerRow}>
+                                                        <span>
+                                                            {rowBadge.hasGoldStar && (
+                                                                <span className={styles.customerNameGoldStar}>
+                                                                    ★{' '}
+                                                                </span>
+                                                            )}
+                                                            {order.customer?.name ||
+                                                                order.metadata?.customer_name ||
+                                                                'Guest'}
+                                                        </span>
+                                                        <span
+                                                            className={`${styles.customerTierPillSm} ${
+                                                                styles[`customerTier_${rowBadge.tierKey}`]
+                                                            }`}
+                                                        >
+                                                            {rowBadge.shortLabel}
+                                                        </span>
                                                     </div>
                                                     <a
                                                         href={`mailto:${order.customer?.email || order.metadata?.customer_email}`}
@@ -1524,8 +2514,24 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                                                     }
                                                 >
                                                     <td>
-                                                        <div className={styles.customerNameCell}>
-                                                            {customer.name}
+                                                        <div className={styles.tableCustomerRow}>
+                                                            <span className={styles.customerNameCell}>
+                                                                {customer.spendBadge?.hasGoldStar && (
+                                                                    <span className={styles.customerNameGoldStar}>
+                                                                        ★{' '}
+                                                                    </span>
+                                                                )}
+                                                                {customer.name}
+                                                            </span>
+                                                            {customer.spendBadge && (
+                                                                <span
+                                                                    className={`${styles.customerTierPillSm} ${
+                                                                        styles[`customerTier_${customer.spendBadge.tierKey}`]
+                                                                    }`}
+                                                                >
+                                                                    {customer.spendBadge.shortLabel}
+                                                                </span>
+                                                            )}
                                                         </div>
                                                         <a
                                                             href={`mailto:${customer.email}`}
@@ -1598,51 +2604,80 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                                         <th>Qty</th>
                                         <th>Store</th>
                                         <th>Customer Contact</th>
+                                        <th>Status</th>
                                         <th className={styles.alignRight}>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {restocks.length > 0 ? (
-                                        restocks.map(r => (
-                                            <tr key={r._id}>
-                                                <td>{formatAdminDate(r.createdAt)}</td>
-                                                <td>
-                                                    <strong>{r.item}</strong>
-                                                </td>
-                                                <td>{r.qty}</td>
-                                                <td>
-                                                    <span
-                                                        className={
-                                                            r.store === 'depot'
-                                                                ? styles.storePillDepot
-                                                                : styles.storePillButcher
-                                                        }
-                                                    >
-                                                        {r.store}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <div className={styles.customerNameCell}>
-                                                        {r.customerName}
-                                                    </div>
-                                                    <div className={styles.dateSecondary}>
-                                                        {r.contactType}: {r.contactValue || 'N/A'}
-                                                    </div>
-                                                </td>
-                                                <td className={styles.alignRight}>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleDeleteRestock(r._id)}
-                                                        className={styles.deleteRestockBtn}
-                                                    >
-                                                        ✕ Resolve
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))
+                                        restocks.map(r => {
+                                            const isNotified = r.status === 'notified';
+                                            return (
+                                                <tr key={r._id}>
+                                                    <td>{formatAdminDate(r.createdAt)}</td>
+                                                    <td>
+                                                        <strong>{r.item}</strong>
+                                                    </td>
+                                                    <td>{r.qty}</td>
+                                                    <td>
+                                                        <span
+                                                            className={
+                                                                r.store === 'depot'
+                                                                    ? styles.storePillDepot
+                                                                    : styles.storePillButcher
+                                                            }
+                                                        >
+                                                            {r.store}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <div className={styles.customerNameCell}>
+                                                            {r.customerName}
+                                                        </div>
+                                                        <div className={styles.dateSecondary}>
+                                                            {r.contactType}: {r.contactValue || 'N/A'}
+                                                            {r.customerEmail && r.customerEmail !== r.contactValue
+                                                                ? ` • ${r.customerEmail}`
+                                                                : ''}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span
+                                                            className={
+                                                                isNotified
+                                                                    ? styles.restockStatusFilled
+                                                                    : styles.restockStatusPending
+                                                            }
+                                                        >
+                                                            {isNotified ? '✓ Filled & Emailed' : '⏳ Pending'}
+                                                        </span>
+                                                    </td>
+                                                    <td className={styles.alignRight}>
+                                                        <div className={styles.restockActionGroup}>
+                                                            {!isNotified && (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleFillRestock(r)}
+                                                                    className={styles.fillRestockBtn}
+                                                                >
+                                                                    ✓ Fill &amp; Notify
+                                                                </button>
+                                                            )}
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleDeleteRestock(r._id)}
+                                                                className={styles.deleteRestockBtn}
+                                                            >
+                                                                ✕ Remove
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
                                     ) : (
                                         <tr>
-                                            <td colSpan={6} className={styles.emptyTableCell}>
+                                            <td colSpan={7} className={styles.emptyTableCell}>
                                                 No restock requests yet.
                                             </td>
                                         </tr>

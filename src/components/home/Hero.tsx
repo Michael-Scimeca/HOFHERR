@@ -31,7 +31,7 @@ export default function Hero() {
             {/* Hero background/column video */}
             <div className={styles.heroVideoCol}>
                 <video
-                    src="/video-clips/hero.mp4"
+                    src="/assets/video/gemini_generated_video_d1850b94.mp4"
                     autoPlay
                     muted
                     loop
@@ -100,7 +100,7 @@ export default function Hero() {
                         <div className={styles.statLabel}>Traceable Sourcing</div>
                     </div>
                     <div className={styles.statDiv} />
-                    <a href="https://g.page/hofherrmeatco/review" target="_blank" rel="noreferrer" className={styles.stat} style={{ textDecoration: 'none', cursor: 'pointer' }}>
+                    <a href="https://g.page/hofherrmeatco/review" target="_blank" rel="noreferrer" className={`${styles.stat} ${styles.statLink}`}>
                         <div className={styles.statNum}>4.7★</div>
                         <div className={styles.statLabel}>200+ Google Reviews</div>
                     </a>

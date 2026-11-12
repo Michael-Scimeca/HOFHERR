@@ -240,20 +240,46 @@
 /* ── KPI Stats Grid ── */
 .statsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
     gap: 16px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 }
 
 .statCard {
     background: #111111;
-    padding: 22px 24px;
+    padding: 20px 22px;
     border-radius: 16px;
     border: 1px solid #1f1f1f;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
     gap: 6px;
+    text-align: left;
+}
+
+.statCardClickable {
+    cursor: pointer;
+    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.statCardClickable:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.statCardSelected {
+    border-color: var(--red, #cc0e1d);
+    box-shadow: 0 0 0 1px var(--red, #cc0e1d), 0 10px 28px rgba(204, 14, 29, 0.28);
+}
+
+.statCardGreen {
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.14) 0%, #111111 100%);
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+.statCardSelectedGreen {
+    border-color: #10b981;
+    box-shadow: 0 0 0 1px #10b981, 0 10px 28px rgba(16, 185, 129, 0.28);
 }
 
 .statCardAlert {
@@ -277,7 +303,7 @@
 
 .statValue {
     font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
-    font-size: 34px;
+    font-size: 32px;
     font-weight: 700;
     line-height: 1;
     color: #fff;
@@ -292,9 +318,199 @@
     color: var(--gold-light, #d4bc8b);
 }
 
+.statValueGreen {
+    color: #34d399;
+}
+
 .statSub {
     font-size: 12px;
     color: #888;
+}
+
+/* ── 🎛️ Master 4-Stage Progress Filter & Sorter Bar ── */
+.progressControlBar {
+    background: linear-gradient(165deg, #151212 0%, #0d0d0d 100%);
+    border: 1px solid #262222;
+    border-radius: 20px;
+    padding: 22px 24px;
+    margin-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.progressControlHeaderRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.progressControlTitleGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.progressControlKicker {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-light, #d4bc8b);
+}
+
+.progressControlTitle {
+    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+    font-size: 26px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #fff;
+    margin: 0;
+    line-height: 1.05;
+}
+
+.progressSortWrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.progressSortLabel {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #a3a3a3;
+}
+
+.progressSortBtnGroup {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    background: #0a0a0a;
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid #222;
+}
+
+.progressSortBtn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #a3a3a3;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.progressSortBtn:hover {
+    color: #fff;
+    background: #171717;
+}
+
+.progressSortBtnActive {
+    background: rgba(168, 144, 95, 0.2);
+    border-color: rgba(168, 144, 95, 0.55);
+    color: var(--gold-light, #d4bc8b);
+}
+
+.progressStagePillGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    gap: 10px;
+}
+
+.progressStageCardBtn {
+    background: #111111;
+    border: 1px solid #252525;
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.16s ease;
+}
+
+.progressStageCardBtn:hover {
+    border-color: #444;
+    transform: translateY(-1px);
+    background: #161616;
+}
+
+.progressStageCardBtnDanger {
+    border-color: rgba(204, 14, 29, 0.4);
+}
+
+.progressStageCardBtnGreen {
+    border-color: rgba(16, 185, 129, 0.38);
+}
+
+.progressStageCardBtnActive {
+    background: linear-gradient(145deg, rgba(204, 14, 29, 0.24) 0%, #170d0e 100%);
+    border-color: var(--red, #cc0e1d);
+    box-shadow: 0 0 18px rgba(204, 14, 29, 0.28);
+}
+
+.progressStageCardBtnActiveGreen {
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.24) 0%, #0b1914 100%);
+    border-color: #10b981;
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.28);
+}
+
+.progressStageCardTop {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+}
+
+.progressStageStepTag {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #d4d4d4;
+}
+
+.progressStageStepTagGreen {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+}
+
+.progressStageCountBadge {
+    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+}
+
+.progressStageCardTitle {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.01em;
+}
+
+.progressStageCardSub {
+    font-size: 11px;
+    color: #8c8c8c;
+    line-height: 1.25;
 }
 
 /* ── 🚨 Running Behind / Urgent Attention Section ── */
@@ -491,6 +707,18 @@
     text-decoration: underline;
 }
 
+.urgentCustomerEmail {
+    color: #93c5fd;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12px;
+    word-break: break-all;
+}
+
+.urgentCustomerEmail:hover {
+    text-decoration: underline;
+}
+
 .ticketItemsList {
     list-style: none;
     margin: 0;
@@ -532,6 +760,7 @@
     flex-wrap: wrap;
     padding-top: 8px;
     border-top: 1px solid #222;
+    margin-top: auto;
 }
 
 .actionBtnPrimary {
@@ -553,6 +782,27 @@
 .actionBtnPrimary:hover {
     background: var(--red-dark, #9e0b16);
     transform: translateY(-1px);
+}
+
+.actionBtnCompleted {
+    flex: 1;
+    background: rgba(34, 197, 94, 0.18);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.55);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+}
+
+.actionBtnCompleted:hover {
+    background: rgba(34, 197, 94, 0.28);
+    color: #fff;
 }
 
 .actionBtnSecondary {
@@ -628,6 +878,113 @@
 .stageFilterBtnActive {
     background: var(--red, #cc0e1d);
     border-color: var(--red, #cc0e1d);
+    color: #fff;
+}
+
+.stageFilterBtnActiveGreen {
+    background: #10b981;
+    border-color: #10b981;
+    color: #fff;
+}
+
+.stageGroupsStack {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.stageGroupBlock {
+    background: #0c0c0c;
+    border: 1px solid #222222;
+    border-left: 4px solid var(--red, #cc0e1d);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.stageGroupBlockGreen {
+    border-left-color: #10b981;
+    border-color: rgba(16, 185, 129, 0.35);
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, #0c0c0c 100%);
+}
+
+.stageGroupHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #1e1e1e;
+}
+
+.stageGroupHeaderLeft {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.stageGroupStepPill {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(204, 14, 29, 0.2);
+    border: 1px solid rgba(204, 14, 29, 0.45);
+    color: #ff8590;
+    white-space: nowrap;
+}
+
+.stageGroupStepPillGreen {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #6ee7b7;
+}
+
+.stageGroupTitle {
+    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: #fff;
+    margin: 0;
+    line-height: 1.05;
+}
+
+.stageGroupCountInline {
+    color: var(--gold-light, #d4bc8b);
+    font-weight: 700;
+}
+
+.stageGroupSubtitle {
+    margin: 3px 0 0;
+    font-size: 12px;
+    color: #9e9e9e;
+}
+
+.stageGroupIsolateBtn {
+    background: #171717;
+    border: 1px solid #2e2e2e;
+    color: #e5e5e5;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.stageGroupIsolateBtn:hover {
+    border-color: var(--gold, #a8905f);
     color: #fff;
 }
 
@@ -764,6 +1121,12 @@
 .filterPillBtnActive {
     background: var(--red, #cc0e1d);
     border-color: var(--red, #cc0e1d);
+    color: #fff;
+}
+
+.filterPillBtnActiveGreen {
+    background: #10b981;
+    border-color: #10b981;
     color: #fff;
 }
 
@@ -1390,12 +1753,22 @@
     display: flex;
     flex-direction: column;
     gap: 18px;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .trackerCardBehind {
     border-color: rgba(255, 59, 78, 0.8);
     box-shadow: 0 12px 40px rgba(204, 14, 29, 0.22);
+}
+
+.trackerCardReady {
+    border-color: rgba(34, 197, 94, 0.65);
+    box-shadow: 0 12px 40px rgba(34, 197, 94, 0.16);
+}
+
+.trackerCardCompleted {
+    border-color: rgba(34, 197, 94, 0.72);
+    box-shadow: 0 12px 40px rgba(34, 197, 94, 0.2);
 }
 
 .trackerTop {
@@ -1426,6 +1799,272 @@
 .trackerDotUrgent {
     background: #ff3b4e;
     box-shadow: 0 0 14px #ff3b4e;
+}
+
+.trackerDotReady {
+    background: #22c55e;
+    box-shadow: 0 0 14px #22c55e;
+}
+
+.readyPickupBadge {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(34, 197, 94, 0.18);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.48);
+}
+
+.pickedUpBadge {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(34, 197, 94, 0.24);
+    color: #bbf7d0;
+    border: 1px solid rgba(34, 197, 94, 0.65);
+}
+
+.readyPickupBanner {
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: #bbf7d0;
+    line-height: 1.45;
+}
+
+.pickedUpLifecycleStack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.expiryCountdownStrip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(168, 144, 95, 0.12) 100%);
+    border: 1px solid rgba(245, 158, 11, 0.48);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.expiryCountdownCopy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 220px;
+}
+
+.expiryCountdownBadge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fde68a;
+    background: rgba(245, 158, 11, 0.22);
+    border: 1px solid rgba(251, 191, 36, 0.55);
+    border-radius: 999px;
+    padding: 2px 9px;
+}
+
+.expiryCountdownText {
+    font-size: 12px;
+    color: #fef3c7;
+    line-height: 1.45;
+}
+
+.expireNowBtn {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    color: #fff;
+    border: 1px solid rgba(251, 191, 36, 0.65);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.15s ease, box-shadow 0.18s ease;
+}
+
+.expireNowBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+}
+
+.actionBtnArchiveNow {
+    flex: 1;
+    background: rgba(245, 158, 11, 0.18);
+    color: #fde68a;
+    border: 1px solid rgba(245, 158, 11, 0.55);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+}
+
+.actionBtnArchiveNow:hover {
+    background: rgba(245, 158, 11, 0.3);
+    color: #fff;
+}
+
+.inventoryArchiveNotice {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: rgba(168, 144, 95, 0.1);
+    border: 1px solid rgba(168, 144, 95, 0.38);
+    border-radius: 14px;
+    padding: 14px 18px;
+}
+
+.inventoryArchiveNoticeLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 240px;
+}
+
+.inventoryArchivePill {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fde68a;
+    background: rgba(245, 158, 11, 0.18);
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    border-radius: 999px;
+    padding: 3px 10px;
+}
+
+.inventoryArchiveText {
+    margin: 0;
+    font-size: 13px;
+    color: #e5e5e5;
+    line-height: 1.45;
+}
+
+.archiveGoInventoryBtn {
+    background: var(--gold, #a8905f);
+    color: #0b0b0b;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.18s ease;
+}
+
+.archiveGoInventoryBtn:hover {
+    background: #d4bc8b;
+    transform: translateY(-1px);
+}
+
+.archivedEmptyQueueBox {
+    background: rgba(16, 185, 129, 0.07);
+    border: 1px dashed rgba(16, 185, 129, 0.42);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.archivedEmptyQueueCopy {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 680px;
+}
+
+.archivedEmptyQueueBadge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #86efac;
+    background: rgba(34, 197, 94, 0.16);
+    border: 1px solid rgba(34, 197, 94, 0.45);
+    border-radius: 999px;
+    padding: 3px 10px;
+}
+
+.archivedEmptyQueueTitle {
+    margin: 0;
+    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
+    font-size: 26px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #fff;
+}
+
+.archivedEmptyQueueDesc {
+    margin: 0;
+    font-size: 13px;
+    color: #d4d4d4;
+    line-height: 1.5;
+}
+
+.archivedEmptyQueueActions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.archiveHeaderPillBtn {
+    background: rgba(168, 144, 95, 0.14);
+    color: #fde68a;
+    border: 1px solid rgba(168, 144, 95, 0.45);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.archiveHeaderPillBtn:hover {
+    background: rgba(168, 144, 95, 0.25);
+    color: #fff;
 }
 
 .trackerKicker {
@@ -1463,6 +2102,167 @@
 
 .trackerEtaUrgent {
     color: #ff5a67;
+}
+
+.trackerEtaReady {
+    color: #4ade80;
+}
+
+/* ── Customer Contact Strip at Top of Admin Order Tracker Card ── */
+.trackerCustomerStrip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 12px;
+    padding: 10px 14px;
+}
+
+.trackerCustomerIdentity {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.trackerCustomerTopRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.trackerCustomerNameRow {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.trackerCustomerLabel {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-light, #d4bc8b);
+}
+
+.trackerCustomerName {
+    font-size: 15px;
+    font-weight: 800;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.customerNameGoldStar {
+    color: #fbbf24;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.55);
+    font-size: 14px;
+}
+
+.trackerCustomerSpendMeta {
+    font-size: 11px;
+    font-weight: 600;
+    color: #b5b5b5;
+}
+
+.customerTierPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+}
+
+.customerTierPillSm {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 999px;
+}
+
+.customerTier_vip {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.28) 0%, rgba(180, 83, 9, 0.34) 100%);
+    color: #fde68a;
+    border: 1px solid rgba(251, 191, 36, 0.65);
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.25);
+}
+
+.customerTier_gold {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.48);
+}
+
+.customerTier_regular {
+    background: rgba(34, 197, 94, 0.16);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.42);
+}
+
+.customerTier_first {
+    background: rgba(255, 255, 255, 0.07);
+    color: #d4d4d4;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.goldStarIcon {
+    color: #fbbf24;
+    letter-spacing: 1px;
+}
+
+.inlineSpendNote {
+    font-size: 11px;
+    font-weight: 600;
+    color: #fbbf24;
+}
+
+.tableCustomerRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.trackerCustomerContacts {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.trackerContactPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #f5f5f4;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    padding: 5px 11px;
+    text-decoration: none;
+    transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.trackerContactPill:hover {
+    border-color: var(--gold, #d4af37);
+    background: rgba(212, 175, 55, 0.14);
+    color: #fff;
 }
 
 .trackerBar {
@@ -1542,14 +2342,30 @@
 }
 
 .trackerSegDone,
-.trackerSegActive {
+.trackerSegActive,
+.trackerSegPickedUp {
     color: #fff;
     border-color: transparent;
 }
 
 .trackerSegDone .trackerSegFill,
-.trackerSegActive .trackerSegFill {
+.trackerSegActive .trackerSegFill,
+.trackerSegPickedUp .trackerSegFill {
     transform: scaleX(1);
+}
+
+.trackerSegPickedUp {
+    border-color: rgba(34, 197, 94, 0.55);
+    box-shadow: 0 0 18px rgba(22, 163, 74, 0.32);
+}
+
+.trackerSegPickedUp .trackerSegFill {
+    background: linear-gradient(90deg, var(--green-depot, #142a1e) 0%, #15803d 55%, #16a34a 100%);
+}
+
+.trackerSegPickedUp:hover {
+    border-color: #4ade80;
+    box-shadow: 0 0 22px rgba(34, 197, 94, 0.48);
 }
 
 .trackerSegActive .trackerSegFill {
@@ -1631,289 +2447,218 @@
     font-style: italic;
 }
 
-@media (max-width: 768px) {
-    .trackerCardsGrid {
-        grid-template-columns: 1fr;
-    }
-
-    .trackerBar {
-        grid-template-columns: 1fr;
-    }
-
-    .trackerSeg,
-    .trackerSegItem:first-child .trackerSeg,
-    .trackerSegItem:last-child .trackerSeg {
-        border-radius: 10px;
-    }
-
-    .trackerDetailsGrid {
-        grid-template-columns: 1fr;
-    }
-
-    .trackerEtaBox {
-        text-align: left;
-    }
-}
-
-
-/* ── 4-Stage Live Order Tracker Cards (matches /dashboard tracker) ── */
-.trackerCardsGrid {
+/* ── 4-Step Order Tracking Process Cards + Butcher Guide Cuts on Admin Ticket ── */
+.adminStepsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
 }
 
-.trackerCard {
-    background: linear-gradient(165deg, rgba(24, 18, 14, 0.96) 0%, rgba(10, 8, 7, 0.98) 100%);
-    border: 1px solid rgba(204, 14, 29, 0.45);
-    border-radius: 20px;
-    padding: 26px;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+.adminStepCard {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: left;
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    justify-content: space-between;
-}
-
-.trackerCardBehind {
-    border-color: rgba(255, 59, 78, 0.8);
-    box-shadow: 0 12px 40px rgba(204, 14, 29, 0.22);
-}
-
-.trackerTop {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-
-.trackerKickerRow {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 6px;
-}
-
-.trackerDot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--red, #cc0e1d);
-    box-shadow: 0 0 10px var(--red, #cc0e1d);
-    animation: urgentPulse 1.8s ease-in-out infinite;
-}
-
-.trackerDotUrgent {
-    background: #ff3b4e;
-    box-shadow: 0 0 14px #ff3b4e;
-}
-
-.trackerKicker {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.4px;
-    text-transform: uppercase;
-    color: #9e9e9e;
-}
-
-.trackerStageTitle {
-    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
-    font-size: clamp(1.8rem, 3vw, 2.35rem);
-    color: #fff;
-    line-height: 1;
-    margin: 0;
-    text-transform: uppercase;
-}
-
-.trackerEtaBox {
-    text-align: right;
-}
-
-.trackerEtaValue {
-    font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    font-size: clamp(1.45rem, 2.6vw, 1.9rem);
-    font-weight: 600;
-    line-height: 1.1;
-    color: var(--red, #cc0e1d);
-    font-variant-numeric: tabular-nums;
-    margin-top: 4px;
-}
-
-.trackerEtaUrgent {
-    color: #ff5a67;
-}
-
-.trackerBar {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-}
-
-.trackerSegItem {
-    display: flex;
-}
-
-.trackerSeg {
-    width: 100%;
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 48px;
-    padding: 0 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid #222;
-    overflow: hidden;
-    color: #9e9e9e;
+    gap: 3px;
     cursor: pointer;
     font-family: inherit;
-    text-align: left;
-    transition: color 0.3s ease, border-color 0.3s ease;
+    transition: all 0.2s ease;
 }
 
-.trackerSegItem:first-child .trackerSeg {
-    border-radius: 999px 0 0 999px;
+.adminStepCard:hover {
+    border-color: rgba(245, 155, 26, 0.45);
 }
 
-.trackerSegItem:last-child .trackerSeg {
-    border-radius: 0 999px 999px 0;
+.adminStepCardDone {
+    background: rgba(34, 197, 94, 0.08);
+    border-color: rgba(34, 197, 94, 0.38);
 }
 
-.trackerSegFill {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, var(--red-dark, #8b0000), var(--red, #cc0e1d));
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.45s ease;
+.adminStepCardActive {
+    background: rgba(204, 14, 29, 0.16);
+    border-color: var(--gold, #d4af37);
+    box-shadow: 0 4px 14px rgba(204, 14, 29, 0.25);
 }
 
-.trackerSegNum,
-.trackerSegLabel {
-    position: relative;
-    z-index: 1;
+.adminStepTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
 }
 
-.trackerSegNum {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 1.5px solid currentColor;
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.trackerSegLabel {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
+.adminStepNum {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: var(--gold-light, #d4bc8b);
 }
 
-.trackerSegDone,
-.trackerSegActive {
-    color: #fff;
-    border-color: transparent;
+.adminStepStatus {
+    font-size: 9px;
+    font-weight: 700;
+    color: #a3a3a3;
 }
 
-.trackerSegDone .trackerSegFill,
-.trackerSegActive .trackerSegFill {
-    transform: scaleX(1);
-}
-
-.trackerSegActive .trackerSegFill {
-    background: linear-gradient(90deg, var(--red-dark, #8b0000), var(--red, #cc0e1d), #ff3b4e, var(--red, #cc0e1d));
-    background-size: 220% 100%;
-    animation: adminTrackerSweep 2.2s linear infinite;
-}
-
-.trackerSegActive {
-    box-shadow: 0 0 20px rgba(204, 14, 29, 0.45);
-}
-
-.trackerSegTodo:hover {
-    border-color: rgba(204, 14, 29, 0.5);
+.adminStepName {
+    font-size: 12px;
+    font-weight: 800;
     color: #fff;
 }
 
-@keyframes adminTrackerSweep {
-    from {
-        background-position: 100% 0;
-    }
-    to {
-        background-position: -120% 0;
-    }
+.adminStepDesc {
+    font-size: 10px;
+    color: #a3a3a3;
+    line-height: 1.3;
 }
 
-.trackerDetailsGrid {
-    display: grid;
-    grid-template-columns: 1fr 1.25fr;
-    gap: 20px;
-    padding-top: 16px;
+.adminCutsShowcase {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 12px;
     border-top: 1px solid #1e1e1e;
 }
 
-.trackerDetailMain {
-    color: #fff;
-    font-size: 15px;
-    font-weight: 700;
-    margin: 6px 0 4px;
+.adminCutsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    gap: 10px;
 }
 
-.trackerDetailLink {
-    color: var(--red, #cc0e1d);
-    font-size: 13px;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-}
-
-.trackerDetailLink:hover {
-    color: #fff;
-}
-
-.trackerCustomerMeta {
-    margin-top: 10px;
+.adminCutCard {
+    background: #14100d;
+    border: 1px solid rgba(245, 155, 26, 0.32);
+    border-radius: 10px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    font-size: 13px;
-    color: #e5e5e5;
 }
 
-.trackerItemsList {
-    list-style: none;
-    margin: 6px 0 0;
-    padding: 0;
-    color: #e5e5e5;
-    font-size: 13px;
-    line-height: 1.8;
+.adminCutStage {
+    background: #f3ead8;
+    border-bottom: 2px solid #6b070b;
+    padding: 5px;
 }
 
-.trackerItemQty {
-    color: var(--red, #cc0e1d);
+.adminCutSvg {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 896;
+    display: block;
+    border-radius: 5px;
+}
+
+.adminCutHighlight {
+    fill: #f7941d;
+    fill-opacity: 0.92;
+    stroke: #6b070b;
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+}
+
+.adminCutWoodcut {
+    fill: #6b070b;
+    pointer-events: none;
+}
+
+.adminCutLabel {
+    fill: #faf0e6;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+}
+
+.adminCutMeta {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.adminCutBadge {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold-light, #d4bc8b);
+}
+
+.adminCutTitle {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.adminCutProduct {
+    font-size: 11px;
+    color: #d6c7b8;
+}
+
+.restockActionGroup {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.fillRestockBtn {
+    background: rgba(16, 185, 129, 0.16);
+    border: 1px solid rgba(16, 185, 129, 0.45);
+    color: #6ee7b7;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
     font-weight: 700;
-    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.trackerItemNote {
-    color: #9e9e9e;
-    font-style: italic;
+.fillRestockBtn:hover {
+    background: rgba(16, 185, 129, 0.28);
+    border-color: rgba(16, 185, 129, 0.7);
+}
+
+.restockStatusFilled {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #6ee7b7;
+}
+
+.restockStatusPending {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(245, 158, 11, 0.14);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: #fcd34d;
 }
 
 @media (max-width: 768px) {
+    .adminStepsGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .trackerCardsGrid {
         grid-template-columns: 1fr;
     }

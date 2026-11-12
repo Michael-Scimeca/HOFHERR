@@ -3,8 +3,538 @@
 .container {
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
+    gap: var(--space-3);
     width: 100%;
+}
+
+/* ── Single-Screen Viewport Layout Switcher Bar ── */
+.layoutSwitcherBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    padding: var(--space-2) var(--space-3);
+    background: rgba(18, 15, 14, 0.92);
+    border: 1px solid rgba(245, 155, 26, 0.28);
+    border-radius: var(--radius-sm);
+}
+
+.layoutSwitcherLeft {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.layoutSwitcherLabel {
+    font-size: 10.5px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    text-transform: uppercase;
+}
+
+.layoutBtnsGroup {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 3px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+
+.layoutSwitchBtn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: calc(var(--radius-sm) - 2px);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--fg-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.layoutSwitchBtn:hover {
+    color: var(--fg);
+}
+
+.layoutSwitchBtnActive {
+    background: rgba(204, 14, 29, 0.24);
+    border-color: var(--red);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(204, 14, 29, 0.25);
+}
+
+.simBarActionsCompact {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.simBtnCompact {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--fg-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.simBtnCompact:hover {
+    color: var(--fg);
+    border-color: rgba(245, 155, 26, 0.45);
+}
+
+/* ── Layout 2: Unified Top Command HUD ── */
+.hudCommandBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    flex-wrap: wrap;
+}
+
+.hudLeftIdentity {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 260px;
+    flex: 1 1 280px;
+    max-width: 380px;
+}
+
+.hudTitleLine {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.hudTitle {
+    font-size: var(--text-base);
+    font-weight: 800;
+    color: var(--fg);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.hudScorePill {
+    font-size: 11.5px;
+    color: var(--fg-muted);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px 9px;
+    font-family: var(--font-mono, monospace);
+}
+
+.hudScorePill strong {
+    color: var(--red);
+    font-weight: 900;
+}
+
+.hudProgressTrack {
+    height: 7px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.hudTabsStrip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 2 1 520px;
+    justify-content: flex-end;
+}
+
+.hudTabPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--fg);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.hudTabPill:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.hudTabPillActive {
+    border-color: var(--red);
+    background: rgba(139, 10, 16, 0.16);
+}
+
+.hudTabName {
+    font-size: 12.5px;
+    font-weight: 700;
+}
+
+.hudTabCount {
+    font-size: 11px;
+    font-family: var(--font-mono, monospace);
+    color: var(--fg-muted);
+    font-weight: 700;
+}
+
+.hudTabPillActive .hudTabCount {
+    color: var(--gold);
+}
+
+/* ── Layout 3: 3-Column Widescreen Left Rail ── */
+.stageGridSingleScreen {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: var(--space-4);
+    align-items: stretch;
+    width: 100%;
+}
+
+.stageGridThreeCol {
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr) 320px;
+    gap: var(--space-4);
+    align-items: stretch;
+    width: 100%;
+}
+
+@media (max-width: 1180px) {
+    .stageGridThreeCol {
+        grid-template-columns: 1fr;
+    }
+    .stageGridSingleScreen {
+        grid-template-columns: 1fr;
+    }
+}
+
+.leftRailCard {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.leftRailScoreBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+}
+
+.leftRailTitle {
+    font-size: var(--text-sm);
+    font-weight: 800;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.25;
+}
+
+.leftRailScoreRow {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.leftRailScoreBig {
+    font-size: var(--text-2xl);
+    font-weight: 900;
+    color: var(--red);
+    font-family: var(--font-mono, monospace);
+    line-height: 1;
+}
+
+.leftRailScoreSub {
+    font-size: 11px;
+    color: var(--fg-muted);
+    font-weight: 600;
+}
+
+.leftRailTabsList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.leftRailTabBtn {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: left;
+    color: var(--fg);
+    transition: all 0.15s ease;
+}
+
+.leftRailTabBtn:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+.leftRailSimBlock {
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.leftRailSimLabel {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+}
+
+.leftRailSimBtns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+/* ── Docked Butcher's Recipe Setup Card (Right Column) ── */
+.recipeSetupCard {
+    background: var(--bg-card);
+    border: 1px solid rgba(245, 155, 26, 0.35);
+    border-radius: var(--radius);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.recipeSetupTopRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.recipeSetupHeadingCol {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.recipeSetupEyebrow {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    text-transform: uppercase;
+}
+
+.recipeSetupCutTitle {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--fg);
+    margin: 0;
+}
+
+.recipeSetupCutTitle span {
+    color: var(--fg-muted);
+    font-weight: 600;
+}
+
+.recipeCutSwitchRow {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.recipeCutPill {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--fg-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.recipeCutPill:hover {
+    color: var(--fg);
+    border-color: rgba(245, 155, 26, 0.45);
+}
+
+.recipeCutPillActive {
+    background: rgba(245, 155, 26, 0.16);
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.recipeDishName {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--gold);
+    line-height: 1.3;
+}
+
+.recipeSpecsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.recipeSpecPill {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 4px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.recipeSpecLabel {
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+}
+
+.recipeSpecValue {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--fg);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recipeSetupStepsList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.recipeSetupStepItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 11px;
+    color: var(--fg-2, #d4d4d8);
+    line-height: 1.38;
+}
+
+.recipeStepNum {
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: rgba(245, 155, 26, 0.18);
+    border: 1px solid rgba(245, 155, 26, 0.45);
+    color: var(--gold);
+    font-size: 9.5px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.recipeStepBody {
+    flex: 1;
+}
+
+.recipeSetupTipBanner {
+    padding: 6px 8px;
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.28);
+    border-radius: var(--radius-sm);
+}
+
+.recipeSetupTipText {
+    font-size: 10.5px;
+    color: var(--fg-2, #d4d4d8);
+    line-height: 1.35;
+    display: block;
+}
+
+.recipeSetupTipText strong {
+    color: #4ade80;
+}
+
+.recipeSetupActionsRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.recipeOrderPrepBtn {
+    flex: 1;
+    min-width: 140px;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(34, 197, 94, 0.45);
+    background: rgba(34, 197, 94, 0.14);
+    color: #4ade80;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.recipeOrderPrepBtn:hover {
+    background: rgba(34, 197, 94, 0.24);
+}
+
+.recipeOrderRawBtn {
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--fg);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.recipeOrderRawBtn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.sideRewardNoteText strong {
+    color: #faf0e6;
 }
 
 /* ── Top Header & Progress Summary ── */
@@ -189,14 +719,19 @@
 /* ── Interactive Main Stage: Split Layout ── */
 .stageGrid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 350px;
-    gap: var(--space-6);
-    align-items: start;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: var(--space-4);
+    align-items: stretch;
     width: 100%;
 }
 
+.stageGridThreeCol {
+    grid-template-columns: 220px minmax(0, 1fr) 320px;
+}
+
 @media (max-width: 1080px) {
-    .stageGrid {
+    .stageGrid,
+    .stageGridThreeCol {
         grid-template-columns: 1fr;
     }
 }
@@ -206,10 +741,10 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: var(--space-5);
+    padding: var(--space-4);
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-3);
     position: relative;
     overflow: hidden;
     min-width: 0;
@@ -218,9 +753,9 @@
 .chartHeader {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-2);
     border-bottom: 1px solid var(--border);
-    padding-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
 }
 
 .chartTitleRow {
@@ -324,17 +859,18 @@
     width: 100%;
     background: #0d0f11;
     border-radius: var(--radius-sm);
-    padding: var(--space-4);
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
 }
 
 .svgGraphic {
     width: 100%;
     height: auto;
-    max-height: 580px;
+    max-height: 68vh;
     display: block;
 }
 
@@ -456,6 +992,45 @@
 .woodcutCutOverlayHighlighted {
     fill: #f7941d !important;
     stroke: transparent !important;
+}
+
+.woodcutCutOverlayGoingForGold {
+    fill: rgba(245, 185, 66, 0.24) !important;
+    stroke: #d49b2a !important;
+    stroke-width: 2.5px !important;
+    stroke-dasharray: 6 4;
+}
+
+.woodcutCutOverlayGoldCollected {
+    fill: #d49b2a !important;
+    stroke: #ffe28a !important;
+    stroke-width: 2.5px !important;
+}
+
+.goingForGoldSvgBadgeGroup {
+    pointer-events: none;
+}
+
+.goingForGoldSvgPill {
+    fill: #1b0f05;
+    stroke: #f5b942;
+    stroke-width: 1.5px;
+}
+
+.goingForGoldSvgPillCollected {
+    fill: #d49b2a;
+    stroke: #ffffff;
+    stroke-width: 1.5px;
+}
+
+.goingForGoldSvgText {
+    fill: #ffd67a;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-anchor: middle;
+    dominant-baseline: central;
 }
 
 .woodcutCutOverlayCollected {
@@ -990,6 +1565,8 @@
     list-style: none;
     margin: 0;
     padding: 0;
+    max-height: 410px;
+    overflow-y: auto;
 }
 
 .emptyPickedNote {
@@ -1490,3 +2067,1063 @@
     color: #ff999b;
     font-weight: 700;
 }
+
+/* ── Simulation & Payoff Preview Bar ── */
+.simBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.simBarLeft {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    flex: 1 1 320px;
+}
+
+.simBarBadge {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(245, 155, 26, 0.16);
+    border: 1px solid rgba(245, 155, 26, 0.45);
+    color: var(--gold);
+    white-space: nowrap;
+}
+
+.simBarNote {
+    font-size: var(--text-xs);
+    color: var(--fg-muted);
+    line-height: 1.4;
+}
+
+.simBarActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.simBtn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--fg-muted);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+}
+
+.simBtn:hover {
+    color: var(--fg);
+    border-color: rgba(245, 155, 26, 0.5);
+    background: rgba(245, 155, 26, 0.08);
+}
+
+.simBtnActive {
+    background: rgba(204, 14, 29, 0.22);
+    border-color: var(--red);
+    color: #ffffff;
+    box-shadow: 0 2px 12px rgba(204, 14, 29, 0.3);
+}
+
+.simBtnActiveGold {
+    background: linear-gradient(135deg, rgba(245, 155, 26, 0.25), rgba(204, 14, 29, 0.28));
+    border-color: var(--gold);
+    color: #fff6e0;
+    box-shadow: 0 2px 14px rgba(245, 155, 26, 0.3);
+}
+
+/* ── Piece-by-Piece Image Progress & Real Completion Payoffs Panel ── */
+.payoffPanel {
+    background: linear-gradient(180deg, rgba(22, 18, 16, 0.96) 0%, rgba(12, 10, 9, 0.98) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.28);
+    border-radius: var(--radius);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+}
+
+.pieceTrackerBlock {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pieceTrackerHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.pieceTrackerTitleCol {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pieceTrackerKicker {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.pieceTrackerTitle {
+    font-size: var(--text-lg);
+    font-weight: 800;
+    color: var(--fg);
+    margin: 0;
+}
+
+.pieceTrackerPayoffBadge {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    background: rgba(245, 155, 26, 0.1);
+    border: 1px solid rgba(245, 155, 26, 0.35);
+}
+
+.pieceTrackerPayoffLabel {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-muted);
+}
+
+.pieceTrackerPayoffValue {
+    font-size: 12px;
+    font-weight: 800;
+    color: #ffd27d;
+}
+
+.piecePillsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+    gap: var(--space-2);
+}
+
+.piecePillCard {
+    appearance: none;
+    text-align: left;
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.piecePillCardCollected {
+    background: linear-gradient(135deg, rgba(245, 155, 26, 0.16) 0%, rgba(139, 10, 16, 0.22) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.65);
+    box-shadow: 0 4px 14px rgba(245, 155, 26, 0.12);
+}
+
+.piecePillCardMissing {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px dashed rgba(255, 255, 255, 0.14);
+}
+
+.piecePillCard:hover {
+    transform: translateY(-1px);
+    border-color: var(--gold);
+}
+
+.piecePillTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.piecePillOrder {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--fg-muted);
+}
+
+.piecePillStatusDone {
+    font-size: 10px;
+    font-weight: 800;
+    color: #4ade80;
+    background: rgba(34, 197, 94, 0.16);
+    border: 1px solid rgba(74, 222, 128, 0.4);
+    border-radius: 999px;
+    padding: 1px 7px;
+}
+
+.piecePillStatusTodo {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--fg-muted);
+}
+
+.piecePillStatusGold {
+    font-size: 10px;
+    font-weight: 800;
+    color: #ffd67a;
+    background: linear-gradient(135deg, rgba(245, 185, 66, 0.22) 0%, rgba(180, 120, 20, 0.28) 100%);
+    border: 1px solid rgba(245, 185, 66, 0.65);
+    border-radius: 999px;
+    padding: 1px 8px;
+}
+
+.piecePillName {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.piecePillProduct {
+    font-size: 11px;
+    color: #d6c7b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── 4 Tangible Completion Reward Cards ── */
+.tangibleRewardsHeader {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.tangibleRewardsTitle {
+    font-size: var(--text-xl);
+    font-weight: 800;
+    color: var(--fg);
+    margin: 2px 0 0 0;
+}
+
+.tangibleUnlockedCountBadge {
+    font-size: var(--text-xs);
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(34, 197, 94, 0.14);
+    border: 1px solid rgba(74, 222, 128, 0.4);
+    color: #4ade80;
+}
+
+.tangibleRewardsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+@media (max-width: 1180px) {
+    .tangibleRewardsGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .tangibleRewardsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.tangibleCard {
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    transition: all 0.2s ease;
+}
+
+.tangibleCardUnlocked {
+    background: linear-gradient(165deg, rgba(245, 155, 26, 0.14) 0%, rgba(139, 10, 16, 0.2) 100%);
+    border: 1.5px solid var(--gold);
+    box-shadow: 0 8px 24px rgba(245, 155, 26, 0.15);
+}
+
+.tangibleCardLocked {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border);
+}
+
+.tangibleCardTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.tangibleStepBadge {
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.tangibleStatusUnlocked {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(34, 197, 94, 0.18);
+    border: 1px solid rgba(74, 222, 128, 0.48);
+    color: #4ade80;
+}
+
+.tangibleStatusLocked {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--fg-muted);
+}
+
+.tangibleIconTitleRow {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+}
+
+.tangibleIcon {
+    font-size: 26px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.tangibleTitleGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tangibleCategory {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-muted);
+}
+
+.tangibleTitle {
+    font-size: 14.5px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.25;
+}
+
+.tangibleDesc {
+    font-size: 11.5px;
+    color: var(--fg-muted);
+    line-height: 1.45;
+    margin: 0;
+    flex: 1;
+}
+
+.tangibleProgressBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tangibleProgressLabels {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tangibleReqText {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #f3ead8;
+}
+
+.tangibleRemainText {
+    font-size: 10.5px;
+    color: var(--gold);
+    font-weight: 600;
+}
+
+.tangibleBarTrack {
+    width: 100%;
+    height: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.tangibleBarFill {
+    height: 100%;
+    width: var(--payoff-pct, 0%);
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    border-radius: 999px;
+    transition: width 0.35s ease;
+}
+
+.tangibleVoucherRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px dashed rgba(245, 155, 26, 0.4);
+}
+
+.tangibleCodeBox {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.tangibleCodeLabel {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--fg-muted);
+}
+
+.tangibleCodeValue {
+    font-family: var(--font-mono, monospace);
+    font-size: 12px;
+    font-weight: 800;
+    color: #ffd27d;
+    letter-spacing: 0.05em;
+}
+
+.tangibleClaimBtn {
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gold);
+    background: var(--gold);
+    color: #140a07;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: filter 0.15s ease;
+}
+
+.tangibleClaimBtn:hover {
+    filter: brightness(1.08);
+}
+
+.tangiblePreviewBtn {
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    color: #f3ead8;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.tangiblePreviewBtn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.tangibleRedeemNote {
+    font-size: 10.5px;
+    color: var(--fg-muted);
+    font-style: italic;
+}
+
+/* ── In-Shop "Master of the Block" Wooden & Brass Honor Board Mockup ── */
+.shopBoardMockup {
+    position: relative;
+    background: linear-gradient(180deg, #24150e 0%, #170d08 100%);
+    border: 2px solid #8a6421;
+    border-radius: var(--radius);
+    padding: var(--space-5);
+    box-shadow: inset 0 0 32px rgba(0, 0, 0, 0.75), 0 10px 30px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.shopBoardBolts {
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.brassBolt {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffe299, #9c6f19);
+    border: 1px solid #4a3208;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.shopBoardHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.shopBoardTitleCol {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 680px;
+}
+
+.shopBoardLocation {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #f5b942;
+}
+
+.shopBoardHeading {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: var(--text-xl);
+    letter-spacing: 0.06em;
+    color: #fff5df;
+    margin: 0;
+}
+
+.shopBoardSub {
+    font-size: var(--text-xs);
+    color: #d7c3a5;
+    margin: 0;
+    line-height: 1.45;
+}
+
+.shopBoardStatusBadge {
+    display: flex;
+    align-items: center;
+}
+
+.plaqueEarnedPill {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #f5b942 0%, #c88719 100%);
+    color: #1a0d05;
+    box-shadow: 0 4px 16px rgba(245, 185, 66, 0.4);
+}
+
+.plaqueReservedPill {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(245, 185, 66, 0.14);
+    border: 1px dashed #d49b2a;
+    color: #ffd67a;
+}
+
+.shopBoardPlaquesGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+@media (max-width: 1100px) {
+    .shopBoardPlaquesGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .shopBoardPlaquesGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.brassPlaque {
+    position: relative;
+    background: linear-gradient(145deg, #d8a648 0%, #9f6f1c 55%, #b9872d 100%);
+    border: 2px solid #fbe09c;
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    color: #1b0f05;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 6px 16px rgba(0, 0, 0, 0.55);
+}
+
+.brassPlaqueCustomerUnlocked {
+    background: linear-gradient(145deg, #ffe28a 0%, #dca032 52%, #f4c152 100%);
+    border-color: #ffffff;
+    box-shadow: 0 0 24px rgba(245, 185, 66, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.brassPlaqueCustomerPending {
+    background: rgba(216, 166, 72, 0.12);
+    border: 1.5px dashed #d49b2a;
+    color: #f6e7c8;
+    box-shadow: none;
+}
+
+.plaqueRank {
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.plaqueName {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+}
+
+.plaqueMeta {
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.9;
+}
+
+/* ── Adventurous / Hard-Sell Cut Helpers: Prepared Alternatives & Chef Recipe Cards ── */
+.popoverAdventurousBanner {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, rgba(245, 155, 26, 0.16) 0%, rgba(139, 10, 16, 0.24) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.45);
+}
+
+.popoverAdventurousTitle {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+}
+
+.popoverAdventurousSub {
+    font-size: 10.5px;
+    color: #f3ead8;
+    line-height: 1.35;
+}
+
+.productRowCardPrepared {
+    border-color: rgba(245, 155, 26, 0.4);
+    background: rgba(245, 155, 26, 0.06);
+}
+
+.preparedCountBadge {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #4ade80;
+    background: rgba(34, 197, 94, 0.16);
+    border: 1px solid rgba(74, 222, 128, 0.42);
+    border-radius: 999px;
+    padding: 1px 6px;
+    white-space: nowrap;
+}
+
+.popoverRecipeBox {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(245, 155, 26, 0.32);
+}
+
+.popoverRecipeHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.popoverRecipeBadge {
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+}
+
+.popoverRecipeTime {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--fg-muted);
+}
+
+.popoverRecipeTitle {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.popoverRecipeSummary {
+    font-size: 11px;
+    color: #d6c7b8;
+    line-height: 1.35;
+    margin: 0;
+}
+
+.popoverRecipeSteps {
+    margin: 0;
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 10.5px;
+    color: var(--fg-muted);
+    line-height: 1.35;
+}
+
+.piecePillCardAdventurous {
+    border: 1.5px solid rgba(245, 185, 66, 0.65);
+    background: linear-gradient(145deg, rgba(245, 185, 66, 0.12) 0%, rgba(30, 20, 10, 0.6) 100%);
+    box-shadow: 0 4px 16px rgba(245, 185, 66, 0.12);
+}
+
+.piecePillTitleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.piecePillEasyPassBadge {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #ffd27d;
+    background: rgba(245, 155, 26, 0.14);
+    border: 1px solid rgba(245, 155, 26, 0.4);
+    border-radius: 999px;
+    padding: 1px 6px;
+    white-space: nowrap;
+}
+
+.adventurousGuidePanel {
+    margin-top: var(--space-2);
+    padding: var(--space-4);
+    border-radius: var(--radius);
+    background: linear-gradient(145deg, rgba(245, 155, 26, 0.08) 0%, rgba(139, 10, 16, 0.14) 100%);
+    border: 1px solid rgba(245, 155, 26, 0.35);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.adventurousGuideHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.adventurousGuideTitleCol {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 760px;
+}
+
+.adventurousGuideHeading {
+    font-size: var(--text-base);
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.adventurousGuideSub {
+    font-size: var(--text-xs);
+    color: #d6c7b8;
+    margin: 0;
+    line-height: 1.45;
+}
+
+.adventurousCutTabs {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.adventurousCutTabBtn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: calc(var(--radius-sm) - 2px);
+    padding: 6px 12px;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--fg-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.adventurousCutTabBtn:hover {
+    color: #ffffff;
+}
+
+.adventurousCutTabBtnActive {
+    background: rgba(245, 155, 26, 0.2);
+    border-color: var(--gold);
+    color: #ffd27d;
+}
+
+.adventurousGuideGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+}
+
+@media (max-width: 960px) {
+    .adventurousGuideGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.preparedAlternativesCard,
+.recipeCardPanel {
+    background: rgba(12, 10, 9, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-sm);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.preparedCardTop {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.preparedCardKicker,
+.recipeCardKicker {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.preparedCardTitle,
+.recipeCardTitle {
+    font-size: 14.5px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.preparedOptionsList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.preparedOptionRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(245, 155, 26, 0.3);
+}
+
+.preparedOptionRowActive {
+    background: rgba(184, 15, 26, 0.16);
+    border-color: var(--gold);
+}
+
+.preparedOptionInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    flex: 1;
+}
+
+.preparedOptionTitleLine {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.preparedOptionName {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #faf0e6;
+}
+
+.preparedOptionDesc {
+    font-size: 11px;
+    color: var(--fg-muted);
+    line-height: 1.35;
+}
+
+.preparedChefTip {
+    font-size: 11px;
+    color: #ffd27d;
+    background: rgba(245, 155, 26, 0.1);
+    border-left: 3px solid var(--gold);
+    padding: 8px 10px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: auto 0 0 0;
+    line-height: 1.4;
+}
+
+.recipeCardHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.recipeCardTitleGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.recipeMetaPills {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.recipeMetaPill {
+    font-size: 10px;
+    font-weight: 800;
+    color: #f3ead8;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    padding: 2px 8px;
+    white-space: nowrap;
+}
+
+.recipeCardSummary {
+    font-size: 11.5px;
+    color: #d6c7b8;
+    line-height: 1.45;
+    margin: 0;
+}
+
+.recipeStepsList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.recipeStepItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 11.5px;
+    color: var(--fg);
+    line-height: 1.4;
+}
+
+.recipeStepNum {
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--gold);
+    background: rgba(245, 155, 26, 0.14);
+    border: 1px solid rgba(245, 155, 26, 0.38);
+    border-radius: 4px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+}
+
+.recipeStepText {
+    color: #e8ded1;
+}
+
+.recipeCardFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    padding-top: var(--space-2);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: auto;
+}
+
+.recipeRawLabel {
+    font-size: 11px;
+    color: var(--fg-muted);
+    font-weight: 600;
+}
+
+.recipeOrderRawBtn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(245, 155, 26, 0.5);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    color: #ffd27d;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.recipeOrderRawBtn:hover {
+    background: rgba(245, 155, 26, 0.18);
+    color: #ffffff;
+}
+
+

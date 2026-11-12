@@ -1,53 +1,108 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useMemo, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
+import { resolveOrderCutPieces } from '@/lib/cutCollector';
+import { buildOrderConfirmationEmail } from '@/lib/email-templates';
+import { COUNTER_CUT_DETAILS } from '@/data/cutMap';
 import styles from './page.module.css';
+
+interface TestOrderPreset {
+    id: string;
+    label: string;
+    summary: string;
+    taxAmount: string;
+    totalAmount: string;
+}
+
+const TEST_ORDER_PRESETS: TestOrderPreset[] = [
+    {
+        id: 'signature',
+        label: 'Test 1: Beef + Pork + Duck (4 Cuts)',
+        summary: 'USDA Prime Bone-In Ribeye x2, Whole Brisket x1, Pork Belly x1, Duck Breast x2',
+        taxAmount: '3.62',
+        totalAmount: '164.56',
+    },
+    {
+        id: 'steakhouse',
+        label: 'Test 2: Beef Ribeye + NY Strip + Lamb Rack',
+        summary: 'Bone-In Ribeye x2, New York Strip x2, Rack of Lamb x1',
+        taxAmount: '4.59',
+        totalAmount: '208.54',
+    },
+    {
+        id: 'seven-animals',
+        label: 'Test 3: All 7 Animals Showcase',
+        summary: 'Bone-In Ribeye x1, Pork Belly x1, Rotisserie Chicken x1, Rack of Lamb x1, Veal Shank x1, Smoked Turkey Legs x2, Duck Confit x1',
+        taxAmount: '4.38',
+        totalAmount: '199.31',
+    },
+];
 
 type TrackerStageKey = 'placed' | 'prep' | 'ready' | 'done';
 
 const TRACKER_STAGES: {
     key: TrackerStageKey;
     stepNum: string;
+    pillLabel: string;
     short: string;
     title: string;
     statusCode: string;
+    etaLabel: string;
+    etaValue: string;
+    stepDetail: string;
     message: string;
 }[] = [
     {
         key: 'placed',
         stepNum: '01',
+        pillLabel: 'Placed',
         short: 'Ticket Verified',
         title: 'Order Placed · In Butcher Queue',
         statusCode: 'paid / pending',
+        etaLabel: 'Estimated Ready Time',
+        etaValue: '~25 Mins · Butcher Queue',
+        stepDetail: 'Ticket printed at counter & queued for trimming.',
         message: 'Your ticket is verified and printed at the counter. A butcher will start trimming your cuts shortly.',
     },
     {
         key: 'prep',
         stepNum: '02',
+        pillLabel: 'Cutting',
         short: 'On the Block',
         title: 'Hand-Cutting & Wrapping',
         statusCode: 'processing',
+        etaLabel: 'Estimated Ready Time',
+        etaValue: '~12 Mins · On the Block',
+        stepDetail: 'Hand-cut, weighed on scale & wrapped in kraft paper.',
         message: 'Your order is on the butcher block — being hand-cut, weighed on our certified scale, and wrapped in kraft paper.',
     },
     {
         key: 'ready',
         stepNum: '03',
+        pillLabel: 'Ready',
         short: 'Ready for Pickup',
         title: 'Wrapped & Waiting at Counter',
         statusCode: 'ready_paid',
+        etaLabel: 'Pickup Status',
+        etaValue: 'Ready Now at Counter',
+        stepDetail: 'Twine-tied parcel waiting in the cold case.',
         message: 'Your kraft-wrapped parcel is twine-tied and waiting in the cold case. Give your name at the butcher counter.',
     },
     {
         key: 'done',
         stepNum: '04',
+        pillLabel: 'Picked Up',
         short: 'Picked Up',
         title: 'Picked Up · Complete',
         statusCode: 'completed',
+        etaLabel: 'Pickup Status',
+        etaValue: 'Picked Up · Complete',
+        stepDetail: 'Picked up & logged in your Butcher Guide history.',
         message: 'Order picked up and logged in your Hofherr Meat Co. account order history.',
     },
 ];
@@ -59,6 +114,10 @@ function SuccessContent() {
     const [status, setStatus] = useState<'loading' | 'ok' | 'error'>('loading');
     const [stageIdx, setStageIdx] = useState<number>(0);
     const [autoPlay, setAutoPlay] = useState<boolean>(false);
+    const [activePresetId, setActivePresetId] = useState<string>('signature');
+    const [fullChartKeys, setFullChartKeys] = useState<Record<string, boolean>>({});
+    const [showEmailPreview, setShowEmailPreview] = useState<boolean>(true);
+    const [emailSendState, setEmailSendState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
     const [orderDetails, setOrderDetails] = useState<{
         name: string;
         summary: string;
@@ -87,7 +146,7 @@ function SuccessContent() {
             setStatus('ok');
             setOrderDetails({
                 name: params.get('name') || 'Guest',
-                summary: params.get('summary') || '',
+                summary: params.get('summary') || TEST_ORDER_PRESETS[0].summary,
                 pickupTime: params.get('pickupTime') || 'Ready during hours',
                 storeId: params.get('storeId') || 'butcher',
             });
@@ -103,12 +162,13 @@ function SuccessContent() {
 
         if (!sessionId) {
             if (process.env.NODE_ENV === 'development') {
+                const defaultPreset = TEST_ORDER_PRESETS[0];
                 setStatus('ok');
                 setOrderDetails({
-                    name: 'Test Setup',
-                    summary: 'USDA Prime Bone-In Ribeye x2, House Smoked Brisket (1.5 lb) x1',
-                    taxAmount: '3.15',
-                    totalAmount: '143.15',
+                    name: params.get('name') || 'Hofherr Master Butcher',
+                    summary: params.get('summary') || defaultPreset.summary,
+                    taxAmount: defaultPreset.taxAmount,
+                    totalAmount: defaultPreset.totalAmount,
                     pickupTime: 'Ready during shop hours',
                     storeId: params.get('storeId') || 'butcher',
                 });
@@ -146,6 +206,84 @@ function SuccessContent() {
             /* ignore */
         }
     }, [sessionId, params]);
+
+    const items = useMemo(() => {
+        if (!orderDetails?.summary) return [];
+        return orderDetails.summary
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean);
+    }, [orderDetails?.summary]);
+
+    const parsedOrderItems = useMemo(() => {
+        return items.map((raw) => {
+            const lastSplit = raw.lastIndexOf(' x');
+            const name = (lastSplit !== -1 ? raw.slice(0, lastSplit) : raw).trim();
+            const qtyNum = lastSplit !== -1 ? parseInt(raw.slice(lastSplit + 2), 10) || 1 : 1;
+            const detail = COUNTER_CUT_DETAILS[name];
+            return {
+                name,
+                qty: qtyNum,
+                price: detail?.price || '$24.99/lb',
+            };
+        });
+    }, [items]);
+
+    const unlockedCutPieces = useMemo(
+        () => resolveOrderCutPieces(parsedOrderItems),
+        [parsedOrderItems]
+    );
+
+    const emailPreview = useMemo(() => {
+        return buildOrderConfirmationEmail({
+            orderNumber: 'HMC-8F42A910',
+            items: parsedOrderItems,
+            contact: {
+                name: orderDetails?.name || 'Hofherr Master Butcher',
+                email: session?.user?.email || 'customer@hofherrmeatco.com',
+                phone: '(847) 441-6328',
+                pickup: orderDetails?.pickupTime || 'Ready during shop hours',
+            },
+            storeId: orderDetails?.storeId || 'butcher',
+            baseUrl: '',
+        });
+    }, [parsedOrderItems, orderDetails?.name, orderDetails?.pickupTime, orderDetails?.storeId, session?.user?.email]);
+
+    const handleSelectPreset = (preset: TestOrderPreset) => {
+        setActivePresetId(preset.id);
+        setOrderDetails((prev) => ({
+            name: prev?.name || 'Hofherr Master Butcher',
+            summary: preset.summary,
+            taxAmount: preset.taxAmount,
+            totalAmount: preset.totalAmount,
+            pickupTime: prev?.pickupTime || 'Ready during shop hours',
+            storeId: prev?.storeId || 'butcher',
+        }));
+    };
+
+    const handleSendTestEmail = async () => {
+        setEmailSendState('sending');
+        try {
+            const res = await fetch('/api/order-confirmation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    items: parsedOrderItems,
+                    contact: {
+                        name: orderDetails?.name || 'Hofherr Master Butcher',
+                        email: session?.user?.email || 'admin@hofherrmeatco.com',
+                        phone: '(847) 441-6328',
+                        pickup: orderDetails?.pickupTime || 'Ready during shop hours',
+                    },
+                    storeId: orderDetails?.storeId || 'butcher',
+                }),
+            });
+            if (!res.ok) throw new Error('Send failed');
+            setEmailSendState('sent');
+        } catch {
+            setEmailSendState('error');
+        }
+    };
 
     if (status === 'loading') {
         return (
@@ -217,13 +355,6 @@ function SuccessContent() {
         );
     }
 
-    const items = orderDetails?.summary
-        ? orderDetails.summary
-              .split(',')
-              .map((s) => s.trim())
-              .filter(Boolean)
-        : [];
-
     const isDepot = orderDetails?.storeId === 'depot';
     const currentStage = TRACKER_STAGES[stageIdx] ?? TRACKER_STAGES[0];
     const linkedEmail = session?.user?.email || 'Customer Account';
@@ -283,33 +414,42 @@ function SuccessContent() {
                             <div className={styles.liveTrackerHeader}>
                                 <div>
                                     <span className={styles.liveTrackerKicker}>
-                                        LIVE ORDER PROGRESS · STEP {stageIdx + 1} OF {TRACKER_STAGES.length}
+                                        LIVE ORDER TRACKING PROCESS · STEP {stageIdx + 1} OF {TRACKER_STAGES.length}
                                     </span>
                                     <div className={styles.liveTrackerTitle}>{currentStage.title}</div>
                                 </div>
-                                <div className={styles.liveTrackerControls}>
-                                    <button
-                                        type="button"
-                                        onClick={handlePlayDemo}
-                                        className={styles.demoPlayBtn}
-                                    >
-                                        {autoPlay ? '⏸ Pause Progress' : '▶ Simulate Progress'}
-                                    </button>
-                                    <Link href="/order-tracker-test" className={styles.trackerTestLink}>
-                                        Open Tracker Test Page →
-                                    </Link>
+                                <div className={styles.liveTrackerRight}>
+                                    <div className={styles.etaBox}>
+                                        <span className={styles.etaLabel}>{currentStage.etaLabel}</span>
+                                        <div className={styles.etaValue}>{currentStage.etaValue}</div>
+                                    </div>
+                                    <div className={styles.liveTrackerControls}>
+                                        <button
+                                            type="button"
+                                            onClick={handlePlayDemo}
+                                            className={styles.demoPlayBtn}
+                                        >
+                                            {autoPlay ? '⏸ Pause Tracking' : '▶ Simulate Tracking'}
+                                        </button>
+                                        <Link href="/order-tracker-test" className={styles.trackerTestLink}>
+                                            Full Tracker View →
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
 
                             <ol className={styles.progressBar} aria-label="Order progress stages">
                                 {TRACKER_STAGES.map((stage, i) => {
-                                    const isDone = i < stageIdx || stageIdx === TRACKER_STAGES.length - 1;
-                                    const isActive = i === stageIdx && stageIdx < TRACKER_STAGES.length - 1;
-                                    const segState = isDone
-                                        ? styles.segDone
-                                        : isActive
-                                          ? styles.segActive
-                                          : styles.segTodo;
+                                    const finished = stageIdx === TRACKER_STAGES.length - 1;
+                                    const isDone = i < stageIdx || finished;
+                                    const isActive = i === stageIdx && !finished;
+                                    const segState = finished
+                                        ? styles.segPickedUp
+                                        : isDone
+                                          ? styles.segDone
+                                          : isActive
+                                            ? styles.segActive
+                                            : styles.segTodo;
                                     return (
                                         <li key={stage.key} className={styles.progressItem}>
                                             <button
@@ -325,7 +465,7 @@ function SuccessContent() {
                                                 <span className={styles.segNum} aria-hidden="true">
                                                     {isDone ? '✓' : stage.stepNum}
                                                 </span>
-                                                <span className={styles.segLabel}>{stage.short}</span>
+                                                <span className={styles.segLabel}>{stage.pillLabel}</span>
                                             </button>
                                         </li>
                                     );
@@ -335,6 +475,41 @@ function SuccessContent() {
                             <p className={styles.liveTrackerMessage} aria-live="polite">
                                 {currentStage.message}
                             </p>
+
+                            <div className={styles.processStepsList} role="group" aria-label="4-step order tracking process details">
+                                {TRACKER_STAGES.map((stage, i) => {
+                                    const isDone = i < stageIdx || stageIdx === TRACKER_STAGES.length - 1;
+                                    const isActive = i === stageIdx && stageIdx < TRACKER_STAGES.length - 1;
+                                    return (
+                                        <button
+                                            key={`step-card-${stage.key}`}
+                                            type="button"
+                                            onClick={() => {
+                                                setAutoPlay(false);
+                                                setStageIdx(i);
+                                            }}
+                                            className={`${styles.processStepCard} ${
+                                                isDone
+                                                    ? styles.processStepCardDone
+                                                    : isActive
+                                                      ? styles.processStepCardActive
+                                                      : ''
+                                            }`}
+                                        >
+                                            <div className={styles.processStepTop}>
+                                                <span className={styles.processStepBadge}>
+                                                    Step {stage.stepNum}
+                                                </span>
+                                                <span className={styles.processStepEta}>
+                                                    {isDone ? '✓ Done' : isActive ? '● Active' : 'Pending'}
+                                                </span>
+                                            </div>
+                                            <div className={styles.processStepName}>{stage.short}</div>
+                                            <div className={styles.processStepDesc}>{stage.stepDetail}</div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
 
                             <div className={styles.accountSyncRow}>
                                 <div className={styles.accountSyncLeft}>
@@ -394,6 +569,222 @@ function SuccessContent() {
                                         <span>PACKED IN UNBLEACHED KRAFT · TWINE TIED</span>
                                         <span>USDA PRIME &amp; HERITAGE FARMS</span>
                                     </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* ── Butcher's Guide to Cuts — Pieces Unlocked in Your Order ── */}
+                        {unlockedCutPieces.length > 0 && (
+                            <div className={styles.butcherGuideSection}>
+                                <div className={styles.butcherGuideHeader}>
+                                    <div className={styles.butcherGuideTitleWrap}>
+                                        <span className={styles.butcherGuideKicker}>
+                                            🥩 BUTCHER&apos;S GUIDE TO CUTS · {unlockedCutPieces.length}{' '}
+                                            {unlockedCutPieces.length === 1 ? 'PIECE' : 'PIECES'} UNLOCKED
+                                        </span>
+                                        <div className={styles.butcherGuideTitle}>
+                                            Primal Cuts Unlocked in This Order
+                                        </div>
+                                        <p className={styles.butcherGuideSub}>
+                                            Every cut below is now stamped in gold on your 7-Animal Butcher&apos;s Guide to Cuts and included in your confirmation email.
+                                        </p>
+                                    </div>
+
+                                    <div className={styles.butcherGuideToolbar}>
+                                        <div className={styles.presetGroup} role="group" aria-label="Test order presets">
+                                            {TEST_ORDER_PRESETS.map((preset) => (
+                                                <button
+                                                    key={preset.id}
+                                                    type="button"
+                                                    onClick={() => handleSelectPreset(preset)}
+                                                    className={`${styles.presetBtn} ${
+                                                        activePresetId === preset.id ? styles.presetBtnActive : ''
+                                                    }`}
+                                                >
+                                                    {preset.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className={styles.cutPiecesGrid}>
+                                    {unlockedCutPieces.map((piece) => {
+                                        const isFullChart = Boolean(fullChartKeys[piece.key]);
+                                        const activeViewBox = isFullChart ? piece.viewBox : piece.pieceViewBox;
+                                        const isCompact =
+                                            piece.cutId === 'short-loin' || piece.cutId === 'sirloin';
+                                        const isSmall =
+                                            piece.cutId === 'shank' ||
+                                            piece.cutId === 'hock-trotter' ||
+                                            piece.cutId === 'spare-ribs' ||
+                                            piece.cutId === 'drumstick';
+
+                                        return (
+                                            <div key={piece.key} className={styles.cutPieceCard}>
+                                                <div className={styles.cutPieceStage}>
+                                                    <div className={styles.cutPieceStageTop}>
+                                                        <span className={styles.cutPieceAnimalTag}>
+                                                            ★ {piece.animalName} Guide · Cut #{piece.cutOrderIndex}/{piece.totalAnimalCuts}
+                                                        </span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                setFullChartKeys((prev) => ({
+                                                                    ...prev,
+                                                                    [piece.key]: !prev[piece.key],
+                                                                }))
+                                                            }
+                                                            className={styles.cutZoomBtn}
+                                                        >
+                                                            {isFullChart ? '🔍 Zoom Piece' : '🗺️ Full Animal'}
+                                                        </button>
+                                                    </div>
+
+                                                    <svg
+                                                        viewBox={activeViewBox}
+                                                        className={styles.cutPieceSvg}
+                                                        role="img"
+                                                        aria-label={`${piece.animalName} Butcher Guide — ${piece.cutName} piece highlighted`}
+                                                    >
+                                                        <image
+                                                            href={piece.cleanChartImage}
+                                                            x="0"
+                                                            y="0"
+                                                            width="1200"
+                                                            height="896"
+                                                            preserveAspectRatio="xMidYMid meet"
+                                                        />
+                                                        <path
+                                                            d={piece.svgPath}
+                                                            className={styles.cutPieceHighlightPath}
+                                                        />
+                                                        {piece.woodcutPath && (
+                                                            <path
+                                                                d={piece.woodcutPath}
+                                                                className={styles.cutPieceWoodcutMaster}
+                                                            />
+                                                        )}
+                                                        {piece.cutId !== 'feet' && (
+                                                            <text
+                                                                x={piece.labelX}
+                                                                y={piece.labelY}
+                                                                className={`${styles.cutPieceSvgLabel} ${
+                                                                    isCompact
+                                                                        ? styles.cutPieceSvgLabelCompact
+                                                                        : isSmall
+                                                                          ? styles.cutPieceSvgLabelSmall
+                                                                          : ''
+                                                                }`}
+                                                            >
+                                                                {piece.cutId === 'short-loin' ? (
+                                                                    <>
+                                                                        <tspan x={piece.labelX} dy="-8">
+                                                                            SHORT
+                                                                        </tspan>
+                                                                        <tspan x={piece.labelX} dy="16">
+                                                                            LOIN
+                                                                        </tspan>
+                                                                    </>
+                                                                ) : piece.cutId === 'spare-ribs' ? (
+                                                                    <>
+                                                                        <tspan x={piece.labelX} dy="-9">
+                                                                            SPARE
+                                                                        </tspan>
+                                                                        <tspan x={piece.labelX} dy="18">
+                                                                            RIBS
+                                                                        </tspan>
+                                                                    </>
+                                                                ) : (
+                                                                    piece.cutName.toUpperCase()
+                                                                )}
+                                                            </text>
+                                                        )}
+                                                    </svg>
+                                                </div>
+
+                                                <div className={styles.cutPieceBody}>
+                                                    <div className={styles.cutPieceTitleRow}>
+                                                        <span className={styles.cutPieceName}>
+                                                            {piece.animalName}: {piece.cutName} Section
+                                                        </span>
+                                                        <span className={styles.cutPieceOrderCount}>
+                                                            ×{piece.totalQty} Ordered
+                                                        </span>
+                                                    </div>
+
+                                                    <div className={styles.cutPieceProductList}>
+                                                        {piece.matchedItems.map((m) => (
+                                                            <span
+                                                                key={`${piece.key}-${m.orderedName}`}
+                                                                className={styles.cutPieceProductPill}
+                                                            >
+                                                                {m.orderedName} ×{m.qty}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className={styles.butcherGuideFooter}>
+                                    <Link
+                                        href="/dashboard#cut-collection"
+                                        className={styles.butcherGuideCollectionLink}
+                                    >
+                                        Open Full 7-Animal Butcher Guide on Dashboard →
+                                    </Link>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowEmailPreview((prev) => !prev)}
+                                        className={styles.emailPreviewToggleBtn}
+                                    >
+                                        {showEmailPreview
+                                            ? '▾ Hide Confirmation Email Test'
+                                            : '📧 Show Confirmation Email Test'}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* ── Live Confirmation Email Test Preview ── */}
+                        {showEmailPreview && (
+                            <div className={styles.emailTestCard}>
+                                <div className={styles.emailTestHeader}>
+                                    <div className={styles.emailTestMeta}>
+                                        <span className={styles.emailTestBadge}>
+                                            📧 ORDER CONFIRMATION EMAIL · LIVE TEST PREVIEW
+                                        </span>
+                                        <span className={styles.emailTestSubject}>
+                                            Subject: {emailPreview.subject}
+                                        </span>
+                                    </div>
+                                    <div className={styles.emailTestActions}>
+                                        <button
+                                            type="button"
+                                            onClick={handleSendTestEmail}
+                                            disabled={emailSendState === 'sending'}
+                                            className={styles.sendTestEmailBtn}
+                                        >
+                                            {emailSendState === 'sending'
+                                                ? 'Sending…'
+                                                : emailSendState === 'sent'
+                                                  ? '✓ Test Email Dispatched'
+                                                  : emailSendState === 'error'
+                                                    ? '⚠ Retry Test Email'
+                                                    : '📤 Trigger /api/order-confirmation'}
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className={styles.emailIframeWrap}>
+                                    <iframe
+                                        title="Order Confirmation Email Live Preview"
+                                        sandbox="allow-same-origin"
+                                        srcDoc={emailPreview.html}
+                                        className={styles.emailIframe}
+                                    />
                                 </div>
                             </div>
                         )}

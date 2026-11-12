@@ -150,14 +150,25 @@
 }
 
 .segDone,
-.segActive {
+.segActive,
+.segPickedUp {
     color: #fff;
     border-color: transparent;
 }
 
 .segDone .segFill,
-.segActive .segFill {
+.segActive .segFill,
+.segPickedUp .segFill {
     transform: scaleX(1);
+}
+
+.segPickedUp {
+    border-color: rgba(34, 197, 94, 0.55);
+    box-shadow: 0 0 18px rgba(22, 163, 74, 0.32);
+}
+
+.segPickedUp .segFill {
+    background: linear-gradient(90deg, var(--green-depot, #142a1e) 0%, #15803d 55%, #16a34a 100%);
 }
 
 .segActive .segFill {
