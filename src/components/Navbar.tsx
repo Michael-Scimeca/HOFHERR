@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { openAuthModal } from '@/components/AuthModal';
 import { useSiteSettings, type StoreHourEntry } from '@/context/SiteSettingsContext';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './Navbar.module.css';
 import NavCartIcon from './NavCartIcon';
 
@@ -335,7 +336,10 @@ export default function Navbar() {
                             </div>
                         )}
 
-                        <TransitionLink href="/online-orders" className={styles.cta} onClick={() => setMobileOpen(false)}>Order Online</TransitionLink>
+                        <TransitionLink href="/online-orders" className={styles.cta} onClick={() => setMobileOpen(false)}>
+                            <FireBorder active={true} radius={6} />
+                            Order Online
+                        </TransitionLink>
 
                         <NavCartIcon />
 

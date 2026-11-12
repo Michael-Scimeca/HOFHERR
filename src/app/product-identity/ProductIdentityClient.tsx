@@ -1050,6 +1050,7 @@ const INK_PADS = [
     { id: 'crimson', label: 'Oxblood Crimson (#8B0A10)', hex: '#8b0a10' },
     { id: 'red', label: 'Hofherr Red (#CC0E1D)', hex: '#cc0e1d' },
     { id: 'depot', label: 'Depot Heritage Green (#142A1E)', hex: '#142a1e' },
+    { id: 'depot-blue', label: 'Depot Blue (#1E3A5F / #2563EB)', hex: '#1e3a5f' },
     { id: 'charcoal', label: 'Smokehouse Charcoal (#1C1614)', hex: '#1c1614' },
 ];
 

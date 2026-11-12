@@ -13,14 +13,23 @@
     overflow: hidden;
     height: 550px; /* Explicit height makes parallax visible */
     width: 100%;
+    background: #000;
 }
 
 
 .heroOverlay {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.55) 40%, rgba(0, 0, 0, 0.1) 80%, transparent 100%);
+    inset: -1px;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.12) 25%,
+        rgba(0, 0, 0, 0.65) 68%,
+        #000000 94%,
+        #000000 100%
+    );
     z-index: 1;
+    pointer-events: none;
 }
 
 .heroImgWrapper {
@@ -28,6 +37,7 @@
     inset: 0;
     z-index: 0;
     overflow: hidden;
+    background: #000;
 }
 
 .heroImg {
@@ -145,6 +155,32 @@
 .toggleActive:hover {
     background: var(--red-dark, #a93226);
     border-color: var(--red-dark, #a93226);
+}
+
+.toggleBtnDepot {
+    background: var(--depot-blue-bg, #1e3a5f);
+    border-color: var(--depot-blue-border, #2563eb);
+    color: #fff;
+}
+
+.toggleBtnDepot:hover {
+    background: #234775;
+    border-color: var(--depot-blue-light, #3b82f6);
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35);
+}
+
+.toggleActiveDepot {
+    background: var(--depot-blue-bg, #1e3a5f);
+    border-color: var(--depot-blue-light, #3b82f6);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
+}
+
+.toggleActiveDepot:hover {
+    background: #234775;
+    border-color: var(--depot-blue-light, #3b82f6);
+    color: #fff;
 }
 
 .heroShopBtn {

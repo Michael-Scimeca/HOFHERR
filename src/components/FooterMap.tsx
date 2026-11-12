@@ -110,16 +110,20 @@ export default function FooterMap() {
         <div className={styles.mapSection}>
             {/* Toggle pills */}
             <div className={styles.toggleBar}>
-                {LOCATIONS.map((l, i) => (
-                    <button
-                        key={l.id}
-                        type="button"
-                        className={`${styles.toggleBtn} ${i === active ? styles.toggleActive : ''}`}
-                        onClick={() => setActive(i)}
-                    >
-                        {l.label}
-                    </button>
-                ))}
+                {LOCATIONS.map((l, i) => {
+                    const isDepot = l.id === 'depot';
+                    const isActive = i === active;
+                    return (
+                        <button
+                            key={l.id}
+                            type="button"
+                            className={`${styles.toggleBtn} ${isDepot ? styles.toggleBtnDepot : ''} ${isActive ? (isDepot ? styles.toggleActiveDepot : styles.toggleActive) : ''}`}
+                            onClick={() => setActive(i)}
+                        >
+                            {l.label}
+                        </button>
+                    );
+                })}
             </div>
 
             {/* Always-visible address */}

@@ -105,6 +105,8 @@
 
 .ctaBtn {
     display: inline-flex;
+    position: relative;
+    overflow: visible;
 }
 
 .inlineLink {

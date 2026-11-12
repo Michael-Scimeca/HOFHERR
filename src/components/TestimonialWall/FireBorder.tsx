@@ -20,14 +20,22 @@ let uid = 0;
 
 const hex = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 
-export default function FireBorder({ active, radius = 6 }: { active: boolean; radius?: number }) {
+export default function FireBorder({
+    active = true,
+    radius = 6,
+}: {
+    active?: boolean;
+    hoverOnly?: boolean;
+    radius?: number;
+}) {
     const svgRef = useRef<SVGSVGElement>(null);
     const id = useRef(`fb${++uid}`);
+    const isActive = Boolean(active);
 
     useEffect(() => {
         const svg = svgRef.current;
         const host = svg?.parentElement;
-        if (!svg || !host || !active) return;
+        if (!svg || !host || !isActive) return;
         const s = SMOKER_EMBERS;
         const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
         let W = host.offsetWidth + P * 2;
@@ -48,10 +56,8 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
             svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
             svg.innerHTML = `<defs><filter id="${f}" filterUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}" color-interpolation-filters="sRGB">
 <feTurbulence type="fractalNoise" baseFrequency="${s.fy} ${s.fx}" numOctaves="3" seed="17" stitchTiles="stitch" x="0" y="0" width="${TW}" height="${TH}" result="n"/>
-<feOffset in="n" dy="0" x="0" y="0" width="${TW}" height="${TH}" result="a"/>
-<feOffset in="n" dy="0" x="0" y="0" width="${TW}" height="${TH}" result="b2"/>
-<feMerge x="0" y="0" width="${TW}" height="${TH}" result="m"><feMergeNode in="a"/><feMergeNode in="b2"/></feMerge>
-<feTile in="m" result="noise"/>
+<feTile in="n" x="0" y="0" width="${W}" height="${H + TH}" result="tiled"/>
+<feOffset in="tiled" dx="0" dy="0" x="0" y="0" width="${W}" height="${H}" result="noise"/>
 <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.4 0 0 0 -.15" result="na"/>
 <feGaussianBlur in="SourceGraphic" stdDeviation="${s.spread}" result="b"/>
 <feComposite in="b" in2="na" operator="arithmetic" k1="${s.intensity}" k2="0" k3="0" k4="0" result="lick"/>
@@ -69,7 +75,7 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
         };
 
         buildSvg();
-        let offs = svg.querySelectorAll('feOffset[width]');
+        let off = svg.querySelector('feOffset[result="noise"]');
         let fl = svg.querySelector('.fl');
         let em = svg.querySelector('.em');
 
@@ -90,7 +96,7 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
             const nextH = hostH + P * 2;
             if (Math.abs(nextW - W) > 1 || Math.abs(nextH - H) > 1) {
                 if (buildSvg()) {
-                    offs = svg.querySelectorAll('feOffset[width]');
+                    off = svg.querySelector('feOffset[result="noise"]');
                     fl = svg.querySelector('.fl');
                     em = svg.querySelector('.em');
                     if (em) {
@@ -106,8 +112,8 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
             const dt = Math.min(50, now - last); last = now;
             if (!reduce) t += dt * 0.06 * s.speed;
             const d = t % TH;
-            if (offs.length >= 2 && fl) {
-                offs[0].setAttribute('dy', String(-d)); offs[1].setAttribute('dy', String(TH - d));
+            if (off && fl) {
+                off.setAttribute('dy', String(-d));
                 fl.setAttribute('slope', (1 - s.flicker * 0.5 * (1 + Math.sin(t * 0.21) * Math.sin(t * 0.077)) * 0.6).toFixed(3));
             }
             if (dots.length > 0) {
@@ -128,13 +134,13 @@ export default function FireBorder({ active, radius = 6 }: { active: boolean; ra
             cancelAnimationFrame(raf);
             ro.disconnect();
         };
-    }, [active, radius]);
+    }, [isActive, radius]);
 
     return (
         <svg
             ref={svgRef}
             aria-hidden="true"
-            className={`${styles.fireBorderSvg} ${active ? styles.fireBorderActive : ''}`}
+            className={`${styles.fireBorderSvg} ${isActive ? styles.fireBorderActive : ''}`}
         />
     );
 }

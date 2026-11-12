@@ -519,6 +519,8 @@
 }
 
 .cta {
+    position: relative;
+    overflow: visible;
     background: var(--red);
     color: #fff;
     padding: 9px 18px;

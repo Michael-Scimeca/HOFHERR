@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import FireBorder from './FireBorder';
 import s from './TestimonialWall.module.css';
 
@@ -39,18 +39,13 @@ const ALL: Review[] = Array.from({ length: 8 }, (_, i) => (i % 2 ? ROW_B : ROW_A
 const TILTS = [-3.5, 2.5, 4, -2, -4.5, 3, 2, -3, -2.5, 4.5, 3.5, -2, 3, -4];
 
 function Card({ r, tone, tilt, offset, delay, hidden }: { r: Review; tone: 'red' | 'light'; tilt: number; offset: number; delay: number; hidden?: boolean }) {
-    const [hot, setHot] = useState(false);
     return (
         <figure
             className={`${s.card} ${tone === 'red' ? s.red : s.light}`}
             style={{ '--tilt': `${tilt}deg`, '--offset': `${offset}px`, '--delay': `${delay}s` } as React.CSSProperties}
             aria-hidden={hidden || undefined}
-            onMouseEnter={() => setHot(true)}
-            onMouseLeave={() => setHot(false)}
-            onFocus={() => setHot(true)}
-            onBlur={() => setHot(false)}
         >
-            <FireBorder active={hot} />
+            <FireBorder active={true} />
             <span className={`${s.mark} ${s.markTop}`} aria-hidden="true">”</span>
             {r.rating ? <Stars value={r.rating} className={s.stars} /> : null}
             <blockquote className={s.quote}>{r.quote}</blockquote>

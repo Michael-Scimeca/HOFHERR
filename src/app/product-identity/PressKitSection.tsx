@@ -81,6 +81,8 @@ OFFICIAL BRAND COLOR PALETTE:
 • Oxblood Crimson:    #8B0A10 (PMS 7622 C · CMYK 0/93/88/45)
 • Hofherr Red:        #CC0E1D (PMS 186 C  · CMYK 0/93/86/20)
 • Smokehouse Amber:   #F59B1A (PMS 1375 C · CMYK 0/37/89/4)
+• Depot Blue (Bg):    #1E3A5F (PMS 7693 C · CMYK 85/58/15/35)
+• Depot Blue (Border):#2563EB (PMS 2728 C · CMYK 88/62/0/0)
 • Smokehouse Charcoal:#1C1614 (PMS Black 7 C · CMYK 0/21/29/89)
 • Counter Cream:      #F3EAD8 (PMS 7527 C · CMYK 0/4/11/5)
 • Classic Kraft:      #C8A47E (Unbleached 40# Natural Kraft)

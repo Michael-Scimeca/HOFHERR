@@ -1230,7 +1230,6 @@ export default function CustomOrdersPage({
         const animStudio = searchParams.get('anim') === 'true';
 
         if (animStudio) {
-            setShowAnimStudio(true);
             setModal(cur => cur ?? { name: 'Red White And Blue Sausages', price: '$12.99/lb', desc: 'House-crafted links, ground fresh daily.' });
         }
 

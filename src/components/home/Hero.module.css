@@ -25,21 +25,6 @@
     pointer-events: none;
 }
 
-.heroVideoCol::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        90deg,
-        rgba(0, 0, 0, 0.88) 0%,
-        rgba(0, 0, 0, 0.72) 42%,
-        rgba(0, 0, 0, 0.35) 75%,
-        rgba(0, 0, 0, 0.55) 100%
-    );
-    z-index: 1;
-    pointer-events: none;
-}
-
 .heroVideoPlayer {
     position: absolute;
     inset: 0;
@@ -51,17 +36,6 @@
     border: none;
     box-shadow: none;
     aspect-ratio: auto;
-}
-
-@media (max-width: 1200px) {
-    .heroVideoCol::after {
-        background: linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0.88) 0%,
-            rgba(0, 0, 0, 0.78) 50%,
-            rgba(0, 0, 0, 0.9) 100%
-        );
-    }
 }
 
 /* ─── Content ─── */

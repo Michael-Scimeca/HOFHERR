@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './Hero.module.css';
 import HeroVideo from './HeroVideo';
 import LazyTrophy from './LazyTrophy';
@@ -31,7 +32,7 @@ export default function Hero() {
             {/* Hero background/column video */}
             <div className={styles.heroVideoCol}>
                 <video
-                    src="/assets/video/gemini_generated_video_d1850b94.mp4"
+                    src="/assets/video/3.mp4"
                     autoPlay
                     muted
                     loop
@@ -79,7 +80,10 @@ export default function Hero() {
 
                         {/* CTAs */}
                         <div className={styles.ctas}>
-                            <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
+                            <Link href="/online-orders" className="btn btn-primary">
+                                <FireBorder active={true} radius={8} />
+                                Order Online
+                            </Link>
                             <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
                         </div>
 

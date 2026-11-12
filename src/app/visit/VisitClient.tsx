@@ -103,7 +103,7 @@ export default function VisitClient() {
 
             {/* ── Hero with toggle ── */}
                 <section id="visit-hero" aria-labelledby="visit-hero-heading" className={styles.hero}>
-                    <div className={`${styles.heroImgWrapper} mask-fade-bottom`}>
+                    <div className={styles.heroImgWrapper}>
                         <img
                             src={loc.heroImage}
                             alt={loc.heroAlt}
@@ -119,7 +119,7 @@ export default function VisitClient() {
 
 
 
-                    <div className={`${styles.heroOverlay} mask-fade-bottom`} />
+                    <div className={styles.heroOverlay} />
                     <div className={`container ${styles.heroInner}`}>
                         <h1 id="visit-hero-heading" className={styles.headline}>{loc.name}</h1>
                         <p className={styles.sub}>{loc.shortAddr}</p>
@@ -128,15 +128,20 @@ export default function VisitClient() {
                         <div className={styles.heroControls}>
                             {/* Toggle pills */}
                             <div className={styles.toggleBar}>
-                                {LOCATIONS.map((l, i) => (
-                                    <button
-                                        key={l.id}
-                                        className={`${styles.toggleBtn} ${i === active ? styles.toggleActive : ''}`}
-                                        onClick={() => setActive(i)}
-                                    >
-                                        {l.label}
-                                    </button>
-                                ))}
+                                {LOCATIONS.map((l, i) => {
+                                    const isDepot = l.id === 'depot';
+                                    const isActive = i === active;
+                                    return (
+                                        <button
+                                            key={l.id}
+                                            type="button"
+                                            className={`${styles.toggleBtn} ${isDepot ? styles.toggleBtnDepot : ''} ${isActive ? (isDepot ? styles.toggleActiveDepot : styles.toggleActive) : ''}`}
+                                            onClick={() => setActive(i)}
+                                        >
+                                            {l.label}
+                                        </button>
+                                    );
+                                })}
                             </div>
 
                             {/* CTA */}

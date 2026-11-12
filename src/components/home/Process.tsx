@@ -3,10 +3,11 @@
 import { useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './Process.module.css';
 
 type LayoutId = 'cards' | 'strip' | 'editorial' | 'bento' | 'ledger';
-type ImageSetId = 'butcher' | 'scenes' | 'flint';
+type ImageSetId = 'flint' | 'butcher' | 'iron' | 'seal' | 'neon' | 'kraft' | 'brass' | 'scenes';
 
 type Step = {
     num: string;
@@ -26,9 +27,14 @@ const LAYOUT_OPTIONS: { id: LayoutId; label: string }[] = [
 ];
 
 const IMAGE_SET_OPTIONS: { id: ImageSetId; label: string }[] = [
-    { id: 'butcher', label: '🎨 Nano Banana Woodcut Icons' },
-    { id: 'scenes', label: '🖼️ Nano Banana Editorial Scenes' },
-    { id: 'flint', label: '🔥 Flint & Flame Icons' },
+    { id: 'flint', label: '1. 🔥 Flint & Flame' },
+    { id: 'iron', label: '2. ⚒️ Cast-Iron & Embers' },
+    { id: 'seal', label: '3. 🏵️ Crimson & Gold Wax Seal' },
+    { id: 'neon', label: '4. ⚡ Smokehouse Neon' },
+    { id: 'kraft', label: '5. 📜 Kraft Paper Linocut' },
+    { id: 'brass', label: '6. 🏅 3D Brass & Enamel Pin' },
+    { id: 'butcher', label: '🪵 Woodcut Etchings' },
+    { id: 'scenes', label: '🖼️ Editorial Scenes' },
 ];
 
 const STEPS: Step[] = [
@@ -45,11 +51,16 @@ const STEPS: Step[] = [
             </>
         ),
         images: {
-            butcher: '/assets/process/craft-butcher-step-cleaver.png',
-            scenes: '/assets/process/editorial-scene-browse-case.jpg',
             flint: '/assets/process/flint-flame-step-cart.png',
+            butcher: '/assets/process/craft-butcher-step-cleaver.png',
+            iron: '/assets/process/icon-style-iron-cart.png',
+            seal: '/assets/process/icon-style-seal-cart.png',
+            neon: '/assets/process/icon-style-neon-cart.png',
+            kraft: '/assets/process/icon-style-kraft-cart.png',
+            brass: '/assets/process/icon-style-brass-cart.png',
+            scenes: '/assets/process/editorial-scene-browse-case.jpg',
         },
-        alt: 'Butcher chopping block with carbon-steel cleaver and bone-in ribeye steak',
+        alt: 'Butcher shopping cart with bone-in ribeye steak and twine-wrapped butcher parcel',
     },
     {
         num: '02',
@@ -57,11 +68,16 @@ const STEPS: Step[] = [
         title: 'Pick a Pickup Time',
         desc: 'Select your preferred date and time window from available pickup slots at the shop.',
         images: {
-            butcher: '/assets/process/craft-butcher-step-clock.png',
-            scenes: '/assets/process/editorial-scene-reserve-window.jpg',
             flint: '/assets/process/flint-flame-step-calendar.png',
+            butcher: '/assets/process/craft-butcher-step-clock.png',
+            iron: '/assets/process/icon-style-iron-calendar.png',
+            seal: '/assets/process/icon-style-seal-calendar.png',
+            neon: '/assets/process/icon-style-neon-calendar.png',
+            kraft: '/assets/process/icon-style-kraft-calendar.png',
+            brass: '/assets/process/icon-style-brass-calendar.png',
+            scenes: '/assets/process/editorial-scene-reserve-window.jpg',
         },
-        alt: 'Vintage brass butcher shop wall clock and stamped pickup ticket #17',
+        alt: 'Butcher shop pickup calendar showing day 17 and clock dial',
     },
     {
         num: '03',
@@ -77,11 +93,16 @@ const STEPS: Step[] = [
             </>
         ),
         images: {
-            butcher: '/assets/process/craft-butcher-step-scale.png',
-            scenes: '/assets/process/editorial-scene-checkout-counter.jpg',
             flint: '/assets/process/flint-flame-step-payment.png',
+            butcher: '/assets/process/craft-butcher-step-scale.png',
+            iron: '/assets/process/icon-style-iron-payment.png',
+            seal: '/assets/process/icon-style-seal-payment.png',
+            neon: '/assets/process/icon-style-neon-payment.png',
+            kraft: '/assets/process/icon-style-kraft-payment.png',
+            brass: '/assets/process/icon-style-brass-payment.png',
+            scenes: '/assets/process/editorial-scene-checkout-counter.jpg',
         },
-        alt: 'Antique brass butcher counter scale and contactless payment card',
+        alt: 'Contactless payment and gift card with steer emblem and flames',
     },
     {
         num: '04',
@@ -99,24 +120,29 @@ const STEPS: Step[] = [
             </>
         ),
         images: {
-            butcher: '/assets/process/craft-butcher-step-parcel.png',
-            scenes: '/assets/process/editorial-scene-curbside-pickup.jpg',
             flint: '/assets/process/flint-flame-step-pickup-car.png',
+            butcher: '/assets/process/craft-butcher-step-parcel.png',
+            iron: '/assets/process/icon-style-iron-pickup.png',
+            seal: '/assets/process/icon-style-seal-pickup.png',
+            neon: '/assets/process/icon-style-neon-pickup.png',
+            kraft: '/assets/process/icon-style-kraft-pickup.png',
+            brass: '/assets/process/icon-style-brass-pickup.png',
+            scenes: '/assets/process/editorial-scene-curbside-pickup.jpg',
         },
-        alt: 'Hands in butcher apron presenting twine-tied kraft paper butcher parcel with red wax seal',
+        alt: 'Vintage 1950s butcher delivery pickup truck with flames',
     },
 ];
 
 export default function Process() {
-    const [layout, setLayout] = useState<LayoutId>('cards');
-    const [imageSet, setImageSet] = useState<ImageSetId>('butcher');
+    const [layout, setLayout] = useState<LayoutId>('strip');
+    const [imageSet, setImageSet] = useState<ImageSetId>('iron');
 
     const handleSelectLayout = (nextLayout: LayoutId) => {
         setLayout(nextLayout);
         if (nextLayout === 'editorial') {
             setImageSet('scenes');
         } else if (imageSet === 'scenes') {
-            setImageSet('butcher');
+            setImageSet('iron');
         }
     };
 
@@ -169,6 +195,7 @@ export default function Process() {
                         </p>
                         <div className={styles.ctaWrap}>
                             <Link href="/online-orders" className={`btn btn-primary ${styles.ctaBtn}`}>
+                                <FireBorder active={true} radius={8} />
                                 Order Online
                             </Link>
                         </div>
@@ -299,6 +326,7 @@ export default function Process() {
                             </div>
                             <div className={styles.bentoActions}>
                                 <Link href="/online-orders" className={`btn btn-primary ${styles.ctaBtn}`}>
+                                    <FireBorder active={true} radius={8} />
                                     Order Online
                                 </Link>
                             </div>

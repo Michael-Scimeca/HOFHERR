@@ -49,6 +49,32 @@
     color: #fff;
 }
 
+.toggleBtnDepot {
+    background: var(--depot-blue-bg, #1e3a5f);
+    border-color: var(--depot-blue-border, #2563eb);
+    color: #fff;
+}
+
+.toggleBtnDepot:hover {
+    background: #234775;
+    border-color: var(--depot-blue-light, #3b82f6);
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35);
+}
+
+.toggleActiveDepot {
+    background: var(--depot-blue-bg, #1e3a5f);
+    border-color: var(--depot-blue-light, #3b82f6);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
+}
+
+.toggleActiveDepot:hover {
+    background: #234775;
+    border-color: var(--depot-blue-light, #3b82f6);
+    color: #fff;
+}
+
 /* ─── Address bar ─── */
 .addressBar {
     display: flex;

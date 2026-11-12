@@ -18,6 +18,8 @@ const brandColors = [
     { name: '--gold', hex: '#A8905F', label: 'Brand Gold' },
     { name: '--gold-dark', hex: '#8a7349', label: 'Gold Dark' },
     { name: '--gold-light', hex: '#c4ae82', label: 'Gold Light' },
+    { name: '--depot-blue-bg', hex: '#1E3A5F', label: 'Depot Blue Background' },
+    { name: '--depot-blue-border', hex: '#2563EB', label: 'Depot Blue Border' },
     { name: '--dark', hex: '#000000', label: 'Dark' },
     { name: '--light', hex: '#F2F2F2', label: 'Light' },
 ];

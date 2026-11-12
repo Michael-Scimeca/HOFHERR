@@ -9,6 +9,7 @@ import InteractiveTimeline from '@/components/InteractiveTimeline';
 import AccoladesVariants from '@/components/AccoladesVariants';
 import TeamBentoGrid from '@/components/TeamBentoGrid';
 import TestimonialWall from '@/components/TestimonialWall';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
 import { getGoogleReviews } from '@/lib/googleReviews';
 
 import styles from './page.module.css';
@@ -155,16 +156,16 @@ export default async function OurStoryPage() {
         <main className={styles.page}>
 
             {/* ── Hero ── */}
-                <section id="our-story-hero" aria-labelledby="our-story-hero-heading" className={`${styles.hero} mask-fade-bottom`}>
+                <section id="our-story-hero" aria-labelledby="our-story-hero-heading" className={styles.hero}>
                     <video
                         src="/video-clips/meat-truck.mp4"
                         autoPlay
                         muted
                         loop
                         playsInline
-                        className={styles.heroBgVideo}
+                        className={`${styles.heroBgVideo} mask-fade-bottom`}
                     />
-                    <div className={styles.heroOverlay} />
+                    <div className={`${styles.heroOverlay} mask-fade-bottom`} />
                     <div className={`container ${styles.heroInner}`}>
                             <h1 id="our-story-hero-heading" className={styles.headline}>
                                 Respect For the Past.<br />
@@ -270,7 +271,10 @@ export default async function OurStoryPage() {
                                         <span>The Depot — 754 Elm St, Winnetka</span>
                                     </p>
                                     <div className={styles.ctaBtns}>
-                                        <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
+                                        <Link href="/online-orders" className="btn btn-primary">
+                                            <FireBorder active={true} radius={6} />
+                                            <span>Order Online</span>
+                                        </Link>
                                         <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
                                     </div>
                                 </div>
