@@ -186,8 +186,11 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
 
         const samePath = targetUrl.pathname === window.location.pathname;
         const sameSearch = targetUrl.search === window.location.search;
+        const isAlreadyOnAdminDashboard =
+            (targetUrl.pathname === '/admin' || targetUrl.pathname === '/admin-dashboard') &&
+            window.location.pathname.startsWith('/admin-dashboard/');
 
-        if (samePath && sameSearch) return;
+        if ((samePath || isAlreadyOnAdminDashboard) && sameSearch) return;
 
         isTransitioningRef.current = true;
         setIsTransitioning(true);
@@ -297,7 +300,11 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
 
             if (url.origin !== window.location.origin) return;
 
-            if (url.pathname === window.location.pathname && url.search === window.location.search) {
+            const isAlreadyOnAdminDashboard =
+                (url.pathname === '/admin' || url.pathname === '/admin-dashboard') &&
+                window.location.pathname.startsWith('/admin-dashboard/');
+
+            if ((url.pathname === window.location.pathname || isAlreadyOnAdminDashboard) && url.search === window.location.search) {
                 return;
             }
 
@@ -718,22 +725,6 @@ export default function PageTransition({ children }: { children: React.ReactNode
         paintMeltStyle('clear', 1, true);
     }, [paintMeltStyle]);
 
-    // Initial mount: hold .pt-wrap in .pt-waiting when Preloader is active so it melts in at Step 5;
-    // on routes that skip Preloader, run the frame-clamped melt-in immediately.
-    useEffect(() => {
-        const el = wrapRef.current;
-        if (!el) return;
-        const skipsPreloader = PRELOADER_SKIP_ROUTES.some(p => pathname?.startsWith(p));
-        if (!skipsPreloader) {
-            el.classList.add('pt-waiting');
-            setMeltStep(2);
-            setPhaseLabel('PRELOADER');
-        } else {
-            window.dispatchEvent(new CustomEvent('page-transition-enter'));
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     useEffect(() => {
         const el = wrapRef.current;
         if (!el) return;
@@ -745,10 +736,23 @@ export default function PageTransition({ children }: { children: React.ReactNode
             }
         };
 
+        const prefersReducedMotion = () =>
+            typeof window !== 'undefined' &&
+            Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+
         const handleExit = () => {
             cancelLoop();
             const { exitMs: dur, enterMs: en } = paramsRef.current;
             const split = Math.round((dur / (dur + en)) * 100);
+
+            if (prefersReducedMotion()) {
+                el.classList.remove('pt-enter', 'pt-waiting', 'pt-exit');
+                paintMeltStyle('clear', 1, false);
+                setScrubPct(split);
+                syncScrubberDom(split);
+                window.dispatchEvent(new CustomEvent('page-transition-exit-done'));
+                return;
+            }
 
             el.classList.remove('pt-enter', 'pt-waiting');
             el.classList.add('pt-exit');
@@ -807,6 +811,17 @@ export default function PageTransition({ children }: { children: React.ReactNode
                     ? Math.min(560, cfgDur)
                     : cfgDur;
             const split = Math.round((ex / (ex + dur)) * 100);
+
+            if (prefersReducedMotion()) {
+                el.classList.remove('pt-exit', 'pt-waiting', 'pt-enter');
+                paintMeltStyle('clear', 1, includeHeader);
+                setMeltStep(4);
+                setPhaseLabel('READY');
+                setScrubPct(100);
+                syncScrubberDom(100);
+                window.dispatchEvent(new CustomEvent('page-transition-enter-done'));
+                return;
+            }
 
             // Apply initial 0% melted styles BEFORE removing .pt-waiting so there is zero flash
             paintMeltStyle('enter', 0, includeHeader);
@@ -882,6 +897,75 @@ export default function PageTransition({ children }: { children: React.ReactNode
             window.removeEventListener('page-transition-preloader-progress', handlePreloaderProgress);
         };
     }, [paintMeltStyle, syncScrubberDom]);
+
+    // Initial mount (registered AFTER event listeners above): hold .pt-wrap in .pt-waiting when
+    // Preloader is active so it melts in at Step 5; on routes that skip Preloader (such as
+    // /admin-dashboard/* and /dashboard/*), wait for route content & assets then run Melt-In.
+    useEffect(() => {
+        const el = wrapRef.current;
+        if (!el) return;
+        const skipsPreloader = PRELOADER_SKIP_ROUTES.some(p => pathname?.startsWith(p));
+        if (!skipsPreloader) {
+            el.classList.add('pt-waiting');
+            setMeltStep(2);
+            setPhaseLabel('PRELOADER');
+            return;
+        }
+
+        if (pathname?.startsWith('/studio') || pathname?.startsWith('/fire-test')) {
+            return;
+        }
+
+        let cancelled = false;
+        let revealed = false;
+        let raf1: number | null = null;
+        let raf2: number | null = null;
+
+        el.classList.add('pt-waiting');
+        paintMeltStyle('enter', 0, false);
+        setMeltStep(2);
+        setPhaseLabel('DECODING ASSETS');
+
+        const revealInitial = () => {
+            if (cancelled || revealed) return;
+            revealed = true;
+            clearTimeout(fallbackTimer);
+            raf1 = requestAnimationFrame(() => {
+                raf2 = requestAnimationFrame(() => {
+                    if (!cancelled) {
+                        window.dispatchEvent(new CustomEvent('page-transition-enter'));
+                    }
+                });
+            });
+        };
+
+        const waitForInitialContent = (maxMs: number) =>
+            new Promise<void>(res => {
+                const start = performance.now();
+                const check = () => {
+                    if (cancelled) return res();
+                    if (!document.querySelector('.route-loading') || performance.now() - start > maxMs) {
+                        return res();
+                    }
+                    requestAnimationFrame(check);
+                };
+                check();
+            });
+
+        void waitForInitialContent(4000)
+            .then(() => waitForPageAssets(1200))
+            .then(revealInitial);
+
+        const fallbackTimer = setTimeout(revealInitial, 4500);
+
+        return () => {
+            cancelled = true;
+            clearTimeout(fallbackTimer);
+            if (raf1 !== null) cancelAnimationFrame(raf1);
+            if (raf2 !== null) cancelAnimationFrame(raf2);
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Manual triggers from HUD buttons
     const playFullMeltOnPage = () => {

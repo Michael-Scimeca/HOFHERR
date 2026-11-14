@@ -124,6 +124,7 @@ export default function GlobalCartDrawer() {
         >
             <BurnPanel
                 className={styles.drawer}
+                direction="right-to-left"
                 closing={isClosing}
                 onCloseComplete={handleBurnOutComplete}
                 onClick={e => e.stopPropagation()}

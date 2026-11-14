@@ -24,7 +24,7 @@
 /* ── Main Canvas ── */
 .mainCanvas {
     flex: 1;
-    padding: 0 var(--container-px) 80px;
+    padding: 0 var(--container-px) 96px;
     overflow-y: auto;
     max-width: var(--max-w, 1800px);
     width: 100%;
@@ -281,7 +281,7 @@
     grid-template-columns: 410px 1fr;
     gap: 28px;
     align-items: start;
-    padding-top: 24px;
+    padding-top: 62px; /* same top gap as the page heroes */
 }
 
 @media (max-width: 1024px) {

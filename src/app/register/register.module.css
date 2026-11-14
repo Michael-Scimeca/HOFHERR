@@ -1,212 +1,632 @@
+/* ── Page Shell (Canvas-Visible Dark System Theme) ── */
 .page {
     min-height: 100vh;
-    background: #0e0c0a;
+    background: var(--bg);
     color: var(--fg);
     display: flex;
     flex-direction: column;
 }
 
+/* ── Hero Header ── */
 .hero {
     position: relative;
-    padding: 120px 0 40px;
-    background:
-        radial-gradient(ellipse at 50% 0%, rgba(var(--red-rgb), 0.16) 0%, transparent 60%),
-        #120f0d;
-    border-bottom: 1px solid rgba(var(--gold-rgb), 0.22);
+    padding: 64px 0 48px;
+    background: var(--bg-2);
+    background-image:
+        radial-gradient(at 20% 40%, rgba(var(--red-rgb), 0.16) 0%, transparent 60%),
+        radial-gradient(at 80% 30%, rgba(var(--red-rgb), 0.08) 0%, transparent 50%);
+    border-bottom: 1px solid var(--border);
     text-align: center;
+}
+
+.heroInner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    max-width: 820px;
+    margin-inline: auto;
 }
 
 .headline {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    font-size: var(--text-hero);
     line-height: 0.96;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.02em;
     color: var(--fg);
-    margin: 0 0 12px;
 }
 
 .headline em {
-    font-style: normal;
-    color: var(--gold);
+    font-style: italic;
+    color: var(--red);
 }
 
 .subtext {
-    font-size: 16px;
+    font-size: var(--text-base);
     color: var(--fg-3);
-    max-width: 580px;
-    margin: 0 auto;
-    line-height: 1.5;
+    max-width: 600px;
+    line-height: 1.7;
 }
 
-.formWrap {
-    max-width: 560px;
-    margin: 0 auto;
-    background: #141210;
-    border: 1px solid rgba(var(--gold-rgb), 0.3);
-    border-radius: var(--radius);
-    padding: 36px 32px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+/* ── Two-Column Workspace Grid ── */
+.registerGrid {
+    display: grid;
+    grid-template-columns: 384px minmax(0, 1fr);
+    gap: var(--space-12);
+    align-items: start;
+    max-width: 1184px;
+    margin-inline: auto;
 }
 
+/* ── Left Sidebar ── */
+.sidebar {
+    position: sticky;
+    top: 104px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.perksPanel {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    box-shadow: var(--shadow-md);
+}
+
+.sidebarHeading {
+    font-size: var(--text-2xl);
+    letter-spacing: 0.03em;
+    color: var(--fg);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border);
+}
+
+.perksList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.perkItem {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+}
+
+.perkIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    background: rgba(var(--red-rgb), 0.14);
+    border: 1px solid rgba(var(--red-rgb), 0.35);
+    color: var(--red);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.perkCopy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.perkTitle {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--fg);
+}
+
+.perkDesc {
+    font-size: var(--text-sm);
+    color: var(--fg-3);
+    line-height: 1.55;
+}
+
+/* ── Returning Customer Card ── */
+.signInCard {
+    background:
+        linear-gradient(145deg, rgba(var(--red-rgb), 0.18) 0%, rgba(0, 0, 0, 0.72) 65%),
+        var(--bg-3);
+    border: 1px solid rgba(var(--red-rgb), 0.32);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    box-shadow: var(--shadow-md);
+}
+
+.signInTitle {
+    font-size: var(--text-2xl);
+    letter-spacing: 0.02em;
+    color: var(--fg);
+}
+
+.signInDesc {
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+    line-height: 1.6;
+}
+
+.fullHit {
+    width: 100%;
+}
+
+.fullBtn {
+    width: 100%;
+    min-height: 48px;
+}
+
+/* ── Main Form Card ── */
+.formCard {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--red);
+    border-radius: var(--radius-lg);
+    padding: var(--space-10);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    box-shadow: var(--shadow-lg);
+}
+
+.cardHeader {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border);
+}
+
+.cardTitle {
+    font-size: var(--text-3xl);
+    letter-spacing: 0.02em;
+    color: var(--fg);
+}
+
+.requiredLegend {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+}
+
+/* ── Form & Fieldsets ── */
 .form {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: var(--space-8);
+}
+
+.fieldset {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.legend {
+    font-size: var(--text-xs);
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding-bottom: var(--space-2);
+    width: 100%;
+    border-bottom: 1px solid var(--border);
+}
+
+.fieldsetBody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
 }
 
 .formRow {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-}
-
-@media (max-width: 600px) {
-    .formRow {
-        grid-template-columns: 1fr;
-    }
+    gap: var(--space-6);
 }
 
 .field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
 }
 
 .label {
-    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--gold);
+    letter-spacing: 0.08em;
+    color: var(--fg-2);
 }
 
-.input {
-    width: 100%;
-    padding: 12px 14px;
-    background: var(--bg-3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    color: var(--fg);
-    font-size: 15px;
-    transition: border-color 0.15s ease;
+.reqMark {
+    color: var(--red);
 }
 
-.input:focus {
-    outline: none;
-    border-color: var(--gold);
-}
-
-.input::placeholder {
+.optionalTag {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: none;
     color: var(--fg-muted);
 }
 
+/* ── Inputs (48px min-height, 16px text, dark autofill support) ── */
+.input {
+    width: 100%;
+    min-height: 48px;
+    padding: var(--space-2) var(--space-4);
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--fg);
+    font-size: var(--text-base);
+    line-height: 1.4;
+    transition: border-color 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
+}
+
+.input:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.input:focus-visible {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(var(--red-rgb), 0.22);
+}
+
+.input:user-invalid,
+.input[aria-invalid='true'] {
+    border-color: var(--red);
+}
+
+.input::placeholder,
+.usernameInput::placeholder,
+.passwordInput::placeholder {
+    color: var(--fg-muted);
+}
+
+.input:-webkit-autofill,
+.usernameInput:-webkit-autofill,
+.passwordInput:-webkit-autofill {
+    -webkit-text-fill-color: var(--fg);
+    box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.92) inset;
+    transition: background-color 600000s 0s, color 600000s 0s;
+}
+
+/* ── Composite Username Field ── */
 .usernameWrap {
     display: flex;
     align-items: center;
-    background: var(--bg-3);
+    min-height: 48px;
+    background: var(--bg-4);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    overflow: hidden;
+    transition: border-color 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
+}
+
+.usernameWrap:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.usernameWrap:focus-within {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(var(--red-rgb), 0.22);
 }
 
 .usernamePrefix {
-    padding-left: 12px;
+    padding-inline-start: var(--space-4);
+    padding-inline-end: var(--space-2);
     color: var(--gold);
     font-weight: 700;
-    font-size: 16px;
+    font-size: var(--text-base);
     user-select: none;
 }
 
 .usernameInput {
-    border: none !important;
-    background: transparent !important;
-    padding-left: 4px !important;
+    flex: 1;
+    min-width: 0;
+    min-height: 46px;
+    padding: var(--space-2) var(--space-4) var(--space-2) 0;
+    background: transparent;
+    color: var(--fg);
+    font-size: var(--text-base);
+}
+
+/* ── Composite Password Field with Show/Hide Button ── */
+.passwordWrap {
+    display: flex;
+    align-items: stretch;
+    min-height: 48px;
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: border-color 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
+}
+
+.passwordWrap:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.passwordWrap:focus-within {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(var(--red-rgb), 0.22);
+}
+
+.passwordWrap:has(.passwordInput[aria-invalid='true']) {
+    border-color: var(--red);
+}
+
+.passwordInput {
+    flex: 1;
+    min-width: 0;
+    min-height: 46px;
+    padding: var(--space-2) var(--space-4);
+    background: transparent;
+    color: var(--fg);
+    font-size: var(--text-base);
+}
+
+.pwToggleBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-width: 88px;
+    padding-inline: var(--space-4);
+    border-inline-start: 1px solid var(--border);
+    color: var(--fg-3);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.18s var(--ease-out), background-color 0.18s var(--ease-out);
+}
+
+.pwToggleBtn:hover {
+    color: var(--fg);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.pwToggleBtn:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: -2px;
+    color: var(--fg);
+}
+
+/* ── Live Password Checklist ── */
+.pwChecklist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+}
+
+.pwRule,
+.pwRuleMet {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    transition: color 0.18s var(--ease-out);
+}
+
+.pwRule {
+    color: var(--fg-muted);
+}
+
+.pwRuleMet {
+    color: var(--green-ready);
+}
+
+.pwDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: currentColor;
 }
 
 .helpText {
-    font-size: 11px;
+    font-size: var(--text-xs);
     color: var(--fg-muted);
-    margin-top: 2px;
 }
 
+.fieldError {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--red-light);
+}
+
+/* ── Feedback Banners & Success State ── */
 .errorBanner {
-    padding: 12px 16px;
-    background: rgba(var(--red-rgb), 0.15);
-    border: 1px solid var(--red);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: rgba(var(--red-rgb), 0.14);
+    border: 1px solid rgba(var(--red-rgb), 0.48);
     border-radius: var(--radius-sm);
-    color: var(--red);
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
-}
-
-.successBanner {
-    padding: 14px 16px;
-    background: rgba(var(--gold-rgb), 0.15);
-    border: 1px solid var(--gold);
-    border-radius: var(--radius-sm);
-    color: var(--gold);
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
-    line-height: 1.5;
-}
-
-.submitBtn {
-    margin-top: 8px;
-    padding: 14px;
-    border-radius: 999px;
-    border: none;
-    background: var(--red);
     color: var(--fg);
-    font-size: 15px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    cursor: pointer;
-    transition: opacity 0.15s ease, transform 0.15s ease;
+    font-size: var(--text-sm);
+    font-weight: 600;
 }
 
-.submitBtn:hover:not(:disabled) {
-    opacity: 0.95;
-    transform: translateY(-1px);
+.errorBanner:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
 }
 
-.submitBtn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.bannerIcon {
+    color: var(--red-light);
+    flex-shrink: 0;
+}
+
+.successState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-4);
+    padding: var(--space-8) var(--space-4);
+}
+
+.successBadge {
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background: rgba(34, 197, 94, 0.14);
+    border: 1px solid var(--green-ready);
+    color: var(--green-ready);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.successTitle {
+    font-size: var(--text-3xl);
+    color: var(--fg);
+}
+
+.successCopy {
+    font-size: var(--text-base);
+    color: var(--fg-2);
+    max-width: 460px;
+    line-height: 1.65;
+}
+
+.successActions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4);
+    padding-top: var(--space-2);
+}
+
+/* ── Submit CTA Row ── */
+.submitArea {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+}
+
+.submitHit {
+    width: 100%;
+}
+
+.submitBtnInner {
+    width: 100%;
+    min-height: 48px;
+    font-size: var(--text-sm);
 }
 
 .switchAuth {
-    text-align: center;
-    margin-top: 16px;
-    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
     color: var(--fg-3);
 }
 
 .switchLink {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: var(--space-2);
     color: var(--gold);
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 3px;
-    margin-left: 4px;
+    transition: color 0.18s var(--ease-out);
 }
 
 .switchLink:hover {
     color: var(--fg);
 }
 
+.switchLink:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* ── Canonical Visually Hidden Helper ── */
 .srOnly {
     position: absolute;
+    clip-path: inset(50%);
+    overflow: hidden;
     width: 1px;
     height: 1px;
     padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
     border: 0;
+    white-space: nowrap;
 }
 
+/* ── Responsive ── */
+@media (max-width: 980px) {
+    .registerGrid {
+        grid-template-columns: 1fr;
+        gap: var(--space-8);
+    }
+
+    .sidebar {
+        position: static;
+        order: 2;
+    }
+
+    .formCard {
+        order: 1;
+        padding: var(--space-8);
+    }
+}
+
+@media (max-width: 640px) {
+    .formCard {
+        padding: var(--space-6);
+    }
+
+    .formRow {
+        grid-template-columns: 1fr;
+    }
+
+    .perksPanel,
+    .signInCard {
+        padding: var(--space-6);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .input,
+    .usernameWrap,
+    .passwordWrap,
+    .pwToggleBtn,
+    .pwRule,
+    .pwRuleMet,
+    .switchLink {
+        transition: none;
+    }
+}

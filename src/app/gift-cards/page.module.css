@@ -85,7 +85,7 @@
 .contentInner {
     max-width: 640px;
     margin: 0 0 0 auto;
-    padding: 4vw 0 8vw;
+    padding: 62px 0 8vw; /* fixed top gap; was 4vw, which changed with window width */
 }
 
 .headline {
@@ -125,7 +125,7 @@
     background: linear-gradient(165deg, rgba(24, 18, 14, 0.96) 0%, rgba(10, 8, 7, 0.98) 100%);
     border: 1px solid rgba(245, 155, 26, 0.22);
     border-radius: 20px;
-    padding: 32px;
+    padding: 32px 24px;
     display: flex;
     flex-direction: column;
     gap: 24px;

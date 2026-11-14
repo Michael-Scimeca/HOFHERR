@@ -209,7 +209,7 @@ export default async function SpecialsPage() {
             <section id="specials-hero" aria-labelledby="specials-hero-heading" className={styles.hero}>
                 <div className={`container ${styles.heroInner}`}>
                     <h1 id="specials-hero-heading" className={styles.headline}>
-                        Our <em>Specials</em>
+                        The Dishes That <em>Made Our Name</em>
                     </h1>
                     <p className={styles.sub}>
                         The dishes and services that define Hofherr Meat Co. — perfected over years and impossible to find anywhere else.
@@ -385,7 +385,7 @@ export default async function SpecialsPage() {
                         key={product._id}
                         id={sectionId}
                         aria-labelledby={headingId}
-                        className={`section-sm ${idx % 2 === 0 ? styles.mainSection : styles.altSection}`}
+                        className={`section ${idx % 2 === 0 ? styles.mainSection : styles.altSection}`}
                     >
                         <div className="container">
                             <div className={styles.featureGrid}>

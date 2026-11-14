@@ -2,29 +2,29 @@
 
 import { useLayoutEffect, useRef, type CSSProperties, type MouseEventHandler, type ReactNode } from 'react';
 import { createBurner } from '@/lib/burner';
-import { getAddToOrderAnimConfig, hexToRgbTuple } from '@/lib/addToOrderAnimConfig';
+import { getAddToOrderAnimConfig, hexToRgbTuple, type BurnDirection } from '@/lib/addToOrderAnimConfig';
 import styles from './BurnModalShell.module.css';
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Makes a panel burn in like the preloader logo.
+   Makes a panel burn in like the preloader logo — and burn out in exact
+   reverse (`u = 1 - t`) when closing.
 
    The panel (a modal box, the cart drawer…) is rendered straight away at its
-   final size and revealed from left to right behind a burn front, so nothing
-   shifts as it appears. The burning frame and flames are drawn on a separate
-   canvas attached to <body>, which keeps them out of any scroll area. When the
-   burn finishes the canvas is removed and the panel is left exactly as styled.
+   final size and revealed behind a moving burn front, so nothing shifts as it
+   appears or disappears. The burning frame and flames are drawn on a separate
+   canvas attached to <body>, which keeps them out of any scroll area.
 
-   <BurnPanel>       any element that should burn in where it already sits
+   <BurnPanel>       any element that should burn in/out where it already sits
    <BurnModalShell>  a centred modal box (adds the width/centring wrapper)
 
-   The reveal itself is the `[data-burn='in']` rule in globals.css.
+   Both enter and exit drive `[data-burn='in']` in globals.css (`0 → 1` on
+   enter, `1 → 0` on exit) so exit is the exact pixel-for-pixel reverse of enter.
    ───────────────────────────────────────────────────────────────────────── */
 
-const BURN_IN_MS = 700;
-const BURN_OUT_MS = 820;
-/** Keep the front moving past the right edge so the last of the frame can cool before we stop. */
+const BURN_DURATION_MS = 780;
+const P_START = -0.10;
+/** Keep the front moving past the far edge so the last of the frame cools cleanly. */
 const OVERRUN = 1.22;
-const HOFHERR_RED: [number, number, number] = [204, 14, 29];
 /** Rough cap on canvas pixels, so tall panels still redraw smoothly. */
 const PIXEL_BUDGET = 380_000;
 
@@ -33,9 +33,11 @@ interface BurnPanelProps {
     style?: CSSProperties;
     /** Stacking order for the flame canvas; must sit above the panel's overlay. */
     zIndex?: number;
-    /** When set to true, plays the burn-out exit animation and then calls onCloseComplete. */
+    /** Reveal direction on enter; exit automatically plays the exact reverse. */
+    direction?: BurnDirection;
+    /** When set to true, plays the exact reverse of the enter animation and calls onCloseComplete. */
     closing?: boolean;
-    /** Fired once the burn-out exit animation finishes. */
+    /** Fired once the reversed exit animation finishes. */
     onCloseComplete?: () => void;
     onClick?: MouseEventHandler<HTMLDivElement>;
     children: ReactNode;
@@ -45,6 +47,7 @@ export function BurnPanel({
     className,
     style,
     zIndex = 1101,
+    direction: directionProp,
     closing = false,
     onCloseComplete,
     onClick,
@@ -56,33 +59,39 @@ export function BurnPanel({
         onCloseCompleteRef.current = onCloseComplete;
     });
 
-    // Layout effect: the panel must be hidden behind the burn front before its first paint,
-    // and when `closing` flips to true, it burns out from left to right before unmounting.
+    // Layout effect: on enter (`closing = false`), sweeps normalized progress `u` from 0 → 1;
+    // on exit (`closing = true`), sweeps `u` in exact reverse from 1 → 0 with identical tuning.
     useLayoutEffect(() => {
         const panel = panelRef.current;
         if (!panel) return;
 
         const cfg = getAddToOrderAnimConfig();
-        const mode: 'in' | 'out' = closing ? 'out' : 'in';
-        const direction = mode === 'out' ? cfg.burnOutDirection : cfg.burnInDirection;
-        const durationMs = mode === 'out' ? cfg.burnOutMs : cfg.burnInMs;
-        const overrun = cfg.overrun || OVERRUN;
+        const enterDirection: BurnDirection = directionProp ?? cfg.burnInDirection;
+        const durationMs = cfg.burnInMs || BURN_DURATION_MS;
+        const pEnd = cfg.overrun || OVERRUN;
         const cooledRgb = hexToRgbTuple(cfg.borderColorHex || '#CC0E1D');
         const flamesOn = cfg.burnFlamesEnabled !== false;
-        const drawTuning = {
-            flameBoost: !flamesOn ? 0 : mode === 'out' ? cfg.flameBoost : Math.max(0.5, cfg.flameBoost * 0.74),
-            flameHeight: mode === 'out' ? cfg.flameHeight : Math.max(0.18, cfg.flameHeight * 0.76),
-            flameRadius: mode === 'out' ? cfg.flameRadius : Math.max(0.015, cfg.flameRadius * 0.58),
+        const baseFlameBoost = !flamesOn ? 0 : cfg.flameBoost;
+        const baseTuning = {
+            flameHeight: cfg.flameHeight,
+            flameRadius: cfg.flameRadius,
             flameFlickerSpeed: cfg.flameFlickerSpeed ?? 1,
             edgeRaggedness: cfg.edgeRaggedness ?? 0.14,
-            direction,
+            direction: enterDirection,
         };
+
+        const overlayEl = panel.closest<HTMLElement>('[data-pt-portal]');
+        if (overlayEl) {
+            overlayEl.style.setProperty('--burn-ms', `${durationMs}ms`);
+        }
 
         const finishIn = () => {
             panel.dataset.burn = 'done';
+            delete panel.dataset.burnClosing;
         };
+
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            if (mode === 'out') {
+            if (closing) {
                 onCloseCompleteRef.current?.();
             } else {
                 finishIn();
@@ -101,10 +110,14 @@ export function BurnPanel({
         ];
         const lineWidth = Math.max(1, cfg.borderWidth || px(cs.borderTopWidth) || px(cs.borderLeftWidth) || 2);
 
-        panel.style.setProperty('--burn-angle', direction === 'right-to-left' ? '270deg' : '90deg');
+        panel.style.setProperty('--burn-angle', enterDirection === 'right-to-left' ? '270deg' : '90deg');
         panel.style.setProperty('--burn-feather', `${Math.max(1, cfg.burnMaskFeatherPct ?? 10)}%`);
-        panel.style.setProperty('--burn-front', '-20%');
-        panel.dataset.burn = mode;
+        panel.dataset.burn = 'in';
+        if (closing) {
+            panel.dataset.burnClosing = 'true';
+        } else {
+            delete panel.dataset.burnClosing;
+        }
 
         const canvas = document.createElement('canvas');
         canvas.setAttribute('aria-hidden', 'true');
@@ -120,7 +133,6 @@ export function BurnPanel({
         let built = false;
 
         // The canvas lives on <body>, so pin it over the panel wherever the panel currently is.
-        // It is moved with a transform (not left/top) so repositioning never counts as a layout shift.
         const place = () => {
             const rect = panel.getBoundingClientRect();
             canvas.style.transform = `translate(${rect.left - padX}px, ${rect.top - padTop}px)`;
@@ -131,8 +143,6 @@ export function BurnPanel({
             const h = panel.offsetHeight;
             if (w < 4 || h < 4) return;
             boxW = w;
-            // Padding has to exceed the burner's edge feather (8% of the canvas height) so the
-            // frame itself is never faded, and leave room above for the flames.
             padX = Math.max(56, Math.ceil(h * 0.1) + 20);
             padTop = Math.max(96, padX);
             const area = (w + padX * 2) * (h + padTop + padX);
@@ -158,72 +168,65 @@ export function BurnPanel({
                 },
             });
             burner.wake();
-            // build() positions the canvas for an in-flow parent; override that for our fixed canvas.
             canvas.style.left = '0px';
             canvas.style.top = '0px';
             place();
             built = true;
         };
         build();
+
         const start = performance.now();
         let raf = 0;
         let fadeTimer = 0;
 
-        // Paint the first frame synchronously before the browser paints [data-burn='out'] / [data-burn='in'],
-        // so the red frame on the canvas immediately takes over from the CSS border without a single-frame blink.
-        let lastFront = burner.frontFor(0);
+        // Palindromic flame envelope: ramps 0 → 1 at ignition and 1 → 0 as the frame settles,
+        // so flameEnv(1 - t) === flameEnv(t) — identical on enter and reversed exit.
+        const renderAt = (u: number, timeSec: number) => {
+            const p = P_START + (pEnd - P_START) * u;
+            const front = burner.frontFor(p);
+            const frontInBox = (front * (boxW + padX * 2) - padX) / boxW;
+            const flameEnv = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
+            place();
+            burner.draw(front, timeSec, false, 'in', {
+                ...baseTuning,
+                flameBoost: baseFlameBoost * flameEnv,
+            });
+            panel.style.setProperty('--burn-front', `${frontInBox * 100}%`);
+        };
+
+        let lastU = closing ? 1 : 0;
         let lastTime = start / 1000;
         if (built) {
-            const frontInBox0 = (lastFront * (boxW + padX * 2) - padX) / boxW;
-            place();
-            burner.draw(lastFront, lastTime, false, mode, drawTuning);
-            panel.style.setProperty('--burn-front', `${frontInBox0 * 100}%`);
+            renderAt(lastU, lastTime);
         }
 
         const ro = new ResizeObserver(() => {
             build();
             if (built) {
-                burner.draw(lastFront, lastTime, false, mode, drawTuning);
+                renderAt(lastU, lastTime);
             }
         });
         ro.observe(panel);
-
-        const tick = (now: number) => {
-            if (!built) {
-                raf = requestAnimationFrame(tick);
-                return;
-            }
-            const p = Math.min(overrun, (now - start) / durationMs);
-            const front = burner.frontFor(p);
-            const frontInBox = (front * (boxW + padX * 2) - padX) / boxW;
-            lastFront = front;
-            lastTime = now / 1000;
-
-            place();
-            burner.draw(front, lastTime, false, mode, drawTuning);
-            panel.style.setProperty('--burn-front', `${frontInBox * 100}%`);
-        };
 
         const step = (now: number) => {
             if (!built) {
                 raf = requestAnimationFrame(step);
                 return;
             }
-            const p = Math.min(overrun, (now - start) / durationMs);
-            tick(now);
+            const t = Math.min(1, (now - start) / durationMs);
+            const u = closing ? 1 - t : t;
+            lastU = u;
+            lastTime = now / 1000;
+            renderAt(u, lastTime);
 
-            if (p >= overrun) {
+            if (t >= 1) {
                 ro.disconnect();
-                canvas.style.opacity = '0';
-                if (mode === 'out') {
-                    panel.style.setProperty('--burn-front', '130%');
-                    fadeTimer = window.setTimeout(() => {
-                        canvas.remove();
-                        onCloseCompleteRef.current?.();
-                    }, 180);
+                if (closing) {
+                    canvas.remove();
+                    onCloseCompleteRef.current?.();
                 } else {
-                    // Burn finished: hand over to the panel's own CSS border and drop the canvas.
                     finishIn();
+                    canvas.style.opacity = '0';
                     fadeTimer = window.setTimeout(() => canvas.remove(), 260);
                 }
                 return;
@@ -238,7 +241,7 @@ export function BurnPanel({
             ro.disconnect();
             canvas.remove();
         };
-    }, [zIndex, closing]);
+    }, [zIndex, directionProp, closing]);
 
     return (
         <div ref={panelRef} className={className} style={style} onClick={onClick}>
@@ -253,8 +256,9 @@ interface BurnModalShellProps extends BurnPanelProps {
 }
 
 export default function BurnModalShell({ maxWidth = 460, ...panel }: BurnModalShellProps) {
+    const shellStyle = { '--shell-max-w': `${maxWidth}px` } as CSSProperties;
     return (
-        <div className={styles.shell} style={{ maxWidth }}>
+        <div className={styles.shell} style={shellStyle}>
             <BurnPanel {...panel} />
         </div>
     );

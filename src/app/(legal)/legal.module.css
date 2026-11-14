@@ -11,8 +11,9 @@
     overflow: hidden;
     background: var(--bg-2, #0a0a0a);
     border-bottom: 1px solid var(--border);
-    padding: 56px 0 48px;
+    padding: 62px 0 48px;
     isolation: isolate;
+    text-align: center; /* same centered hero as the other pages */
 }
 
 .hero::before,
@@ -74,7 +75,7 @@
     width: 100%;
     max-width: var(--max-w);
     margin: 0 auto;
-    padding: 48px var(--container-px) 80px;
+    padding: 96px var(--container-px);
     color: var(--text);
     font-family: var(--body-font, 'Inter', sans-serif);
     line-height: 1.7;
@@ -86,8 +87,13 @@
     font-weight: 800;
     letter-spacing: 0.02em;
     line-height: 0.96;
-    margin-bottom: 8px;
-    color: var(--gold);
+    margin: 0 0 16px;
+    color: var(--fg);
+}
+
+.title em {
+    font-style: italic;
+    color: var(--red);
 }
 
 .effective {

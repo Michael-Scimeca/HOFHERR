@@ -434,10 +434,10 @@ export const DEFAULT_ADD_TO_ORDER_ANIM_CONFIG: AddToOrderAnimConfig = {
     /* 4. Modal Burn-In / Burn-Out */
     burnFlamesEnabled: true,
     burnOutOnConfirm: false,
-    burnInMs: 700,
-    burnOutMs: 820,
+    burnInMs: 780,
+    burnOutMs: 780,
     burnInDirection: 'left-to-right',
-    burnOutDirection: 'left-to-right',
+    burnOutDirection: 'right-to-left',
     burnMaskFeatherPct: 10,
     overrun: 1.22,
     flameBoost: 1.5,

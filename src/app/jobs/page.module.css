@@ -12,19 +12,21 @@
         radial-gradient(at 20%, #80002026 0%, #0000 60%),
         radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
     border-bottom: 1px solid var(--border);
-    padding: 56px 0 48px;
+    padding: 62px 0 48px;
+    text-align: center; /* same centered hero as the other pages */
 }
 
 .heroInner {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
     max-width: 880px;
+    margin: 0 auto;
 }
 
 .headline {
-    font-family: var(--font-display);
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
     font-weight: 800;
     line-height: 0.96;
@@ -36,20 +38,21 @@
 
 .headline em {
     font-style: italic;
-    color: var(--gold);
+    color: var(--red);
 }
 
 .sub {
-    font-size: clamp(1rem, 1.35vw, 1.125rem);
-    color: var(--fg-2);
-    line-height: 1.7;
-    max-width: 68ch;
+    font-size: 1rem;
+    color: var(--fg-muted);
+    line-height: 1.75;
+    max-width: 640px;
     margin: 0;
 }
 
 .heroActions {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 16px;
     padding-top: 8px;
 }
@@ -96,12 +99,23 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.perkItem {
+.perkRow {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: center;
+    gap: 8px;
+}
+
+.perkDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--gold);
+    flex-shrink: 0;
 }
 
 .perkTitle {
@@ -110,11 +124,13 @@
     color: var(--gold);
 }
 
-.perkDesc {
+.perksNote {
     font-size: 0.875rem;
-    color: var(--fg-2);
+    color: var(--fg-muted);
     line-height: 1.55;
     margin: 0;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
 }
 
 .locationsCard {
@@ -191,7 +207,7 @@
     background: var(--bg-2);
     border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: var(--radius-lg);
-    padding: 32px;
+    padding: 32px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -267,7 +283,7 @@
 
 .generalAppLeft {
     background: linear-gradient(135deg, #7A0B10 0%, #520609 100%);
-    padding: 40px;
+    padding: 40px 24px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -298,7 +314,7 @@
 
 .generalAppRight {
     background: #141110;
-    padding: 40px;
+    padding: 40px 24px;
     display: flex;
     flex-direction: column;
     justify-content: center;

@@ -189,7 +189,7 @@
     background: linear-gradient(308deg, #000 50%, #0000006e 100%);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg, 16px);
-    padding: 28px 36px;
+    padding: 28px 24px;
     width: 100%;
     max-width: 560px;
     opacity: 0;

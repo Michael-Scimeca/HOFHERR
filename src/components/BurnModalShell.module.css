@@ -3,6 +3,7 @@
 .shell {
     position: relative;
     width: 100%;
+    max-width: var(--shell-max-w, 460px);
     margin: auto;
 }
 

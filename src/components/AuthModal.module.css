@@ -2,10 +2,36 @@
    These rules are copied from the auth modal in src/app/online-orders/page.module.css so the two
    look identical. If you restyle one, restyle the other. */
 
+@keyframes authOverlayIn {
+    from {
+        background-color: rgba(0, 0, 0, 0);
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+    }
+    to {
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+    }
+}
+
+@keyframes authOverlayOut {
+    from {
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+    }
+    to {
+        background-color: rgba(0, 0, 0, 0);
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+    }
+}
+
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1100;
     display: flex;
     align-items: flex-start;
@@ -13,11 +39,13 @@
     padding: 24px;
     overflow-y: auto;
     backdrop-filter: blur(2px);
-    animation: melt-in var(--pt-enter-ms, 320ms) cubic-bezier(0.22, 1, 0.36, 1) both;
+    -webkit-backdrop-filter: blur(2px);
+    animation: authOverlayIn var(--burn-ms, 780ms) cubic-bezier(0.42, 0, 0.58, 1) both;
 }
 
 .overlayClosing {
     pointer-events: none;
+    animation: authOverlayOut var(--burn-ms, 780ms) cubic-bezier(0.42, 0, 0.58, 1) both;
 }
 
 .modal {

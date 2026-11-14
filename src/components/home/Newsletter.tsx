@@ -38,7 +38,7 @@ export default function Newsletter() {
         <section
             id="newsletter"
             aria-labelledby="newsletter-heading"
-            className={`section-sm ${styles.section}`}
+            className={`section ${styles.section}`}
         >
             <div className={`container ${styles.inner}`}>
                 <div className={styles.header}>

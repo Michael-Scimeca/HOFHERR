@@ -105,3 +105,84 @@ export const PRESS_ITEMS: PressItem[] = [
 ];
 
 export const IN_PRINT = ["Cook's Country Magazine", 'Northfield Neighbors', 'Northfield Living'];
+
+export type PressMediaAsset = {
+    id: string;
+    title: string;
+    caption: string;
+    context: string;
+    credit: string;
+    alt: string;
+    src: string;
+    downloadName: string;
+    width: number;
+    height: number;
+    wide?: boolean;
+    objectPosition?: 'shop';
+};
+
+export const PRESS_MEDIA_ASSETS: PressMediaAsset[] = [
+    {
+        id: 'sean-and-arielle-shop',
+        title: 'Sean & Arielle Hofherr Inside the Butcher Shop',
+        caption: 'Proprietors Sean and Arielle Hofherr inside the Northfield butcher shop at 300 Happ Rd.',
+        context: 'Founders · Northfield',
+        credit: 'Courtesy of Hofherr Meat Co.',
+        alt: 'Proprietors Sean and Arielle Hofherr standing together inside Hofherr Meat Co. in Northfield, Illinois',
+        src: '/assets/press/sean-and-arielle-hofherr-northfield-shop.webp',
+        downloadName: 'sean-and-arielle-hofherr-northfield-shop.webp',
+        width: 1024,
+        height: 768,
+        wide: true,
+        objectPosition: 'shop',
+    },
+    {
+        id: 'kevin-pang-sean-proof',
+        title: "Recording America's Test Kitchen's Proof Podcast",
+        caption: "Host Kevin Pang interviews Chef Sean Hofherr in the kitchen while developing the shop's signature Italian beef.",
+        context: 'Proof Podcast · Kitchen',
+        credit: 'Courtesy of Hofherr Meat Co.',
+        alt: 'Kevin Pang holding a shotgun microphone interviewing Chef Sean Hofherr in the Hofherr Meat Co. kitchen',
+        src: '/assets/press/kevin-pang-sean-hofherr-proof-podcast.webp',
+        downloadName: 'kevin-pang-sean-hofherr-proof-podcast.webp',
+        width: 1024,
+        height: 683,
+        wide: true,
+    },
+    {
+        id: 'kevin-pang-arielle-proof',
+        title: 'Arielle Hofherr with Kevin Pang in the Kitchen',
+        caption: "Arielle Hofherr speaks with America's Test Kitchen host Kevin Pang during the month-long Italian beef project.",
+        context: 'Proof Podcast · Kitchen',
+        credit: 'Courtesy of Hofherr Meat Co.',
+        alt: 'Arielle Hofherr speaking into a microphone held by Kevin Pang inside the Hofherr Meat Co. kitchen',
+        src: '/assets/press/kevin-pang-arielle-hofherr-proof-podcast.webp',
+        downloadName: 'kevin-pang-arielle-hofherr-proof-podcast.webp',
+        width: 1024,
+        height: 683,
+    },
+    {
+        id: 'arielle-butcher-counter',
+        title: 'Behind the Northfield Meat Counter',
+        caption: 'Co-owner Arielle Hofherr at the custom-cut butcher case and specialty provisions counter.',
+        context: 'The Butcher Shop · Counter',
+        credit: 'Courtesy of Hofherr Meat Co.',
+        alt: 'Arielle Hofherr gesturing toward the fresh meat display case inside Hofherr Meat Co.',
+        src: '/assets/press/arielle-hofherr-northfield-butcher-counter.webp',
+        downloadName: 'arielle-hofherr-northfield-butcher-counter.webp',
+        width: 800,
+        height: 533,
+    },
+    {
+        id: 'hofherr-stay-smoking-smoker',
+        title: '"Hofherrs Stay Smoking" Offset Smoker',
+        caption: 'The custom Hofherr Meat Co. mobile offset smoker fired up outside the shop for whole-hog and BBQ service.',
+        context: 'Smokehouse & Catering',
+        credit: 'Courtesy of Hofherr Meat Co.',
+        alt: 'Hofherr Meat Co. crew tending the custom painted Hofherrs Stay Smoking BBQ smoker trailer outdoors',
+        src: '/assets/press/hofherr-stay-smoking-bbq-smoker.webp',
+        downloadName: 'hofherr-stay-smoking-bbq-smoker.webp',
+        width: 800,
+        height: 533,
+    },
+];

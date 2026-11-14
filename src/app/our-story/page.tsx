@@ -205,23 +205,27 @@ export default async function OurStoryPage() {
                             <div className="container">
                                 <div className={styles.seanCard}>
                                     <div className={styles.seanImagePart}>
-                                        <Image
-                                            src="/assets/team/sean-hofherr-safety-seal.jpg"
-                                            alt="Sean Hofherr"
-                                            fill
-                                            loading="eager"
-                                            sizes="(max-width: 900px) 100vw, 50vw"
-                                            className={styles.avatarImg}
-                                        />
-                                        <Image
-                                            src="/assets/team/sean-hofherr-salt-sprinkle.jpg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            fill
-                                            loading="eager"
-                                            sizes="(max-width: 900px) 100vw, 50vw"
-                                            className={`${styles.avatarImg} ${styles.avatarImgHover}`}
-                                        />
+                                        <div className={`${styles.portraitLayer} ${styles.portraitBase}`}>
+                                            <Image
+                                                src="/assets/team/sean-hofherr-safety-seal.jpg"
+                                                alt="Sean Hofherr"
+                                                fill
+                                                loading="eager"
+                                                sizes="(max-width: 900px) 100vw, 50vw"
+                                                className={styles.avatarImg}
+                                            />
+                                        </div>
+                                        <div className={`${styles.portraitLayer} ${styles.portraitHover}`}>
+                                            <Image
+                                                src="/assets/team/sean-hofherr-salt-sprinkle.jpg"
+                                                alt=""
+                                                aria-hidden="true"
+                                                fill
+                                                loading="eager"
+                                                sizes="(max-width: 900px) 100vw, 50vw"
+                                                className={styles.avatarImg}
+                                            />
+                                        </div>
                                     </div>
                                     <div className={styles.seanContentPart}>
                                         <span className={styles.teamRole}>Owner &amp; Head Chef</span>

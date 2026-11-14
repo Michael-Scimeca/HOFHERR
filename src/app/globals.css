@@ -173,6 +173,10 @@ html.scroll-locked {
   border-color: transparent !important;
 }
 
+[data-burn-closing='true'] {
+  pointer-events: none !important;
+}
+
 [data-burn='out'] {
   -webkit-mask-image: linear-gradient(var(--burn-angle, 90deg), transparent var(--burn-front, -20%), #000 calc(var(--burn-front, -20%) + var(--burn-feather, 10%)));
   mask-image: linear-gradient(var(--burn-angle, 90deg), transparent var(--burn-front, -20%), #000 calc(var(--burn-front, -20%) + var(--burn-feather, 10%)));
@@ -393,6 +397,7 @@ h1 {
   text-transform: uppercase;
   color: var(--red);
   margin-bottom: 12px;
+  vertical-align: top;
 }
 
 .section-label::before,

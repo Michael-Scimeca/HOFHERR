@@ -72,12 +72,14 @@
 }
 
 .switchSm.switchChecked .thumb,
-.switchSm.switchCheckedGold .thumb {
+.switchSm.switchCheckedGold .thumb,
+.switchSm.switchCheckedBlue .thumb {
     transform: translateX(14px);
 }
 
 .switchMd.switchChecked .thumb,
-.switchMd.switchCheckedGold .thumb {
+.switchMd.switchCheckedGold .thumb,
+.switchMd.switchCheckedBlue .thumb {
     transform: translateX(20px);
 }
 

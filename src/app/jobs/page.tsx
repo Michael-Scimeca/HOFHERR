@@ -27,44 +27,28 @@ export const metadata: Metadata = {
 const POSITIONS = [
     {
         title: 'Meat Cutter',
-        department: 'Butcher Counter · Northfield Flagship',
-        schedule: 'Full-Time · Competitive Pay + Benefits',
-        description:
-            'Master your craft breaking down whole-animal beef, heritage pork, lamb, and poultry. Cut steaks and roasts to custom counter specifications and assist North Shore guests with cooking guidance.',
+        department: 'Butcher Counter · Northfield',
+        schedule: 'Full-Time / Part-Time',
+        description: 'Master your craft with the finest cuts at our full-service butcher counter.',
     },
     {
-        title: 'Cashier & Counter Associate',
+        title: 'Cashier',
         department: 'Guest Service · Northfield & Winnetka Depot',
-        schedule: 'Full-Time / Part-Time · Flexible Shifts',
-        description:
-            'Deliver warm, knowledgeable hospitality at the butcher counter and register. Coordinate online order pickups, wrap custom parcels in kraft paper, and help guests navigate our daily cases.',
+        schedule: 'Full-Time / Part-Time',
+        description: 'Deliver exceptional service to our customers at the counter and register.',
     },
     {
-        title: 'Dishwasher & Kitchen Utility',
-        department: 'Scratch Kitchen & Smokehouse · Northfield',
-        schedule: 'Full-Time / Part-Time · Competitive Hourly',
-        description:
-            'Keep our scratch kitchen, rotisserie, and butcher block sanitized, organized, and running smoothly throughout daily prep and service.',
+        title: 'Dishwasher',
+        department: 'Kitchen · Northfield',
+        schedule: 'Full-Time / Part-Time',
+        description: 'Keep the kitchen clean, organized, and running smoothly throughout daily service.',
     },
 ];
 
 const PERKS = [
-    {
-        title: 'Health Care Plans',
-        detail: 'Comprehensive medical coverage options for full-time team members.',
-    },
-    {
-        title: 'Retirement Savings',
-        detail: 'Retirement savings accounts to help you build long-term financial security.',
-    },
-    {
-        title: 'Craft Apprenticeship',
-        detail: 'Hands-on training in whole-animal seam butchery, dry-aging, and smokehouse prep.',
-    },
-    {
-        title: 'Shop Discounts & Meals',
-        detail: 'Generous team discounts on custom cuts, scratch meals, and daily kitchen fare.',
-    },
+    'Health Care Plans',
+    'Retirement Savings Accounts',
+    'Other Great Perks',
 ];
 
 export default function JobsPage() {
@@ -115,12 +99,12 @@ export default function JobsPage() {
                             WORK AT <em>HOFHERR MEAT CO.</em>
                         </h1>
                         <p className={styles.sub}>
-                            We are always looking to grow our team of craftspeople, cooks, and counter hosts. We offer
-                            health care plans, retirement savings accounts, and a true neighborhood butcher shop culture.
+                            We are always looking to grow our team. We offer health care plans, retirement savings
+                            accounts, and other great perks!
                         </p>
                         <div className={styles.heroActions}>
                             <a href="mailto:jobs@hofherrmeatco.com" className="btn-hit">
-                                <span className="btn btn-gold">Email Us Your Resume</span>
+                                <span className="btn btn-primary">Email Us Your Resume</span>
                             </a>
                             <a href="tel:8474416328" className="btn-hit">
                                 <span className="btn btn-secondary">Call (847) 441-MEAT</span>
@@ -138,14 +122,17 @@ export default function JobsPage() {
                         <aside className={styles.sidebar} aria-label="Benefits and Shop Culture">
                             <div className={styles.perksPanel}>
                                 <h2 className={styles.sidebarHeading}>TEAM BENEFITS &amp; PERKS</h2>
-                                <div className={styles.perksList}>
+                                <ul className={styles.perksList}>
                                     {PERKS.map((perk) => (
-                                        <div key={perk.title} className={styles.perkItem}>
-                                            <strong className={styles.perkTitle}>{perk.title}</strong>
-                                            <p className={styles.perkDesc}>{perk.detail}</p>
-                                        </div>
+                                        <li key={perk} className={styles.perkRow}>
+                                            <span className={styles.perkDot} aria-hidden="true" />
+                                            <strong className={styles.perkTitle}>{perk}</strong>
+                                        </li>
                                     ))}
-                                </div>
+                                </ul>
+                                <p className={styles.perksNote}>
+                                    Eligibility and plan details are shared when you apply.
+                                </p>
                             </div>
 
                             <div className={styles.locationsCard}>
@@ -156,7 +143,7 @@ export default function JobsPage() {
                                 </div>
                                 <div className={styles.locBlock}>
                                     <strong>The Depot · Winnetka</strong>
-                                    <span>780 Elm St · Winnetka, IL 60093</span>
+                                    <span>754 Elm St · Winnetka, IL 60093</span>
                                 </div>
                                 <Link href="/our-story" className="btn btn-outline">
                                     Read Our Story

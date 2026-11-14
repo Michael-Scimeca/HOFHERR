@@ -3,7 +3,7 @@
     background: var(--bg-2);
     background-image: radial-gradient(at 20%, #80002026 0%, #0000 60%), radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
     border-bottom: 1px solid var(--border);
-    padding: 56px var(--container-px) 48px;
+    padding: 62px var(--container-px) 48px;
     text-align: center;
 }
 
@@ -28,17 +28,24 @@
     animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
 }
 
+.headline em {
+    font-style: italic;
+    color: var(--red);
+}
+
 .sub {
     font-size: 1rem;
     color: var(--fg-muted);
-    line-height: 1.7;
+    line-height: 1.75;
     animation: fadeInUp 0.6s 0.2s var(--ease-out) both;
 }
 
 .sub a {
-    color: var(--gold);
+    color: var(--fg);
     font-weight: 600;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: var(--red);
+    text-underline-offset: 4px;
 }
 
 .sub a:hover {
@@ -47,7 +54,7 @@
 
 /* ── Layout ── */
 .faqSection {
-    padding: 56px 0;
+    padding: 96px 0;
 }
 
 .faqGrid {
@@ -79,7 +86,7 @@
 
 .sideLink:hover {
     background: var(--bg-2);
-    color: var(--gold);
+    color: var(--fg);
 }
 
 .sideCard {
@@ -122,7 +129,8 @@
 .groupTitle {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: clamp(1.5rem, 2.2vw, 1.875rem);
-    color: var(--gold);
+    letter-spacing: 0.02em;
+    color: var(--fg);
     margin: 0 0 8px;
     padding-bottom: 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.22);
@@ -145,7 +153,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 16px;
-    padding: 18px 20px;
+    padding: 18px 24px;
     background: none;
     border: none;
     cursor: pointer;
@@ -162,8 +170,8 @@
 }
 
 .itemOpen .question {
-    color: var(--gold);
-    background: rgba(168, 144, 95, 0.06);
+    color: var(--fg);
+    background: var(--bg-2);
 }
 
 .chevron {
@@ -174,7 +182,7 @@
 
 .chevronOpen {
     transform: rotate(180deg);
-    color: var(--gold);
+    color: var(--red);
 }
 
 /* ── Answer (smooth expand via grid rows) ── */
@@ -193,7 +201,7 @@
 }
 
 .answer {
-    padding: 0 20px 20px;
+    padding: 0 24px 20px;
     border-top: 1px solid var(--border);
     opacity: 0;
     transform: translateY(-4px);
@@ -212,25 +220,41 @@
     line-height: 1.8;
 }
 
-/* ── CTA ── */
+/* ── CTA: same wrapping-paper band as the BBQ / Our Story / Home closers ── */
 .cta {
-    background: var(--bg-2);
-    border-top: 1px solid var(--border);
-    padding: 48px 24px;
+    background-color: #0d0a09;
+    background-image:
+        radial-gradient(ellipse 48% 82% at 50% 50%,
+            rgba(13, 10, 9, 0.94) 0%,
+            rgba(13, 10, 9, 0.80) 48%,
+            rgba(13, 10, 9, 0.18) 100%),
+        url('/assets/identity/hofherr-wrapping-paper-tile-dark-10-icons.svg');
+    background-position: center, center;
+    background-size: 100% 100%, 380px auto;
+    background-repeat: no-repeat, repeat;
+    padding: 96px 24px;
     text-align: center;
+    color: #f3ead8;
 }
 
 .cta h2 {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 2rem;
-    color: var(--fg);
-    margin-bottom: 10px;
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #f3ead8;
+    margin: 0 0 12px;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.9);
 }
 
 .cta p {
-    font-size: 14px;
-    color: var(--fg-muted);
-    margin-bottom: 28px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #c8a47e;
+    line-height: 1.65;
+    max-width: 540px;
+    margin: 0 auto 32px;
 }
 
 .ctaBtns {

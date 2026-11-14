@@ -25,19 +25,23 @@ export default function RecipesTestPage() {
     const featured = COLLECTIONS.find(c => c.months.includes(month)) ?? null;
 
     return (
-        <main className={styles.page}>
-            <header className={styles.header}>
-                <h1 className={styles.title}>
-                    Butcher&apos;s Cut <em>Recipes</em>
-                </h1>
-                <p className={styles.lede}>
-                    A craft recipe for every primal cut on the beef map — plus pork, poultry, lamb, veal and holiday
-                    centerpieces — built around daily cuts from the Hofherr counter. Pick an occasion or cut to
-                    scale ingredients and add everything directly to your pickup order.
-                </p>
+        <main>
+            <header className={styles.hero}>
+                <div className={`container ${styles.heroInner}`}>
+                    <h1 className={styles.title}>
+                        Butcher&apos;s Cut <em>Recipes</em>
+                    </h1>
+                    <p className={styles.lede}>
+                        A craft recipe for every primal cut on the beef map — plus pork, poultry, lamb, veal and holiday
+                        centerpieces — built around daily cuts from the Hofherr counter. Pick an occasion or cut to
+                        scale ingredients and add everything directly to your pickup order.
+                    </p>
+                </div>
             </header>
 
-            <RecipesBrowser featuredCollectionId={featured?.id ?? null} today={today} />
+            <div className={styles.page}>
+                <RecipesBrowser featuredCollectionId={featured?.id ?? null} today={today} />
+            </div>
         </main>
     );
 }

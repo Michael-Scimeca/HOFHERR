@@ -849,14 +849,21 @@ export default function AddToOrderAnimStudio() {
                         </div>
 
                         <div className={styles.group}>
-                            <span className={styles.groupTitle}>Burn-In Direction</span>
+                            <span className={styles.groupTitle}>Modal Burn Direction (Exit Reverses)</span>
                             <div className={styles.segmented}>
                                 {(['left-to-right', 'right-to-left'] as BurnDirection[]).map(dir => (
                                     <button
                                         key={dir}
                                         type="button"
                                         className={`${styles.segBtn} ${cfg.burnInDirection === dir ? styles.segBtnActive : ''}`}
-                                        onClick={() => updateCfg('burnInDirection', dir)}
+                                        onClick={() =>
+                                            saveAddToOrderAnimConfig({
+                                                ...cfg,
+                                                burnInDirection: dir,
+                                                burnOutDirection:
+                                                    dir === 'left-to-right' ? 'right-to-left' : 'left-to-right',
+                                            })
+                                        }
                                     >
                                         {dir === 'left-to-right' ? '→ Left to Right' : '← Right to Left'}
                                     </button>
@@ -866,7 +873,7 @@ export default function AddToOrderAnimStudio() {
 
                         <div className={styles.sliderRow}>
                             <div className={styles.sliderTop}>
-                                <span>Burn-In Speed</span>
+                                <span>Burn Speed (Enter &amp; Exit)</span>
                                 <span className={styles.sliderVal}>{cfg.burnInMs}ms</span>
                             </div>
                             <input
@@ -875,23 +882,10 @@ export default function AddToOrderAnimStudio() {
                                 max={1600}
                                 step={25}
                                 value={cfg.burnInMs}
-                                onChange={e => updateCfg('burnInMs', Number(e.target.value))}
-                                className={styles.rangeInput}
-                            />
-                        </div>
-
-                        <div className={styles.sliderRow}>
-                            <div className={styles.sliderTop}>
-                                <span>Burn-Out Speed</span>
-                                <span className={styles.sliderVal}>{cfg.burnOutMs}ms</span>
-                            </div>
-                            <input
-                                type="range"
-                                min={250}
-                                max={1600}
-                                step={25}
-                                value={cfg.burnOutMs}
-                                onChange={e => updateCfg('burnOutMs', Number(e.target.value))}
+                                onChange={e => {
+                                    const ms = Number(e.target.value);
+                                    saveAddToOrderAnimConfig({ ...cfg, burnInMs: ms, burnOutMs: ms });
+                                }}
                                 className={styles.rangeInput}
                             />
                         </div>

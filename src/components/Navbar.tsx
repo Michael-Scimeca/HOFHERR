@@ -35,6 +35,7 @@ const NAV_ITEMS = [
     { label: 'Specials', href: '/specials' },
     { label: 'BBQ', href: '/bbq' },
     { label: 'Catering', href: '/catering' },
+    { label: 'Recipes', href: '/recipes-test' },
     { label: 'Visit Us', href: '/visit' },
     { label: 'Our Story', href: '/our-story' },
     { label: 'Press', href: '/press' },
@@ -222,7 +223,8 @@ export default function Navbar() {
         }
     }, [pathname]);
 
-    const isActive = (path: string) => pathname === path;
+    const isActive = (path: string) =>
+        path === '/admin' ? Boolean(pathname?.startsWith('/admin')) : pathname === path;
 
     const butcherStatus = getShopStatus(butcherHours, currentTime);
     const depotStatus = getShopStatus(depotHours, currentTime);
@@ -300,9 +302,9 @@ export default function Navbar() {
                         </TransitionLink>
                     ))}
                     {showOwnerPortal && (
-                        <Link href="/admin" className={`${styles.navLink} ${styles.ownerPortalLink} ${isActive('/admin') ? styles.navActive : ''}`}>
+                        <TransitionLink href="/admin-dashboard/admin" className={`${styles.navLink} ${styles.ownerPortalLink} ${isActive('/admin') ? styles.navActive : ''}`}>
                             Owner Portal
-                        </Link>
+                        </TransitionLink>
                     )}
                 </nav>
 
@@ -318,7 +320,7 @@ export default function Navbar() {
                         ) : (
                             <div className={styles.avatarActionsRow}>
                                 <TransitionLink
-                                    href="/dashboard"
+                                    href={user.isAdmin ? '/admin-dashboard/admin' : '/dashboard'}
                                     className={styles.avatar}
                                     aria-label="Open My Dashboard"
                                 >
@@ -393,9 +395,9 @@ export default function Navbar() {
                         ))}
                         {showOwnerPortal && (
                             <div className={styles.mobileSection}>
-                                <Link href="/admin" className={`${styles.mobilePrimary} ${styles.ownerPortalLink}`} onClick={() => setMobileOpen(false)}>
+                                <TransitionLink href="/admin-dashboard/admin" className={`${styles.mobilePrimary} ${styles.ownerPortalLink}`} onClick={() => setMobileOpen(false)}>
                                     Owner Portal
-                                </Link>
+                                </TransitionLink>
                             </div>
                         )}
                     </div>

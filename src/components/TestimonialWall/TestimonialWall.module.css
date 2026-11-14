@@ -62,7 +62,7 @@
     width: clamp(280px, 28vw, 400px);
     min-height: 260px;
     margin-right: -5.5vw;
-    padding: 44px 40px 52px;
+    padding: 44px 24px 52px;
     border-radius: var(--radius-sm);
     display: flex;
     flex-direction: column;

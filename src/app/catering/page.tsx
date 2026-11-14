@@ -54,7 +54,7 @@ export default async function CateringPage() {
                 <section id="catering-hero" aria-labelledby="catering-hero-heading" className={styles.hero}>
                     <div className={`container ${styles.heroInner}`}>
                             <h1 id="catering-hero-heading" className={styles.headline}>
-                                Feeding a <em>Crowd?</em>
+                                Big Guest List? <em>Bring It.</em>
                             </h1>
                             <p className={styles.sub}>
                                 From backyard pig roasts to corporate BBQ spreads — Hofherr handles it all.

@@ -3,7 +3,7 @@
     background: var(--bg-2);
     background-image: radial-gradient(at 20%, #80002026 0%, #0000 60%), radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
     border-bottom: 1px solid var(--border);
-    padding: 56px var(--container-px, 24px) 48px;
+    padding: 62px var(--container-px, 24px) 48px;
     text-align: center;
 }
 
@@ -27,6 +27,11 @@
     margin-bottom: 16px;
     text-wrap: balance;
     animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
+}
+
+.headline em {
+    font-style: italic;
+    color: var(--red);
 }
 
 .sub {
@@ -87,7 +92,7 @@
 .featured {
     display: flex;
     flex-direction: column;
-    padding: 40px;
+    padding: 40px 24px;
     background: var(--bg-3);
     border: 1px solid var(--border);
     border-left: 3px solid var(--red);
@@ -194,7 +199,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 28px;
+    padding: 24px;
     background: var(--bg-2);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -216,6 +221,177 @@
     line-height: 1.65;
     color: var(--fg-3);
     text-wrap: pretty;
+}
+
+/* ── Media assets ── */
+.mediaSection {
+    padding: 64px 0 0;
+}
+
+.mediaInner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.mediaHeader {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-6);
+}
+
+.mediaHeading {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: var(--text-3xl);
+    color: var(--fg);
+}
+
+.mediaSub {
+    font-size: var(--text-sm);
+    color: var(--fg-3);
+    line-height: 1.6;
+}
+
+.mediaGrid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-6);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mediaItem {
+    grid-column: span 2;
+    display: flex;
+    min-inline-size: 0;
+}
+
+.mediaItemWide {
+    grid-column: span 3;
+}
+
+.mediaCard {
+    display: flex;
+    flex-direction: column;
+    inline-size: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: clip;
+}
+
+.mediaFrame {
+    position: relative;
+    inline-size: 100%;
+    aspect-ratio: 3 / 2;
+    background: var(--bg-3);
+    border-bottom: 1px solid var(--border);
+    overflow: clip;
+}
+
+.mediaImg {
+    object-fit: cover;
+    object-position: center;
+}
+
+.mediaImgShop {
+    object-position: center 46%;
+}
+
+.mediaBody {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    gap: var(--space-2);
+    padding: var(--space-6);
+}
+
+.mediaTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: var(--text-2xl);
+    line-height: 1.15;
+    color: var(--fg);
+}
+
+.mediaCaption {
+    font-size: var(--text-sm);
+    line-height: 1.65;
+    color: var(--fg-3);
+}
+
+.mediaFooter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: safe center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-block-start: auto;
+    padding-block-start: var(--space-4);
+    border-top: 1px solid var(--border);
+}
+
+.mediaSpec {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+}
+
+.mediaActions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: safe center;
+    gap: var(--space-2);
+}
+
+.mediaDownload,
+.mediaOpen {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    min-block-size: 36px;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.2s var(--ease-out), border-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+
+.mediaDownload {
+    color: var(--fg);
+    background: rgba(var(--gold-rgb), 0.14);
+    border: 1px solid rgba(var(--gold-rgb), 0.5);
+}
+
+.mediaDownload:hover {
+    background: rgba(var(--red-rgb), 0.28);
+    border-color: var(--red);
+}
+
+.mediaOpen {
+    color: var(--fg-2);
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+}
+
+.mediaOpen:hover {
+    color: var(--fg);
+    border-color: rgba(var(--gold-rgb), 0.55);
+}
+
+.mediaDownload:focus-visible,
+.mediaOpen:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
 }
 
 /* ── In print ── */
@@ -256,9 +432,12 @@
 }
 
 /* ── Media contact ── */
+.contactWrap {
+    padding: 64px 0 96px;
+}
+
 .contact {
-    margin: 64px 0 96px;
-    padding: 48px 24px;
+    padding: 48px 24px 0;
     text-align: center;
     border-top: 1px solid var(--border);
 }
@@ -286,6 +465,22 @@
 }
 
 /* ── Responsive ── */
+@media (max-width: 1024px) {
+    .mediaGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-4);
+    }
+
+    .mediaItem,
+    .mediaItemWide {
+        grid-column: span 1;
+    }
+
+    .mediaItem:first-child {
+        grid-column: 1 / -1;
+    }
+}
+
 @media (max-width: 768px) {
     .hero {
         padding: 48px 20px 40px;
@@ -319,15 +514,41 @@
         gap: 4px 16px;
     }
 
-    .contact {
-        margin-bottom: 64px;
+    .contactWrap {
+        padding-bottom: 64px;
+    }
+}
+
+@media (max-width: 640px) {
+    .mediaGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .mediaItem,
+    .mediaItemWide,
+    .mediaItem:first-child {
+        grid-column: auto;
+    }
+
+    .mediaBody {
+        padding: var(--space-4);
+    }
+}
+
+@media (pointer: coarse) {
+    .mediaDownload,
+    .mediaOpen {
+        min-block-size: 44px;
+        padding-inline: var(--space-4);
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .featured,
     .card,
-    .cta span {
+    .cta span,
+    .mediaDownload,
+    .mediaOpen {
         transition: none;
     }
 

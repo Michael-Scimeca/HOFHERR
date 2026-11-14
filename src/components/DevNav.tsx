@@ -1,12 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { openAuthModal } from '@/components/AuthModal';
 import { useCartCount } from '@/context/CartContext';
 import { TOGGLE_ANIM_STUDIO_EVENT } from '@/lib/addToOrderAnimConfig';
+import { usePageTransition } from '@/components/PageTransition';
+import BorderColorsOverlay from '@/components/BorderColorsOverlay';
+import SectionGapsOverlay from '@/components/SectionGapsOverlay';
+import { getBorderColors, getBorderColorsServer, subscribeBorderColors, toggleBorderColors } from '@/lib/borderColorsStore';
+import { getSectionGaps, getSectionGapsServer, subscribeSectionGaps, toggleSectionGaps } from '@/lib/sectionGapsStore';
 import styles from './dev-nav.module.css';
 
 type DevOverlayAction =
@@ -39,7 +44,7 @@ interface DevLinkItem {
 
 interface DevSection {
     label: string;
-    category: 'modals' | 'pages' | 'sections';
+    category: 'modals' | 'pages';
     links: DevLinkItem[];
 }
 
@@ -87,7 +92,7 @@ const SECTIONS: DevSection[] = [
         category: 'modals',
         links: [
             { href: '/test-cut-collection?devModal=popover', icon: '🔪', label: 'Cut Quick-Order Popover', action: 'cut-popover' },
-            { href: '/admin?devModal=customer', icon: '👤', label: 'Admin Customer Modal', action: 'admin-customer-modal' },
+            { href: '/admin-dashboard/admin?devModal=customer', icon: '👤', label: 'Admin Customer Modal', action: 'admin-customer-modal' },
             { href: '/admin/inventory?devModal=add', icon: '📦', label: 'Admin Add Product Modal', action: 'admin-add-product-modal' },
             { href: '/inventory?devModal=add', icon: '🗃️', label: 'Inventory Add Item Modal', action: 'inventory-add-product-modal' },
         ],
@@ -99,7 +104,6 @@ const SECTIONS: DevSection[] = [
             { href: '/', icon: '🏠', label: 'Home' },
             { href: '/our-story', icon: '📖', label: 'Our Story' },
             { href: '/selections', icon: '🥓', label: 'Selections' },
-            { href: '/featured', icon: '⭐', label: 'Featured' },
             { href: '/visit', icon: '📍', label: 'Visit' },
             { href: '/press', icon: '📰', label: 'Press' },
             { href: '/jobs', icon: '💼', label: 'Jobs' },
@@ -135,7 +139,7 @@ const SECTIONS: DevSection[] = [
         label: 'Admin, Identity & Dev',
         category: 'pages',
         links: [
-            { href: '/admin', icon: '📊', label: 'Admin Dashboard' },
+            { href: '/admin-dashboard/admin', icon: '📊', label: 'Admin Dashboard' },
             { href: '/admin/inventory', icon: '🗃️', label: 'Admin Inventory' },
             { href: '/admin/social', icon: '📣', label: 'Admin Social' },
             { href: '/admin/login', icon: '🔒', label: 'Admin Login' },
@@ -147,10 +151,10 @@ const SECTIONS: DevSection[] = [
             { href: '/product-identity/sizes/print', icon: '🖨️', label: 'Sizes · Print' },
             { href: '/product-identity/social', icon: '📱', label: 'Social Kit' },
             { href: '/product-identity/social/admin', icon: '⚙️', label: 'Social · Admin' },
-            { href: '/modules', icon: '🧱', label: 'All Sections Gallery' },
             { href: '/greens-and-emblems', icon: '🟢', label: 'Greens & Emblems' },
             { href: '/design-system', icon: '🧩', label: 'Design System' },
             { href: '/showcase', icon: '🎯', label: 'Showcase' },
+            { href: '/google-preview', icon: '🔍', label: 'Google SERP Preview' },
             { href: '/roadmap', icon: '🧭', label: 'Roadmap' },
             { href: '/pitch-deck', icon: '📈', label: 'Pitch Deck' },
             { href: '/fire-test', icon: '🔥', label: 'Fire Test' },
@@ -159,34 +163,6 @@ const SECTIONS: DevSection[] = [
             { href: '/test-cut-collection', icon: '🔪', label: 'Cut Collection Bench' },
             { href: '/debug-email/preview', icon: '📧', label: 'Email Templates' },
             { href: '/debug-email', icon: '🐞', label: 'Debug Email' },
-        ],
-    },
-    {
-        label: 'Section Modules (Library)',
-        category: 'sections',
-        links: [
-            { href: '/modules', icon: '🧱', label: 'View All Section Modules' },
-            { href: '/modules#mod-hero', icon: '🎬', label: 'Hero (Home)' },
-            { href: '/modules#mod-seasonal-banner', icon: '🍀', label: 'SeasonalBanner' },
-            { href: '/modules#mod-home-specials', icon: '🔥', label: 'Specials (Home)' },
-            { href: '/modules#mod-process', icon: '👉', label: 'Process (How It Works)' },
-            { href: '/modules#mod-awards', icon: '🏆', label: 'AwardsSection' },
-            { href: '/modules#mod-trust-bar', icon: '🛡️', label: 'TrustBar' },
-            { href: '/modules#mod-weekly-picks', icon: '🥩', label: 'WeeklyPicks' },
-            { href: '/modules#mod-menu-highlights', icon: '📋', label: 'MenuHighlights' },
-            { href: '/modules#mod-story-teaser', icon: '📖', label: 'StoryTeaser' },
-            { href: '/modules#mod-sourcing-strip', icon: '🌾', label: 'SourcingStrip' },
-            { href: '/modules#mod-home-cut-guide', icon: '🔪', label: 'CutGuide (Home)' },
-            { href: '/modules#mod-recipe-teasers', icon: '🍳', label: 'RecipeTeasers' },
-            { href: '/modules#mod-gallery-strip', icon: '🖼️', label: 'GalleryStrip' },
-            { href: '/modules#mod-home-reviews', icon: '⭐', label: 'Reviews (Home)' },
-            { href: '/modules#mod-order-cta-banner', icon: '📣', label: 'OrderCTABanner' },
-            { href: '/modules#mod-catering-cta', icon: '🍖', label: 'CateringCTA' },
-            { href: '/modules#mod-quotes-section', icon: '💬', label: 'QuotesSection' },
-            { href: '/modules#mod-hiring-chatbox', icon: '💼', label: 'HiringChatbox' },
-            { href: '/modules#mod-catering-hub', icon: '🧮', label: 'CateringHub' },
-            { href: '/modules#mod-bbq-hub', icon: '🔥', label: 'BBQHub' },
-            { href: '/modules#mod-catering-module', icon: '🐖', label: 'CateringModule (Pig)' },
         ],
     },
 ];
@@ -205,12 +181,25 @@ function isProtectedRoute(href: string): boolean {
 
 const DevNav = () => {
     const [open, setOpen] = useState(false);
-    const [filter, setFilter] = useState<'all' | 'modals' | 'pages' | 'sections'>('all');
+    const [filter, setFilter] = useState<'all' | 'modals' | 'pages'>('all');
     const [godBusy, setGodBusy] = useState(false);
     const { data: session, update } = useSession();
     const { items: cartItems, addItem, removeItem, openCart } = useCartCount();
     const pathname = usePathname();
     const router = useRouter();
+    const { navigateTo } = usePageTransition();
+    const gapsOn = useSyncExternalStore(subscribeSectionGaps, getSectionGaps, getSectionGapsServer);
+    const bordersOn = useSyncExternalStore(subscribeBorderColors, getBorderColors, getBorderColorsServer);
+
+    // Alt+G toggles the section-gap overlay from any page
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => {
+            if (e.altKey && e.code === 'KeyG') toggleSectionGaps();
+            if (e.altKey && e.code === 'KeyB') toggleBorderColors();
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, []);
 
     const isGodMode = Boolean(session?.user?.isAdmin);
     const visibleSections = SECTIONS.filter(section => filter === 'all' || section.category === filter);
@@ -225,13 +214,13 @@ const DevNav = () => {
                     redirect: false,
                 });
                 await update();
-                router.push(targetHref);
                 router.refresh();
+                navigateTo(targetHref);
             } finally {
                 setGodBusy(false);
             }
         } else {
-            router.push(targetHref);
+            navigateTo(targetHref);
         }
     };
 
@@ -294,7 +283,7 @@ const DevNav = () => {
                         new CustomEvent('hofherr-dev-shop-overlay', { detail: { kind: kindMap[link.action] } })
                     );
                 } else {
-                    router.push(link.href);
+                    navigateTo(link.href);
                 }
                 return;
             }
@@ -326,11 +315,11 @@ const DevNav = () => {
                 if (pathname === '/test-cut-collection' || pathname === '/dashboard/cut-collector') {
                     window.dispatchEvent(new CustomEvent('hofherr-dev-cut-popover'));
                 } else {
-                    router.push(link.href);
+                    navigateTo(link.href);
                 }
                 return;
             case 'admin-customer-modal':
-                if (pathname === '/admin') {
+                if (pathname === '/admin' || pathname?.startsWith('/admin-dashboard')) {
                     window.dispatchEvent(new CustomEvent('hofherr-dev-admin-modal'));
                 } else {
                     await ensureGodModeAndNavigate(link.href);
@@ -363,6 +352,8 @@ const DevNav = () => {
 
     return (
         <div className={styles.floatingNav}>
+            {gapsOn && <SectionGapsOverlay />}
+            {bordersOn && <BorderColorsOverlay />}
             <div className={styles.floatingBar}>
                 <button
                     type="button"
@@ -392,6 +383,26 @@ const DevNav = () => {
                     <span>🛒</span>
                     <span>CART ANIM</span>
                 </button>
+                <button
+                    type="button"
+                    className={`${styles.godBtn} ${gapsOn ? styles.godBtnActive : ''}`}
+                    onClick={toggleSectionGaps}
+                    aria-pressed={gapsOn}
+                    title="Show the spacing between sections (Alt+G)"
+                >
+                    <span>📏</span>
+                    <span>{gapsOn ? 'GAPS: ON' : 'GAPS'}</span>
+                </button>
+                <button
+                    type="button"
+                    className={`${styles.godBtn} ${bordersOn ? styles.godBtnActive : ''}`}
+                    onClick={toggleBorderColors}
+                    aria-pressed={bordersOn}
+                    title="Show the colour of every border (Alt+B)"
+                >
+                    <span>🎨</span>
+                    <span>{bordersOn ? 'BORDERS: ON' : 'BORDERS'}</span>
+                </button>
             </div>
 
             {open && (
@@ -419,13 +430,6 @@ const DevNav = () => {
                                     onClick={() => setFilter('pages')}
                                 >
                                     Pages
-                                </button>
-                                <button
-                                    type="button"
-                                    className={`${styles.filterBtn} ${filter === 'sections' ? styles.filterBtnActive : ''}`}
-                                    onClick={() => setFilter('sections')}
-                                >
-                                    Sections
                                 </button>
                             </div>
                         </div>
@@ -456,6 +460,7 @@ const DevNav = () => {
                                     <Link
                                         key={`${section.label}-${link.label}`}
                                         href={link.href}
+                                        data-no-transition={!isGodMode && isProtectedRoute(link.href) ? '' : undefined}
                                         className={styles.navItem}
                                         onClick={e => handleLinkClick(e, link)}
                                     >

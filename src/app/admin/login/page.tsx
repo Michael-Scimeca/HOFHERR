@@ -5,6 +5,7 @@ import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePageTransition } from '@/components/PageTransition';
 import styles from './login.module.css';
 
 export default function AdminLoginPage() {
@@ -17,10 +18,11 @@ export default function AdminLoginPage() {
     const [forgotSuccess, setForgotSuccess] = useState(false);
 
     const router = useRouter();
-    const callbackUrl = '/admin';
+    const { navigateTo } = usePageTransition();
+    const callbackUrl = '/admin-dashboard/admin';
 
     if (status === 'loading') {
-        return <main className={styles.loginContainer} />;
+        return <div className="route-loading" aria-busy="true" />;
     }
 
     const handleGodMode = async () => {
@@ -36,8 +38,8 @@ export default function AdminLoginPage() {
             if (result?.error) {
                 setError('Could not activate God Mode.');
             } else {
-                router.push(callbackUrl);
                 router.refresh();
+                navigateTo(callbackUrl);
             }
         } catch {
             setError('Failed to activate God Mode.');
@@ -55,8 +57,8 @@ export default function AdminLoginPage() {
             if (result?.error) {
                 setError('Invalid email or password. Please try again.');
             } else {
-                router.push(callbackUrl);
                 router.refresh();
+                navigateTo(callbackUrl);
             }
         } catch {
             setError('An unexpected error occurred. Please try again.');

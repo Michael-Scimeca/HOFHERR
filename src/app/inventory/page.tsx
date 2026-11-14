@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Toggle from '@/components/Toggle';
+import { usePageTransition } from '@/components/PageTransition';
 import styles from './inventory.module.css';
 
 type SalesData = { totalSold: number; last30Days: number; last7Days: number; lastSoldDate: string | null; revenue: number; };
@@ -75,6 +76,7 @@ export default function InventoryPage() {
     const noteInputRef = useRef<HTMLTextAreaElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+    const { navigateTo } = usePageTransition();
     const { data: session } = useSession();
 
     // Keep sticky category headers positioned right under the sticky toolbar
@@ -356,11 +358,7 @@ export default function InventoryPage() {
     };
 
     if (loading) {
-        return (
-            <main className={styles.page}>
-                <div className={`container ${styles.loading}`}>Loading Inventory...</div>
-            </main>
-        );
+        return <div className="route-loading" aria-busy="true" />;
     }
 
     return (
@@ -380,7 +378,7 @@ export default function InventoryPage() {
                     <div className={styles.headerActions}>
                         <button className={styles.addProductBtn} onClick={() => setShowAddModal(true)}>+ Add Product</button>
                         <button className={styles.backBtn} onClick={fetchInventory}>↻ Refresh</button>
-                        <button className={styles.backBtn} onClick={() => router.push('/admin')}>← Dashboard</button>
+                        <button className={styles.backBtn} onClick={() => navigateTo('/admin-dashboard/admin')}>← Dashboard</button>
                     </div>
                 </div>
             </header>

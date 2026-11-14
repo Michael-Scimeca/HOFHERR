@@ -154,7 +154,7 @@ export default async function BBQPage() {
                 {/* ── Hero ── */}
                     <section id="bbq-hero" aria-labelledby="bbq-hero-heading" className={styles.hero}>
                         <div className={`container ${styles.heroInner}`}>
-                            <h1 id="bbq-hero-heading" className={styles.headline}>BBQ <em>Catering</em></h1>
+                            <h1 id="bbq-hero-heading" className={styles.headline}>Real Barbecue, <em>Brought to You</em></h1>
                             <p className={styles.sub}>
                                 Authentic low-and-slow BBQ from the same butchers who cut your steaks. We bring the smoke, the meat, and everything you need to feed a crowd.
                             </p>

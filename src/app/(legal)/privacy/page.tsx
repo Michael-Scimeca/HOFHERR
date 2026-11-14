@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
         <main className={styles.pageWrap}>
             <header className={styles.hero}>
                 <div className={styles.heroInner}>
-                    <h1 className={styles.title}>Privacy Policy</h1>
+                    <h1 className={styles.title}>Privacy <em>Policy</em></h1>
                     <span className={styles.effective}>Effective: March 12, 2026</span>
                 </div>
             </header>

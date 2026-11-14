@@ -2684,6 +2684,7 @@ export default function CustomOrdersPage({
             >
                 <BurnPanel
                     className={styles.drawer}
+                    direction="right-to-left"
                     closing={drawerClosing}
                     onCloseComplete={handleDrawerBurnOutComplete}
                     onClick={e => e.stopPropagation()}

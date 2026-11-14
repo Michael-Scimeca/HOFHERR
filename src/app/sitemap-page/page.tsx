@@ -40,7 +40,6 @@ const SITE_MAP: SiteSection[] = [
         pages: [
             { name: 'Order Online', path: '/online-orders', icon: '🥩' },
             { name: 'Weekly Specials', path: '/specials', icon: '🔥' },
-            { name: 'Featured Products', path: '/featured', icon: '⭐' },
             { name: 'Gift Cards', path: '/gift-cards', icon: '🎁' },
         ],
     },

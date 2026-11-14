@@ -29,7 +29,6 @@ export default function robots(): MetadataRoute.Robots {
                     '/order-tracker-test',
                     '/test-cut-collection',
                     '/greens-and-emblems',
-                    '/modules',
                     '/showcase',
                     '/pitch-deck',
                     '/roadmap',

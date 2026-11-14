@@ -103,7 +103,7 @@ export default function BBQHub({ events, calendarPricing }: Props) {
     const setSides = () => {};
 
     return (
-        <section className={styles.hubWrap}>
+        <section className={`${styles.hubWrap} ${styles.hubWrapFlush}`}>
             <div className={styles.hubGrid}>
                 
                 {/* Column 1: Config */}

@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import type * as RechartsModule from 'recharts';
 import styles from './admin.module.css';
 import Pagination from '@/components/shared/Pagination';
+import { usePageTransition } from '@/components/PageTransition';
 import { resolveOrderCutPieces } from '@/lib/cutCollector';
 
 interface OrderItem {
@@ -67,6 +67,13 @@ interface RestockRequestItem {
     contactValue?: string;
     status?: string;
     notifiedAt?: string;
+}
+
+export interface AdminInitialData {
+    orders: Order[];
+    products: ProductItem[];
+    restocks: RestockRequestItem[];
+    users: User[];
 }
 
 const SEED_ADMIN_ORDERS: Order[] = [
@@ -518,13 +525,30 @@ const ADMIN_STORE_INFO: Record<string, { name: string; address: string; mapsUrl:
     },
 };
 
-export default function AdminDashboard({ username }: { username?: string } = {}) {
-    const [loading, setLoading] = useState(true);
+function mergeWithSeedOrders(apiOrders: Order[]): Order[] {
+    const existingNums = new Set(apiOrders.map(o => o.orderNumber));
+    return [
+        ...SEED_ADMIN_ORDERS.filter(seed => !existingNums.has(seed.orderNumber)),
+        ...apiOrders,
+    ];
+}
+
+export default function AdminDashboard({
+    username,
+    initialData,
+}: {
+    username?: string;
+    initialData?: AdminInitialData;
+} = {}) {
+    const hasInitialData = Boolean(initialData);
+    const [loading, setLoading] = useState(!hasInitialData);
     const [rechartsMod, setRechartsMod] = useState<typeof RechartsModule | null>(null);
-    const [rawOrders, setRawOrders] = useState<Order[]>(SEED_ADMIN_ORDERS);
-    const [users, setUsers] = useState<User[]>([]);
-    const [products, setProducts] = useState<ProductItem[]>([]);
-    const [restocks, setRestocks] = useState<RestockRequestItem[]>([]);
+    const [rawOrders, setRawOrders] = useState<Order[]>(() =>
+        initialData ? mergeWithSeedOrders(initialData.orders) : SEED_ADMIN_ORDERS
+    );
+    const [users, setUsers] = useState<User[]>(() => initialData?.users ?? []);
+    const [products, setProducts] = useState<ProductItem[]>(() => initialData?.products ?? []);
+    const [restocks, setRestocks] = useState<RestockRequestItem[]>(() => initialData?.restocks ?? []);
     const [activeTab, setActiveTab] = useState<'orders' | 'users' | 'restocks'>('orders');
     const [orderFilter, setOrderFilter] = useState<string>('all');
     const [inProgressStageFilter, setInProgressStageFilter] = useState<'all' | 'behind' | 'placed' | 'cutting' | 'ready' | 'done'>('all');
@@ -587,9 +611,11 @@ export default function AdminDashboard({ username }: { username?: string } = {})
     const [customerSearchPage, setCustomerSearchPage] = useState(1);
     const [orderPage, setOrderPage] = useState(1);
     const [orderSearchQuery, setOrderSearchQuery] = useState('');
-    const router = useRouter();
+    const { navigateTo } = usePageTransition();
+    const skipInitialCustomersFetchRef = useRef(hasInitialData);
 
     useEffect(() => {
+        if (hasInitialData) return;
         let cancelled = false;
         const checkAuth = async () => {
             try {
@@ -602,12 +628,7 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                 const data = await res.json();
                 if (cancelled) return;
                 const apiOrders: Order[] = Array.isArray(data.orders) ? data.orders : [];
-                const existingNums = new Set(apiOrders.map(o => o.orderNumber));
-                const mergedOrders = [
-                    ...SEED_ADMIN_ORDERS.filter(seed => !existingNums.has(seed.orderNumber)),
-                    ...apiOrders,
-                ];
-                setRawOrders(mergedOrders);
+                setRawOrders(mergeWithSeedOrders(apiOrders));
                 setProducts(data.products || []);
                 setRestocks(data.restocks || []);
             } catch (err) {
@@ -621,9 +642,14 @@ export default function AdminDashboard({ username }: { username?: string } = {})
         return () => {
             cancelled = true;
         };
-    }, []);
+    }, [hasInitialData]);
 
     useEffect(() => {
+        if (skipInitialCustomersFetchRef.current && customerSearchPage === 1 && customerSearchQuery === '') {
+            skipInitialCustomersFetchRef.current = false;
+            return;
+        }
+        skipInitialCustomersFetchRef.current = false;
         let cancelled = false;
         const fetchCustomers = async () => {
             try {
@@ -1732,11 +1758,7 @@ export default function AdminDashboard({ username }: { username?: string } = {})
     };
 
     if (loading) {
-        return (
-            <div className={styles.adminContainer}>
-                <div className={styles.loading}>Loading Butcher Block Command Center...</div>
-            </div>
-        );
+        return <div className="route-loading" aria-busy="true" />;
     }
 
     return (
@@ -1762,21 +1784,21 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                     </button>
                     <button
                         type="button"
-                        onClick={() => router.push('/admin/inventory')}
+                        onClick={() => navigateTo('/admin/inventory')}
                         className={`${styles.headerBtn} ${styles.headerBtnGold}`}
                     >
                         📦 Inventory
                     </button>
                     <button
                         type="button"
-                        onClick={() => router.push('/dashboard/mikeyscimeca')}
+                        onClick={() => navigateTo('/dashboard/mikeyscimeca')}
                         className={styles.headerBtn}
                     >
                         👤 Customer View
                     </button>
                     <button
                         type="button"
-                        onClick={() => router.push('/')}
+                        onClick={() => navigateTo('/')}
                         className={styles.headerBtn}
                     >
                         View Storefront
@@ -2230,7 +2252,7 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                                     <button
                                         type="button"
                                         className={styles.archiveGoInventoryBtn}
-                                        onClick={() => router.push('/admin/inventory?tab=purchases')}
+                                        onClick={() => navigateTo('/admin/inventory?tab=purchases')}
                                     >
                                         📦 View Archived Orders in Inventory History →
                                     </button>
@@ -2262,7 +2284,7 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                                 <button
                                     type="button"
                                     className={styles.archiveGoInventoryBtn}
-                                    onClick={() => router.push('/admin/inventory?tab=purchases')}
+                                    onClick={() => navigateTo('/admin/inventory?tab=purchases')}
                                 >
                                     🧾 Open Inventory History ({expiredToInventoryOrders.length}) →
                                 </button>
@@ -2282,7 +2304,7 @@ export default function AdminDashboard({ username }: { username?: string } = {})
                                 <button
                                     type="button"
                                     className={styles.archiveHeaderPillBtn}
-                                    onClick={() => router.push('/admin/inventory?tab=purchases')}
+                                    onClick={() => navigateTo('/admin/inventory?tab=purchases')}
                                 >
                                     📦 {expiredToInventoryOrders.length} Picked-Up {expiredToInventoryOrders.length === 1 ? 'Order' : 'Orders'} Expired (&gt;24h) → Moved to Inventory History
                                 </button>

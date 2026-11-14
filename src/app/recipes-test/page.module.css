@@ -3,7 +3,7 @@
 .page {
     max-width: 1180px;
     margin: 0 auto;
-    padding: calc(var(--nav-h) + 48px) var(--container-px-mobile) 96px;
+    padding: 96px var(--container-px-mobile);
     color: var(--text);
 }
 
@@ -14,11 +14,18 @@
     }
 }
 
-.header {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 32px;
+/* ── Hero: same recipe as the other page heroes (Specials, BBQ, Catering…) ── */
+.hero {
+    background: var(--bg-2);
+    background-image: radial-gradient(at 20%, #80002026 0%, #0000 60%), radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
+    border-bottom: 1px solid var(--border);
+    padding: 62px 0 48px;
+    text-align: center;
+}
+
+.heroInner {
+    max-width: 840px;
+    margin: 0 auto;
 }
 
 .kicker {
@@ -30,21 +37,27 @@
 }
 
 .title {
-    margin: 0;
+    margin: 0 0 16px;
     font-family: var(--font-heading);
     font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
     font-weight: 800;
     line-height: 0.96;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
-    color: #fff;
+    color: var(--fg);
+}
+
+.title em {
+    font-style: italic;
+    color: var(--red);
 }
 
 .lede {
-    margin: 0;
-    max-width: 62ch;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #c9c9c9;
+    margin: 0 auto;
+    max-width: 640px;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--fg-muted);
 }
 
 /* ── Index of cuts ── */
@@ -136,7 +149,7 @@
     flex-wrap: wrap;
     align-items: stretch;
     gap: 24px;
-    padding: 28px 28px 24px;
+    padding: 28px 24px 24px;
     background: linear-gradient(145deg, #1b1111 0%, #110b0c 100%);
     border-bottom: 1px solid rgba(212, 168, 83, 0.18);
     color: var(--fg);
@@ -206,7 +219,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 28px;
-    padding: 28px;
+    padding: 28px 24px;
 }
 
 @media (min-width: 860px) {
@@ -348,7 +361,7 @@
     .featured {
         grid-template-columns: 320px minmax(0, 1fr);
         gap: 32px;
-        padding: 28px;
+        padding: 28px 24px;
     }
 }
 
@@ -917,14 +930,14 @@ button.orderBtn {
 .bundleGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 12px;
+    gap: 24px;
 }
 
 .bundle {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 20px;
+    padding: 20px 24px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: #0f0f10;
@@ -1056,7 +1069,7 @@ button.orderBtn {
 }
 
 .recipeHeaderClosed {
-    padding: 16px 28px;
+    padding: 16px 24px;
 }
 
 .recipeHeaderClosed .recipeHeaderText {

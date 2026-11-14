@@ -4,7 +4,7 @@
     overflow: hidden;
     background: var(--bg-2);
     margin-top: -88px;
-    padding: 208px 0 100px;
+    padding: 150px 0 100px; /* 88px tucked under the nav + 62px visible above the headline */
     text-align: center;
 }
 
@@ -136,6 +136,7 @@
     min-height: 680px;
     overflow: hidden;
     position: relative;
+    background: #080606;
 }
 
 .seanContentPart {
@@ -144,6 +145,43 @@
     flex-direction: column;
     justify-content: center;
     background: transparent;
+}
+
+.portraitLayer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.portraitBase {
+    z-index: 2;
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
+    transition:
+        transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.38s ease-out;
+}
+
+.portraitHover {
+    z-index: 3;
+    opacity: 0;
+    transform: translateX(14%) rotate(3.5deg) scale(0.92);
+    box-shadow: -20px 0 48px rgba(0, 0, 0, 0.85);
+    transition:
+        transform 0.54s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.32s ease-out;
+}
+
+.seanImagePart:hover .portraitBase {
+    opacity: 0.18;
+    transform: translateX(-16%) rotate(-4deg) scale(0.9);
+}
+
+.seanImagePart:hover .portraitHover {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
 }
 
 .avatarImg {
@@ -156,18 +194,9 @@
     display: block;
 }
 
-.avatarImgHover {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.35s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
-}
-
-.seanImagePart:hover .avatarImgHover {
-    opacity: 1;
-}
-
 @media (prefers-reduced-motion: reduce) {
-    .avatarImgHover {
+    .portraitBase,
+    .portraitHover {
         transition: none;
     }
 }
@@ -433,7 +462,7 @@
     background-position: center, center;
     background-size: 100% 100%, 380px auto;
     background-repeat: no-repeat, repeat;
-    padding: 72px 0;
+    padding: 96px 0;
     text-align: center;
     color: #f3ead8;
     position: relative;
