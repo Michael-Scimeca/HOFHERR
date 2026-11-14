@@ -28,7 +28,7 @@
 .heroInner {
     position: relative;
     z-index: 10;
-    max-width: calc(720px + var(--container-px) * 2);
+    max-width: calc(960px + var(--container-px) * 2);
     margin: 0 auto;
 }
 
@@ -44,8 +44,10 @@
 
 .headline {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(2.4rem, 5vw, 3.6rem);
-    line-height: 1.15;
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    line-height: 0.96;
     color: var(--fg);
     margin-bottom: 20px;
     animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
@@ -61,6 +63,7 @@
     z-index: 10;
     font-size: 1.1rem;
     color: var(--fg-2);
+    max-width: 720px;
     margin: 0 auto;
     line-height: 1.7;
     animation: fadeInUp 0.6s 0.2s var(--ease-out) both;
@@ -121,29 +124,16 @@
     grid-template-columns: 1fr 1fr;
     background: transparent;
     overflow: hidden;
-    min-height: 560px;
+    min-height: 680px;
     border-top: 1px solid #ffffff1a;
     border-bottom: 1px solid #ffffff1a;
     position: relative;
 }
 
-.seanCard::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 0;
-    height: 100%;
-    width: 5px;
-    background: #c5a255;
-    transform: translateX(-50%);
-    z-index: 2;
-    pointer-events: none;
-}
-
 .seanImagePart {
     width: 100%;
     height: 100%;
-    min-height: 560px;
+    min-height: 680px;
     overflow: hidden;
     position: relative;
 }
@@ -162,8 +152,24 @@
     position: absolute;
     inset: 0;
     object-fit: cover;
-    object-position: center top;
+    object-position: center 8%;
     display: block;
+}
+
+.avatarImgHover {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.seanImagePart:hover .avatarImgHover {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .avatarImgHover {
+        transition: none;
+    }
 }
 
 
@@ -431,12 +437,6 @@
     text-align: center;
     color: #f3ead8;
     position: relative;
-    border-top: 3px solid #8b0a10;
-    border-bottom: 3px solid #8b0a10;
-    box-shadow:
-        inset 0 1px 0 rgba(232, 82, 34, 0.45),
-        inset 0 -1px 0 rgba(232, 82, 34, 0.45),
-        0 14px 36px rgba(0, 0, 0, 0.65);
 }
 
 .cta h2 {
@@ -495,6 +495,13 @@
     background: #8b0a10;
     border-color: #e85222;
     color: #f3ead8;
+}
+
+.ctaBtns :global(.btn-hit:hover:not(:disabled)) > :global(.btn-primary),
+.ctaBtns :global(.btn-hit:focus-visible:not(:disabled)) > :global(.btn-primary) {
+    background: #8b0a10;
+    border-color: #e85222;
+    color: #f3ead8;
     transform: translateY(-2px);
 }
 
@@ -507,6 +514,13 @@
 }
 
 .ctaBtns :global(.btn-secondary:hover) {
+    background: #241c19;
+    border-color: #e85222 !important;
+    color: #f59b1a;
+}
+
+.ctaBtns :global(.btn-hit:hover:not(:disabled)) > :global(.btn-secondary),
+.ctaBtns :global(.btn-hit:focus-visible:not(:disabled)) > :global(.btn-secondary) {
     background: #241c19;
     border-color: #e85222 !important;
     color: #f59b1a;
@@ -529,18 +543,10 @@
         grid-template-columns: 1fr;
     }
 
-    .seanCard::after {
-        left: 0;
-        top: auto;
-        bottom: 0;
-        height: 5px;
-        width: 100%;
-        transform: none;
-    }
-
     .seanImagePart {
-        min-height: 300px;
-        height: 300px;
+        aspect-ratio: 3 / 4;
+        min-height: 0;
+        height: auto;
         position: relative;
     }
 

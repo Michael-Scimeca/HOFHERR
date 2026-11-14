@@ -11,7 +11,10 @@ import styles from './page.module.css';
 import HelpOrdering from '@/components/online-orders/HelpOrdering';
 import {
     DEFAULT_ADD_TO_ORDER_ANIM_CONFIG,
+    OPEN_TEST_MODAL_EVENT,
+    SYNC_LIVE_PRODUCT_EVENT,
     getAddToOrderAnimConfig,
+    resolveProductFlyImage,
     subscribeAddToOrderAnimConfig,
 } from '@/lib/addToOrderAnimConfig';
 import BurnModalShell, { BurnPanel } from '@/components/BurnModalShell';
@@ -865,6 +868,18 @@ export default function CustomOrdersPage({
 } = {}) {
     const butcherCategories = sanityButcher && sanityButcher.length > 0 ? sanityButcher : MAIN_CATEGORIES;
     const depotCategories = sanityDepot && sanityDepot.length > 0 ? sanityDepot : DEPOT_CATEGORIES;
+    const categoryIconByItemName = useMemo(() => {
+        const map = new Map<string, string>();
+        for (const cat of [...butcherCategories, ...depotCategories]) {
+            if (!cat.icon) continue;
+            for (const it of cat.items) {
+                if (!map.has(it.name)) {
+                    map.set(it.name, cat.icon);
+                }
+            }
+        }
+        return map;
+    }, [butcherCategories, depotCategories]);
     const router = useRouter();
     const { navigateTo } = usePageTransition();
     const searchParams = useSearchParams();
@@ -906,6 +921,24 @@ export default function CustomOrdersPage({
         () => DEFAULT_ADD_TO_ORDER_ANIM_CONFIG
     );
 
+    useEffect(() => {
+        const onOpenTestModal = (ev: Event) => {
+            const detail = (ev as CustomEvent<{ name: string; price: string; desc?: string; imageSrc?: string }>).detail;
+            if (!detail) return;
+            setModalClosing(false);
+            setModal({
+                name: detail.name,
+                price: detail.price,
+                desc: detail.desc,
+                image: detail.imageSrc,
+            });
+            setModalQty(1);
+            setModalNote('');
+        };
+        window.addEventListener(OPEN_TEST_MODAL_EVENT, onOpenTestModal);
+        return () => window.removeEventListener(OPEN_TEST_MODAL_EVENT, onOpenTestModal);
+    }, []);
+
     const requestCloseModal = useCallback(() => {
         setModalClosing(true);
     }, []);
@@ -917,15 +950,77 @@ export default function CustomOrdersPage({
     const [orderNote, setOrderNote] = useState('');
     const [restockToast, setRestockToast] = useState(false);
     const [maxStockToast, setMaxStockToast] = useState<string | null>(null);
-    const maxStockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(() => {
+        if (!restockToast) return;
+        const timer = setTimeout(() => setRestockToast(false), 4500);
+        return () => clearTimeout(timer);
+    }, [restockToast]);
+
+    useEffect(() => {
+        if (!maxStockToast) return;
+        const timer = setTimeout(() => setMaxStockToast(null), 3500);
+        return () => clearTimeout(timer);
+    }, [maxStockToast]);
 
     const showMaxStockToast = useCallback((itemName: string) => {
-        if (maxStockTimerRef.current) clearTimeout(maxStockTimerRef.current);
         setMaxStockToast(`Maximum ${ITEM_MAX_QTY} of "${itemName}" per order to keep cuts fresh for everyone.`);
-        maxStockTimerRef.current = setTimeout(() => {
-            setMaxStockToast(null);
-        }, 3500);
     }, []);
+
+    useEffect(() => {
+        const onDevOverlay = (ev: Event) => {
+            const kind = (ev as CustomEvent<{ kind?: string }>).detail?.kind;
+            if (!kind) return;
+            if (kind === 'item') {
+                setModalClosing(false);
+                setModal({
+                    name: 'Bone-In Pork Roast',
+                    price: '$12.99/lb',
+                    desc: 'Heritage Midwest pork roast, French-trimmed to order by our butchers.',
+                    image: '/assets/identity/boxes/box-kraft-twine-rosemary.png',
+                });
+                setModalQty(1);
+                setModalNote('');
+            } else if (kind === 'checkout') {
+                setCheckoutClosing(false);
+                setCheckoutStep('form');
+                setCheckoutOpen(true);
+            } else if (kind === 'restock-auth') {
+                setCheckoutClosing(false);
+                setCheckoutStep('choice');
+                setAuthMode('login');
+                setAuthIntent('restock');
+                setCheckoutOpen(true);
+            } else if (kind === 'restock-toast') {
+                setRestockToast(true);
+            } else if (kind === 'max-stock-toast') {
+                showMaxStockToast('Prime Ribeye');
+            } else if (kind === 'cart-filled') {
+                setCart(prev =>
+                    prev.length > 0
+                        ? prev
+                        : [
+                              { name: 'New York Strip', price: '$42.99/lb', qty: 2, note: '' },
+                              { name: 'Al Pastor Sausage', price: '$13.99/lb', qty: 1, note: '' },
+                              { name: 'Smoked Pork Chops', price: '$16.99/lb', qty: 1, note: '' },
+                              { name: 'Bacon', price: '$14.99/lb', qty: 1, note: '' },
+                              { name: 'Porchetta', price: '$28.99/lb', qty: 2, note: '' },
+                              { name: 'Boneless Country Style Ribs', price: '$4.99/lb', qty: 1, note: '' },
+                              { name: 'Bone-In Pork Shoulder', price: '$7.99/lb', qty: 1, note: '' },
+                              { name: 'Boneless Pork Shoulder', price: '$8.99/lb', qty: 2, note: '' },
+                          ]
+                );
+                setDrawerClosing(false);
+                setDrawerOpen(true);
+            } else if (kind === 'cart-empty') {
+                setCart([]);
+                setDrawerClosing(false);
+                setDrawerOpen(true);
+            }
+        };
+        window.addEventListener('hofherr-dev-shop-overlay', onDevOverlay);
+        return () => window.removeEventListener('hofherr-dev-shop-overlay', onDevOverlay);
+    }, [showMaxStockToast]);
 
     const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
@@ -1228,9 +1323,57 @@ export default function CustomOrdersPage({
         const signup = searchParams.get('signup') === 'true';
         const openCart = searchParams.get('cart') === 'open';
         const animStudio = searchParams.get('anim') === 'true';
+        const devModal = searchParams.get('devModal');
 
         if (animStudio) {
             setModal(cur => cur ?? { name: 'Red White And Blue Sausages', price: '$12.99/lb', desc: 'House-crafted links, ground fresh daily.' });
+        }
+
+        if (devModal === 'item') {
+            setModalClosing(false);
+            setModal({
+                name: 'Bone-In Pork Roast',
+                price: '$12.99/lb',
+                desc: 'Heritage Midwest pork roast, French-trimmed to order by our butchers.',
+                image: '/assets/identity/boxes/box-kraft-twine-rosemary.png',
+            });
+            setModalQty(1);
+            setModalNote('');
+        } else if (devModal === 'checkout') {
+            setCheckoutClosing(false);
+            setCheckoutStep('form');
+            setCheckoutOpen(true);
+        } else if (devModal === 'restock-auth') {
+            setCheckoutClosing(false);
+            setCheckoutStep('choice');
+            setAuthMode('login');
+            setAuthIntent('restock');
+            setCheckoutOpen(true);
+        } else if (devModal === 'restock-toast') {
+            setRestockToast(true);
+        } else if (devModal === 'max-stock-toast') {
+            showMaxStockToast('Prime Ribeye');
+        } else if (devModal === 'cart-filled') {
+            setCart(prev =>
+                prev.length > 0
+                    ? prev
+                    : [
+                          { name: 'New York Strip', price: '$42.99/lb', qty: 2, note: '' },
+                          { name: 'Al Pastor Sausage', price: '$13.99/lb', qty: 1, note: '' },
+                          { name: 'Smoked Pork Chops', price: '$16.99/lb', qty: 1, note: '' },
+                          { name: 'Bacon', price: '$14.99/lb', qty: 1, note: '' },
+                          { name: 'Porchetta', price: '$28.99/lb', qty: 2, note: '' },
+                          { name: 'Boneless Country Style Ribs', price: '$4.99/lb', qty: 1, note: '' },
+                          { name: 'Bone-In Pork Shoulder', price: '$7.99/lb', qty: 1, note: '' },
+                          { name: 'Boneless Pork Shoulder', price: '$8.99/lb', qty: 2, note: '' },
+                      ]
+            );
+            setDrawerClosing(false);
+            setDrawerOpen(true);
+        } else if (devModal === 'cart-empty') {
+            setCart([]);
+            setDrawerClosing(false);
+            setDrawerOpen(true);
         }
 
         if ((login || signup) && !isLoggedIn) {
@@ -1246,7 +1389,7 @@ export default function CustomOrdersPage({
             setDrawerClosing(false);
             setDrawerOpen(true);
         }
-    }, [searchParams, isLoggedIn, authIntent]);
+    }, [searchParams, isLoggedIn, authIntent, showMaxStockToast]);
 
     const handleForgotSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -1660,39 +1803,105 @@ export default function CustomOrdersPage({
         setTimeout(() => { isScrollingTo.current = false; }, 1500);
     };
 
-    const openModal = (item: Item) => {
+    const openModal = useCallback((item: Item) => {
         setModalClosing(false);
         setModal(item);
         setModalQty(1);
         setModalNote('');
-    };
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(
+                new CustomEvent(SYNC_LIVE_PRODUCT_EVENT, {
+                    detail: {
+                        name: item.name,
+                        price: item.price,
+                        desc: item.desc,
+                        imageSrc: item.image,
+                        categoryIcon: categoryIconByItemName.get(item.name),
+                    },
+                })
+            );
+        }
+    }, [categoryIconByItemName]);
+
+    const handleRowAddClick = useCallback((item: Item, e: React.MouseEvent<HTMLButtonElement>) => {
+        if (!animCfg.quickAddDirect) {
+            openModal(item);
+            return;
+        }
+        const existingItem = cart.find(i => i.name === item.name);
+        const currentQty = existingItem ? existingItem.qty : 0;
+        if (currentQty + 1 >= ITEM_MAX_QTY) {
+            showMaxStockToast(item.name);
+        }
+        const nextQty = Math.min(ITEM_MAX_QTY, currentQty + 1);
+        const addedDelta = Math.max(0, nextQty - currentQty);
+
+        setCart(prev => {
+            const existingIndex = prev.findIndex(i => i.name === item.name);
+            if (existingIndex >= 0) {
+                const updated = [...prev];
+                updated[existingIndex] = {
+                    ...updated[existingIndex],
+                    qty: Math.min(ITEM_MAX_QTY, updated[existingIndex].qty + 1),
+                };
+                return updated;
+            }
+            return [...prev, { ...item, qty: 1, note: '' }];
+        });
+
+        const rect = e.currentTarget.getBoundingClientRect();
+        triggerFlyAnimation({
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
+            itemName: item.name,
+            imageSrc: item.image,
+            categoryIcon: categoryIconByItemName.get(item.name),
+            arrivingQty: addedDelta,
+        });
+    }, [animCfg.quickAddDirect, openModal, cart, showMaxStockToast, triggerFlyAnimation, categoryIconByItemName]);
 
     const confirmAdd = useCallback((e?: React.MouseEvent) => {
         if (!modal || modalClosing) return;
-        const existingItem = cart.find(i => i.name === modal.name);
+        const rect = e ? (e.currentTarget as HTMLElement).getBoundingClientRect() : null;
+        const targetItem = modal;
+        const existingItem = cart.find(i => i.name === targetItem.name);
         const currentQty = existingItem ? existingItem.qty : 0;
         if (currentQty + modalQty >= ITEM_MAX_QTY) {
-            showMaxStockToast(modal.name);
+            showMaxStockToast(targetItem.name);
         }
+        const nextQty = Math.min(ITEM_MAX_QTY, currentQty + modalQty);
+        const addedDelta = Math.max(0, nextQty - currentQty);
 
         setCart(prev => {
-            const existingIndex = prev.findIndex(i => i.name === modal.name);
+            const existingIndex = prev.findIndex(i => i.name === targetItem.name);
             if (existingIndex >= 0) {
                 const updated = [...prev];
                 const newQty = Math.min(ITEM_MAX_QTY, updated[existingIndex].qty + modalQty);
                 updated[existingIndex] = { ...updated[existingIndex], qty: newQty, note: modalNote || updated[existingIndex].note };
                 return updated;
             }
-            return [...prev, { ...modal, qty: Math.min(ITEM_MAX_QTY, modalQty), note: modalNote }];
+            return [...prev, { ...targetItem, qty: Math.min(ITEM_MAX_QTY, modalQty), note: modalNote }];
         });
-        setModalClosing(true);
-        // Fire fly-to-cart animation from the button position
-        if (e) {
-            const btn = e.currentTarget as HTMLElement;
-            const rect = btn.getBoundingClientRect();
-            triggerFlyAnimation({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+
+        if (animCfg.burnOutOnConfirm) {
+            setModalClosing(true);
+        } else {
+            setModalClosing(false);
+            setModal(null);
         }
-    }, [modal, modalClosing, modalQty, modalNote, cart, triggerFlyAnimation, showMaxStockToast]);
+
+        // Fire fly-to-cart animation from the button position
+        if (rect) {
+            triggerFlyAnimation({
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2,
+                itemName: targetItem.name,
+                imageSrc: targetItem.image,
+                categoryIcon: categoryIconByItemName.get(targetItem.name),
+                arrivingQty: addedDelta,
+            });
+        }
+    }, [modal, modalClosing, modalQty, modalNote, cart, animCfg.burnOutOnConfirm, triggerFlyAnimation, showMaxStockToast, categoryIconByItemName]);
 
     const removeItem = (name: string) => setCart(prev => prev.filter(i => i.name !== name));
     const changeQty = (name: string, delta: number) => {
@@ -1900,75 +2109,55 @@ export default function CustomOrdersPage({
     }, []);
 
 
-    // ── JSON-LD structured data for Google rich results ──
+    // ── JSON-LD structured data for Google rich results (linked to #business & #depot) ──
+    const buildMenuSections = (categories: Category[]) =>
+        categories.map(cat => ({
+            '@type': 'MenuSection',
+            name: cat.label,
+            ...(cat.sub ? { description: cat.sub } : {}),
+            hasMenuItem: cat.items.map(item => {
+                const numericPrice = item.price.match(/\d+(?:\.\d+)?/)?.[0];
+                return {
+                    '@type': 'MenuItem',
+                    name: item.name,
+                    ...(item.desc ? { description: item.desc } : {}),
+                    offers: {
+                        '@type': 'Offer',
+                        ...(numericPrice
+                            ? { price: numericPrice, priceCurrency: 'USD' }
+                            : {}),
+                        availability: item.inStock === false
+                            ? 'https://schema.org/OutOfStock'
+                            : 'https://schema.org/InStock',
+                    },
+                };
+            }),
+        }));
+
     const menuJsonLd = {
         '@context': 'https://schema.org',
-        '@type': 'Restaurant',
-        name: 'Hofherr Meat Co.',
-        url: 'https://hofherrmeatco.com',
-        telephone: '+1-847-441-6328',
-        address: [
+        '@graph': [
             {
-                '@type': 'PostalAddress',
-                streetAddress: '300 Happ Rd',
-                addressLocality: 'Northfield',
-                addressRegion: 'IL',
-                postalCode: '60093',
-                addressCountry: 'US',
+                '@type': 'FoodEstablishment',
+                '@id': 'https://hofherrmeatco.com/#business',
+                hasMenu: {
+                    '@type': 'Menu',
+                    '@id': 'https://hofherrmeatco.com/online-orders#butcher-menu',
+                    name: 'The Butcher Shop Menu — Northfield',
+                    url: 'https://hofherrmeatco.com/online-orders?store=butcher',
+                    hasMenuSection: buildMenuSections(butcherCategories),
+                },
             },
             {
-                '@type': 'PostalAddress',
-                streetAddress: '754 Elm St',
-                addressLocality: 'Winnetka',
-                addressRegion: 'IL',
-                postalCode: '60093',
-                addressCountry: 'US',
-            },
-        ],
-        hasMenu: [
-            {
-                '@type': 'Menu',
-                name: 'The Butcher Shop',
-                hasMenuSection: butcherCategories.map(cat => ({
-                    '@type': 'MenuSection',
-                    name: cat.label,
-                    description: cat.sub,
-                    hasMenuItem: cat.items.map(item => ({
-                        '@type': 'MenuItem',
-                        name: item.name,
-                        ...(item.desc ? { description: item.desc } : {}),
-                        offers: {
-                            '@type': 'Offer',
-                            price: item.price.replace(/[^0-9.]/g, ''),
-                            priceCurrency: 'USD',
-                            availability: item.inStock === false
-                                ? 'https://schema.org/OutOfStock'
-                                : 'https://schema.org/InStock',
-                        },
-                    })),
-                })),
-            },
-            {
-                '@type': 'Menu',
-                name: 'The Depot',
-                hasMenuSection: depotCategories.map(cat => ({
-                    '@type': 'MenuSection',
-                    name: cat.label,
-                    description: cat.sub,
-                    hasMenuItem: cat.items.map(item => ({
-                        '@type': 'MenuItem',
-                        name: item.name,
-                        ...(item.desc ? { description: item.desc } : {}),
-                        offers: {
-                            '@type': 'Offer',
-                            price: item.price.replace(/[^0-9.]/g, ''),
-                            priceCurrency: 'USD',
-                            availability: item.inStock === false
-                                ? 'https://schema.org/OutOfStock'
-                                : 'https://schema.org/InStock',
-                        },
-                    })),
-                })),
+                '@type': 'FoodEstablishment',
+                '@id': 'https://hofherrmeatco.com/#depot',
+                hasMenu: {
+                    '@type': 'Menu',
+                    '@id': 'https://hofherrmeatco.com/online-orders#depot-menu',
+                    name: 'The Depot Menu — Winnetka',
+                    url: 'https://hofherrmeatco.com/online-orders?store=depot',
+                    hasMenuSection: buildMenuSections(depotCategories),
+                },
             },
         ],
     };
@@ -2398,7 +2587,7 @@ export default function CustomOrdersPage({
                                                         )}
                                                     </div>
                                                 ) : (
-                                                    <button className={styles.addBtn} onClick={() => openModal(item)}>
+                                                    <button className={styles.addBtn} onClick={(e) => handleRowAddClick(item, e)}>
                                                         Add to Cart
                                                     </button>
                                                 )}
@@ -2440,9 +2629,16 @@ export default function CustomOrdersPage({
                             <div className={styles.modalPrice}>{modal.price}</div>
                         </div>
                         {animCfg.flyShowModalPreview && (
-                            <div className={styles.modalPreviewBadge} title="Selected Parcel Image">
+                            <div className={styles.modalPreviewBadge} title="Product Flying Into Cart">
                                 <img
-                                    src={animCfg.flyImageSrc || '/assets/item.png?v=2'}
+                                    src={resolveProductFlyImage(
+                                        {
+                                            itemName: modal.name,
+                                            imageSrc: modal.image,
+                                            categoryIcon: categoryIconByItemName.get(modal.name),
+                                        },
+                                        animCfg
+                                    )}
                                     alt=""
                                     width={48}
                                     height={48}
@@ -2554,7 +2750,31 @@ export default function CustomOrdersPage({
                                                     <button className={styles.qtyBtn} onClick={() => changeQty(item.name, -1)}>−</button>
                                                     <span className={styles.qtyNum}>{item.qty}</span>
                                                     <button className={styles.qtyBtn} onClick={() => changeQty(item.name, 1)}>+</button>
-                                                    <button className={styles.removeBtn} onClick={() => removeItem(item.name)}>✕</button>
+                                                    <button
+                                                        type="button"
+                                                        className={styles.removeBtn}
+                                                        onClick={() => removeItem(item.name)}
+                                                        aria-label={`Remove ${item.name}`}
+                                                        title={`Remove ${item.name}`}
+                                                    >
+                                                        <svg
+                                                            width="14"
+                                                            height="14"
+                                                            viewBox="0 0 24 24"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeWidth="1.9"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            aria-hidden="true"
+                                                        >
+                                                            <path d="M3 6h18" />
+                                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                            <line x1="10" y1="11" x2="10" y2="17" />
+                                                            <line x1="14" y1="11" x2="14" y2="17" />
+                                                        </svg>
+                                                    </button>
                                                 </div>
                                             </div>
                                         );
@@ -2648,7 +2868,13 @@ export default function CustomOrdersPage({
                                                             onClick={(e) => {
                                                                 const btn = e.currentTarget;
                                                                 const rect = btn.getBoundingClientRect();
-                                                                triggerFlyAnimation({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+                                                                triggerFlyAnimation({
+                                                                    x: rect.left + rect.width / 2,
+                                                                    y: rect.top + rect.height / 2,
+                                                                    itemName: p.name,
+                                                                    categoryIcon: categoryIconByItemName.get(p.name),
+                                                                    arrivingQty: 1,
+                                                                });
                                                                 setCart(prev => {
                                                                     const exists = prev.find(i => i.name === p.name);
                                                                     if (exists) return prev.map(i => i.name === p.name ? { ...i, qty: i.qty + 1 } : i);
@@ -2722,12 +2948,11 @@ export default function CustomOrdersPage({
                 onClick={requestCloseCheckout}
             >
                 <BurnModalShell
-                    className={styles.modal}
-                    maxWidth={480}
+                    className={`${styles.modal} ${checkoutStep === 'form' ? styles.checkoutFormModal : styles.checkoutAuthModal}`}
+                    maxWidth={checkoutStep === 'form' ? 760 : 480}
                     closing={checkoutClosing}
                     onCloseComplete={handleCheckoutBurnOutComplete}
                     onClick={e => e.stopPropagation()}
-                    style={{ maxWidth: 480, position: 'relative' }}
                 >
 
                     <>

@@ -516,8 +516,8 @@ export function buildOrderConfirmationEmail(payload: OrderConfirmationEmailPaylo
                             </tr>
                             ${discountAmt > 0 ? `
                             <tr>
-                                <td style="padding:4px 0;font-size:13px;color:#27ae60;">Discount (${safeEsc(coupon?.code || '')})</td>
-                                <td style="padding:4px 0;font-size:13px;color:#27ae60;text-align:right;">-$${discountAmt.toFixed(2)}</td>
+                                <td style="padding:4px 0;font-size:13px;color:#16a34a;">Discount (${safeEsc(coupon?.code || '')})</td>
+                                <td style="padding:4px 0;font-size:13px;color:#16a34a;text-align:right;">-$${discountAmt.toFixed(2)}</td>
                             </tr>` : ''}
                             <tr>
                                 <td style="padding:4px 0;font-size:13px;color:#999;">Tax (2.25%)</td>

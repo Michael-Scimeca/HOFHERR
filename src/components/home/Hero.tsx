@@ -80,11 +80,15 @@ export default function Hero() {
 
                         {/* CTAs */}
                         <div className={styles.ctas}>
-                            <Link href="/online-orders" className="btn btn-primary">
-                                <FireBorder active={true} radius={8} />
-                                Order Online
+                            <Link href="/online-orders" className="btn-hit">
+                                <span className="btn btn-primary">
+                                    <FireBorder active={true} radius={8} />
+                                    Order Online
+                                </span>
                             </Link>
-                            <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
+                            <a href="tel:8474416328" className="btn-hit">
+                                <span className="btn btn-secondary">📞 (847) 441-MEAT</span>
+                            </a>
                         </div>
 
 

@@ -122,7 +122,7 @@ export default function CateringCalculator({
             <div className={styles.inputGroup} style={{ marginTop: '20px' }}>
                 <label className={styles.label}>
                     Pick Your Meats
-                    <span style={{ fontSize: 11, color: selectedMeats.length >= 1 ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                    <span style={{ fontSize: 11, color: selectedMeats.length >= 1 ? '#16a34a' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
                         {selectedMeats.length} selected
                     </span>
                     <span style={{ fontSize: 10, color: 'var(--fg-muted)', fontWeight: 400, marginLeft: 6, letterSpacing: 0, textTransform: 'none' }}>
@@ -177,7 +177,7 @@ export default function CateringCalculator({
             <div className={styles.inputGroup} style={{ marginTop: '8px' }}>
                 <label className={styles.label}>
                     Pick Your Sides
-                    <span style={{ fontSize: 11, color: selectedSides.length >= 1 ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                    <span style={{ fontSize: 11, color: selectedSides.length >= 1 ? '#16a34a' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
                         {selectedSides.length} selected
                     </span>
                     <span style={{ fontSize: 10, color: 'var(--fg-muted)', fontWeight: 400, marginLeft: 6, letterSpacing: 0, textTransform: 'none' }}>

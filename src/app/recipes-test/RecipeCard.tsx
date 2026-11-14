@@ -31,17 +31,29 @@ export default function RecipeCard({ recipe: r, today, onPickOccasion, open, onT
     const total = plans.reduce((sum, p) => sum + p.cost, 0);
     const pickup = pickupWindow(today, r.leadDays);
 
-    const flash = (key: string, source?: HTMLElement) => {
+    const flash = (
+        key: string,
+        source?: HTMLElement,
+        flyMeta?: { itemName?: string; imageSrc?: string; arrivingQty?: number }
+    ) => {
         if (source) {
             const rect = source.getBoundingClientRect();
-            triggerFlyAnimation({ x: rect.left + rect.width / 2 - 40, y: rect.top - 40 });
+            triggerFlyAnimation({
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2,
+                itemName: flyMeta?.itemName,
+                imageSrc: flyMeta?.imageSrc,
+                arrivingQty: flyMeta?.arrivingQty,
+            });
         }
         setJustAdded(key);
         window.setTimeout(() => setJustAdded(current => (current === key ? null : current)), 2500);
     };
 
     const handleAddEverything = (e: React.MouseEvent<HTMLButtonElement>) => {
+        let addedTotal = 0;
         for (const p of plans) {
+            addedTotal += p.qty;
             addItem({
                 name: p.item.name,
                 price: p.item.price,
@@ -52,12 +64,16 @@ export default function RecipeCard({ recipe: r, today, onPickOccasion, open, onT
                         : `For ${r.title} (serves ${servings})`,
             });
         }
-        flash('everything', e.currentTarget);
+        flash('everything', e.currentTarget, {
+            itemName: plans[0]?.item.name || r.title,
+            imageSrc: r.image,
+            arrivingQty: addedTotal,
+        });
     };
 
     const handleAddPick = (pick: MenuPick, e: React.MouseEvent<HTMLButtonElement>) => {
         addItem({ name: pick.name, price: pick.price, qty: 1, note: '' });
-        flash(pick.name, e.currentTarget);
+        flash(pick.name, e.currentTarget, { itemName: pick.name, arrivingQty: 1 });
     };
 
     const renderPicks = (picks: MenuPick[]) => (

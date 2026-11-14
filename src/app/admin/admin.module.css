@@ -34,10 +34,10 @@
 }
 
 .header h1 {
-    font-size: clamp(2rem, 4vw, 2.75rem);
-    font-weight: 700;
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    font-weight: 800;
     margin: 0;
-    line-height: 1;
+    line-height: 0.96;
     letter-spacing: 0.02em;
     text-transform: uppercase;
     color: #fff;
@@ -2105,7 +2105,7 @@
 }
 
 .trackerEtaReady {
-    color: #4ade80;
+    color: #16a34a;
 }
 
 /* ── Customer Contact Strip at Top of Admin Order Tracker Card ── */
@@ -2360,11 +2360,11 @@
 }
 
 .trackerSegPickedUp .trackerSegFill {
-    background: linear-gradient(90deg, var(--green-depot, #142a1e) 0%, #15803d 55%, #16a34a 100%);
+    background: linear-gradient(90deg, var(--green-depot, #142a1e) 0%, #16a34a 55%, #16a34a 100%);
 }
 
 .trackerSegPickedUp:hover {
-    border-color: #4ade80;
+    border-color: #16a34a;
     box-shadow: 0 0 22px rgba(34, 197, 94, 0.48);
 }
 

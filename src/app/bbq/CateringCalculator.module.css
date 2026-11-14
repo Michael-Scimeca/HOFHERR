@@ -256,7 +256,7 @@
 }
 
 .checkbox:checked {
-    background: #27ae60;
+    background: #16a34a;
 }
 
 .checkbox:checked::after {
@@ -333,7 +333,7 @@
 
 .totalNum {
     font-size: 24px;
-    color: #2ecc71;
+    color: #16a34a;
 }
 
 .receiptNote {

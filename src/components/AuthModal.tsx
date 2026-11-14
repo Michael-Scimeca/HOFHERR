@@ -21,9 +21,9 @@ import styles from './AuthModal.module.css';
 export type AuthMode = 'login' | 'register' | 'forgot';
 const OPEN_EVENT = 'hofherr-open-auth-modal';
 
-/** Open the modal from anywhere on the client. */
-export function openAuthModal(mode: 'login' | 'register' = 'login') {
-    window.dispatchEvent(new CustomEvent(OPEN_EVENT, { detail: { mode } }));
+/** Open the modal from anywhere on the client. Pass force=true in DevNav to preview even while signed in. */
+export function openAuthModal(mode: AuthMode = 'login', force = false) {
+    window.dispatchEvent(new CustomEvent(OPEN_EVENT, { detail: { mode, force } }));
 }
 
 const PROVIDERS: { id: string; label: string; icon: ReactNode }[] = [
@@ -74,14 +74,15 @@ export default function AuthModal() {
     // Listen for open requests (navbar links, anything calling openAuthModal).
     useEffect(() => {
         const onOpen = (e: Event) => {
-            if (status === 'authenticated') return;
-            const requested = (e as CustomEvent<{ mode?: 'login' | 'register' }>).detail?.mode;
+            const detail = (e as CustomEvent<{ mode?: AuthMode; force?: boolean }>).detail;
+            if (status === 'authenticated' && !detail?.force) return;
+            const requested = detail?.mode;
             returnFocusRef.current = document.activeElement as HTMLElement | null;
             setClosing(false);
             setError('');
             setNotice('');
             setForgotSent(false);
-            setMode(requested === 'register' ? 'register' : 'login');
+            setMode(requested === 'register' ? 'register' : requested === 'forgot' ? 'forgot' : 'login');
         };
         window.addEventListener(OPEN_EVENT, onOpen);
         return () => window.removeEventListener(OPEN_EVENT, onOpen);

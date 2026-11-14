@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import CateringCalendar from '@/components/CateringCalendar';
-import { openCateringDrawer } from '@/components/CateringDrawer';
 import styles from '../specials/CateringHub.module.css';
 
 const PIG_PACKAGES = [
@@ -312,7 +311,7 @@ export default function CateringHub({ events, calendarPricing }: Props) {
                                 <div className={calcStyles.inputGroup} style={{ marginTop: '20px' }}>
                                     <label className={calcStyles.label}>
                                         Pick Your Meats
-                                        <span style={{ fontSize: 11, color: selectedMeats.length >= 1 ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                                        <span style={{ fontSize: 11, color: selectedMeats.length >= 1 ? '#16a34a' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
                                             {selectedMeats.length} selected
                                         </span>
                                         <span style={{ fontSize: 10, color: 'var(--fg-muted)', fontWeight: 400, marginLeft: 6, letterSpacing: 0, textTransform: 'none' }}>
@@ -367,7 +366,7 @@ export default function CateringHub({ events, calendarPricing }: Props) {
                                 <div className={calcStyles.inputGroup} style={{ marginTop: '8px' }}>
                                     <label className={calcStyles.label}>
                                         Pick Your Sides
-                                        <span style={{ fontSize: 11, color: selectedSides.length >= 1 ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                                        <span style={{ fontSize: 11, color: selectedSides.length >= 1 ? '#16a34a' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
                                             {selectedSides.length} selected
                                         </span>
                                         <span style={{ fontSize: 10, color: 'var(--fg-muted)', fontWeight: 400, marginLeft: 6, letterSpacing: 0, textTransform: 'none' }}>
@@ -449,7 +448,7 @@ export default function CateringHub({ events, calendarPricing }: Props) {
                                                 <div className={calcStyles.inputGroup} style={{ marginTop: '12px' }}>
                                                     <label className={calcStyles.label}>
                                                         Pick Your Sides
-                                                        <span style={{ fontSize: 11, color: selectedSides.length >= sideCount ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                                                        <span style={{ fontSize: 11, color: selectedSides.length >= sideCount ? '#16a34a' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
                                                             {selectedSides.length}/{sideCount} selected
                                                         </span>
                                                     </label>
@@ -505,7 +504,7 @@ export default function CateringHub({ events, calendarPricing }: Props) {
                                                 <div className={calcStyles.inputGroup} style={{ marginTop: '12px' }}>
                                                     <label className={calcStyles.label}>
                                                         Pick Your Add&apos;l Meat{meatCount > 1 ? 's' : ''}
-                                                        <span style={{ fontSize: 11, color: selectedMeats.length >= meatCount ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                                                        <span style={{ fontSize: 11, color: selectedMeats.length >= meatCount ? '#16a34a' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
                                                             {selectedMeats.length}/{meatCount} selected
                                                         </span>
                                                     </label>
@@ -706,7 +705,7 @@ export default function CateringHub({ events, calendarPricing }: Props) {
                                                 {selectedSides.map(s => (
                                                     <span key={s} style={{
                                                         fontSize: '11px',
-                                                        background: 'rgba(46, 204, 113, 0.12)',
+                                                        background: 'rgba(22, 163, 74, 0.12)',
                                                         color: 'rgba(255,255,255,0.85)',
                                                         padding: '3px 8px',
                                                         borderRadius: '4px',
@@ -743,7 +742,7 @@ export default function CateringHub({ events, calendarPricing }: Props) {
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '18px', fontWeight: 800, color: '#fff', paddingTop: '20px', borderTop: '1px dashed rgba(255,255,255,0.2)', marginBottom: '16px' }}>
                                     <span>Estimated Total</span>
-                                    <span style={{ fontSize: '24px', color: '#2ecc71' }}>${finalEstimate.toLocaleString()}</span>
+                                    <span style={{ fontSize: '24px', color: '#16a34a' }}>${finalEstimate.toLocaleString()}</span>
                                 </div>
 
                                 {/* Validation warning if no meats/sides selected */}
@@ -784,18 +783,17 @@ export default function CateringHub({ events, calendarPricing }: Props) {
                                 ) : (
                                     <button
                                         type="button"
-                                        onClick={openCateringDrawer}
-                                        className="btn btn-primary"
-                                        style={{ width: '100%' }}
+                                        onClick={() => setShowForm(true)}
+                                        className={`btn btn-primary ${styles.fullWidthBtn}`}
                                         disabled={eventType !== 'pig' && (selectedMeats.length === 0 || selectedSides.length === 0)}
                                     >
-                                        Open Quick Quote &amp; Inquiry Drawer
+                                        Request Catering Quote
                                     </button>
                                 )}
                             </>
                         ) : (
                             <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-                                <div style={{ width: '64px', height: '64px', background: 'rgba(46, 204, 113, 0.1)', color: '#2ecc71', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '32px' }}>✓</div>
+                                <div style={{ width: '64px', height: '64px', background: 'rgba(22, 163, 74, 0.1)', color: '#16a34a', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '32px' }}>✓</div>
                                 <h3 style={{ color: '#fff', fontSize: '20px', marginBottom: '12px' }}>Thanks, {name.split(' ')[0]}!</h3>
                                 <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
                                     Your {eventType === 'pig' ? 'Pig Roast' : eventType === 'feast' ? 'BBQ Feast' : 'Backyard BBQ'} inquiry for <strong>{dateLabel}</strong> has been sent to Sean and the team.

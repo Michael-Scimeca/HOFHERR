@@ -83,7 +83,9 @@ export default function RecipesBrowser({ featuredCollectionId, today }: Props) {
     const showCollection = (id: string) => setFilter({ kind: 'collection', id });
 
     const handleAddBundle = (bundle: Bundle, e: React.MouseEvent<HTMLButtonElement>) => {
+        let addedTotal = 0;
         for (const item of bundle.items) {
+            addedTotal += item.qty;
             addItem({
                 name: item.name,
                 price: item.price,
@@ -92,7 +94,12 @@ export default function RecipesBrowser({ featuredCollectionId, today }: Props) {
             });
         }
         const rect = e.currentTarget.getBoundingClientRect();
-        triggerFlyAnimation({ x: rect.left + rect.width / 2 - 40, y: rect.top - 40 });
+        triggerFlyAnimation({
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
+            itemName: bundle.items[0]?.name || bundle.name,
+            arrivingQty: addedTotal,
+        });
         setAddedBundle(bundle.id);
         window.setTimeout(() => setAddedBundle(current => (current === bundle.id ? null : current)), 2500);
     };

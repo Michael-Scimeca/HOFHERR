@@ -63,7 +63,7 @@
 }
 
 .legendAvailable {
-    background: #2ecc71;
+    background: #16a34a;
 }
 
 .legendBooked {
@@ -337,8 +337,8 @@
     gap: 6px;
     font-size: 12px;
     font-weight: 700;
-    color: #2ecc71;
-    background: rgba(46, 204, 113, 0.1);
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.1);
     padding: 4px 12px;
     border-radius: 100px;
     width: fit-content;
@@ -456,7 +456,7 @@
 
 .notifySent {
     font-size: 13px;
-    color: #2ecc71;
+    color: #16a34a;
     font-weight: 600;
     margin: 0;
 }

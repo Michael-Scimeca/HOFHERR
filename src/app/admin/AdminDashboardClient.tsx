@@ -566,6 +566,23 @@ export default function AdminDashboard({ username }: { username?: string } = {})
         tierName: string;
         points: number;
     } | null>(null);
+
+    useEffect(() => {
+        const openSampleCustomer = () => {
+            setSelectedCustomerMeta({
+                user: { name: 'Michael Scimeca', email: 'michael@hofherrmeatco.com', phone: '(847) 441-6328' },
+                orders: orders.slice(0, 3),
+                lifetimeSpend: 1480.5,
+                tierName: 'Pitmaster Reserve',
+                points: 1480,
+            });
+        };
+        if (typeof window !== 'undefined' && window.location.search.includes('devModal=customer')) {
+            openSampleCustomer();
+        }
+        window.addEventListener('hofherr-dev-admin-modal', openSampleCustomer);
+        return () => window.removeEventListener('hofherr-dev-admin-modal', openSampleCustomer);
+    }, [orders]);
     const [customerSearchQuery, setCustomerSearchQuery] = useState('');
     const [customerSearchPage, setCustomerSearchPage] = useState(1);
     const [orderPage, setOrderPage] = useState(1);

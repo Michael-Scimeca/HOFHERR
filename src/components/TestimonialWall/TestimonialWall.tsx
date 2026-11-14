@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import FireBorder from './FireBorder';
 import s from './TestimonialWall.module.css';
 
@@ -11,11 +11,25 @@ import s from './TestimonialWall.module.css';
 export type Review = { quote: string; name: string; meta: string; rating?: number; href?: string };
 export type RatingSummary = { rating: number; count: number; url?: string; source: string };
 
+type CardSlot = {
+    id: string;
+    review: Review;
+    tone: 'red' | 'light';
+    tilt: number;
+    offset: number;
+    delay: number;
+};
+
+type WallDeck = {
+    slots: CardSlot[];
+    conveyorDelay: string;
+};
+
 function Stars({ value, className }: { value: number; className?: string }) {
     const full = Math.round(value);
     return (
         <span className={className} role="img" aria-label={`${value} out of 5 stars`}>
-            {'★★★★★'.slice(0, full)}<span style={{ opacity: 0.3 }}>{'★★★★★'.slice(full)}</span>
+            {'★★★★★'.slice(0, full)}<span className={s.starsDim}>{'★★★★★'.slice(full)}</span>
         </span>
     );
 }
@@ -38,10 +52,29 @@ const ROW_B: Review[] = [
 const ALL: Review[] = Array.from({ length: 8 }, (_, i) => (i % 2 ? ROW_B : ROW_A)[Math.floor(i / 2) % 4]);
 const TILTS = [-3.5, 2.5, 4, -2, -4.5, 3, 2, -3, -2.5, 4.5, 3.5, -2, 3, -4];
 
-function Card({ r, tone, tilt, offset, delay, hidden }: { r: Review; tone: 'red' | 'light'; tilt: number; offset: number; delay: number; hidden?: boolean }) {
+function Card({
+    cardKey,
+    r,
+    tone,
+    tilt,
+    offset,
+    delay,
+    selected,
+    hidden,
+}: {
+    cardKey: string;
+    r: Review;
+    tone: 'red' | 'light';
+    tilt: number;
+    offset: number;
+    delay: number;
+    selected?: boolean;
+    hidden?: boolean;
+}) {
     return (
         <figure
-            className={`${s.card} ${tone === 'red' ? s.red : s.light}`}
+            data-card-key={cardKey}
+            className={`${s.card} ${tone === 'red' ? s.red : s.light} ${selected ? s.cardSelected : ''}`}
             style={{ '--tilt': `${tilt}deg`, '--offset': `${offset}px`, '--delay': `${delay}s` } as React.CSSProperties}
             aria-hidden={hidden || undefined}
         >
@@ -58,14 +91,117 @@ function Card({ r, tone, tilt, offset, delay, hidden }: { r: Review; tone: 'red'
     );
 }
 
+function buildDeterministicDeck(reviews: Review[]): WallDeck {
+    return {
+        conveyorDelay: '0s',
+        slots: reviews.map((review, i) => ({
+            id: `${review.name}-${review.meta}-${review.quote.slice(0, 20)}-${i}`,
+            review,
+            tone: i % 2 ? 'light' : 'red',
+            tilt: TILTS[i % TILTS.length],
+            offset: i % 2 ? 118 : -118,
+            delay: (i % 5) * -1.3,
+        })),
+    };
+}
+
+function buildRandomizedDeck(reviews: Review[]): WallDeck {
+    const shuffled = reviews.map((review, origIdx) => ({
+        review,
+        id: `${review.name}-${review.meta}-${review.quote.slice(0, 20)}-${origIdx}`,
+    }));
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = shuffled[i];
+        shuffled[i] = shuffled[j];
+        shuffled[j] = tmp;
+    }
+
+    const toneParity = Math.random() < 0.5 ? 0 : 1;
+    const laneParity = Math.random() < 0.5 ? 0 : 1;
+    const tiltSignParity = Math.random() < 0.5 ? 1 : -1;
+
+    const slots: CardSlot[] = shuffled.map(({ review, id }, i) => {
+        const isLight = (i + toneParity) % 2 === 1;
+        const isLowerLane = (i + laneParity) % 2 === 1;
+        const magnitude = 86 + Math.round(Math.random() * 52); // 86px..138px
+        const offset = isLowerLane ? magnitude : -magnitude;
+        const tiltMag = Number((1.6 + Math.random() * 3.6).toFixed(2)); // 1.6deg..5.2deg
+        const tiltDir = (i % 2 === 0 ? 1 : -1) * tiltSignParity * (Math.random() < 0.2 ? -1 : 1);
+        const delay = Number((-Math.random() * 6.5).toFixed(2));
+
+        return {
+            id,
+            review,
+            tone: isLight ? 'light' : 'red',
+            tilt: Number((tiltMag * tiltDir).toFixed(2)),
+            offset,
+            delay,
+        };
+    });
+
+    return {
+        slots,
+        conveyorDelay: `${(-Math.random() * 70).toFixed(2)}s`,
+    };
+}
+
 export default function TestimonialWall({ reviews = ALL, kicker = 'From the counter', title = 'What the neighborhood says', summary }: { reviews?: Review[]; kicker?: string; title?: string; summary?: RatingSummary | null }) {
-    // Fewer than 8 reviews? Cycle them so the moving row always runs past both screen edges.
-    // Only run the endless conveyor when there are enough different reviews to fill the screen —
-    // otherwise show each review once, still and centered, so nothing appears twice.
+    // Fewer than 6 reviews? Show each review once, still and centered, so nothing appears twice.
     const moving = reviews.length >= 6;
-    const list = reviews;
+    const fallbackDeck = useMemo(() => buildDeterministicDeck(reviews), [reviews]);
+    const [randomDeck, setRandomDeck] = useState<WallDeck | null>(null);
+    const [pausedCardKey, setPausedCardKey] = useState<string | null>(null);
+    const deck = randomDeck ?? fallbackDeck;
+    const isHydratedRandom = randomDeck !== null;
+    const isPaused = moving && pausedCardKey !== null;
+
     const section = useRef<HTMLElement>(null);
     const rowA = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const el = section.current;
+        if (!el || !moving) return;
+
+        const onWallClick = (e: MouseEvent) => {
+            const target = e.target as HTMLElement | null;
+            if (target?.closest('a')) return;
+            const cardEl = target?.closest<HTMLElement>('[data-card-key]');
+            const clickedKey = cardEl?.dataset.cardKey ?? '__wall__';
+            setPausedCardKey((prev) => (prev !== null ? null : clickedKey));
+        };
+
+        el.addEventListener('click', onWallClick);
+        return () => el.removeEventListener('click', onWallClick);
+    }, [moving]);
+
+    useEffect(() => {
+        if (!isPaused) return;
+
+        const onDocPointerDown = (e: PointerEvent) => {
+            const el = section.current;
+            if (el && !el.contains(e.target as Node)) {
+                setPausedCardKey(null);
+            }
+        };
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setPausedCardKey(null);
+        };
+
+        document.addEventListener('pointerdown', onDocPointerDown);
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('pointerdown', onDocPointerDown);
+            document.removeEventListener('keydown', onKeyDown);
+        };
+    }, [isPaused]);
+
+    useEffect(() => {
+        const frame = requestAnimationFrame(() => {
+            setRandomDeck(buildRandomizedDeck(reviews));
+        });
+        return () => cancelAnimationFrame(frame);
+    }, [reviews]);
 
     useEffect(() => {
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -97,14 +233,34 @@ export default function TestimonialWall({ reviews = ALL, kicker = 'From the coun
                     </a>
                 )}
             </header>
-            <section ref={section} className={`${s.wall} ${moving ? '' : s.still}`} aria-label="Customer reviews">
+            <section
+                ref={section}
+                className={`${s.wall} ${moving ? '' : s.still} ${isPaused ? s.wallPaused : ''}`}
+                aria-label="Customer reviews"
+            >
                 {/* outer track: scroll-linked drift · inner row: endless marquee (list rendered twice for a seamless loop) */}
-                <div ref={rowA} className={s.track}>
-                    <div className={s.row}>
-                        {(moving ? [0, 1] : [0]).map((copy) =>
-                            list.map((r, i) => (
-                                <Card key={`${copy}-${i}`} r={r} tone={i % 2 ? 'light' : 'red'} tilt={TILTS[i % TILTS.length]} offset={i % 2 ? 118 : -118} delay={(i % 5) * -1.3} hidden={copy === 1} />
-                            ))
+                <div ref={rowA} className={`${s.track} ${isHydratedRandom ? s.trackReady : s.trackInit}`}>
+                    <div
+                        className={s.row}
+                        style={{ '--conveyor-delay': deck.conveyorDelay } as React.CSSProperties}
+                    >
+                        {(moving ? ['primary', 'clone'] : ['primary']).map((copyTag) =>
+                            deck.slots.map((slot) => {
+                                const cardKey = `${copyTag}-${slot.id}`;
+                                return (
+                                    <Card
+                                        key={cardKey}
+                                        cardKey={cardKey}
+                                        r={slot.review}
+                                        tone={slot.tone}
+                                        tilt={slot.tilt}
+                                        offset={slot.offset}
+                                        delay={slot.delay}
+                                        selected={pausedCardKey === cardKey}
+                                        hidden={copyTag === 'clone'}
+                                    />
+                                );
+                            })
                         )}
                     </div>
                 </div>

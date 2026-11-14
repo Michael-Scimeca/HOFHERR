@@ -28,13 +28,14 @@
     font-weight: 800;
     font-family: monospace;
     cursor: pointer;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     letter-spacing: 0.08em;
-    transition: transform 0.15s;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .toggleBtn:hover {
-    transform: scale(1.05);
+    background: #fcd34d;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
 }
 
 .godBtn {
@@ -52,23 +53,24 @@
     cursor: pointer;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
     letter-spacing: 0.08em;
-    transition: transform 0.15s, background 0.15s, border-color 0.15s;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .godBtn:hover:not(:disabled) {
-    transform: scale(1.05);
     border-color: #a8905f;
+    color: #fff;
 }
 
 .godBtnActive {
     background: #16a34a;
     color: #fff;
-    border-color: #4ade80;
+    border-color: #16a34a;
 }
 
 .godBanner {
     column-span: all;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
@@ -82,6 +84,70 @@
     color: #e5e7eb;
 }
 
+.bannerControls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.filterGroup {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.filterBtn {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 0;
+    background: transparent;
+    color: #9ca3af;
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.filterBtn:hover {
+    color: #fff;
+}
+
+.filterBtnActive {
+    background: #fbbf24;
+    color: #0a0a0a;
+}
+
+.filterBtnActive:hover {
+    color: #0a0a0a;
+}
+
+.allModulesBtn {
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid #fbbf24;
+    background: rgba(251, 191, 36, 0.14);
+    color: #fbbf24;
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.allModulesBtn:hover {
+    background: #fbbf24;
+    color: #0a0a0a;
+}
+
 .godBannerBtn {
     padding: 5px 12px;
     border-radius: 999px;
@@ -93,11 +159,12 @@
     font-weight: 800;
     letter-spacing: 0.06em;
     cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .godBannerBtnActive {
     background: #16a34a;
-    border-color: #4ade80;
+    border-color: #16a34a;
     color: #fff;
 }
 
@@ -117,12 +184,10 @@
     border: 1px solid #ffffff1a;
     border-radius: 12px;
     padding: 12px;
-    /* Up to three columns so every page fits on screen; drops to fewer columns on narrow
-       screens and scrolls if it still doesn't fit. */
-    width: min(660px, calc(100vw - 32px));
-    columns: 190px 3;
+    width: min(940px, calc(100vw - 32px));
+    columns: 205px 4;
     column-gap: 16px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
     max-height: calc(100vh - 100px);
     overflow-y: auto;
     scrollbar-width: thin;
@@ -158,18 +223,22 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    width: 100%;
     padding: 6px 8px;
+    border: 0;
     border-radius: 6px;
+    background: transparent;
     color: #d1d5db;
     text-decoration: none;
+    text-align: left;
     font-size: 12px;
     font-weight: 500;
-    transition: background 0.15s, color 0.15s;
+    transition: background-color 0.15s ease, color 0.15s ease;
     cursor: pointer;
 }
 
 .navItem:hover {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
     color: #fff;
 }
 

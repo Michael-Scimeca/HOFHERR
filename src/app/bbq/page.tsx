@@ -7,6 +7,8 @@ import styles from './page.module.css';
 import BBQHub from './BBQHub';
 import ParallaxImg from './ParallaxImg';
 import MosaicServices from './MosaicServices';
+import CateringMarquee from '@/components/CateringMarquee';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
 
 export const metadata: Metadata = {
     title: 'BBQ Catering, Pig Roasts & Event Services | Hofherr Meat Co. — Northfield, IL',
@@ -273,6 +275,9 @@ export default async function BBQPage() {
                                 </div>
                             </section>
 
+                            {/* ── Marquee Ticker ── */}
+                            <CateringMarquee id="bbq-marquee" />
+
                             {/* ── Beyond BBQ ── */}
                                 <section id="beyond-bbq" aria-labelledby="beyond-bbq-heading" className={`section ${styles.servicesSection}`}>
                                     <div className="container">
@@ -293,10 +298,15 @@ export default async function BBQPage() {
                                                 Email us your event date, estimated headcount, and preferred menu items — we&apos;ll get back to you within 24 hours.
                                             </p>
                                             <div className={styles.ctaBtns}>
-                                                <Link href="/catering#inquire" className="btn btn-primary">
-                                                    Interactive Quick Quote
+                                                <Link href="/catering#inquire" className="btn-hit">
+                                                    <span className="btn btn-primary">
+                                                        <FireBorder active={true} radius={6} />
+                                                        <span>Interactive Quick Quote</span>
+                                                    </span>
                                                 </Link>
-                                                <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
+                                                <a href="tel:8474416328" className="btn-hit">
+                                                    <span className="btn btn-secondary">📞 (847) 441-MEAT</span>
+                                                </a>
                                             </div>
                                             <p className={styles.ctaNote}>Minimum 4 days notice required. Subject to availability.</p>
                                         </div>

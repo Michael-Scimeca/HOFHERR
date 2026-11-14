@@ -41,16 +41,17 @@
 /* ── Headings ─────────────────────────────────────────────────────────── */
 .heading {
     font-family: 'Yanone Kaffeesatz', sans-serif;
-    font-size: 2.8rem;
-    font-weight: 700;
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    line-height: 0.96;
+    font-weight: 800;
     color: var(--fg, #f0ece4);
-    letter-spacing: -0.02em;
+    letter-spacing: 0.02em;
     margin-bottom: 16px;
 }
 
 .storeBanner {
-    background: rgba(139, 10, 16, 0.14);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(204, 14, 29, 0.12);
+    border: 1px solid rgba(204, 14, 29, 0.28);
     color: var(--fg, #f0ece4);
     padding: 16px 20px;
     border-radius: var(--radius, 12px);
@@ -62,6 +63,12 @@
     justify-content: space-between;
     gap: 12px;
     flex-wrap: wrap;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.storeBannerDepot {
+    background: rgba(30, 58, 95, 0.28);
+    border-color: rgba(37, 99, 235, 0.4);
 }
 
 .storeBannerLocation {
@@ -76,27 +83,54 @@
 }
 
 .storeSwitchBtn {
-    padding: 6px 12px;
+    padding: 7px 14px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.04);
-    color: var(--fg-2, #c8c0b4);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.storeSwitchBtn:hover {
-    border-color: var(--gold, #d4a853);
+    border: 1.5px solid transparent;
     color: var(--fg, #f0ece4);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
-.storeSwitchBtnActive {
-    background: var(--gold, #d4a853);
-    border-color: var(--gold, #d4a853);
-    color: #0d0d0d;
-    font-weight: 700;
+.storeSwitchBtnButcher {
+    background: var(--red);
+    border-color: var(--red);
+    opacity: 0.72;
+}
+
+.storeSwitchBtnButcher:hover {
+    background: var(--red-dark);
+    border-color: var(--red-light);
+    opacity: 1;
+}
+
+.storeSwitchBtnButcherActive {
+    background: var(--red);
+    border-color: var(--fg);
+    box-shadow: var(--shadow-red);
+    opacity: 1;
+}
+
+.storeSwitchBtnDepot {
+    background: var(--depot-blue-bg, #1e3a5f);
+    border-color: var(--depot-blue-border, #2563eb);
+    opacity: 0.82;
+}
+
+.storeSwitchBtnDepot:hover {
+    background: #234775;
+    border-color: var(--depot-blue-light, #3b82f6);
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35);
+    opacity: 1;
+}
+
+.storeSwitchBtnDepotActive {
+    background: var(--depot-blue-bg, #1e3a5f);
+    border-color: var(--depot-blue-light, #3b82f6);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
+    opacity: 1;
 }
 
 /* ── Store Hours & 2-Hour Cutoff Buffer Card ──────────────────────────── */
@@ -434,7 +468,7 @@
 @media (max-width: 480px) { .contactGrid { grid-template-columns: 1fr; } }
 
 .contactLeft { display: flex; flex-direction: column; gap: 10px; }
-.contactRight { display: flex; flex-direction: column; gap: 10px; }
+.contactRight { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
 
 .inputRow {
     display: flex;
@@ -450,8 +484,14 @@
 
 .prefRow { display: flex; gap: 8px; }
 .prefBtn {
-    flex: 1;
-    padding: 10px 6px;
+    flex: 1 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 124px;
+    padding: 10px 18px;
+    white-space: nowrap;
     background: #111;
     border: 1px solid #ffffff1a;
     border-radius: 8px;
@@ -459,7 +499,7 @@
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     text-align: center;
 }
 .prefBtnActive { background: var(--red, #800020); border-color: var(--red, #800020); color: #fff; }
@@ -531,7 +571,8 @@
 }
 
 .dateBtnActive .dateTag {
-    color: var(--gold, #d4a853) !important;
+    color: var(--fg) !important;
+    opacity: 0.92;
 }
 
 .dateBtn {
@@ -544,7 +585,7 @@
     border: 1px solid #ffffff1a;
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     min-width: 74px;
 }
 .dateBtn:hover { border-color: var(--red, #800020); }

@@ -1,0 +1,589 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  padding-top: calc(var(--nav-h) + var(--space-10));
+  padding-bottom: var(--space-12);
+}
+
+.heroHeader {
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-6);
+}
+
+.heroInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.heroTitle {
+  font-family: var(--font-display), sans-serif;
+  font-size: var(--text-hero);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+.heroTitleAccent {
+  color: var(--green-ready);
+}
+
+.heroSubtitle {
+  font-size: var(--text-lg);
+  line-height: 1.55;
+  color: var(--fg-2);
+  max-width: 760px;
+}
+
+.anchorRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+}
+
+.anchorLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+  color: var(--fg-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.2s var(--ease-out), color 0.2s var(--ease-out), background-color 0.2s var(--ease-out);
+}
+
+.anchorLink:hover {
+  border-color: var(--gold);
+  color: var(--fg);
+  background: var(--bg-4);
+}
+
+/* ─── Section Stack ─── */
+.sectionStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sectionTitle {
+  font-family: var(--font-display), sans-serif;
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+.sectionDesc {
+  font-size: var(--text-base);
+  line-height: 1.55;
+  color: var(--fg-2);
+  max-width: 820px;
+}
+
+/* ─── Live Ready-For-Pickup Green Tester ─── */
+.liveTester {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--bg-4);
+}
+
+@media (max-width: 900px) {
+  .liveTester {
+    grid-template-columns: 1fr;
+  }
+}
+
+.testerPreviewStage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: rgba(8, 8, 10, 0.95);
+}
+
+.testerHeadlineLine {
+  font-family: var(--font-display), sans-serif;
+  font-size: var(--text-4xl);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+@keyframes readyFadePulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.testerReadyLine {
+  font-family: var(--font-display), sans-serif;
+  font-size: var(--text-4xl);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--active-green, var(--green-ready));
+  animation: readyFadePulse 2.4s ease-in-out infinite;
+}
+
+.testerMetaPanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.testerMetaTop {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.testerSwatchRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.testerLargeChip {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--active-green, var(--green-ready));
+}
+
+.testerSwatchDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.testerActiveName {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.testerActiveCode {
+  font-family: monospace;
+  font-size: var(--text-sm);
+  color: var(--gold);
+}
+
+.testerUsageNote {
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--fg-2);
+}
+
+.testerActionRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.copyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+  color: var(--fg);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease-out), background-color 0.2s var(--ease-out);
+}
+
+.copyBtn:hover {
+  border-color: var(--gold);
+  background: var(--bg-card-hover);
+}
+
+/* ─── Green Category Groups ─── */
+.greenGroupList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.greenGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.subGroupHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.subGroupTitle {
+  font-family: var(--font-display), sans-serif;
+  font-size: var(--text-xl);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+}
+
+.subGroupCount {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.swatchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(264px, 1fr));
+  gap: var(--space-4);
+}
+
+.swatchCard {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  overflow: hidden;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out), background-color 0.2s var(--ease-out);
+}
+
+.swatchCard:hover {
+  border-color: var(--gold);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+}
+
+.swatchCardActive {
+  border-color: var(--green-ready);
+  box-shadow: 0 0 0 1px var(--green-ready);
+}
+
+.swatchFillBand {
+  height: 72px;
+  width: 100%;
+  background: var(--swatch);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+}
+
+.swatchHexPill {
+  padding: var(--space-05) var(--space-2);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.72);
+  color: var(--fg);
+  font-family: monospace;
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+
+.swatchTextSampleBar {
+  padding: var(--space-2) var(--space-3);
+  background: rgba(6, 6, 8, 0.95);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.swatchSampleReady {
+  font-family: var(--font-display), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--swatch);
+}
+
+.swatchSampleTag {
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+}
+
+.swatchBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+}
+
+.swatchName {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.swatchToken {
+  font-family: monospace;
+  font-size: var(--text-xs);
+  color: var(--gold);
+}
+
+.swatchFiles {
+  font-size: var(--text-xs);
+  line-height: 1.45;
+  color: var(--fg-3);
+}
+
+/* ─── Emblem Backdrop Switcher ─── */
+.toolbarRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.backdropBar {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-1);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+}
+
+.backdropBtn {
+  padding: var(--space-2) var(--space-4);
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--fg-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+}
+
+.backdropBtn:hover {
+  color: var(--fg);
+}
+
+.backdropBtnActive {
+  background: var(--red);
+  color: var(--fg);
+  border-color: var(--red);
+}
+
+/* ─── Emblem Grids ─── */
+.emblemGridLarge {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+
+.emblemGridCompact {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+.emblemCard {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  overflow: hidden;
+  transition: border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+.emblemCard:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.emblemStage {
+  min-height: 176px;
+  padding: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.stageDark {
+  background: rgba(12, 12, 14, 0.94);
+}
+
+.stageKraft {
+  background: rgba(196, 164, 124, 0.92);
+}
+
+.stageDepot {
+  background-color: var(--green-depot);
+  background-image: var(--green-depot-gradient);
+}
+
+.stageLight {
+  background: rgba(244, 241, 234, 0.96);
+}
+
+.emblemImg {
+  max-width: 128px;
+  max-height: 128px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.emblemImgWide {
+  max-width: 184px;
+  max-height: 120px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.emblemDualPair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  width: 100%;
+  align-items: center;
+  justify-items: center;
+}
+
+.emblemPairCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.emblemPairImg {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.emblemPairCaption {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fg-3);
+}
+
+.stageKraft .emblemPairCaption,
+.stageLight .emblemPairCaption {
+  color: rgba(20, 20, 20, 0.72);
+}
+
+.avatarImg {
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+}
+
+.emblemMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+}
+
+.emblemCodeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.emblemBadgeCode {
+  font-family: monospace;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.emblemTitle {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.emblemPath {
+  font-family: monospace;
+  font-size: var(--text-xs);
+  color: var(--fg-3);
+  word-break: break-all;
+}
+
+.masterSheetWrap {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.masterSheetStage {
+  padding: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.masterSheetImg {
+  width: 100%;
+  max-width: 960px;
+  height: auto;
+  object-fit: contain;
+}
+

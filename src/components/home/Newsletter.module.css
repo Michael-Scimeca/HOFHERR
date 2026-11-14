@@ -1,63 +1,49 @@
-/* ─── Section shell ─── */
+/* ─── Newsletter Banner — Hofherr Dark Coal & Ember Wrapping Paper Theme ─── */
 .section {
     position: relative;
-    background: var(--bg);
+    background-color: #0d0a09;
+    background-image:
+        radial-gradient(
+            ellipse 52% 84% at 50% 50%,
+            rgba(13, 10, 9, 0.94) 0%,
+            rgba(13, 10, 9, 0.82) 50%,
+            rgba(13, 10, 9, 0.18) 100%
+        ),
+        url('/assets/identity/hofherr-wrapping-paper-tile-dark-10-icons.svg');
+    background-position: center, center;
+    background-size: 100% 100%, 380px auto;
+    background-repeat: no-repeat, repeat;
+    border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
-    padding: 96px 0;
+    text-align: center;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
 }
 
-/* ─── Video background ─── */
-.bgVideo {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(960px, 90%);
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    z-index: 0;
-    pointer-events: none;
-    border-radius: 16px;
-}
-
-.videoOverlay {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(960px, 90%);
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 1;
-    pointer-events: none;
-    border-radius: 16px;
-}
-
-.overlay {
-    display: none;
-}
-
-/* ─── Grid layout ─── */
 .inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
     position: relative;
     z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
 }
 
-/* ─── Left copy ─── */
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+}
+
 .title {
-    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 16px;
-    line-height: 1.15;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.04;
+    color: var(--fg);
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.9);
 }
 
 .title em {
@@ -66,230 +52,136 @@
 }
 
 .sub {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
-    line-height: 1.8;
-    margin-bottom: 24px;
-}
-
-.perks {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-
-.perk {
-    font-size: 12.5px;
-    color: rgba(255, 255, 255, 0.75);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid #ffffff1a;
-    border-radius: 8px;
-    padding: 10px 14px;
-}
-
-/* ─── Tab switcher ─── */
-.tabs {
-    display: flex;
-    gap: 0;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid #ffffff1a;
-    border-radius: var(--radius-sm);
-    padding: 4px;
-    margin-bottom: 24px;
-}
-
-.tabBtn {
-    flex: 1;
-    padding: 10px 16px;
-    border-radius: calc(var(--radius-sm) - 2px);
-    font-size: 12px;
+    font-size: var(--text-base);
     font-weight: 600;
-    letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.55);
-    cursor: pointer;
-    transition: all 0.2s var(--ease-out);
-    background: transparent;
-    border: none;
+    color: var(--gold-light);
+    line-height: 1.65;
+    max-width: 560px;
 }
 
-.tabBtn:hover {
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.06);
-}
-
-.tabActive {
-    background: var(--red);
-    color: #fff !important;
-    box-shadow: 0 2px 8px rgba(209, 72, 54, 0.4);
-}
-
-/* ─── Form ─── */
-.formLabel {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 16px;
-}
-
+/* ─── Centered Inline Form Row ─── */
 .form {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    align-items: center;
+    gap: var(--space-4);
+    width: 100%;
+    max-width: 760px;
+}
+
+.formRow {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: var(--space-3);
+    width: 100%;
 }
 
 .input {
-    background: var(--bg-3);
-    border: 1px solid #ffffff1a;
+    min-height: 48px;
+    padding: var(--space-3) var(--space-4);
+    background: rgba(24, 19, 17, 0.94);
+    border: 1.5px solid rgba(var(--gold-rgb), 0.42);
     border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    color: var(--text);
-    font-size: 14px;
-    transition: border-color 0.2s;
-}
-
-.input:focus {
-    border-color: var(--accent);
-    outline: none;
+    color: var(--fg);
+    font-family: inherit;
+    font-size: var(--text-sm);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+    transition:
+        border-color 0.2s var(--ease-out),
+        background-color 0.2s var(--ease-out);
 }
 
 .input::placeholder {
-    color: var(--text-muted);
+    color: var(--fg-3);
 }
 
-/* ─── Phone input row ─── */
-.phoneRow {
-    display: flex;
-    align-items: center;
-    background: var(--bg-3);
-    border: 1px solid #ffffff1a;
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    transition: border-color 0.2s;
+.input:hover {
+    border-color: rgba(var(--gold-rgb), 0.65);
 }
 
-.phoneRow:focus-within {
-    border-color: var(--accent);
-}
-
-.phoneFlag {
-    padding: 0 12px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-3);
-    white-space: nowrap;
-    border-right: 1px solid var(--border-soft);
-    background: rgba(255, 255, 255, 0.03);
-    display: flex;
-    align-items: center;
-    align-self: stretch;
-}
-
-.phoneInput {
-    border: none !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    flex: 1;
-}
-
-.phoneInput:focus {
+.input:focus {
     outline: none;
-    border-color: transparent !important;
+    border-color: var(--red);
+    background: rgba(28, 22, 20, 0.98);
 }
 
-.submit {
-    width: 100%;
-    padding: 15px;
-    font-size: 13px;
+.inputName {
+    flex: 0.85 1 180px;
 }
 
-.privacy {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
-    text-align: center;
-    height: 40px;
-    overflow: hidden;
+.inputEmail {
+    flex: 1.35 1 260px;
 }
 
-/* ─── Error message ─── */
+.submitHit {
+    flex-shrink: 0;
+}
+
+.submitBtn {
+    min-height: 48px;
+    padding-inline: var(--space-6);
+}
+
+.note {
+    font-size: var(--text-xs);
+    color: var(--fg-3);
+    line-height: 1.5;
+}
+
 .errorMsg {
-    font-size: 12px;
-    color: #e05a48;
-    background: rgba(209, 72, 54, 0.1);
-    border: 1px solid rgba(209, 72, 54, 0.25);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--red-light);
+    background: rgba(var(--red-rgb), 0.14);
+    border: 1px solid rgba(var(--red-rgb), 0.36);
     border-radius: var(--radius-sm);
-    padding: 10px 14px;
+    padding: var(--space-2) var(--space-4);
 }
 
-/* ─── Success state ─── */
+/* ─── Success State ─── */
 .success {
-    text-align: center;
-    padding: 48px 32px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid #ffffff1a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-6) var(--space-8);
+    background: rgba(24, 19, 17, 0.92);
+    border: 1px solid rgba(var(--gold-rgb), 0.38);
     border-radius: var(--radius);
+    max-width: 480px;
 }
 
-.successIcon {
-    font-size: 3rem;
-    margin-bottom: 16px;
-}
-
-.success h3 {
+.successTitle {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 1.5rem;
-    color: var(--red);
-    margin-bottom: 8px;
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--gold-light);
 }
 
-.success p {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+.successCopy {
+    font-size: var(--text-sm);
+    color: var(--fg-2);
     line-height: 1.6;
 }
 
-/* ─── Responsive ─── */
-@media (max-width: 800px) {
-    .section {
-        padding: 64px 0;
+@media (max-width: 768px) {
+    .formRow {
+        flex-direction: column;
     }
 
-    .inner {
-        grid-template-columns: 1fr;
-        gap: 32px;
-    }
-
-    .perks {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .right {
-        max-width: 480px;
+    .inputName,
+    .inputEmail,
+    .submitHit {
+        flex: none;
         width: 100%;
-        margin: 0 auto;
     }
 }
 
-@media (max-width: 480px) {
-    .section {
-        padding: 48px 0;
-    }
-
-    .inner {
-        gap: 24px;
-    }
-
-    .perks {
-        grid-template-columns: 1fr;
-    }
-
-    .right {
-        max-width: 100%;
-    }
-
-    .tabBtn {
-        padding: 10px;
-        font-size: 11px;
+@media (prefers-reduced-motion: reduce) {
+    .input {
+        transition: none;
     }
 }

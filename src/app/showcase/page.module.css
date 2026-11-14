@@ -60,8 +60,9 @@
 }
 
 .heroTitle {
-    font-size: clamp(3.2rem, 8vw, 6.5rem);
-    line-height: 0.95;
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    font-weight: 800;
+    line-height: 0.96;
     color: #fff;
     margin: 0 0 28px;
     animation: fadeUp 0.8s var(--ease-out) 0.1s both;

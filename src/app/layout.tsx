@@ -26,6 +26,7 @@ const EmbersBackground = dynamic(() => import("@/components/EmbersBackground"));
 const EmberFlare = dynamic(() => import("@/components/EmberFlare"));
 const ChatWidgetWrapper = dynamic(() => import("@/components/ChatWidgetWrapper"));
 const DevNav = dynamic(() => import("@/components/DevNav"));
+const AddToOrderAnimStudio = dynamic(() => import("@/components/AddToOrderAnimStudio"));
 const Preloader = dynamic(() => import("@/components/Preloader"));
 
 const yanone = Yanone_Kaffeesatz({
@@ -42,9 +43,20 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Hofherr Meat Co. | Northfield's Premier Craft Butcher",
-  description: "Experience the finest local meats and expert butchery at Hofherr Meat Co. in Northfield, IL. Hand-cut steaks, whole-hog roasts, and premium catering.",
+  description: "Experience the finest local meats and expert butchery at Hofherr Meat Co. in Northfield & Winnetka, IL. Hand-cut USDA Prime steaks, whole-hog roasts, Italian beef, and BBQ catering.",
   metadataBase: new URL("https://hofherrmeatco.com"),
   applicationName: "Hofherr Meat Co.",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     siteName: "Hofherr Meat Co.",
     type: "website",
@@ -144,7 +156,7 @@ export default async function RootLayout({
           <ClientProviders session={session}>
             <CartProvider>
               <TransitionProvider>
-              <JsonLd />
+              <JsonLd settings={settings} />
               <SmoothScroll />
               <ScrollToTop />
               <Navbar />
@@ -159,6 +171,7 @@ export default async function RootLayout({
               <Preloader />
               <ChatWidgetWrapper />
               <DevNav />
+              <AddToOrderAnimStudio />
               <ParallaxImages />
               </TransitionProvider>
             </CartProvider>

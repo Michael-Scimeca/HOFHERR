@@ -1,0 +1,211 @@
+/* ── Press ticker — tilted counter-scrolling marquee with icon torch flames & logo embers ── */
+.section {
+    position: relative;
+    width: 100%;
+    padding: 48px 0 64px;
+    background: #000;
+    overflow: hidden;
+}
+
+.section::before,
+.section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 96px;
+    z-index: 6;
+    pointer-events: none;
+}
+
+.section::before {
+    left: 0;
+    background: linear-gradient(to right, #000, transparent);
+}
+
+.section::after {
+    right: 0;
+    background: linear-gradient(to left, #000, transparent);
+}
+
+.heading {
+    margin: 0;
+    text-align: center;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.wrap {
+    --logo-h: clamp(40px, 5.2vw, 72px);
+    position: relative;
+    width: 100%;
+    overflow: visible;
+    padding: 48px 0 24px;
+    transform: rotate(-2deg);
+    transform-origin: center center;
+    cursor: default;
+}
+
+/* Background procedural WebGL/2D fire canvas behind crisp editorial marks */
+.fireBackCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Foreground canvas for rising 4-shape whiteoak sparks */
+.fireFrontCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.crispLayer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 2.8vw, 40px);
+    z-index: 2;
+}
+
+.rowShell {
+    position: relative;
+    width: 100%;
+}
+
+.track {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: max-content;
+    white-space: nowrap;
+}
+
+.rowLeft {
+    animation: pressLeft 44s linear infinite;
+}
+
+.rowRight {
+    animation: pressRight 52s linear infinite;
+}
+
+@keyframes pressLeft {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes pressRight {
+    0% {
+        transform: translateX(-50%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    height: calc(var(--logo-h) * 1.5);
+}
+
+.logoHost {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Solid #000 plate behind cutout-letter plaques (e.g. America's Test Kitchen) so flames never bleed through letter holes */
+.plaqueBackdrop {
+    position: absolute;
+    inset: 1px;
+    background: #000;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.bulletHost {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 clamp(20px, 2.4vw, 36px);
+    flex-shrink: 0;
+}
+
+.logo {
+    position: relative;
+    z-index: 2;
+    display: block;
+    height: calc(var(--logo-h) * var(--logo-scale, 1));
+    width: auto;
+    max-width: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* Turns a dark or coloured mark solid white for the black background. */
+.mono {
+    filter: brightness(0) invert(1);
+}
+
+.wordmark {
+    position: relative;
+    z-index: 2;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: calc(var(--logo-h) * 0.95);
+    font-weight: 800;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--fg);
+    user-select: none;
+}
+
+/* Hofherr Flint & Flame circular seal icons (tempered luminance to sit harmoniously with editorial white marks) */
+.bullet {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: calc(var(--logo-h) * 0.94);
+    height: calc(var(--logo-h) * 0.94);
+    object-fit: contain;
+    opacity: 0.86;
+    filter: brightness(0.86) saturate(0.92);
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rowLeft,
+    .rowRight {
+        animation: none;
+    }
+}

@@ -65,7 +65,7 @@ const FALLBACK_TEAM = [
     {
         name: 'Sean Hofherr',
         role: 'Owner & Head Chef',
-        photo: '/team/sean.jpg',
+        photo: '/assets/team/sean-hofherr-safety-seal.jpg',
         bio: 'Sean carries on a legacy that began with a village butcher in Germany, brought to America by his immigrant great-grandfather who built the original Hofherr Meat Company on Chicago\'s South Side. After honing his craft at Keefer\'s Restaurant in River North, an apprenticeship at Zier\'s Prime Meats in Wilmette, and winning the 2009 North Shore Chili Cookoff, Sean opened Hofherr Meat Co. in 2014. He\'s an active member of the Butcher\'s Guild and the Illinois Barbecue Association.'
     },
     {
@@ -137,7 +137,10 @@ export default async function OurStoryPage() {
             const fallbackMap = new Map(FALLBACK_TEAM.map((m) => [m.name.toLowerCase(), m.photo]));
             team = rawTeam.map((m: TeamMember) => ({
                 ...m,
-                photo: m.photo || fallbackMap.get(m.name.toLowerCase()) || '/team/placeholder.jpg',
+                photo:
+                    m.name.toLowerCase() === 'sean hofherr'
+                        ? '/assets/team/sean-hofherr-safety-seal.jpg'
+                        : m.photo || fallbackMap.get(m.name.toLowerCase()) || '/team/placeholder.jpg',
             }));
         }
         if (rawTimeline?.length) timeline = rawTimeline;
@@ -203,12 +206,21 @@ export default async function OurStoryPage() {
                                 <div className={styles.seanCard}>
                                     <div className={styles.seanImagePart}>
                                         <Image
-                                            src="/team/sean.jpg"
+                                            src="/assets/team/sean-hofherr-safety-seal.jpg"
                                             alt="Sean Hofherr"
                                             fill
+                                            loading="eager"
                                             sizes="(max-width: 900px) 100vw, 50vw"
                                             className={styles.avatarImg}
-                                            data-parallax="inset"
+                                        />
+                                        <Image
+                                            src="/assets/team/sean-hofherr-salt-sprinkle.jpg"
+                                            alt=""
+                                            aria-hidden="true"
+                                            fill
+                                            loading="eager"
+                                            sizes="(max-width: 900px) 100vw, 50vw"
+                                            className={`${styles.avatarImg} ${styles.avatarImgHover}`}
                                         />
                                     </div>
                                     <div className={styles.seanContentPart}>
@@ -224,8 +236,8 @@ export default async function OurStoryPage() {
                                         <p className={`${styles.teamBio} ${styles.teamBioSpaced}`}>
                                             In 2024, Sean expanded the Hofherr footprint with <strong>The Depot</strong> — a second location inside the historic Winnetka Elm Street Metra Train Station.
                                         </p>
-                                        <Link href="/visit" className={`btn btn-primary ${styles.seanVisitBtn}`}>
-                                            Come Visit Us
+                                        <Link href="/visit" className={`btn-hit ${styles.seanVisitBtn}`}>
+                                            <span className="btn btn-primary">Come Visit Us</span>
                                         </Link>
                                     </div>
                                 </div>
@@ -271,11 +283,15 @@ export default async function OurStoryPage() {
                                         <span>The Depot — 754 Elm St, Winnetka</span>
                                     </p>
                                     <div className={styles.ctaBtns}>
-                                        <Link href="/online-orders" className="btn btn-primary">
-                                            <FireBorder active={true} radius={6} />
-                                            <span>Order Online</span>
+                                        <Link href="/online-orders" className="btn-hit">
+                                            <span className="btn btn-primary">
+                                                <FireBorder active={true} radius={6} />
+                                                <span>Order Online</span>
+                                            </span>
                                         </Link>
-                                        <a href="tel:8474416328" className="btn btn-secondary">📞 (847) 441-MEAT</a>
+                                        <a href="tel:8474416328" className="btn-hit">
+                                            <span className="btn btn-secondary">📞 (847) 441-MEAT</span>
+                                        </a>
                                     </div>
                                 </div>
                             </section>

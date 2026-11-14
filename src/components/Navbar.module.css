@@ -451,13 +451,13 @@
 
 /* open = vibrant green */
 .open .statusLabel {
-    color: #2ecc71;
+    color: #16a34a;
     font-weight: 700;
 }
 
 .open .statusDot {
-    background: #2ecc71;
-    box-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
+    background: #16a34a;
+    box-shadow: 0 0 8px rgba(22, 163, 74, 0.4);
     animation: breathe 2s infinite ease-in-out;
 }
 
@@ -521,6 +521,10 @@
 .cta {
     position: relative;
     overflow: visible;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
     background: var(--red);
     color: #fff;
     padding: 9px 18px;
@@ -529,11 +533,12 @@
     font-weight: 800;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    transition: background-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), transform 0.2s var(--ease-out);
     white-space: nowrap;
 }
 
-.cta:hover {
+:global(.btn-hit:hover:not(:disabled)) > .cta,
+:global(.btn-hit:focus-visible:not(:disabled)) > .cta {
     background: var(--red-dark);
     color: #fff;
     transform: translateY(-1px);

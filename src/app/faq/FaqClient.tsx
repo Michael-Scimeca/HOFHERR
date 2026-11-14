@@ -35,15 +35,15 @@ export default function FaqClient({ faqs }: { faqs: FaqGroup[] }) {
                                 <p>Still have a question?</p>
                                 <a
                                     href="tel:8474416328"
-                                    className={`btn btn-gold ${styles.sideBtn}`}
+                                    className={`btn-hit ${styles.sideBtn}`}
                                 >
-                                    📞 Call Us
+                                    <span className="btn btn-gold">📞 Call Us</span>
                                 </a>
                                 <Link
                                     href="/online-orders"
-                                    className={`btn btn-gold ${styles.sideBtn}`}
+                                    className={`btn-hit ${styles.sideBtn}`}
                                 >
-                                    Order Online
+                                    <span className="btn btn-gold">Order Online</span>
                                 </Link>
                             </div>
                         </aside>
@@ -101,11 +101,11 @@ export default function FaqClient({ faqs }: { faqs: FaqGroup[] }) {
                     <h2 id="faq-cta-heading">Ready to come in?</h2>
                     <p>300 Happ Rd, Northfield Square · Tue–Fri 10am–6pm · Sat 10am–5pm · Sun 10am–4pm</p>
                     <div className={styles.ctaBtns}>
-                        <Link href="/visit" className="btn btn-gold">
-                            Get Directions
+                        <Link href="/visit" className="btn-hit">
+                            <span className="btn btn-gold">Get Directions</span>
                         </Link>
-                        <Link href="/online-orders" className="btn btn-gold">
-                            Order Online
+                        <Link href="/online-orders" className="btn-hit">
+                            <span className="btn btn-gold">Order Online</span>
                         </Link>
                     </div>
                 </div>

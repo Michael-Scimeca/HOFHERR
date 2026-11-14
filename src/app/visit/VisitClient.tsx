@@ -2,21 +2,24 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import { ThemedMap } from '@/components/FooterMap';
+import { onGoogleMapsAuthFailure, GOOGLE_MAPS_KEY } from '@/lib/googleMapsLoader';
 import styles from './page.module.css';
 
 const GOOGLE_MAPS_SANDBOX = 'allow-scripts allow-same-origin allow-popups';
-
-
 
 /* ─── Location data ─── */
 const LOCATIONS = [
     {
         id: 'butcher',
         label: 'The Butcher Shop',
+        short: 'Butcher Shop',
         name: 'The Butcher Shop',
         address: '300 Happ Rd, Northfield, IL 60093',
         lat: 42.1042,
         lng: -87.7715,
+        pin: '/icons/butcher-pin.png',
+        pinSize: 56,
         shortAddr: '300 Happ Rd · Northfield, IL 60093',
         phone: '(847) 441-MEAT',
         phoneTel: 'tel:8474416328',
@@ -47,10 +50,13 @@ const LOCATIONS = [
     {
         id: 'depot',
         label: 'The Depot',
+        short: 'The Depot',
         name: 'The Depot',
         address: '754 Elm St, Winnetka, IL 60093',
         lat: 42.1081,
         lng: -87.7359,
+        pin: '/icons/depot-pin.png',
+        pinSize: 72,
         shortAddr: '754 Elm St · Winnetka, IL 60093',
         phone: '(847) 441-MEAT',
         phoneTel: 'tel:8474416328',
@@ -81,6 +87,8 @@ const LOCATIONS = [
 
 export default function VisitClient() {
     const [active, setActive] = useState(0);
+    const [loadedMaps, setLoadedMaps] = useState<Record<string, boolean>>({});
+    const [useThemedMap, setUseThemedMap] = useState(Boolean(GOOGLE_MAPS_KEY));
     const mapReadyDispatched = useRef(false);
     const loc = LOCATIONS[active];
 
@@ -91,6 +99,34 @@ export default function VisitClient() {
             window.dispatchEvent(new CustomEvent('visit-map-ready'));
         }
     }, []);
+
+    useEffect(() => onGoogleMapsAuthFailure(() => setUseThemedMap(false)), []);
+
+    useEffect(() => {
+        const syncLocationFromUrl = () => {
+            const hash = window.location.hash.toLowerCase();
+            const storeParam = new URLSearchParams(window.location.search).get('store')?.toLowerCase();
+            if (hash === '#depot' || storeParam === 'depot') {
+                setActive(1);
+            } else if (hash === '#butcher' || storeParam === 'butcher') {
+                setActive(0);
+            }
+        };
+
+        syncLocationFromUrl();
+        window.addEventListener('hashchange', syncLocationFromUrl);
+        return () => window.removeEventListener('hashchange', syncLocationFromUrl);
+    }, []);
+
+    const handleMapLoad = useCallback(
+        (locationId: string, isFirst: boolean) => {
+            setLoadedMaps((prev) => (prev[locationId] ? prev : { ...prev, [locationId]: true }));
+            if (isFirst) {
+                markMapReady();
+            }
+        },
+        [markMapReady]
+    );
 
     useEffect(() => {
         // Safety fallback so page transition never stays waiting if Google Maps is slow or blocked
@@ -125,6 +161,8 @@ export default function VisitClient() {
                         <p className={styles.sub}>{loc.shortAddr}</p>
 
                         {/* Controls row */}
+                        <div id="butcher" />
+                        <div id="depot" />
                         <div className={styles.heroControls}>
                             {/* Toggle pills */}
                             <div className={styles.toggleBar}>
@@ -136,7 +174,10 @@ export default function VisitClient() {
                                             key={l.id}
                                             type="button"
                                             className={`${styles.toggleBtn} ${isDepot ? styles.toggleBtnDepot : ''} ${isActive ? (isDepot ? styles.toggleActiveDepot : styles.toggleActive) : ''}`}
-                                            onClick={() => setActive(i)}
+                                            onClick={() => {
+                                                setActive(i);
+                                                window.history.replaceState(null, '', `#${l.id}`);
+                                            }}
                                         >
                                             {l.label}
                                         </button>
@@ -147,9 +188,11 @@ export default function VisitClient() {
                             {/* CTA */}
                             <Link
                                 href={`/online-orders?store=${loc.id}`}
-                                className={`btn btn-primary ${styles.heroShopBtn}`}
+                                className={`btn-hit ${styles.heroShopBtn}`}
                             >
-                                Shop {loc.name}
+                                <span className={`btn ${loc.id === 'depot' ? 'btn-depot' : 'btn-primary'}`}>
+                                    Shop {loc.name}
+                                </span>
                             </Link>
                         </div>
                     </div>
@@ -162,19 +205,51 @@ export default function VisitClient() {
                                 {/* Map — both locations preloaded eagerly so switching & initial reveal are instant */}
                                 <div className={styles.mapCol}>
                                     <div className={styles.mapWrap}>
-                                        {LOCATIONS.map((item, idx) => (
-                                            <iframe
-                                                key={item.id}
-                                                src={`https://www.google.com/maps?q=${encodeURIComponent(item.address)}&output=embed`}
-                                                className={`${styles.mapIframe} ${idx === active ? styles.mapIframeActive : styles.mapIframeHidden}`}
-                                                allowFullScreen
-                                                loading="eager"
-                                                referrerPolicy="no-referrer-when-downgrade"
-                                                sandbox={GOOGLE_MAPS_SANDBOX}
-                                                title={`Map of ${item.label}`}
-                                                onLoad={idx === 0 ? markMapReady : undefined}
-                                            />
-                                        ))}
+                                        {LOCATIONS.map((item, idx) => {
+                                            const isActive = idx === active;
+                                            const isLoaded = Boolean(loadedMaps[item.id]);
+
+                                            return (
+                                                <div
+                                                    key={item.id}
+                                                    className={`${styles.mapLayer} ${isActive ? styles.mapLayerActive : styles.mapLayerHidden}`}
+                                                >
+                                                    {useThemedMap ? (
+                                                        <ThemedMap
+                                                            lat={item.lat}
+                                                            lng={item.lng}
+                                                            label={item.label}
+                                                            pin={item.pin}
+                                                            pinSize={item.pinSize}
+                                                            directionsUrl={item.directionsUrl}
+                                                            className={`${styles.mapThemed} ${isLoaded ? styles.mapIframeLoaded : styles.mapIframeLoading}`}
+                                                            onReady={() => handleMapLoad(item.id, idx === 0)}
+                                                            onFail={() => setUseThemedMap(false)}
+                                                        />
+                                                    ) : (
+                                                        <iframe
+                                                            src={`https://www.google.com/maps?q=${encodeURIComponent(item.address)}&output=embed`}
+                                                            className={`${styles.mapIframe} ${isLoaded ? styles.mapIframeLoaded : styles.mapIframeLoading}`}
+                                                            allowFullScreen
+                                                            loading="eager"
+                                                            referrerPolicy="no-referrer-when-downgrade"
+                                                            sandbox={GOOGLE_MAPS_SANDBOX}
+                                                            title={`Map of ${item.label}`}
+                                                            onLoad={() => handleMapLoad(item.id, idx === 0)}
+                                                        />
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+
+                                        <a
+                                            href={loc.directionsUrl}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className={styles.directionsBtn}
+                                        >
+                                            📍 Get Directions to {loc.short}
+                                        </a>
                                     </div>
                                 </div>
 

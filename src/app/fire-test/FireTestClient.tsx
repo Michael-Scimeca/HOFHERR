@@ -11,101 +11,131 @@ import { waitForPageAssets } from '@/lib/waitForPageAssets';
 /* ───────────────────────── Shaders ───────────────────────── */
 
 const FIRE_VERT = /* glsl */ `
-  varying vec3 vLocal;
+  varying vec2 vUv;
   void main() {
-    vLocal = position;
+    vUv = uv;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }`;
 
 const FIRE_FRAG = /* glsl */ `
-  uniform float uTime, uMagnitude, uLacunarity, uGain, uHue, uIntensity, uHeight, uWidth, uHueBase, uSwell;
-  uniform vec3 uCamLocal;
-  varying vec3 vLocal;
+  uniform float uTime, uMagnitude, uLacunarity, uGain, uHue, uIntensity, uHeight, uWidth, uHueBase, uSwell, uSeed;
+  varying vec2 vUv;
 
-  // 3D simplex noise (Ashima Arts / Stefan Gustavson, MIT)
-  vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
-  vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
-  vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
-  vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
-  float snoise(vec3 v){
-    const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);
-    vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);
-    vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g;
-    vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);
-    vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy;
-    i=mod289(i);
-    vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
-    float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;
-    vec4 j=p-49.0*floor(p*ns.z*ns.z);
-    vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);
-    vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy; vec4 h=1.0-abs(x)-abs(y);
-    vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);
-    vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0; vec4 sh=-step(h,vec4(0.0));
-    vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
-    vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y); vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);
-    vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
-    p0*=norm.x; p1*=norm.y; p2*=norm.z; p3*=norm.w;
-    vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;
-    return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+  // 2D simplex noise (Ashima Arts / Stefan Gustavson, MIT) — exact match with PressTickerFire.tsx
+  vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+  vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+  vec3 permute(vec3 x) { return mod289(((x * 34.0) + 1.0) * x); }
+
+  float snoise(vec2 v) {
+    const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+    vec2 i = floor(v + dot(v, C.yy));
+    vec2 x0 = v - i + dot(i, C.xx);
+    vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+    vec4 x12 = x0.xyxy + C.xxzz;
+    x12.xy -= i1;
+    i = mod289(i);
+    vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
+    vec3 m = max(0.5 - vec3(dot(x0, x0), dot(x12.xy, x12.xy), dot(x12.zw, x12.zw)), 0.0);
+    m = m * m;
+    m = m * m;
+    vec3 x = 2.0 * fract(p * C.www) - 1.0;
+    vec3 h = abs(x) - 0.5;
+    vec3 ox = floor(x + 0.5);
+    vec3 a0 = x - ox;
+    m *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h * h);
+    vec3 g;
+    g.x = a0.x * x0.x + h.x * x0.y;
+    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+    return 130.0 * dot(m, g);
   }
 
-  float turbulence(vec3 p){
-    float sum=0.0, amp=1.0, freq=1.0, norm=0.0;
-    for(int i=0;i<5;i++){
-      sum+=abs(snoise(p*freq))*amp;
-      norm+=amp; freq*=uLacunarity; amp*=uGain;
+  float fbm(vec2 p) {
+    float v = 0.0;
+    float a = 0.5;
+    float lac = max(1.2, uLacunarity * 0.76);
+    float g = clamp(uGain, 0.25, 0.75);
+    for (int i = 0; i < 4; i++) {
+      v += a * snoise(p);
+      p = p * lac + vec2(13.1, -7.4);
+      a *= g;
     }
-    return sum/norm;
+    return v * 0.5 + 0.5;
   }
 
-  vec3 hsv2rgb(vec3 c){
-    vec3 p=abs(fract(c.xxx+vec3(0.0,2.0/3.0,1.0/3.0))*6.0-3.0);
-    return c.z*mix(vec3(1.0),clamp(p-1.0,0.0,1.0),c.y);
-  }
-
-  // density + heat of the flame at a point in the unit box
-  vec2 flame(vec3 p){
-    float h=(p.y+0.5)/uHeight;
-    vec3 q=vec3(p.x*2.2, p.y*2.2-uTime*1.4, p.z*2.2);
-    float n=turbulence(q);
-    // Gas-burst belly swell: widens the mid-to-upper body as it erupts upward
-    float belly=sin(clamp(h,0.0,1.0)*3.14159)*uSwell*0.36;
-    float radius=(0.42*(1.0-h*(0.90-uSwell*0.24))+0.02+belly)*uWidth;
-    vec2 sway=vec2(snoise(vec3(h*2.0,uTime*0.6,0.0)), snoise(vec3(0.0,h*2.0,uTime*0.6)))*0.06*h;
-    float r=length(p.xz+sway)/radius;
-    // Scale turbulence by height so the base stays a solid connected column and only the upper tongue flickers
-    float turbWeight=smoothstep(0.08, 0.72, h);
-    float d=1.0-r-n*uMagnitude*(0.16+0.39*turbWeight)+(1.0-h)*0.28;
-    d=clamp(d,0.0,1.0)*(1.0-smoothstep(0.55,1.0,h))*smoothstep(0.0,0.06,h);
-    float heat=clamp(d*1.6*(1.15-h*0.8+uSwell*0.28),0.0,1.0);
-    return vec2(d,heat);
-  }
-
-  void main(){
-    vec3 ro=vLocal;
-    vec3 rd=normalize(vLocal-uCamLocal);
-    vec3 t1=(vec3(-0.5)-ro)/rd, t2=(vec3(0.5)-ro)/rd;
-    vec3 tmax=max(t1,t2);
-    float tFar=min(min(tmax.x,tmax.y),tmax.z);
-    const int STEPS=64;
-    float dt=tFar/float(STEPS);
-    vec3 col=vec3(0.0);
-    for(int i=0;i<STEPS;i++){
-      vec3 p=ro+rd*(float(i)+0.5)*dt;
-      vec2 f=flame(p);
-      if(f.x<=0.0) continue;
-      float t=f.y;
-      float hue=fract(mix(uHueBase, uHue, t)/360.0);
-      vec3 c=hsv2rgb(vec3(hue, 1.0-(t*t*t)*0.75, 0.25+t*t*1.4));
-      col+=c*f.x*dt*uIntensity;
+  float turb(vec2 p) {
+    float v = 0.0;
+    float a = 0.54;
+    float lac = max(1.2, uLacunarity * 0.79);
+    float g = clamp(uGain, 0.25, 0.75);
+    for (int i = 0; i < 4; i++) {
+      v += a * abs(snoise(p));
+      p = p * lac + vec2(-9.2, 5.7);
+      a *= g;
     }
-    float a=clamp(max(col.r,max(col.g,col.b)),0.0,1.0);
-    gl_FragColor=vec4(col,a);
+    return v;
+  }
+
+  vec3 hsv2rgb(vec3 c) {
+    vec3 p = abs(fract(c.xxx + vec3(0.0, 2.0 / 3.0, 1.0 / 3.0)) * 6.0 - 3.0);
+    return c.z * mix(vec3(1.0), clamp(p - 1.0, 0.0, 1.0), c.y);
+  }
+
+  /* Moody dimmed Hofherr Smokehouse palette (from PressTickerFire.tsx):
+     Deep Char -> Oxblood #8B0A10 -> Crimson #CC0E1D -> Ember #E85222 -> Muted Amber #F59B1A */
+  vec4 fireRamp(float heat, float dimScale) {
+    float h = clamp(heat, 0.0, 1.0);
+    vec3 col;
+    if (uHue > 70.0 || uHueBase > 70.0) {
+      float hue = fract(mix(uHueBase, uHue, h) / 360.0);
+      col = hsv2rgb(vec3(hue, 0.92 - h * 0.22, 0.16 + h * 0.78));
+    } else {
+      vec3 c0 = vec3(0.14, 0.01, 0.02);
+      vec3 c1 = vec3(0.55, 0.04, 0.06);
+      vec3 c2 = vec3(0.80, 0.06, 0.11);
+      vec3 c3 = vec3(0.91, 0.32, 0.13);
+      vec3 c4 = vec3(0.96, 0.62, 0.18);
+
+      col = mix(c0, c1, smoothstep(0.02, 0.28, h));
+      col = mix(col, c2, smoothstep(0.26, 0.55, h));
+      col = mix(col, c3, smoothstep(0.52, 0.80, h));
+      col = mix(col, c4, smoothstep(0.76, 1.0, h));
+    }
+
+    float a = smoothstep(0.03, 0.86, h) * dimScale;
+    return vec4(col * a, a);
+  }
+
+  void main() {
+    float h = vUv.y / max(0.05, uHeight);
+    if (h <= 0.0 || h >= 1.0) discard;
+
+    float lx = (vUv.x * 2.0 - 1.0) / max(0.25, uWidth);
+    float t = uTime;
+
+    // Gas-belly swell + lateral wind sway
+    float belly = sin(h * 3.14159) * (0.22 + uSwell * 0.24);
+    float radius = 0.56 * (1.0 - h * (0.82 - uSwell * 0.14)) + 0.04 + belly;
+    float sway = snoise(vec2(h * 1.9 + uSeed, t * 0.58)) * 0.22 * h;
+    float r = abs(lx + sway) / max(0.04, radius);
+
+    float n = turb(vec2((lx + sway) * 1.85 + uSeed, h * 2.55 - t * 1.15));
+    float fDetail = fbm(vec2((lx - sway) * 3.4 - uSeed, h * 3.9 - t * 1.65));
+
+    float turbScale = clamp(uMagnitude / 2.8, 0.25, 1.65);
+    float turbWeight = smoothstep(0.06, 0.72, h);
+    float d = 1.0 - r - n * (0.28 + 0.92 * turbWeight) * turbScale + (1.0 - h) * 0.22;
+    d *= 0.82 + 0.36 * fDetail;
+    d = clamp(d, 0.0, 1.0) * smoothstep(0.0, 0.16, h) * (1.0 - smoothstep(0.62, 0.99, h));
+    d *= 1.0 - smoothstep(0.72, 1.0, abs(lx));
+
+    float heat = clamp(d * 1.48 * (1.12 - h * 0.52 + uSwell * 0.16), 0.0, 1.0);
+    float dimScale = clamp(uIntensity / 16.5, 0.0, 0.92);
+    gl_FragColor = fireRamp(heat, dimScale);
   }`;
 
-/* Same palette as src/components/EmbersBackground.tsx so the burst matches the site's ember layer */
-const EMBER_COLORS = ['#ff8c00', '#ffa500', '#ff6600', '#ffb347', '#ff7f00', '#ffcc66', '#ff4500', '#ffd27f'];
-const EMBER_FLARE_COLORS = ['#ffffff', '#fff5cc', '#ffe4a0', '#ffd27f'];
+/* Same palette as src/components/EmbersBackground.tsx / PressTickerFire.tsx */
+const EMBER_COLORS = ['#ff8c00', '#ffa500', '#ff6600', '#ffb347', '#ff5518', '#ffcc66', '#e01e2e', '#ffd27f'];
+const EMBER_FLARE_COLORS = ['#fff5cc', '#ffe4a0', '#ffd27f'];
 const EMBER_DYING = '#1a1008';
 /* Redder palette for the ring around the headline (no golds, so it stays in the red family) */
 const HEADLINE_EMBER_COLORS = ['#ff4500', '#ff3a1a', '#e01e2e', '#ff5a36', '#cc0e1d', '#ff2a14'];
@@ -149,36 +179,36 @@ export type FlameSettings = FlameSlot & {
     flames: FlameSlot[];
 };
 
-export const FLAME_STORAGE_KEY = 'hofherr_flame_settings_v11';
+export const FLAME_STORAGE_KEY = 'hofherr_flame_settings_v13';
 
 export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
     {
         enabled: true,
-        presetId: 'gas_whoosh',
-        label: '01 Gas Whoosh',
+        presetId: 'smokehouse_torch',
+        label: '01 Smokehouse Torch',
         posX: 0,
-        posY: -1.66,
-        scale: 0.62,
+        posY: -1.61,
+        scale: 0.72,
         magnitude: 2.8,
-        lacunarity: 3.1,
+        lacunarity: 2.71,
         gain: 0.50,
-        hue: 42,
+        hue: 28,
         hueBase: 4,
-        intensity: 13.0,
-        width: 0.72,
-        speed: 1.2,
-        idle: 0.48,
-        flareRise: 0.08,
-        flareHold: 0.10,
+        intensity: 9.8,
+        width: 0.88,
+        speed: 1.45,
+        idle: 0.62,
+        flareRise: 0.12,
+        flareHold: 0.08,
         flareDecay: 0.95,
-        flareEndHeight: 0.22,
-        flarePeakHeight: 0.48,
-        flareBelly: 0.05,
-        flareSpeedBoost: 1.0,
+        flareEndHeight: 0,
+        flarePeakHeight: 0.74,
+        flareBelly: 0.18,
+        flareSpeedBoost: 1.8,
         flareDelay: 0,
-        emberRate: 1.8,
-        emberLift: 1.8,
-        emberSize: 1.0,
+        emberRate: 1.4,
+        emberLift: 1.2,
+        emberSize: 0.82,
     },
     {
         enabled: true,
@@ -295,9 +325,9 @@ export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
 ];
 
 export const DEFAULT_FLAME_SETTINGS: FlameSettings = {
-    ...FIVE_FLAME_DEFAULTS[1],
+    ...FIVE_FLAME_DEFAULTS[0],
     showAll5: false,
-    selectedIndex: 1,
+    selectedIndex: 0,
     flames: FIVE_FLAME_DEFAULTS.map(f => ({ ...f })),
 };
 
@@ -489,11 +519,11 @@ export default function FireTestClient({
                 const validFlames = Array.isArray(parsed.flames) && parsed.flames.length === 5
                     ? parsed.flames
                     : FIVE_FLAME_DEFAULTS.map(f => ({ ...f }));
-                const selIdx = typeof parsed.selectedIndex === 'number' ? parsed.selectedIndex : 2;
+                const selIdx = typeof parsed.selectedIndex === 'number' ? parsed.selectedIndex : 0;
                 const next: FlameSettings = {
                     ...DEFAULT_FLAME_SETTINGS,
                     ...parsed,
-                    ...(validFlames[selIdx] ?? validFlames[2]),
+                    ...(validFlames[selIdx] ?? validFlames[0]),
                     selectedIndex: selIdx,
                     flames: validFlames,
                 };
@@ -690,14 +720,14 @@ export default function FireTestClient({
         canvas.addEventListener('pointerup', onPointerUp);
         canvas.addEventListener('pointercancel', onPointerUp);
 
-        /* 5 Independent 3D Volumetric Flame Meshes & Floor Glows */
-        const fireGeo = new THREE.BoxGeometry(1, 1, 1);
+        /* 5 Independent Smokehouse Flame Planes & Subtle Ember Glows */
+        const fireGeo = new THREE.PlaneGeometry(1, 1);
         const glowCanvas = document.createElement('canvas');
         glowCanvas.width = glowCanvas.height = 128;
         const g = glowCanvas.getContext('2d')!;
         const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
-        grd.addColorStop(0, 'rgba(255,140,40,0.55)');
-        grd.addColorStop(0.4, 'rgba(200,60,10,0.18)');
+        grd.addColorStop(0, 'rgba(140, 12, 18, 0.14)');
+        grd.addColorStop(0.5, 'rgba(90, 6, 10, 0.04)');
         grd.addColorStop(1, 'rgba(0,0,0,0)');
         g.fillStyle = grd;
         g.fillRect(0, 0, 128, 128);
@@ -706,15 +736,16 @@ export default function FireTestClient({
 
         const flameUnits = FIVE_FLAME_DEFAULTS.map((_, idx) => {
             const u = {
-                uTime: { value: idx * 13.7 },
-                uMagnitude: { value: 1.3 },
-                uLacunarity: { value: 2.0 },
+                uTime: { value: idx * 13.7 + 4.2 },
+                uSeed: { value: 3.1 + idx * 11.73 },
+                uMagnitude: { value: 2.8 },
+                uLacunarity: { value: 2.71 },
                 uGain: { value: 0.5 },
-                uHue: { value: 36 },
-                uIntensity: { value: 9 },
+                uHue: { value: 28 },
+                uIntensity: { value: 10.2 },
                 uHeight: { value: IDLE_HEIGHT },
-                uWidth: { value: 1 },
-                uHueBase: { value: 0 },
+                uWidth: { value: 0.88 },
+                uHueBase: { value: 4 },
                 uSwell: { value: 0 },
                 uCamLocal: { value: new THREE.Vector3() },
             };
@@ -724,10 +755,13 @@ export default function FireTestClient({
                 uniforms: u,
                 transparent: true,
                 depthWrite: false,
-                blending: THREE.AdditiveBlending,
+                side: THREE.DoubleSide,
+                blending: THREE.CustomBlending,
+                blendSrc: THREE.OneFactor,
+                blendDst: THREE.OneMinusSrcAlphaFactor,
             });
             const fMesh = new THREE.Mesh(fireGeo, fMat);
-            fMesh.scale.set(1.3, 2.4, 1.3);
+            fMesh.scale.set(1.45, 2.4, 1);
             fMesh.position.y = 0.6;
             scene.add(fMesh);
 
@@ -1568,13 +1602,14 @@ export default function FireTestClient({
                 unit.uniforms.uMagnitude.value = slot.magnitude + swell * 0.85;
                 unit.uniforms.uIntensity.value = slot.intensity * (1 + 1.15 * swell) * unitShown;
 
-                const scaleX = 1.3 * slot.scale * (1 + swell * 0.28);
+                const scaleX = 1.45 * slot.scale * (1 + swell * 0.24);
                 const scaleY = 2.4 * slot.scale * extraScaleY * (1 + Math.max(0, f - 1) * 0.35);
-                unit.fire.scale.set(scaleX, scaleY, scaleX);
+                unit.fire.scale.set(scaleX, scaleY, 1);
+                unit.fire.quaternion.copy(camera.quaternion);
                 unit.fire.position.set(slot.posX, 0.6 * slot.scale + slot.posY + jumpOffsetY, 0);
                 unit.glow.position.set(slot.posX, -0.62 * slot.scale + slot.posY, 0);
-                unit.glow.scale.setScalar((0.75 + 0.85 * swell) * slot.scale);
-                unit.glowMat.opacity = (0.55 + 0.45 * Math.min(1, f)) * unitShown;
+                unit.glow.scale.setScalar((0.65 + 0.55 * swell) * slot.scale);
+                unit.glowMat.opacity = (0.35 + 0.35 * Math.min(1, f)) * unitShown;
 
                 unit.fire.updateMatrixWorld();
                 inv.copy(unit.fire.matrixWorld).invert();

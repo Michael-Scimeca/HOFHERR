@@ -43,7 +43,7 @@
     font-weight: 600;
     color: var(--fg-muted);
     cursor: pointer;
-    transition: all 0.18s;
+    transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
     font-family: inherit;
 }
 
@@ -124,7 +124,7 @@
     border-radius: 100px;
     color: var(--tag, #666);
     background: color-mix(in srgb, var(--tag, #666) 12%, transparent);
-    border: 1px solid #ffffff1a 25%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tag, #666) 25%, transparent);
 }
 
 /* Tip */

@@ -27,7 +27,7 @@
     background: transparent;
     color: var(--text-3);
     cursor: pointer;
-    transition: all 0.25s var(--ease-out);
+    transition: background 0.25s var(--ease-out), border-color 0.25s var(--ease-out), color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
     white-space: nowrap;
 }
 
@@ -106,6 +106,7 @@
     font-weight: 600;
     color: var(--text-2);
     letter-spacing: 0.3px;
+    transition: color 0.2s ease;
 }
 
 /* ─── Map container ─── */
@@ -113,7 +114,7 @@
     position: relative;
     overflow: hidden;
     height: 280px;
-    background: #14171a;
+    background: #0b0b0b;
 }
 
 .mapLayer {
@@ -136,23 +137,6 @@
     z-index: 0;
 }
 
-.mapPreloaderImg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-    z-index: 1;
-    pointer-events: none;
-    transition: opacity 0.35s ease;
-}
-
-.mapPreloaderFadeOut {
-    opacity: 0;
-}
-
 .mapIframe {
     position: absolute;
     inset: 0;
@@ -160,6 +144,16 @@
     height: 100%;
     border: 0;
     filter: invert(90%) hue-rotate(180deg) saturate(0.6) brightness(0.8);
+    transition: opacity 0.35s ease;
+    z-index: 2;
+}
+
+/* Brand-themed Google map (styled via src/lib/mapTheme.ts — no CSS filter needed) */
+.mapThemed {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     transition: opacity 0.35s ease;
     z-index: 2;
 }
@@ -186,7 +180,7 @@
     background: none !important;
     border: none !important;
     filter: drop-shadow(0 3px 6px rgba(209, 72, 54, 0.4));
-    transition: transform 0.3s var(--ease-out);
+    transition: transform 0.3s var(--ease-out), filter 0.3s var(--ease-out);
 }
 
 .customPin:hover {

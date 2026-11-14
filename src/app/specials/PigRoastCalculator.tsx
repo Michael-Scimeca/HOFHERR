@@ -170,7 +170,7 @@ export default function PigRoastCalculator({
                 <div className={styles.inputGroup} style={{ marginTop: '20px' }}>
                     <label className={styles.label}>
                         Pick Your Add&apos;l Meat
-                        <span style={{ fontSize: 11, color: selectedMeats.length >= activePkg.meats ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                        <span style={{ fontSize: 11, color: selectedMeats.length >= activePkg.meats ? '#16a34a' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
                             {selectedMeats.length}/{activePkg.meats} selected
                         </span>
                     </label>
@@ -221,7 +221,7 @@ export default function PigRoastCalculator({
                 <div className={styles.inputGroup} style={{ marginTop: '12px' }}>
                     <label className={styles.label}>
                         Pick Your Sides
-                        <span style={{ fontSize: 11, color: selectedSides.length >= activePkg.sides ? '#2ecc71' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
+                        <span style={{ fontSize: 11, color: selectedSides.length >= activePkg.sides ? '#16a34a' : 'var(--fg-muted)', fontWeight: 600, marginLeft: 8, letterSpacing: 0 }}>
                             {selectedSides.length}/{activePkg.sides} selected
                         </span>
                     </label>

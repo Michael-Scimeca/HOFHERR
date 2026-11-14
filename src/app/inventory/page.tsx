@@ -52,6 +52,15 @@ export default function InventoryPage() {
     const [editPriceValue, setEditPriceValue] = useState('');
     const priceInputRef = useRef<HTMLInputElement>(null);
     const [showAddModal, setShowAddModal] = useState(false);
+
+    useEffect(() => {
+        const openAdd = () => setShowAddModal(true);
+        if (typeof window !== 'undefined' && window.location.search.includes('devModal=add')) {
+            openAdd();
+        }
+        window.addEventListener('hofherr-dev-add-product-modal', openAdd);
+        return () => window.removeEventListener('hofherr-dev-add-product-modal', openAdd);
+    }, []);
     const [addForm, setAddForm] = useState({ name: '', price: '', categoryId: '', description: '', stockQuantity: 5 });
     const [addError, setAddError] = useState('');
     const [addSaving, setAddSaving] = useState(false);

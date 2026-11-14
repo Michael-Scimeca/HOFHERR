@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" fill="none">
+  <g id="flint-flame-store">
+    <!-- Floating Ember Sparks -->
+    <g id="floating-sparks" fill="#EB501C" stroke="#7E0D0F" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+      <path id="spark-left" d="M174 58 C182 74 189 90 185 105 C182 116 171 121 162 116 C153 111 152 97 159 83 C164 73 169 66 174 58 Z" />
+      <path id="spark-top" d="M291 22 C299 38 306 54 302 69 C299 80 288 85 279 80 C270 75 269 61 276 47 C281 37 286 30 291 22 Z" />
+      <path id="spark-right" d="M350 62 C357 76 363 90 359 103 C356 112 346 116 339 111 C332 106 331 94 337 82 C341 74 346 68 350 62 Z" />
+    </g>
+
+    <!-- Crown of Flames Behind Roofline (Matched 1:1 to Flint & Flame Series) -->
+    <g id="flame-crown">
+      <!-- Outer Dark Crimson Silhouette Stroke (drawn behind + over so outer contour has crisp weight) -->
+      <path
+        id="flame-outer-fill"
+        d="M68 222 C48 194 50 156 76 124 C86 111 93 99 95 88 C105 106 108 132 101 156 C98 168 102 178 110 176 C118 162 125 144 131 124 C142 142 146 164 143 180 C141 189 151 193 160 184 C178 166 202 138 214 108 C218 98 220 89 219 80 C232 98 236 120 229 140 C226 149 235 153 241 143 C251 124 246 92 252 64 C255 51 259 42 264 36 C265 56 277 78 289 102 C298 120 301 138 297 150 C295 158 305 160 311 149 C319 133 322 114 323 94 C338 110 349 136 348 162 C348 173 354 180 360 172 C366 160 370 144 372 128 C384 144 390 168 386 188 C384 196 393 199 399 188 C408 170 409 134 401 94 C424 114 452 150 451 186 C451 203 445 215 438 222 Z"
+        fill="#F29613"
+      />
+      <!-- Inner Vermilion-Orange Core -->
+      <path
+        id="flame-inner-core"
+        d="M104 222 C90 202 90 178 100 158 C104 175 111 190 123 196 C126 183 131 170 137 158 C144 174 150 190 163 196 C181 182 201 158 215 128 C223 145 227 162 238 169 C251 148 255 118 262 90 C272 114 285 138 290 164 C293 175 304 176 310 164 C316 151 321 138 325 126 C336 146 341 170 343 191 C352 191 362 178 370 162 C377 178 381 194 391 203 C401 190 407 172 407 152 C420 170 423 196 410 222 Z"
+        fill="#EB501C"
+      />
+      <!-- Crisp Maroon Flame Outline -->
+      <path
+        id="flame-outer-stroke"
+        d="M68 222 C48 194 50 156 76 124 C86 111 93 99 95 88 C105 106 108 132 101 156 C98 168 102 178 110 176 C118 162 125 144 131 124 C142 142 146 164 143 180 C141 189 151 193 160 184 C178 166 202 138 214 108 C218 98 220 89 219 80 C232 98 236 120 229 140 C226 149 235 153 241 143 C251 124 246 92 252 64 C255 51 259 42 264 36 C265 56 277 78 289 102 C298 120 301 138 297 150 C295 158 305 160 311 149 C319 133 322 114 323 94 C338 110 349 136 348 162 C348 173 354 180 360 172 C366 160 370 144 372 128 C384 144 390 168 386 188 C384 196 393 199 399 188 C408 170 409 134 401 94 C424 114 452 150 451 186 C451 203 445 215 438 222 Z"
+        stroke="#7E0D0F"
+        stroke-width="14"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
+
+    <!-- Storefront Lower Wall & Under-Awning Shadow -->
+    <g id="storefront-wall">
+      <rect x="78" y="328" width="356" height="136" fill="#F4EAD5" />
+      <rect x="78" y="328" width="356" height="30" fill="#E3D1B2" />
+      <rect x="78" y="328" width="18" height="136" fill="#E3D1B2" />
+      <path d="M78 328 V464 H434 V328" stroke="#7E0D0F" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+
+    <!-- Left Butcher Display Window -->
+    <g id="display-window">
+      <rect x="104" y="364" width="160" height="72" rx="10" fill="#F29613" stroke="#7E0D0F" stroke-width="11" stroke-linejoin="round" />
+      <!-- Warm Glass Reflection Rays -->
+      <path d="M116 430 L162 370 H182 L136 430 Z" fill="#F8B83C" />
+      <path d="M148 430 L194 370 H204 L158 430 Z" fill="#F8B83C" />
+
+      <!-- Isometric 3D Prime Steak Cut (Matched to Step 01 Menu Steaks) -->
+      <g id="window-steak">
+        <!-- 3D Extruded Crust Side -->
+        <path
+          d="M150 404 V414 C150 421 161 424 175 420 L212 406 C220 403 224 398 224 392 V383 Z"
+          fill="#EB501C"
+          stroke="#7E0D0F"
+          stroke-width="7.5"
+          stroke-linejoin="round"
+        />
+        <!-- Top Fat Cap Rim -->
+        <path
+          d="M153 408 C147 402 153 393 166 388 L194 377 C207 372 220 375 223 382 C226 389 220 397 207 402 L177 413 C165 417 157 413 153 408 Z"
+          fill="#F4EAD5"
+          stroke="#7E0D0F"
+          stroke-width="7.5"
+          stroke-linejoin="round"
+        />
+        <!-- Crimson Marbled Ribeye Interior -->
+        <path
+          d="M161 404 C157 400 162 394 171 391 L194 382 C203 379 212 380 214 385 C216 390 212 395 202 399 L178 408 C169 411 164 408 161 404 Z"
+          fill="#CC1D24"
+        />
+        <!-- Marbling Bone / Eye Highlight -->
+        <path d="M188 389 L203 386 M195 387.5 L199 394" stroke="#F4EAD5" stroke-width="4.5" stroke-linecap="round" />
+      </g>
+
+      <!-- Window Sill -->
+      <rect x="96" y="432" width="176" height="15" rx="7" fill="#EB501C" stroke="#7E0D0F" stroke-width="10" stroke-linejoin="round" />
+    </g>
+
+    <!-- Right Paneled Butcher Entrance Door -->
+    <g id="entrance-door">
+      <path
+        d="M298 464 V372 C298 366.5 302.5 362 308 362 H396 C401.5 362 406 366.5 406 372 V464 Z"
+        fill="#EB501C"
+        stroke="#7E0D0F"
+        stroke-width="11"
+        stroke-linejoin="round"
+      />
+      <!-- Door Upper Glass Window -->
+      <rect x="316" y="378" width="72" height="44" rx="6" fill="#F4EAD5" stroke="#7E0D0F" stroke-width="9" stroke-linejoin="round" />
+      <!-- Hanging Shop Open Placard -->
+      <path d="M340 396 L352 385 L364 396" stroke="#7E0D0F" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      <rect x="331" y="395" width="42" height="17" rx="4" fill="#CC1D24" stroke="#7E0D0F" stroke-width="6" stroke-linejoin="round" />
+      <!-- Brass Pull Handle & Lower Recessed Panel -->
+      <line x1="311" y1="428" x2="311" y2="444" stroke="#7E0D0F" stroke-width="9" stroke-linecap="round" />
+      <rect x="325" y="435" width="60" height="15" rx="3" fill="#CC1D24" stroke="#7E0D0F" stroke-width="8" stroke-linejoin="round" />
+    </g>
+
+    <!-- Scalloped Striped Butcher Awning -->
+    <g id="striped-awning">
+      <!-- Stripe 1 (Red) -->
+      <path d="M78 286 L137.3 286 L124 324 V330 C119 351 63 351 58 330 V324 Z" fill="#CC1D24" />
+      <!-- Stripe 2 (Cream) -->
+      <path d="M137.3 286 L196.7 286 L190 324 V330 C185 351 129 351 124 330 V324 Z" fill="#F4EAD5" />
+      <!-- Stripe 3 (Red) -->
+      <path d="M196.7 286 L256 286 L256 324 V330 C251 351 195 351 190 330 V324 Z" fill="#CC1D24" />
+      <!-- Stripe 4 (Cream) -->
+      <path d="M256 286 L315.3 286 L322 324 V330 C317 351 261 351 256 330 V324 Z" fill="#F4EAD5" />
+      <!-- Stripe 5 (Red) -->
+      <path d="M315.3 286 L374.7 286 L388 324 V330 C383 351 327 351 322 330 V324 Z" fill="#CC1D24" />
+      <!-- Stripe 6 (Cream) -->
+      <path d="M374.7 286 L434 286 L454 324 V330 C449 351 393 351 388 330 V324 Z" fill="#F4EAD5" />
+
+      <!-- Subtle Valance Fold Highlight -->
+      <line x1="62" y1="324" x2="450" y2="324" stroke="#7E0D0F" stroke-width="7" stroke-opacity="0.28" />
+
+      <!-- Awning Rib Seams -->
+      <g stroke="#7E0D0F" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M137.3 286 L124 324 V330" />
+        <path d="M196.7 286 L190 324 V330" />
+        <path d="M256 286 L256 324 V330" />
+        <path d="M315.3 286 L322 324 V330" />
+        <path d="M374.7 286 L388 324 V330" />
+      </g>
+
+      <!-- Awning Outer Contour -->
+      <path
+        d="M78 286 H434 L454 324 V330 C449 351 393 351 388 330 C383 351 327 351 322 330 C317 351 261 351 256 330 C251 351 195 351 190 330 C185 351 129 351 124 330 C119 351 63 351 58 330 V324 Z"
+        stroke="#7E0D0F"
+        stroke-width="12"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
+
+    <!-- Storefront Signboard Header & Cornice -->
+    <g id="signboard-header">
+      <!-- Fascia Board -->
+      <rect x="78" y="232" width="356" height="54" fill="#F4EAD5" />
+      <rect x="78" y="232" width="16" height="54" fill="#E3D1B2" />
+      <rect x="78" y="232" width="356" height="54" stroke="#7E0D0F" stroke-width="12" stroke-linejoin="round" />
+
+      <!-- Flanking Sign Rules -->
+      <line x1="106" y1="253" x2="186" y2="253" stroke="#7E0D0F" stroke-width="9" stroke-linecap="round" />
+      <line x1="120" y1="267" x2="186" y2="267" stroke="#EB501C" stroke-width="7" stroke-linecap="round" />
+      <line x1="326" y1="253" x2="406" y2="253" stroke="#7E0D0F" stroke-width="9" stroke-linecap="round" />
+      <line x1="326" y1="267" x2="392" y2="267" stroke="#EB501C" stroke-width="7" stroke-linecap="round" />
+
+      <!-- Hofherr Longhorn Steer Emblem -->
+      <path
+        id="longhorn-emblem"
+        d="M256 246 C251 246 247 247.5 244 249.5 C235 250 225 248.5 216 243.5 C210 240 205 238.5 201 239.5 C204 243 209 247 216 250.5 C224 254.5 234 255.5 242 255 L230 258.5 C232.5 261.5 238 262.5 243.5 261.5 L248.5 273 C249.5 275.5 252 276.5 256 276.5 C260 276.5 262.5 275.5 263.5 273 L268.5 261.5 C274 262.5 279.5 261.5 282 258.5 L270 255 C278 255.5 288 254.5 296 250.5 C303 247 308 243 311 239.5 C307 238.5 302 240 296 243.5 C287 248.5 277 250 268 249.5 C265 247.5 261 246 256 246 Z"
+        fill="#7E0D0F"
+      />
+
+      <!-- Top Stepped Cornice Cap -->
+      <rect x="64" y="208" width="384" height="24" rx="10" fill="#EB501C" />
+      <path d="M74 214 H438" stroke="#F29613" stroke-width="5" stroke-linecap="round" />
+      <rect x="64" y="208" width="384" height="24" rx="10" stroke="#7E0D0F" stroke-width="12" stroke-linejoin="round" />
+    </g>
+
+    <!-- Grounded Storefront Sidewalk Base -->
+    <g id="storefront-base">
+      <rect x="58" y="460" width="396" height="22" rx="10" fill="#EB501C" />
+      <path d="M68 474 H444" stroke="#A81214" stroke-width="6" stroke-linecap="round" />
+      <rect x="58" y="460" width="396" height="22" rx="10" stroke="#7E0D0F" stroke-width="12" stroke-linejoin="round" />
+    </g>
+  </g>
+</svg>

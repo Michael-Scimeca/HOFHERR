@@ -39,9 +39,11 @@
 
 .title {
     font-family: var(--font-heading), sans-serif;
-    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    font-weight: 800;
+    letter-spacing: 0.02em;
     color: var(--fg);
-    line-height: 1;
+    line-height: 0.96;
     margin-bottom: 14px;
 }
 

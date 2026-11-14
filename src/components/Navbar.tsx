@@ -37,6 +37,7 @@ const NAV_ITEMS = [
     { label: 'Catering', href: '/catering' },
     { label: 'Visit Us', href: '/visit' },
     { label: 'Our Story', href: '/our-story' },
+    { label: 'Press', href: '/press' },
     { label: 'Gift Cards', href: '/gift-cards' },
 ];
 
@@ -137,15 +138,20 @@ export default function Navbar() {
     const [indicator, setIndicator] = useState<{ left: number; width: number } | null>(null);
     const [showOwnerPortal, setShowOwnerPortal] = useState(false);
 
-    // Listen for Shift + H to toggle Owner Portal
+    // Listen for Shift + H to toggle Owner Portal, or DevNav mobile menu trigger
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.shiftKey && (e.key === 'H' || e.key === 'h')) {
                 setShowOwnerPortal(prev => !prev);
             }
         };
+        const handleOpenMobileMenu = () => setMobileOpen(prev => !prev);
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        window.addEventListener('hofherr-open-mobile-menu', handleOpenMobileMenu);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('hofherr-open-mobile-menu', handleOpenMobileMenu);
+        };
     }, []);
 
     // Sync time every minute
@@ -265,7 +271,7 @@ export default function Navbar() {
                         height={56}
                         width={117}
                         className={styles.logoImgMain}
-                        priority
+                        loading="eager"
                         fetchPriority="high"
                     />
                 </TransitionLink>
@@ -336,9 +342,11 @@ export default function Navbar() {
                             </div>
                         )}
 
-                        <TransitionLink href="/online-orders" className={styles.cta} onClick={() => setMobileOpen(false)}>
-                            <FireBorder active={true} radius={6} />
-                            Order Online
+                        <TransitionLink href="/online-orders" className="btn-hit" onClick={() => setMobileOpen(false)}>
+                            <span className={styles.cta}>
+                                <FireBorder active={true} radius={6} />
+                                Order Online
+                            </span>
                         </TransitionLink>
 
                         <NavCartIcon />

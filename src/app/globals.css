@@ -17,6 +17,10 @@
   --green-depot-light: #1e3d2c;
   --green-depot-surface: #142a1e;
   --green-depot-gradient: linear-gradient(135deg, #ffffff14 0%, #0000 70%), radial-gradient(circle, #c4ae821f 0%, #0000 80%);
+  --green-ready: #16a34a;
+  --green-ready-glow: rgba(22, 163, 74, 0.38);
+  --green-ready: #4ade80;
+  --green-ready-glow: rgba(34, 197, 94, 0.38);
 
   /* ── Winnetka Depot Blue (UI Badge & Button Theme) ── */
   --depot-blue-bg: #1e3a5f;
@@ -104,6 +108,7 @@
   --text-2xl: 1.5rem;     /* 24px */
   --text-3xl: 1.875rem;   /* 30px */
   --text-4xl: 2.25rem;    /* 36px */
+  --text-hero: clamp(3rem, 6vw, 5.25rem); /* 48px–84px canonical page headline */
 
   /* ── Card Surfaces ── */
   --bg-card: rgba(18, 18, 20, 0.75);
@@ -150,9 +155,10 @@ html.lenis, html.lenis body {
   overflow: hidden;
 }
 
-/* Set by src/lib/scrollLock.ts while a modal or the preloader is up */
-html.scroll-locked,
-html.scroll-locked body {
+/* Set by src/lib/scrollLock.ts while a modal or the preloader is up.
+   Locking <html> alone (without setting overflow:hidden on <body>) preserves
+   position:sticky on <Navbar> and shop sidebars at any scroll depth. */
+html.scroll-locked {
   overflow: hidden !important;
   overscroll-behavior: none;
 }
@@ -314,6 +320,11 @@ h4 {
   text-transform: uppercase;
 }
 
+h1 {
+  font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+  line-height: 0.96;
+}
+
 /* ─── Layout ─── */
 .site-shell {
   flex: 1 0 auto;
@@ -421,8 +432,46 @@ h4 {
   letter-spacing: 1.5px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.22s var(--ease-out);
+  transition:
+    background-color 0.22s var(--ease-out),
+    border-color 0.22s var(--ease-out),
+    color 0.22s var(--ease-out),
+    box-shadow 0.22s var(--ease-out),
+    transform 0.22s var(--ease-out);
   white-space: nowrap;
+}
+
+/* Stationary hover/focus target — never transforms so hover hit-box never shifts */
+.btn-hit {
+  display: inline-flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-hit:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-hit:focus-visible {
+  outline: none;
+}
+
+.btn-hit > .btn {
+  pointer-events: none;
+  flex: 1 1 auto;
+}
+
+.btn-hit:focus-visible > .btn {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
 }
 
 .btn-primary {
@@ -433,8 +482,41 @@ h4 {
 
 .btn-primary:hover {
   background: var(--red-dark);
+  box-shadow: 0 8px 28px rgba(204, 14, 29, 0.45);
+}
+
+.btn-hit:hover:not(:disabled) > .btn-primary,
+.btn-hit:focus-visible:not(:disabled) > .btn-primary {
+  background: var(--red-dark);
   transform: translateY(-2px);
   box-shadow: 0 8px 28px rgba(204, 14, 29, 0.45);
+}
+
+.btn-depot {
+  background-color: var(--depot-blue-bg);
+  border: 1.5px solid var(--depot-blue-light);
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.45);
+  transition:
+    background-color 0.22s var(--ease-out),
+    border-color 0.22s var(--ease-out),
+    color 0.22s var(--ease-out),
+    box-shadow 0.22s var(--ease-out),
+    transform 0.22s var(--ease-out);
+}
+
+.btn-depot:hover {
+  background-color: #234775;
+  border-color: var(--depot-blue-light);
+  box-shadow: 0 8px 28px rgba(37, 99, 235, 0.55);
+}
+
+.btn-hit:hover:not(:disabled) > .btn-depot,
+.btn-hit:focus-visible:not(:disabled) > .btn-depot {
+  background-color: #234775;
+  border-color: var(--depot-blue-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(37, 99, 235, 0.55);
 }
 
 .btn-gold {
@@ -444,6 +526,13 @@ h4 {
 }
 
 .btn-gold:hover {
+  background: var(--gold-light);
+  color: var(--dark);
+  box-shadow: 0 8px 28px rgba(168, 144, 95, 0.42);
+}
+
+.btn-hit:hover:not(:disabled) > .btn-gold,
+.btn-hit:focus-visible:not(:disabled) > .btn-gold {
   background: var(--gold-light);
   color: var(--dark);
   transform: translateY(-2px);
@@ -457,6 +546,13 @@ h4 {
 }
 
 .btn-secondary:hover {
+  border-color: var(--red);
+  color: var(--red);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-hit:hover:not(:disabled) > .btn-secondary,
+.btn-hit:focus-visible:not(:disabled) > .btn-secondary {
   border-color: var(--red);
   color: var(--red);
   transform: translateY(-2px);
@@ -749,9 +845,9 @@ body:has(.pt-wrap.pt-enter) [data-pt-portal] {
 
 .notFoundHeadline {
   font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
-  font-size: clamp(2.8rem, 7vw, 5rem);
+  font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
   color: var(--fg);
-  line-height: 1.1;
+  line-height: 0.96;
   margin: 0;
 }
 
@@ -793,4 +889,36 @@ body:has(.pt-wrap.pt-enter) [data-pt-portal] {
   .notFoundBtns {
     flex-direction: column;
   }
+}
+
+/* ─── Google Maps OverlayView Pin (replaces deprecated google.maps.Marker while preserving JSON map styles) ─── */
+.hofherr-map-pin {
+  position: absolute;
+  left: var(--pin-x, 0px);
+  top: var(--pin-y, 0px);
+  width: var(--pin-size, 56px);
+  height: var(--pin-size, 56px);
+  transform: translate(-50%, -100%);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55));
+  transition: transform 0.2s var(--ease-out), filter 0.2s var(--ease-out);
+}
+
+.hofherr-map-pin:hover,
+.hofherr-map-pin:focus-visible {
+  transform: translate(-50%, -100%) scale(1.06);
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.72));
+}
+
+.hofherr-map-pin-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
 }

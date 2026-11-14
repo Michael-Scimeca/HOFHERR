@@ -325,37 +325,37 @@ export default function SelectionsClient() {
                         compromise or exception.
                     </p>
                     <div className={styles.heroActions}>
-                        <Link href="/online-orders" className="btn btn-primary">
-                            Order Online for Pickup
+                        <Link href="/online-orders" className="btn-hit">
+                            <span className="btn btn-primary">Order Online for Pickup</span>
                         </Link>
-                        <Link href="/cut-guide" className="btn btn-outline">
-                            Interactive Cut &amp; Cooking Guide
+                        <Link href="/cut-guide" className="btn-hit">
+                            <span className="btn btn-primary">Interactive Cut &amp; Cooking Guide</span>
                         </Link>
-                        <Link href="/specials" className="btn btn-outline">
-                            This Week&apos;s Specials
+                        <Link href="/specials" className="btn-hit">
+                            <span className="btn btn-primary">This Week&apos;s Specials</span>
                         </Link>
                     </div>
                     <nav className={styles.jumpNav} aria-label="Selections page sections">
                         <a href="#sourcing-standards" className={styles.jumpLink}>
-                            01 · Farm Traceability
+                            Farm Traceability
                         </a>
                         <a href="#butcher-boards" className={styles.jumpLink}>
-                            02 · Quality Meats &amp; Game
+                            Quality Meats &amp; Game
                         </a>
                         <a href="#charcuterie-counter" className={styles.jumpLink}>
-                            03 · Charcuterie, Sausages &amp; Deli
+                            Charcuterie, Sausages &amp; Deli
                         </a>
                         <a href="#signature-sandwiches" className={styles.jumpLink}>
-                            04 · Soups &amp; Sandwiches
+                            Soups &amp; Sandwiches
                         </a>
                         <a href="#prepared-and-bbq" className={styles.jumpLink}>
-                            05 · Prepared Meals &amp; Barbeque
+                            Prepared Meals &amp; Barbeque
                         </a>
                     </nav>
                 </div>
             </header>
 
-            {/* ── Section 01: Farm Traceability & Design System Farm Source Board ── */}
+            {/* ── Farm Traceability & Design System Farm Source Board ── */}
             <section
                 id="sourcing-standards"
                 aria-labelledby="sourcing-standards-heading"
@@ -364,7 +364,7 @@ export default function SelectionsClient() {
                 <div className={`container ${styles.sectionStack}`}>
                     <div className={styles.sectionHeader}>
                         <h2 id="sourcing-standards-heading" className={styles.sectionTitle}>
-                            01 / Midwest Farm Traceability &amp; Standards
+                            Midwest Farm Traceability &amp; Standards
                         </h2>
                         <p className={styles.sectionDesc}>
                             Many grocery stores use pre-processed meats from industrialized factories where it&apos;s
@@ -391,12 +391,12 @@ export default function SelectionsClient() {
                 </div>
             </section>
 
-            {/* ── Section 02: Quality Meats & 6 Design System Butcher Boards ── */}
+            {/* ── Quality Meats & 6 Design System Butcher Boards ── */}
             <section id="butcher-boards" aria-labelledby="butcher-boards-heading" className="section">
                 <div className={`container ${styles.sectionStack}`}>
                     <div className={styles.sectionHeader}>
                         <h2 id="butcher-boards-heading" className={styles.sectionTitle}>
-                            02 / Quality Meats — Beef, Pork, Lamb, Poultry, Game &amp; Exotic Game
+                            Quality Meats — Beef, Pork, Lamb, Poultry, Game &amp; Exotic Game
                         </h2>
                         <p className={styles.sectionDesc}>
                             Because Sean began his career as a chef, his vision for Hofherr Meat Co. focuses on helping
@@ -445,7 +445,7 @@ export default function SelectionsClient() {
                 </div>
             </section>
 
-            {/* ── Section 03: Charcuterie Case & 6 Design System Categories ── */}
+            {/* ── Charcuterie Case & 6 Design System Categories ── */}
             <section
                 id="charcuterie-counter"
                 aria-labelledby="charcuterie-counter-heading"
@@ -454,7 +454,7 @@ export default function SelectionsClient() {
                 <div className={`container ${styles.sectionStack}`}>
                     <div className={styles.sectionHeader}>
                         <h2 id="charcuterie-counter-heading" className={styles.sectionTitle}>
-                            03 / Hand-Crafted Charcuterie, Sausages, Deli &amp; Cheese
+                            Hand-Crafted Charcuterie, Sausages, Deli &amp; Cheese
                         </h2>
                         <p className={styles.sectionDesc}>
                             We take immense pride in our hand-crafted charcuterie. At any given time, one of our team
@@ -509,7 +509,7 @@ export default function SelectionsClient() {
                 </div>
             </section>
 
-            {/* ── Section 04: Soups, Stocks & 6 Named Housemade Sandwiches ── */}
+            {/* ── Soups, Stocks & 6 Named Housemade Sandwiches ── */}
             <section
                 id="signature-sandwiches"
                 aria-labelledby="signature-sandwiches-heading"
@@ -518,7 +518,7 @@ export default function SelectionsClient() {
                 <div className={`container ${styles.sectionStack}`}>
                     <div className={styles.sectionHeader}>
                         <h2 id="signature-sandwiches-heading" className={styles.sectionTitle}>
-                            04 / Housemade Soups, Stocks &amp; Signature Sandwiches
+                            Housemade Soups, Stocks &amp; Signature Sandwiches
                         </h2>
                         <p className={styles.sectionDesc}>
                             All of our soups are made fresh daily to carry out with special recipes every week. All of
@@ -610,7 +610,7 @@ export default function SelectionsClient() {
                 </div>
             </section>
 
-            {/* ── Section 05: Prepared Meals & Barbeque Headquarters (Design System Images) ── */}
+            {/* ── Prepared Meals & Barbeque Headquarters (Design System Images) ── */}
             <section
                 id="prepared-and-bbq"
                 aria-labelledby="prepared-and-bbq-heading"
@@ -619,7 +619,7 @@ export default function SelectionsClient() {
                 <div className={`container ${styles.sectionStack}`}>
                     <div className={styles.sectionHeader}>
                         <h2 id="prepared-and-bbq-heading" className={styles.sectionTitle}>
-                            05 / Scratch Prepared Meals &amp; Barbeque Headquarters
+                            Scratch Prepared Meals &amp; Barbeque Headquarters
                         </h2>
                         <p className={styles.sectionDesc}>
                             All of our prepared meals are made from scratch — choose from heat-and-eat entrees, classic
@@ -717,8 +717,8 @@ export default function SelectionsClient() {
                                 serving size recommendations, and grilling recipes.
                             </p>
                             <div className={styles.bbqActions}>
-                                <Link href="/bbq" className="btn btn-primary">
-                                    Explore BBQ &amp; Smokehouse
+                                <Link href="/bbq" className="btn-hit">
+                                    <span className="btn btn-primary">Explore BBQ &amp; Smokehouse</span>
                                 </Link>
                                 <a href="mailto:sean@hofherrmeatco.com" className="btn btn-outline">
                                     Email Sean Your BBQ Questions
@@ -751,11 +751,11 @@ export default function SelectionsClient() {
                         </div>
                         <div className={styles.ctaStyle4Right}>
                             <span className={styles.ctaKickerGold}>DIRECT COUNTER DISPATCH</span>
-                            <Link href="/online-orders" className="btn btn-primary">
-                                Order Online Now
+                            <Link href="/online-orders" className="btn-hit">
+                                <span className="btn btn-primary">Order Online Now</span>
                             </Link>
-                            <a href="tel:8474416328" className="btn btn-secondary">
-                                Call (847) 441-MEAT
+                            <a href="tel:8474416328" className="btn-hit">
+                                <span className="btn btn-secondary">Call (847) 441-MEAT</span>
                             </a>
                             <Link href="/cut-guide" className="btn btn-outline">
                                 View Interactive Cut Guide

@@ -1,66 +1,124 @@
-'use client';
 import styles from './AccoladesVariants.module.css';
 
-const ACCOLADES = [
-    { icon: '🏆', text: 'North Shore Chili Cookoff', suffix: 'Winner',  type: 'win',   year: '2009', category: 'Competition Win' },
-    { icon: '🏆', text: 'Lake Bluff Ribfest',         suffix: 'Winner',  type: 'win',   year: '2010', category: 'Competition Win' },
-    { icon: '🥈', text: 'Northfield Ribfest',          suffix: 'Top 3',  type: 'top3',  year: '2008', category: 'Top 3 Finish' },
-    { icon: '🥈', text: 'North Shore Chili Cookoff',   suffix: 'Top 3',  type: 'top3',  year: '2010', category: 'Top 3 Finish' },
-    { icon: '🥈', text: 'Des Plaines Rib, Chicken & Sausage Winter Burn Off', suffix: 'Top 3', type: 'top3', year: '2011', category: 'Top 3 Finish' },
-    { icon: '🔪', text: "Member, Butcher's Guild",     suffix: null,     type: 'guild', year: null,   category: 'Guild Member' },
-    { icon: '🔥', text: 'Member, Illinois Barbecue Association', suffix: null, type: 'guild', year: null, category: 'Guild Member' },
-    { icon: '🎙️', text: "As Featured on America's Test Kitchen \"Proof\" Podcast", suffix: null, type: 'media', year: null, category: 'Press Feature' },
+type AccoladeTier = 'win' | 'top3' | 'guild' | 'media';
+
+type AccoladeItem = {
+    id: string;
+    title: string;
+    outcome: string;
+    tier: AccoladeTier;
+    stamp: string;
+};
+
+type BigStat = {
+    id: string;
+    num: string;
+    label: string;
+};
+
+const BIG_STATS: BigStat[] = [
+    { id: 'stat-wins', num: '5', label: 'Competition Wins' },
+    { id: 'stat-guilds', num: '2', label: 'Guild Memberships' },
+    { id: 'stat-years', num: '10+', label: 'Years Competing' },
+    { id: 'stat-press', num: '1', label: 'National Feature' },
 ];
 
-const BIG_STATS = [
-    { num: '5',   label: 'Competition Wins' },
-    { num: '2',   label: 'Guild Memberships' },
-    { num: '10+', label: 'Years Competing' },
-    { num: '1',   label: 'National Feature' },
+const ACCOLADES: AccoladeItem[] = [
+    {
+        id: 'chili-2009',
+        title: 'North Shore Chili Cookoff',
+        outcome: 'Winner',
+        tier: 'win',
+        stamp: '2009',
+    },
+    {
+        id: 'ribfest-2010',
+        title: 'Lake Bluff Ribfest',
+        outcome: 'Winner',
+        tier: 'win',
+        stamp: '2010',
+    },
+    {
+        id: 'northfield-2008',
+        title: 'Northfield Ribfest',
+        outcome: 'Top 3',
+        tier: 'top3',
+        stamp: '2008',
+    },
+    {
+        id: 'chili-2010',
+        title: 'North Shore Chili Cookoff',
+        outcome: 'Top 3',
+        tier: 'top3',
+        stamp: '2010',
+    },
+    {
+        id: 'burnoff-2011',
+        title: 'Des Plaines Rib, Chicken & Sausage Winter Burn Off',
+        outcome: 'Top 3',
+        tier: 'top3',
+        stamp: '2011',
+    },
+    {
+        id: 'butchers-guild',
+        title: "Member, Butcher's Guild",
+        outcome: 'Guild Member',
+        tier: 'guild',
+        stamp: 'GUILD',
+    },
+    {
+        id: 'iba-member',
+        title: 'Member, Illinois Barbecue Association',
+        outcome: 'Guild Member',
+        tier: 'guild',
+        stamp: 'IBA',
+    },
+    {
+        id: 'atk-proof',
+        title: 'As Featured on America\'s Test Kitchen "Proof" Podcast',
+        outcome: 'Press Feature',
+        tier: 'media',
+        stamp: 'PRESS',
+    },
 ];
 
-export default function AccoladesVariants({ accolades: _a }: { accolades?: string[] }) {
+export default function AccoladesVariants(_props: { accolades?: string[] }) {
     return (
-        <section className={styles.section}>
-            <div className={styles.wrapper}>
-                <div className={styles.header}>
-                    <span className={styles.eyebrow}>Recognition</span>
-                    <h2 className={styles.title}>Awards &amp; <em>Affiliations</em></h2>
-                </div>
+        <section id="accolades" aria-labelledby="accolades-heading" className="section">
+            <div className="container">
+                <div className={styles.sheet}>
+                    <div className={styles.masthead}>
+                        <h2 id="accolades-heading" className={styles.displayTitle}>
+                            Awards &amp; <em>Affiliations</em>
+                        </h2>
 
-                <div className={styles.splitLayout}>
-                    {/* ── Left: stat wall ── */}
-                    <div className={styles.statWall}>
-                        <div className={styles.statWallCopy}>
-                            <h3>Proven.<em>Recognized.</em></h3>
-                            <p>Sean's culinary accolades span over a decade — from competition wins across Chicago's North Shore to national press features and active industry memberships.</p>
-                        </div>
-                        <div className={styles.bigStats}>
-                            {BIG_STATS.map(s => (
-                                <div key={s.label} className={styles.bigStat}>
-                                    <span className={styles.bigStatNum}>{s.num}</span>
-                                    <span className={styles.bigStatLabel}>{s.label}</span>
+                        <div className={styles.tickerSummary}>
+                            {BIG_STATS.map((stat) => (
+                                <div key={stat.id} className={styles.tickerPair}>
+                                    <span className={styles.tickerBig}>{stat.num}</span>
+                                    <span className={styles.tickerWord}>{stat.label}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* ── Right: masonry ── */}
-                    <div className={styles.right}>
-                        <div className={styles.masonry}>
-                            {ACCOLADES.map((a) => (
+                    <div className={styles.indexList}>
+                        {ACCOLADES.map((item) => {
+                            const isWin = item.tier === 'win';
+                            return (
                                 <div
-                                    key={`${a.text}-${a.year ?? a.category}`}
-                                    className={`${styles.masonryCard} ${a.type === 'win' ? `${styles.masonryWin} ${styles.masonryTall}` : ''}`}
+                                    key={item.id}
+                                    className={`${styles.indexRow} ${isWin ? styles.indexRowWin : ''}`}
                                 >
-                                    <span className={styles.masonryIcon}>{a.icon}</span>
-                                    <span className={styles.masonryTag}>{a.category}{a.year ? ` · ${a.year}` : ''}</span>
-                                    <div className={styles.masonryText}>
-                                        {a.text}{a.suffix && <span className={styles.masonrySuffix}> — {a.suffix}</span>}
+                                    <span className={styles.indexName}>{item.title}</span>
+                                    <span className={styles.leader} aria-hidden="true" />
+                                    <div className={styles.indexRight}>
+                                        <span className={styles.indexOutcome}>{item.outcome}</span>
+                                        <span className={styles.indexYear}>{item.stamp}</span>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>

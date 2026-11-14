@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import MasterVectorLibrary from './MasterVectorLibrary';
+import { ALL_SITE_COLORS, type SiteColorFamily } from './siteColorsData';
 import styles from './extended.module.css';
 
 /**
@@ -288,6 +289,7 @@ type BrandColor = {
     role: string;
     pantone: string;
     cmyk: string;
+    token?: string;
     gradient?: string;
     surfaceNote?: string;
 };
@@ -295,11 +297,26 @@ type BrandColor = {
 // Pantone / CMYK values are close matches — confirm with a printer drawdown before production.
 const BRAND_COLORS: BrandColor[] = [
     { name: 'Oxblood Crimson', hex: '#8B0A10', role: 'Primary ink · wrap, stamps, labels', pantone: '≈ PMS 7622 C', cmyk: '0 / 93 / 88 / 45' },
-    { name: 'Hofherr Red', hex: '#CC0E1D', role: 'Digital accent · signage highlights', pantone: '≈ PMS 186 C', cmyk: '0 / 93 / 86 / 20' },
-    { name: 'Smokehouse Amber', hex: '#F59B1A', role: 'Second spot colour · flames, fills', pantone: '≈ PMS 1375 C', cmyk: '0 / 37 / 89 / 4' },
+    { name: 'Hofherr Red', hex: '#CC0E1D', token: '--red', role: 'Primary digital accent · Northfield Butcher Shop buttons & CTAs', pantone: '≈ PMS 186 C', cmyk: '0 / 93 / 86 / 20' },
+    { name: 'Hofherr Red Dark', hex: '#A00B17', token: '--red-dark', role: 'Pressed button state · active tracker sweep', pantone: '≈ PMS 187 C', cmyk: '7 / 100 / 82 / 26' },
+    { name: 'Hofherr Red Light', hex: '#E01E2E', token: '--red-light', role: 'Interactive hover highlight · active rim', pantone: '≈ PMS 1795 C', cmyk: '0 / 94 / 84 / 0' },
+    { name: 'Smokehouse Amber', hex: '#F59B1A', role: 'Second spot colour · flames, emblem fills', pantone: '≈ PMS 1375 C', cmyk: '0 / 37 / 89 / 4' },
+    { name: 'Hofherr Brand Gold', hex: '#A8905F', token: '--gold', role: 'Spec keys · active card borders · heritage metadata', pantone: '≈ PMS 4505 C', cmyk: '28 / 34 / 62 / 12' },
+    { name: 'Hofherr Gold Light', hex: '#C4AE82', token: '--gold-light', role: 'Champagne highlight · radial sheen tint', pantone: '≈ PMS 467 C', cmyk: '18 / 22 / 46 / 2' },
+    { name: 'Hofherr Gold Dark', hex: '#8A7349', token: '--gold-dark', role: 'Muted brass stroke · pressed gold accent', pantone: '≈ PMS 4505 U', cmyk: '35 / 42 / 70 / 24' },
+    {
+        name: 'Storefront Ready & Open Green',
+        hex: '#16A34A',
+        token: '--green-ready',
+        role: 'Unified Ready for Pickup · Navbar OPEN · Shop · Catering · Tracker',
+        pantone: '≈ PMS 348 C',
+        cmyk: '86 / 8 / 92 / 1',
+        surfaceNote: 'Unified UI Status Green (--green-ready)',
+    },
     {
         name: 'Winnetka Depot Green (Solid)',
         hex: '#142A1E',
+        token: '--green-depot',
         role: 'Solid spot ink · awnings · packaging ground · flat paint',
         pantone: '≈ PMS 5535 C',
         cmyk: '80 / 50 / 70 / 75',
@@ -308,15 +325,19 @@ const BRAND_COLORS: BrandColor[] = [
     {
         name: 'Winnetka Depot Green (Luminous Sheen)',
         hex: '#142A1E',
+        token: '--green-depot-gradient',
         role: 'Heritage awning · reserve packaging · depot architectural trim',
         pantone: '≈ PMS 5535 C',
         cmyk: '80 / 50 / 70 / 75',
         gradient: 'linear-gradient(135deg, #ffffff14 0%, #0000 70%), radial-gradient(circle, #c4ae821f 0%, #0000 80%)',
         surfaceNote: '135° Highlight Sheen + Radial Champagne Glow',
     },
+    { name: 'Winnetka Depot Deep Forest', hex: '#0D1B13', token: '--green-depot-dark', role: 'Deepest Depot forest shadow & dark gradient stop', pantone: '≈ PMS 553 C', cmyk: '84 / 54 / 74 / 82' },
+    { name: 'Winnetka Depot Forest Light', hex: '#1E3D2C', token: '--green-depot-light', role: 'Elevated Depot green border & hover surface', pantone: '≈ PMS 554 C', cmyk: '78 / 40 / 68 / 62' },
     {
         name: 'Winnetka Depot Blue (Background)',
         hex: '#1E3A5F',
+        token: '--depot-blue-bg',
         role: 'The Depot location toggle buttons · store badges · UI surfaces',
         pantone: '≈ PMS 7693 C',
         cmyk: '85 / 58 / 15 / 35',
@@ -325,14 +346,33 @@ const BRAND_COLORS: BrandColor[] = [
     {
         name: 'Winnetka Depot Blue (Border)',
         hex: '#2563EB',
+        token: '--depot-blue-border',
         role: 'The Depot button & badge stroke · interactive focus rim',
         pantone: '≈ PMS 2728 C',
         cmyk: '88 / 62 / 0 / 0',
         surfaceNote: 'Electric Cobalt 1.5px Stroke (--depot-blue-border)',
     },
-    { name: 'Smokehouse Charcoal', hex: '#1C1614', role: 'Type, gift box, dark grounds', pantone: '≈ PMS Black 7 C', cmyk: '0 / 21 / 29 / 89' },
-    { name: 'Butcher Counter Cream', hex: '#F3EAD8', role: 'Label stock, light grounds', pantone: '≈ PMS 7527 C (tint)', cmyk: '0 / 4 / 11 / 5' },
-    { name: 'Classic Kraft', hex: '#C8A47E', role: 'Natural substrate reference', pantone: 'Unprinted stock', cmyk: '—' },
+    { name: 'Winnetka Depot Blue Light', hex: '#3B82F6', token: '--depot-blue-light', role: 'Depot active hover highlight & focus glow', pantone: '≈ PMS 2727 C', cmyk: '76 / 46 / 0 / 0' },
+    { name: 'Winnetka Depot Sky Text', hex: '#93C5FD', token: '--depot-blue-text', role: 'Depot pill badge label & icy blue accent text', pantone: '≈ PMS 2708 C', cmyk: '40 / 14 / 0 / 0' },
+    { name: 'Smokehouse Charcoal', hex: '#1C1614', role: 'Type, gift box, dark print grounds', pantone: '≈ PMS Black 7 C', cmyk: '0 / 21 / 29 / 89' },
+    { name: 'Obsidian Canvas', hex: '#000000', token: '--dark', role: 'Root site backdrop & deep modal canvas', pantone: 'Process Black', cmyk: '0 / 0 / 0 / 100' },
+    { name: 'Butcher Counter Cream', hex: '#F3EAD8', role: 'Label stock, light print grounds', pantone: '≈ PMS 7527 C (tint)', cmyk: '0 / 4 / 11 / 5' },
+    { name: 'Classic Kraft', hex: '#C8A47E', role: 'Natural butcher paper substrate reference', pantone: 'Unprinted stock', cmyk: '—' },
+    { name: 'Primary Foreground', hex: '#F2F2F2', token: '--fg / --light', role: 'Headlines · primary UI copy · high-contrast text', pantone: '≈ Cool Gray 1 C', cmyk: '0 / 0 / 0 / 5' },
+    { name: 'Secondary Copy Grey', hex: '#CCCCCC', token: '--fg-2 / --text-2', role: 'Body paragraphs · spec values · descriptions', pantone: '≈ Cool Gray 3 C', cmyk: '0 / 0 / 0 / 20' },
+    { name: 'Tertiary Caption Grey', hex: '#999999', token: '--fg-3 / --text-3', role: 'Subtitles · role labels · helper captions', pantone: '≈ Cool Gray 7 C', cmyk: '0 / 0 / 0 / 40' },
+    { name: 'Muted Metadata Grey', hex: '#888888', token: '--fg-muted', role: 'Timestamps · secondary icons · placeholders', pantone: '≈ Cool Gray 8 C', cmyk: '0 / 0 / 0 / 47' },
+];
+
+const COLOR_FAMILY_FILTERS: { id: 'all' | SiteColorFamily; label: string }[] = [
+    { id: 'all', label: `All Site Hexes (${ALL_SITE_COLORS.length})` },
+    { id: 'reds', label: `Reds (${ALL_SITE_COLORS.filter((c) => c.family === 'reds').length})` },
+    { id: 'golds', label: `Golds & Oranges (${ALL_SITE_COLORS.filter((c) => c.family === 'golds').length})` },
+    { id: 'greens', label: `Greens (${ALL_SITE_COLORS.filter((c) => c.family === 'greens').length})` },
+    { id: 'blues', label: `Blues (${ALL_SITE_COLORS.filter((c) => c.family === 'blues').length})` },
+    { id: 'browns', label: `Creams & Browns (${ALL_SITE_COLORS.filter((c) => c.family === 'browns').length})` },
+    { id: 'purples', label: `Purples (${ALL_SITE_COLORS.filter((c) => c.family === 'purples').length})` },
+    { id: 'neutrals', label: `Neutrals & Surfaces (${ALL_SITE_COLORS.filter((c) => c.family === 'neutrals').length})` },
 ];
 
 const FONTS = [
@@ -654,6 +694,161 @@ function ItemCard({ item, folder }: { item: IdentityItem; folder: string }) {
     );
 }
 
+export function BrandColorTokensSection() {
+    const [colorFilter, setColorFilter] = useState<'all' | SiteColorFamily>('all');
+    const [copiedHex, setCopiedHex] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!copiedHex) return;
+        const timer = setTimeout(() => setCopiedHex(null), 1800);
+        return () => clearTimeout(timer);
+    }, [copiedHex]);
+
+    const copyColor = async (hex: string, key: string) => {
+        try {
+            await navigator.clipboard.writeText(hex);
+            setCopiedHex(key);
+        } catch {
+            setCopiedHex(key);
+        }
+    };
+
+    const visibleSiteColors =
+        colorFilter === 'all'
+            ? ALL_SITE_COLORS
+            : ALL_SITE_COLORS.filter((c) => c.family === colorFilter);
+
+    return (
+        <section id="color-tokens" aria-labelledby="color-tokens-heading" className="section">
+            <div className={`container ${styles.stack}`}>
+                <div className={styles.header}>
+                    <h2 id="color-tokens-heading" className={styles.sectionTitle}>
+                        Official Brand, Print &amp; Site Theme Tokens ({BRAND_COLORS.length})
+                    </h2>
+                    <p className={styles.sectionDesc}>
+                        Every core print ink and <code>globals.css</code> <code>:root</code> theme variable — click any card to copy its HEX
+                    </p>
+                </div>
+
+                <div className={styles.colorGrid}>
+                    {BRAND_COLORS.map((c) => {
+                        const cardKey = `brand-${c.name}-${c.hex}`;
+                        return (
+                            <button
+                                key={cardKey}
+                                type="button"
+                                onClick={() => copyColor(c.hex, cardKey)}
+                                className={styles.colorCard}
+                            >
+                                <div
+                                    className={styles.colorChip}
+                                    style={
+                                        {
+                                            '--chip-bg': c.hex,
+                                            '--chip-gradient': c.gradient || 'none',
+                                        } as React.CSSProperties
+                                    }
+                                />
+                                <div className={styles.colorBody}>
+                                    <span className={styles.colorName}>
+                                        {copiedHex === cardKey ? `✓ Copied ${c.hex}` : c.name}
+                                    </span>
+                                    <span className={styles.colorRole}>{c.role}</span>
+                                    <dl className={styles.colorSpecs}>
+                                        <dt>HEX</dt><dd>{c.hex}</dd>
+                                        {c.token && (
+                                            <>
+                                                <dt>TOKEN</dt><dd>{c.token}</dd>
+                                            </>
+                                        )}
+                                        <dt>PMS</dt><dd>{c.pantone}</dd>
+                                        <dt>CMYK</dt><dd>{c.cmyk}</dd>
+                                        {c.surfaceNote && (
+                                            <>
+                                                <dt>SURFACE</dt><dd>{c.surfaceNote}</dd>
+                                            </>
+                                        )}
+                                    </dl>
+                                </div>
+                            </button>
+                        );
+                    })}
+                </div>
+
+                <div className={styles.colorSectionBlock}>
+                    <div className={styles.colorSectionHeader}>
+                        <div>
+                            <h3 className={styles.emblemBlockTitle}>
+                                Every Active Color Across the Entire Site ({ALL_SITE_COLORS.length} Hexes)
+                            </h3>
+                            <p className={styles.emblemBlockSub}>
+                                Live codebase inventory of every unique web UI hex color across <code>src/</code> (excluding print-sheet calibration marks) — filter by hue family or click any swatch to copy
+                            </p>
+                        </div>
+                        <div className={styles.colorFilterBar} role="group" aria-label="Filter site colors by family">
+                            {COLOR_FAMILY_FILTERS.map((f) => (
+                                <button
+                                    key={f.id}
+                                    type="button"
+                                    onClick={() => setColorFilter(f.id)}
+                                    className={`${styles.colorFilterBtn} ${colorFilter === f.id ? styles.colorFilterBtnActive : ''}`}
+                                >
+                                    {f.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className={styles.colorGrid}>
+                        {visibleSiteColors.map((entry) => {
+                            const cardKey = `site-${entry.hex}`;
+                            return (
+                                <div key={cardKey} className={styles.colorCard}>
+                                    <button
+                                        type="button"
+                                        onClick={() => copyColor(entry.hex, cardKey)}
+                                        className={styles.colorSwatchBtn}
+                                    >
+                                        <div
+                                            className={styles.colorChip}
+                                            style={{ '--chip-bg': entry.hex } as React.CSSProperties}
+                                        />
+                                        <div className={styles.colorBody}>
+                                            <span className={styles.colorName}>
+                                                {copiedHex === cardKey ? `✓ Copied ${entry.hex}` : entry.hex}
+                                            </span>
+                                            <span className={styles.colorRole}>{entry.files}</span>
+                                            <dl className={styles.colorSpecs}>
+                                                <dt>HEX</dt><dd>{entry.hex}</dd>
+                                                <dt>USED</dt><dd>{entry.count}× in src/</dd>
+                                                <dt>GROUP</dt><dd>{entry.family.toUpperCase()}</dd>
+                                                {entry.token && (
+                                                    <>
+                                                        <dt>TOKEN</dt><dd>{entry.token}</dd>
+                                                    </>
+                                                )}
+                                            </dl>
+                                        </div>
+                                    </button>
+                                    {entry.routes.length > 0 && (
+                                        <div className={styles.colorRouteRow}>
+                                            {entry.routes.map((route) => (
+                                                <Link key={route} href={route} className={styles.colorRouteLink}>
+                                                    ↗ {route}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+}
+
 export default function ExtendedIdentityBoards() {
     return (
         <>
@@ -742,36 +937,6 @@ export default function ExtendedIdentityBoards() {
                             </div>
                         ))}
                     </div>
-                </div>
-
-                <div className={styles.colorGrid}>
-                    {BRAND_COLORS.map((c) => (
-                        <div key={`${c.name}-${c.hex}`} className={styles.colorCard}>
-                            <div
-                                className={styles.colorChip}
-                                style={
-                                    {
-                                        '--chip-bg': c.hex,
-                                        '--chip-gradient': c.gradient || 'none',
-                                    } as React.CSSProperties
-                                }
-                            />
-                            <div className={styles.colorBody}>
-                                <span className={styles.colorName}>{c.name}</span>
-                                <span className={styles.colorRole}>{c.role}</span>
-                                <dl className={styles.colorSpecs}>
-                                    <dt>HEX</dt><dd>{c.hex}</dd>
-                                    <dt>PMS</dt><dd>{c.pantone}</dd>
-                                    <dt>CMYK</dt><dd>{c.cmyk}</dd>
-                                    {c.surfaceNote && (
-                                        <>
-                                            <dt>SURFACE</dt><dd>{c.surfaceNote}</dd>
-                                        </>
-                                    )}
-                                </dl>
-                            </div>
-                        </div>
-                    ))}
                 </div>
 
                 <div className={styles.fontList}>

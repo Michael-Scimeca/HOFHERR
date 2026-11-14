@@ -1,7 +1,7 @@
 .shell { padding-top: calc(var(--nav-h, 80px) + 24px); padding-bottom: 100px; color: var(--fg); }
 .embeddedShell { padding-top: 40px; padding-bottom: 80px; color: var(--fg); border-top: 1px solid var(--border); }
 .top { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
-.h1 { font-family: var(--font-heading); text-transform: uppercase; font-size: clamp(2rem, 5vw, 3.4rem); margin: 0; }
+.h1 { font-family: var(--font-heading); text-transform: uppercase; font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem)); font-weight: 800; line-height: 0.96; margin: 0; }
 .h2 { font-family: var(--font-heading); text-transform: uppercase; font-size: clamp(1.4rem, 3vw, 2rem); margin: 24px 0 8px; }
 .lead, .note { color: var(--fg-2); line-height: 1.6; max-width: 80ch; margin: 0; }
 .note { color: var(--fg-3); font-size: .9rem; }

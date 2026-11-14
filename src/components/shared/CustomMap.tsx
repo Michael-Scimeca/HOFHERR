@@ -1,7 +1,11 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { setOptions, importLibrary } from '@googlemaps/js-api-loader';
+import { useEffect, useRef, type CSSProperties } from 'react';
+import {
+    loadGoogleMaps,
+    createMapPinOverlay,
+    type MapPinOverlayHandle,
+} from '@/lib/googleMapsLoader';
 import styles from './CustomMap.module.css';
 
 interface CustomMapProps {
@@ -33,26 +37,6 @@ const MAP_STYLES: google.maps.MapTypeStyle[] = [
     { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#333' }] },
 ];
 
-const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
-
-/* Shared loader promise so Google Maps JS loads only once */
-let loadPromise: Promise<void> | null = null;
-let optionsSet = false;
-function ensureLoaded(): Promise<void> {
-    if (!loadPromise) {
-        if (!optionsSet) {
-            setOptions({ key: apiKey, v: 'weekly' });
-            optionsSet = true;
-        }
-        loadPromise = importLibrary('maps').then(() => { });
-    }
-    return loadPromise!;
-}
-
-function bindMarkerClick(marker: google.maps.Marker, info: google.maps.InfoWindow, map: google.maps.Map) {
-    return google.maps.event.addListener(marker, 'click', () => info.open({ anchor: marker, map }));
-}
-
 export default function CustomMap({
     lat,
     lng,
@@ -66,7 +50,7 @@ export default function CustomMap({
 }: CustomMapProps) {
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapRef = useRef<google.maps.Map | null>(null);
-    const markerRef = useRef<google.maps.Marker | null>(null);
+    const pinRef = useRef<MapPinOverlayHandle | null>(null);
     const infoRef = useRef<google.maps.InfoWindow | null>(null);
 
     const latestInitRef = useRef({ lat, lng, zoom, iconType, label, address });
@@ -74,15 +58,13 @@ export default function CustomMap({
         latestInitRef.current = { lat, lng, zoom, iconType, label, address };
     }, [lat, lng, zoom, iconType, label, address]);
 
-    const clickListenerRef = useRef<google.maps.MapsEventListener | null>(null);
-
     /* ── Init map ── */
     useEffect(() => {
         if (!mapContainer.current || mapRef.current) return;
 
         let cancelled = false;
 
-        ensureLoaded().then(() => {
+        loadGoogleMaps().then(() => {
             if (cancelled || !mapContainer.current) return;
             const init = latestInitRef.current;
 
@@ -97,37 +79,40 @@ export default function CustomMap({
             });
 
             const sz = init.iconType === 'depot' ? 72 : 56;
-            const marker = new google.maps.Marker({
-                map,
-                position: { lat: init.lat, lng: init.lng },
-                title: init.label,
-                icon: {
-                    url: init.iconType === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png',
-                    scaledSize: new google.maps.Size(sz, sz),
-                    anchor: new google.maps.Point(sz / 2, sz),
-                },
-            });
-
             const info = new google.maps.InfoWindow({
+                pixelOffset: new google.maps.Size(0, -sz),
+                position: { lat: init.lat, lng: init.lng },
                 content: `<div style="font-family:Inter,sans-serif;padding:8px 4px;">
                     <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">${init.label}</div>
                     <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(init.address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#c5a255;text-decoration:underline;">${init.address}</a>
                 </div>`,
             });
 
-            clickListenerRef.current = bindMarkerClick(marker, info, map);
+            const pinOverlay = createMapPinOverlay({
+                map,
+                position: { lat: init.lat, lng: init.lng },
+                title: init.label,
+                iconUrl: init.iconType === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png',
+                size: sz,
+                onClick: () => {
+                    const cur = latestInitRef.current;
+                    const curSz = cur.iconType === 'depot' ? 72 : 56;
+                    info.setOptions({ pixelOffset: new google.maps.Size(0, -curSz) });
+                    info.setPosition({ lat: cur.lat, lng: cur.lng });
+                    info.open({ map });
+                },
+            });
 
             mapRef.current = map;
-            markerRef.current = marker;
+            pinRef.current = pinOverlay;
             infoRef.current = info;
         });
 
         return () => {
             cancelled = true;
-            if (clickListenerRef.current) google.maps.event.removeListener(clickListenerRef.current);
-            if (markerRef.current) markerRef.current.setMap(null);
+            pinRef.current?.destroy();
             mapRef.current = null;
-            markerRef.current = null;
+            pinRef.current = null;
             infoRef.current = null;
         };
     }, []);
@@ -135,22 +120,22 @@ export default function CustomMap({
     /* ── Update on location switch ── */
     useEffect(() => {
         const map = mapRef.current;
-        const marker = markerRef.current;
+        const pinOverlay = pinRef.current;
         const info = infoRef.current;
-        if (!map || !marker) return;
-
-        map.panTo({ lat, lng });
-        marker.setPosition({ lat, lng });
-        marker.setTitle(label);
+        if (!map || !pinOverlay) return;
 
         const sz = iconType === 'depot' ? 72 : 56;
-        marker.setIcon({
-            url: iconType === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png',
-            scaledSize: new google.maps.Size(sz, sz),
-            anchor: new google.maps.Point(sz / 2, sz),
+        map.panTo({ lat, lng });
+        pinOverlay.update({
+            position: { lat, lng },
+            title: label,
+            iconUrl: iconType === 'depot' ? '/icons/depot-pin.png' : '/icons/butcher-pin.png',
+            size: sz,
         });
 
         if (info) {
+            info.setOptions({ pixelOffset: new google.maps.Size(0, -sz) });
+            info.setPosition({ lat, lng });
             info.setContent(`<div style="font-family:Inter,sans-serif;padding:8px 4px;">
                 <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">${label}</div>
                 <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#c5a255;text-decoration:underline;">${address}</a>
@@ -159,7 +144,10 @@ export default function CustomMap({
     }, [lat, lng, label, address, iconType]);
 
     return (
-        <div className={`${styles.container} ${className || ''}`} style={{ height }}>
+        <div
+            className={`${styles.container} ${className || ''}`}
+            style={{ '--custom-map-h': height } as CSSProperties}
+        >
             <div ref={mapContainer} className={styles.canvas} />
             {!hideBottomBar && (
                 <div className={styles.bottomBar}>

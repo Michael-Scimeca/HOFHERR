@@ -42,8 +42,12 @@ export default function SeasonalBanner() {
                     <h2 className={styles.title}>Pot O&apos; Gold Dinners<br /><em>Pre-Orders Open</em></h2>
                     <p className={styles.sub}>HMCo. Boiled Corned Beef, Red Taters, Best Cabbage Ever, and more! Pre-orders open now — hot n ready to serve 4 adults.</p>
                     <div className={styles.actions}>
-                        <Link href="/specials" className="btn btn-primary">Pre-Order Now</Link>
-                        <Link href="/specials" className="btn btn-secondary">See Full Menu</Link>
+                        <Link href="/specials" className="btn-hit">
+                            <span className="btn btn-primary">Pre-Order Now</span>
+                        </Link>
+                        <Link href="/specials" className="btn-hit">
+                            <span className="btn btn-secondary">See Full Menu</span>
+                        </Link>
                     </div>
                 </div>
                 <div className={styles.right}>

@@ -4,7 +4,6 @@ import { getClient } from '@/sanity/client';
 import { CATERING_EVENTS_QUERY } from '@/sanity/queries';
 import CateringHub from './CateringHub';
 import CateringHeroButtons from './CateringHeroButtons';
-import CateringDrawer from '@/components/CateringDrawer';
 import styles from './page.module.css';
 
 // Email body generation moved to '@/app/api/email/template' module
@@ -102,39 +101,6 @@ export default async function CateringPage() {
                                 <CateringHub events={cateringEvents} calendarPricing={[]} />
                             </div>
                         </section>
-
-                        {/* ── Bottom Marquee Ticker ── */}
-                            <section id="catering-marquee" aria-label="Catering highlights" className={styles.marqueeWrap}>
-                                <div className={`${styles.marqueeTrack} ${styles.marqueeRow1}`}>
-                    {['row1-a', 'row1-b'].map(pass => (
-                        <span key={pass} className={styles.marqueeText}>
-                            Pig Roasts <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> BBQ Catering <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> Rotisserie <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> Custom Platters <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} />&nbsp;
-                        </span>
-                    ))}
-                </div>
-                <div className={`${styles.marqueeTrack} ${styles.marqueeRow2}`}>
-                    {['row2-a', 'row2-b'].map(pass => (
-                        <span key={pass} className={styles.marqueeText}>
-                            Private Events <img src="/crowd-ticker/steak.jpg" alt="" className={styles.marqueeBullet} /> Corporate Dinners <img src="/crowd-ticker/steak.jpg" alt="" className={styles.marqueeBullet} /> Weddings <img src="/crowd-ticker/steak.jpg" alt="" className={styles.marqueeBullet} /> Backyard Parties <img src="/crowd-ticker/steak.jpg" alt="" className={styles.marqueeBullet} />&nbsp;
-                        </span>
-                    ))}
-                </div>
-                <div className={`${styles.marqueeTrack} ${styles.marqueeRow3}`}>
-                    {['row3-a', 'row3-b'].map(pass => (
-                        <span key={pass} className={styles.marqueeText}>
-                            Smoked Brisket <img src="/crowd-ticker/chickeninticker-original.png" alt="" className={styles.marqueeBullet} /> Pulled Pork <img src="/crowd-ticker/chickeninticker-original.png" alt="" className={styles.marqueeBullet} /> Whole Hog <img src="/crowd-ticker/chickeninticker-original.png" alt="" className={styles.marqueeBullet} /> Charcuterie <img src="/crowd-ticker/chickeninticker-original.png" alt="" className={styles.marqueeBullet} />&nbsp;
-                        </span>
-                    ))}
-                </div>
-                <div className={`${styles.marqueeTrack} ${styles.marqueeRow4}`}>
-                    {['row4-a', 'row4-b'].map(pass => (
-                        <span key={pass} className={styles.marqueeText}>
-                            Competition BBQ <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> Farm to Fire <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> Full Service <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} /> Custom Menus <img src="/crowd-ticker/pig.jpg" alt="" className={styles.marqueeBullet} />&nbsp;
-                        </span>
-                    ))}
-                </div>
-            </section>
-            <CateringDrawer />
         </main>
     );
 }

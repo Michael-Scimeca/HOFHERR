@@ -46,7 +46,7 @@ export default function FeaturedUserOrder({ order, userEmail, userName }: { orde
                         </div>
                         <div style={{ textAlign: 'right' }}>
                             <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--fg-muted)', fontWeight: 700 }}>Total</span>
-                            <div style={{ fontWeight: 'bold', color: '#4ade80', fontSize: '1.1rem', margin: '4px 0 0' }}>
+                            <div style={{ fontWeight: 'bold', color: '#16a34a', fontSize: '1.1rem', margin: '4px 0 0' }}>
                                 ${((order.total || 0) / 100).toFixed(2)}
                             </div>
                         </div>

@@ -2,6 +2,7 @@
     position: relative;
     overflow: hidden;
     width: 100%;
+    height: var(--custom-map-h, 100%);
 }
 
 .canvas {

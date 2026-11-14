@@ -31,6 +31,7 @@ export default function Footer() {
                             height={64}
                             width={134}
                             className={styles.logoImg}
+                            loading="eager"
                         />
                     </div>
                     <p className={styles.tagline}>Premium, traceable meats. Custom cuts, rotisserie chicken, seasonal specials, and world-class catering — all from our shop in Northfield, IL.</p>
@@ -62,6 +63,7 @@ export default function Footer() {
                         <Link href="/cut-guide">Cut Guide</Link>
                         <Link href="/faq">FAQ</Link>
                         <Link href="/our-story">Our Story</Link>
+                        <Link href="/press">Press</Link>
                         <Link href="/jobs">Jobs</Link>
                         <Link href="/gift-cards">Gift Cards</Link>
                     </div>
@@ -69,7 +71,6 @@ export default function Footer() {
                         <div className={styles.colTitle}>Legal</div>
                         <Link href="/privacy">Privacy Policy</Link>
                         <Link href="/terms">Terms of Service</Link>
-                        <Link href="/admin">Admin Login</Link>
                     </div>
                 </div>
             </div>

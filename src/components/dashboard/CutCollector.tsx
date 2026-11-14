@@ -155,6 +155,8 @@ export default function CutCollector({
                 triggerFlyAnimation({
                     x: rect.left + rect.width / 2,
                     y: rect.top + rect.height / 2,
+                    itemName: productName,
+                    arrivingQty: 1,
                 });
             }
         },
@@ -233,6 +235,18 @@ export default function CutCollector({
 
     const activeAnimal = CUT_MAP_DATA[selectedAnimalId];
     const activeAnimalProgress = progress.animals[selectedAnimalId];
+
+    useEffect(() => {
+        const openSamplePopover = () => {
+            const targetCut = activeAnimal.cuts.find(c => Boolean(c.recipe)) || activeAnimal.cuts[0];
+            if (targetCut) setQuickOrderCutId(targetCut.id);
+        };
+        if (typeof window !== 'undefined' && window.location.search.includes('devModal=popover')) {
+            openSamplePopover();
+        }
+        window.addEventListener('hofherr-dev-cut-popover', openSamplePopover);
+        return () => window.removeEventListener('hofherr-dev-cut-popover', openSamplePopover);
+    }, [activeAnimal]);
 
     const adventurousCutsForAnimal = useMemo(() => {
         return activeAnimal.cuts.filter((c) => Boolean(c.recipe));

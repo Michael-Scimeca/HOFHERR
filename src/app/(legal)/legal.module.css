@@ -82,7 +82,10 @@
 
 .page h1,
 .title {
-    font-size: 2.2rem;
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    line-height: 0.96;
     margin-bottom: 8px;
     color: var(--gold);
 }
@@ -163,11 +166,6 @@
 @media (max-width: 600px) {
     .page {
         padding: 40px var(--container-px) 60px;
-    }
-
-    .page h1,
-    .title {
-        font-size: 1.75rem;
     }
 
     .page h2 {

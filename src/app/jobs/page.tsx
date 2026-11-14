@@ -119,11 +119,11 @@ export default function JobsPage() {
                             health care plans, retirement savings accounts, and a true neighborhood butcher shop culture.
                         </p>
                         <div className={styles.heroActions}>
-                            <a href="mailto:jobs@hofherrmeatco.com" className="btn btn-gold">
-                                Email Us Your Resume
+                            <a href="mailto:jobs@hofherrmeatco.com" className="btn-hit">
+                                <span className="btn btn-gold">Email Us Your Resume</span>
                             </a>
-                            <a href="tel:8474416328" className="btn btn-secondary">
-                                Call (847) 441-MEAT
+                            <a href="tel:8474416328" className="btn-hit">
+                                <span className="btn btn-secondary">Call (847) 441-MEAT</span>
                             </a>
                         </div>
                     </div>
@@ -187,9 +187,9 @@ export default function JobsPage() {
                                         <div className={styles.jobAction}>
                                             <a
                                                 href={`mailto:jobs@hofherrmeatco.com?subject=Applying for ${encodeURIComponent(job.title)} position`}
-                                                className="btn btn-gold"
+                                                className="btn-hit"
                                             >
-                                                Apply Now
+                                                <span className="btn btn-gold">Apply Now</span>
                                             </a>
                                         </div>
                                     </article>
@@ -210,12 +210,12 @@ export default function JobsPage() {
                                     <span className={styles.dispatchKicker}>OPEN APPLICATION</span>
                                     <a
                                         href="mailto:jobs@hofherrmeatco.com?subject=General Application — Hofherr Meat Co."
-                                        className="btn btn-gold"
+                                        className="btn-hit"
                                     >
-                                        General Application
+                                        <span className="btn btn-gold">General Application</span>
                                     </a>
-                                    <a href="tel:8474416328" className="btn btn-secondary">
-                                        Call (847) 441-MEAT
+                                    <a href="tel:8474416328" className="btn-hit">
+                                        <span className="btn btn-secondary">Call (847) 441-MEAT</span>
                                     </a>
                                 </div>
                             </div>

@@ -40,15 +40,23 @@
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
 }
 
 .title {
-    font-size: clamp(3rem, 7vw, 5rem);
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    font-weight: 800;
     color: var(--fg);
     margin: 8px 0 16px;
-    line-height: 1;
+    line-height: 0.96;
 }
 
 .subtitle {
@@ -96,7 +104,7 @@
 .phaseCount {
     font-size: 10px;
     font-weight: 800;
-    background: rgba(255,255,255,0.15);
+    background: rgba(255, 255, 255, 0.15);
     padding: 1px 7px;
     border-radius: 100px;
     min-width: 20px;
@@ -104,7 +112,7 @@
 }
 
 .phaseBtnActive .phaseCount {
-    background: rgba(255,255,255,0.25);
+    background: rgba(255, 255, 255, 0.25);
 }
 
 /* ── Section ── */
@@ -414,7 +422,7 @@
 }
 
 .compTable tr:hover td {
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .compType {

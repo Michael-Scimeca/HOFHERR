@@ -111,8 +111,13 @@ function SuccessContent() {
     const params = useSearchParams();
     const { data: session } = useSession();
     const sessionId = params.get('session_id');
+    const stageParam = params.get('stage');
     const [status, setStatus] = useState<'loading' | 'ok' | 'error'>('loading');
-    const [stageIdx, setStageIdx] = useState<number>(0);
+    const [stageIdx, setStageIdx] = useState<number>(() => {
+        if (!stageParam) return 0;
+        const found = TRACKER_STAGES.findIndex((s) => s.key === stageParam);
+        return found >= 0 ? found : 0;
+    });
     const [autoPlay, setAutoPlay] = useState<boolean>(false);
     const [activePresetId, setActivePresetId] = useState<string>('signature');
     const [fullChartKeys, setFullChartKeys] = useState<Record<string, boolean>>({});
@@ -888,8 +893,13 @@ function SuccessContent() {
                     <div className={styles.overlayText}>
                         <h2>
                             Hand-cut.<br />
-                            Wrapped in kraft.<br />
-                            Ready for pickup.
+                            Wrapped in kraft.
+                            {currentStage.key === 'ready' && (
+                                <>
+                                    <br />
+                                    <span className={styles.readyPickupLine}>Ready for pickup.</span>
+                                </>
+                            )}
                         </h2>
                         <p>300 Happ Rd · Northfield &amp; 780 Elm St · Winnetka Depot</p>
                     </div>

@@ -134,6 +134,10 @@
     box-shadow: none !important;
 }
 
+.fullWidthBtn {
+    width: 100%;
+}
+
 /* Responsiveness */
 @media (max-width: 1100px) {
     .hubGrid {

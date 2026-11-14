@@ -16,16 +16,21 @@
 }
 
 .headline {
-
-    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    line-height: 0.96;
     color: var(--fg);
-    margin-bottom: 16px;
+    margin: 0 0 16px;
+    animation-delay: 0.1s;
 }
 
 .sub {
     font-size: 1rem;
     color: var(--fg-muted);
     line-height: 1.7;
+    margin: 0;
+    animation-delay: 0.2s;
 }
 
 /* ── Animal tabs ── */
@@ -53,7 +58,7 @@
     font-weight: 600;
     color: var(--fg-muted);
     cursor: pointer;
-    transition: all 0.18s;
+    transition: border-color 0.18s, color 0.18s, background-color 0.18s;
     font-family: inherit;
 }
 

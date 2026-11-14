@@ -65,20 +65,54 @@
 .ratio { font-size: 0.75rem; color: var(--fg-3); border: 1px solid var(--border); border-radius: 999px; padding: 2px 10px; }
 .promptText { font-size: 0.85rem; color: var(--fg-2); line-height: 1.6; margin: 12px 0; }
 
+.colorSectionBlock { display: flex; flex-direction: column; gap: 24px; }
+.colorSectionHeader { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.colorFilterBar { display: flex; flex-wrap: wrap; gap: 8px; }
+.colorFilterBtn {
+    font-family: var(--font-heading); font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border);
+    background: var(--bg-3); color: var(--fg-2); cursor: pointer;
+    transition: background-color 0.2s var(--ease-out), border-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+.colorFilterBtn:hover { border-color: var(--gold); color: var(--fg); }
+.colorFilterBtnActive { background: var(--red); border-color: var(--red); color: var(--fg); }
+
 .colorGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-.colorCard { display: flex; flex-direction: column; overflow: hidden; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.colorCard {
+    display: flex; flex-direction: column; overflow: hidden; text-align: left;
+    background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 0; font: inherit; color: inherit; cursor: pointer;
+    transition: border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+.colorCard:hover { border-color: var(--gold); transform: translateY(-2px); }
+.colorSwatchBtn {
+    display: block; width: 100%; padding: 0; border: 0; background: transparent;
+    text-align: left; font: inherit; color: inherit; cursor: pointer;
+}
+.colorRouteRow {
+    display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 16px; margin-top: auto;
+}
+.colorRouteLink {
+    font-family: ui-monospace, monospace; font-size: 0.72rem; color: var(--gold);
+    text-decoration: none; padding: 4px 8px; border-radius: var(--radius-sm);
+    border: 1px solid rgba(var(--gold-rgb), 0.35); background: rgba(var(--gold-rgb), 0.08);
+    transition: background-color 0.2s var(--ease-out), border-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+.colorRouteLink:hover {
+    background: rgba(var(--red-rgb), 0.25); border-color: var(--red); color: var(--fg);
+}
 .colorChip {
-    height: 96px;
+    height: 96px; width: 100%;
     background-color: var(--chip-bg, var(--red));
     background-image: var(--chip-gradient, none);
     border-bottom: 1px solid var(--border);
 }
-.colorBody { display: flex; flex-direction: column; gap: 6px; padding: 14px; }
+.colorBody { display: flex; flex-direction: column; gap: 6px; padding: 16px; width: 100%; }
 .colorName { font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg); }
-.colorRole { font-size: 0.8rem; color: var(--fg-3); }
+.colorRole { font-size: 0.8rem; color: var(--fg-3); line-height: 1.4; }
 .colorSpecs { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 6px 0 0; font-size: 0.8rem; }
 .colorSpecs dt { color: var(--gold); }
-.colorSpecs dd { margin: 0; color: var(--fg-2); font-family: ui-monospace, monospace; }
+.colorSpecs dd { margin: 0; color: var(--fg-2); font-family: ui-monospace, monospace; word-break: break-word; }
 
 .standardsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 .standardCard { display: flex; flex-direction: column; gap: 8px; padding: 18px; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-lg); }

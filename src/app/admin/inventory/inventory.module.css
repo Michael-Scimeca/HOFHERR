@@ -38,7 +38,7 @@
 .statCard { background: linear-gradient(145deg, #131c31 0%, #0d1425 100%); padding: 16px 18px; border-radius: 12px; border: 1px solid #ffffff1a; }
 .statLabel { display: block; color: #94a3b8; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
 .statValue { font-size: 22px; font-weight: 800; color: #fff; }
-.statValueGreen { color: #4ade80; }
+.statValueGreen { color: #16a34a; }
 .statValueYellow { color: #facc15; }
 .statValueRed { color: #f87171; }
 .statValueBlue { color: #60a5fa; }
@@ -86,7 +86,7 @@
     text-transform: uppercase; letter-spacing: 0.03em; display: flex; align-items: center; gap: 8px;
 }
 .categoryCount { font-size: 10px; font-weight: 800; background: rgba(148,163,184,0.15); color: #94a3b8; padding: 2px 8px; border-radius: 100px; }
-.categoryRevenue { font-size: 11px; color: #4ade80; font-weight: 600; margin-left: 8px; }
+.categoryRevenue { font-size: 11px; color: #16a34a; font-weight: 600; margin-left: 8px; }
 .categoryActions { display: flex; gap: 6px; }
 .catBtn {
     padding: 4px 10px; border-radius: 6px; border: 1px solid #334155;
@@ -95,7 +95,7 @@
     text-transform: uppercase; letter-spacing: 0.04em;
 }
 .catBtn:hover { background: rgba(255,255,255,0.05); color: #f8fafc; }
-.catBtnGreen { border-color: rgba(34,197,94,0.3); color: #4ade80; }
+.catBtnGreen { border-color: rgba(34,197,94,0.3); color: #16a34a; }
 .catBtnGreen:hover { background: rgba(34,197,94,0.1); }
 .catBtnRed { border-color: rgba(239,68,68,0.3); color: #f87171; }
 .catBtnRed:hover { background: rgba(239,68,68,0.1); }
@@ -168,7 +168,7 @@
     transition: transform 0.2s;
 }
 .toggleOff { background: #334155; }
-.toggleOn { background: #4ade80; }
+.toggleOn { background: #16a34a; }
 .toggleOn::after { transform: translateX(14px); }
 .toggleLabel { font-size: 10px; color: #94a3b8; font-weight: 600; white-space: nowrap; }
 
@@ -200,7 +200,7 @@
 
 /* ── Status Badge ── */
 .statusBadge { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; padding: 4px 10px; border-radius: 6px; display: inline-block; white-space: nowrap; }
-.statusInStock { background: rgba(34,197,94,0.15); color: #4ade80; }
+.statusInStock { background: rgba(34,197,94,0.15); color: #16a34a; }
 .statusLowStock { background: rgba(234,179,8,0.15); color: #facc15; }
 .statusOutOfStock { background: rgba(239,68,68,0.15); color: #f87171; }
 .statusPreOrder { background: rgba(59,130,246,0.15); color: #60a5fa; }
@@ -209,7 +209,7 @@
 /* ── Saving indicator ── */
 .saving { font-size: 11px; color: #facc15; animation: blink 0.8s ease-in-out infinite; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-.saved { font-size: 11px; color: #4ade80; }
+.saved { font-size: 11px; color: #16a34a; }
 
 /* ── Activity Feed ── */
 .activityPanel {
@@ -229,7 +229,7 @@
 }
 .activityItem:hover { background: rgba(255,255,255,0.02); }
 .activityDot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.activityDotGreen { background: #4ade80; }
+.activityDotGreen { background: #16a34a; }
 .activityDotYellow { background: #facc15; }
 .activityDotBlue { background: #60a5fa; }
 .activityProduct { font-weight: 600; color: #e2e8f0; flex: 1; }
@@ -263,7 +263,7 @@
 .insightStat { font-size: 10px; font-weight: 700; color: #94a3b8; }
 .insightFooter { display: flex; justify-content: space-between; align-items: center; }
 .insightWeekly { font-size: 10px; color: #64748b; }
-.insightRevenue { font-size: 12px; font-weight: 800; color: #4ade80; }
+.insightRevenue { font-size: 12px; font-weight: 800; color: #16a34a; }
 .insightLastSold { font-size: 10px; color: #94a3b8; font-style: italic; }
 .insightPrice { font-size: 11px; font-weight: 700; color: #64748b; }
 
@@ -301,12 +301,12 @@
 .purchaseItem { font-size: 11px; color: #94a3b8; white-space: nowrap; }
 .purchaseItemPrice { color: #64748b; margin-left: 4px; }
 .purchaseItemMore { font-size: 10px; color: #64748b; font-style: italic; }
-.purchaseTotal { font-size: 13px; font-weight: 800; color: #4ade80; }
+.purchaseTotal { font-size: 13px; font-weight: 800; color: #16a34a; }
 .purchaseStatus { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; text-transform: capitalize; background: rgba(100,116,139,0.15); color: #94a3b8; }
-.purchaseStatus_completed { background: rgba(34,197,94,0.12); color: #4ade80; }
+.purchaseStatus_completed { background: rgba(34,197,94,0.12); color: #16a34a; }
 .purchaseStatus_paid { background: rgba(59,130,246,0.12); color: #60a5fa; }
 .purchaseStatus_pending { background: rgba(245,158,11,0.12); color: #fbbf24; }
-.purchaseStatus_readypaid { background: rgba(34,197,94,0.12); color: #4ade80; }
+.purchaseStatus_readypaid { background: rgba(34,197,94,0.12); color: #16a34a; }
 .purchaseStatus_readypending { background: rgba(245,158,11,0.12); color: #fbbf24; }
 .purchaseDate { font-size: 12px; color: #e2e8f0; display: block; }
 .purchaseTime { font-size: 10px; color: #64748b; display: block; }
@@ -376,7 +376,7 @@
 }
 .activityStatusCompleted {
     background: rgba(34, 197, 94, 0.15);
-    color: #4ade80;
+    color: #16a34a;
 }
 .activityStatusPaid {
     background: rgba(59, 130, 246, 0.15);
@@ -420,8 +420,8 @@
 .alertItemCategory { font-size: 10px; color: #64748b; white-space: nowrap; }
 .alertItemQty { font-size: 11px; font-weight: 800; color: #facc15; background: rgba(234,179,8,0.15); padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
 .alertCritical { color: #f87171 !important; background: rgba(239,68,68,0.2) !important; }
-.alertRestockBtn { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; }
-.alertRestockBtn:hover { background: rgba(34,197,94,0.2); border-color: #4ade80; }
+.alertRestockBtn { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: #16a34a; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; }
+.alertRestockBtn:hover { background: rgba(34,197,94,0.2); border-color: #16a34a; }
 .alertCollapsed { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; padding: 8px 14px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: all 0.15s; font-family: inherit; }
 .alertCollapsed:hover { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
 .alertCollapsedBadgeRed { font-size: 11px; font-weight: 700; color: #f87171; background: rgba(239,68,68,0.1); padding: 2px 8px; border-radius: 4px; }
@@ -437,10 +437,10 @@
 /* ── Add Product Button ── */
 .addProductBtn {
     padding: 8px 18px; border-radius: 8px; border: 1px solid rgba(34,197,94,0.4);
-    background: rgba(34,197,94,0.1); color: #4ade80; font-size: 13px; font-weight: 700;
+    background: rgba(34,197,94,0.1); color: #16a34a; font-size: 13px; font-weight: 700;
     cursor: pointer; transition: all 0.2s; font-family: inherit;
 }
-.addProductBtn:hover { background: rgba(34,197,94,0.2); border-color: #4ade80; }
+.addProductBtn:hover { background: rgba(34,197,94,0.2); border-color: #16a34a; }
 
 /* ── Delete Button ── */
 .deleteBtn {

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css';
-import ExtendedIdentityBoards from './ExtendedIdentityBoards';
+import ExtendedIdentityBoards, { BrandColorTokensSection } from './ExtendedIdentityBoards';
 import AppBrandIdentitySection from './AppBrandIdentitySection';
 import WebsiteIdentitySection from './WebsiteIdentitySection';
 import SocialKit from './social/SocialKit';
@@ -1101,6 +1101,10 @@ export default function ProductIdentityClient() {
                         seals, and hand-pressed crimson rubber ink stamps across Northfield and The Depot in Winnetka.
                     </p>
                     <nav className={styles.heroNav} aria-label="Product identity sections">
+                        <a href="#color-tokens" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                            <span className={styles.heroNavIndex}>00</span>
+                            Brand &amp; Site Color Tokens
+                        </a>
                         <Link href="/product-identity#press-kit" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>⬇</span>
                             Press &amp; Media Download Kit
@@ -1192,6 +1196,9 @@ export default function ProductIdentityClient() {
                     </nav>
                 </div>
             </header>
+
+            {/* ── 00 / Official Brand, Print & Site Theme Tokens ── */}
+            <BrandColorTokensSection />
 
             {/* ── 01 / Butcher Wrapping Paper System ── */}
             <section id="wrapping-paper" aria-labelledby="wrapping-paper-heading" className="section">

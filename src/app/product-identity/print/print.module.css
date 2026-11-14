@@ -1,7 +1,7 @@
 /* ---------- screen shell ---------- */
 .shell { padding-top: calc(var(--nav-h, 80px) + 24px); padding-bottom: 80px; color: var(--fg); }
 .toolbar { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
-.h1 { font-family: var(--font-heading); text-transform: uppercase; font-size: clamp(2rem, 5vw, 3.2rem); margin: 0; }
+.h1 { font-family: var(--font-heading); text-transform: uppercase; font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem)); font-weight: 800; line-height: 0.96; margin: 0; }
 .lead { color: var(--fg-2); max-width: 80ch; line-height: 1.6; margin: 0; }
 .btnRow { display: flex; flex-wrap: wrap; gap: 8px; }
 .btn, .btnPrimary {

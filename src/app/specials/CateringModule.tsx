@@ -226,7 +226,7 @@ export default function CateringModule({ events, calendarPricing }: Props) {
                                                 {selectedSides.map(s => (
                                                     <span key={s} style={{
                                                         fontSize: '11px',
-                                                        background: 'rgba(46, 204, 113, 0.12)',
+                                                        background: 'rgba(22, 163, 74, 0.12)',
                                                         color: 'rgba(255,255,255,0.85)',
                                                         padding: '3px 8px',
                                                         borderRadius: '4px',
@@ -263,7 +263,7 @@ export default function CateringModule({ events, calendarPricing }: Props) {
                                 
                                 <div className={styles.receiptTotal} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '18px', fontWeight: 800, color: '#fff', paddingTop: '20px', borderTop: '1px dashed rgba(255,255,255,0.2)', marginBottom: '16px' }}>
                                     <span>Estimated Total</span>
-                                    <span style={{ fontSize: '24px', color: '#2ecc71' }}>${finalEstimate.toLocaleString()}</span>
+                                    <span style={{ fontSize: '24px', color: '#16a34a' }}>${finalEstimate.toLocaleString()}</span>
                                 </div>
 
                                 {/* Validation warning */}
@@ -314,7 +314,7 @@ export default function CateringModule({ events, calendarPricing }: Props) {
                             </>
                         ) : (
                             <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-                                <div style={{ width: '64px', height: '64px', background: 'rgba(46, 204, 113, 0.1)', color: '#2ecc71', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '32px' }}>✓</div>
+                                <div style={{ width: '64px', height: '64px', background: 'rgba(22, 163, 74, 0.1)', color: '#16a34a', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '32px' }}>✓</div>
                                 <h3 style={{ color: '#fff', fontSize: '20px', marginBottom: '12px' }}>Request Sent, {name.split(' ')[0]}!</h3>
                                 <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
                                     Your Pig Roast inquiry for <strong>{dateLabel}</strong> has been sent to our team.

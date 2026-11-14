@@ -1,0 +1,181 @@
+/* ── Catering & BBQ Marquee — tilted counter-scrolling ticker with WebGL icon torch flames & phrase embers ── */
+.marqueeOuter {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding-block: var(--space-4);
+}
+
+.marqueeOuter::before,
+.marqueeOuter::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 96px;
+    z-index: 6;
+    pointer-events: none;
+}
+
+.marqueeOuter::before {
+    left: 0;
+    background: linear-gradient(to right, var(--dark), transparent);
+}
+
+.marqueeOuter::after {
+    right: 0;
+    background: linear-gradient(to left, var(--dark), transparent);
+}
+
+.marqueeWrap {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+    padding: 64px 0 24px;
+    transform: rotate(-2deg);
+    transform-origin: center center;
+    cursor: default;
+}
+
+.crispLayer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    z-index: 2;
+}
+
+.rowShell {
+    position: relative;
+    width: 100%;
+}
+
+.marqueeTrack {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: max-content;
+    white-space: nowrap;
+}
+
+.marqueeRow1 {
+    animation: marqueeLeft 44s linear infinite;
+}
+
+.marqueeRow2 {
+    animation: marqueeRight 56s linear infinite;
+}
+
+.marqueeRow3 {
+    animation: marqueeLeft 50s linear infinite;
+}
+
+.marqueeRow4 {
+    animation: marqueeRight 40s linear infinite;
+}
+
+@keyframes marqueeLeft {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes marqueeRight {
+    0% {
+        transform: translateX(-50%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.marqueePass {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.marqueeItem {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: var(--space-6);
+    padding-right: var(--space-6);
+}
+
+.phraseHost,
+.bulletHost {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.marqueeText {
+    position: relative;
+    z-index: 2;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 800;
+    font-style: italic;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--fg);
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    user-select: none;
+}
+
+.marqueeText.marqueeTextAccent {
+    color: var(--red);
+}
+
+.marqueeBullet {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: clamp(48px, 4.8vw, 68px);
+    height: clamp(48px, 4.8vw, 68px);
+    border-radius: 999px;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.88;
+    filter: brightness(0.88) saturate(0.92);
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+@media (max-width: 600px) {
+    .marqueeWrap {
+        padding: 48px 0 16px;
+    }
+
+    .marqueeText {
+        font-size: var(--text-4xl);
+    }
+
+    .marqueeBullet {
+        width: 44px;
+        height: 44px;
+    }
+
+    .marqueeItem {
+        gap: var(--space-4);
+        padding-right: var(--space-4);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .marqueeRow1,
+    .marqueeRow2,
+    .marqueeRow3,
+    .marqueeRow4 {
+        animation: none;
+    }
+}

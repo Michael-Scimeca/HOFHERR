@@ -377,7 +377,6 @@ export default function DashboardClient({
     preferredPickupTime = '',
     bio = '',
     favoriteCut = '',
-    memberSince = '2024',
     initialRestockRequests = EMPTY_RESTOCK_REQUESTS,
 }: {
     userName: string;
@@ -1074,10 +1073,6 @@ export default function DashboardClient({
                                 </span>
                                 {isAdmin && <span className={styles.dashAdminBadge}>👑 Master Admin</span>}
                             </div>
-
-                            <p className={styles.dashMemberSinceText}>
-                                Hofherr Meat Co. Member Since {memberSince}
-                            </p>
 
                             {/* ── Profile Reward System: Order Milestones & 7-Animal Completion ── */}
                             <div className={styles.dashRewardPanel} aria-label="Butcher Guild Reward Progress">

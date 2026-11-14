@@ -1,11 +1,29 @@
 'use client';
 import { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { getAddToOrderAnimConfig, getFlyEasingString } from '@/lib/addToOrderAnimConfig';
+import {
+    SYNC_LIVE_PRODUCT_EVENT,
+    getAddToOrderAnimConfig,
+    getFlyEasingString,
+    isPhotoFlyAsset,
+    resolveProductFlyImage,
+} from '@/lib/addToOrderAnimConfig';
 
 export type CartItem = { name: string; price: string; qty: number; note: string; desc?: string };
 
+type FlyAnimationSource = {
+    x: number;
+    y: number;
+    itemName?: string;
+    imageSrc?: string;
+    categoryIcon?: string;
+    overrideImageSrc?: string;
+    arrivingQty?: number;
+    isStudioTest?: boolean;
+};
+
 type CartCtx = {
     count: number;
+    badgeCount: number;
     setCount: (n: number) => void;
     items: CartItem[];
     addItem: (item: CartItem) => void;
@@ -20,11 +38,12 @@ type CartCtx = {
     /** Register a custom drawer opener — called by /online-orders page on mount */
     registerCartOpener: (fn: (() => void) | null) => void;
     /** Trigger fly-to-cart animation from a source element or coordinates */
-    triggerFlyAnimation: (source: { x: number; y: number }) => void;
+    triggerFlyAnimation: (source: FlyAnimationSource) => void;
 };
 
 const CartContext = createContext<CartCtx>({
     count: 0,
+    badgeCount: 0,
     setCount: () => { },
     items: [],
     addItem: () => { },
@@ -41,20 +60,29 @@ const STORAGE_KEY = 'hofherr_cart';
 const BUTCHER_KEY = 'hofherr_cart_butcher';
 
 /* ── Fly-to-cart animation helper ── */
-function createFlyingDot(sx: number, sy: number) {
+function createFlyingDot(source: FlyAnimationSource, onLand?: () => void) {
+    const sx = source.x;
+    const sy = source.y;
     const cfg = getAddToOrderAnimConfig();
-    if (!cfg.flyEnabled) return;
+    if (!cfg.flyEnabled) {
+        onLand?.();
+        return;
+    }
 
     const launch = () => {
         const cartEl = document.querySelector('[data-cart-icon]') as HTMLElement | null;
-        if (!cartEl) return;
+        if (!cartEl) {
+            onLand?.();
+            return;
+        }
         const cartRect = cartEl.getBoundingClientRect();
         const tx = cartRect.left + cartRect.width / 2 + (cfg.flyTargetOffsetX || 0);
         const ty = cartRect.top + cartRect.height / 2 + (cfg.flyTargetOffsetY || 0);
 
         const size = Math.max(24, cfg.flyIconSize || 84);
         const half = size / 2;
-        const imgSrc = cfg.flyImageSrc || '/assets/item.png?v=2';
+        const imgSrc = source.overrideImageSrc || resolveProductFlyImage(source, cfg);
+        const isPhoto = isPhotoFlyAsset(imgSrc);
         const shadowBlur = Math.max(0, cfg.flyShadowBlur ?? 12);
         const shadowOp = Math.min(1, Math.max(0, cfg.flyShadowOpacity ?? 0.45));
         const glowR = Math.max(0, cfg.flyGlowRadius ?? 0);
@@ -84,7 +112,10 @@ function createFlyingDot(sx: number, sy: number) {
             : '';
 
         const dot = document.createElement('div');
-        dot.innerHTML = `${flameSvg}<img src="${imgSrc}" alt="" width="${size}" height="${size}" style="position:relative;z-index:2;width:${size}px;height:${size}px;object-fit:contain;" />`;
+        const imgStyle = isPhoto
+            ? `position:relative;z-index:2;width:${size}px;height:${size}px;object-fit:cover;border-radius:14px;border:2px solid #F59B1A;`
+            : `position:relative;z-index:2;width:${size}px;height:${size}px;object-fit:contain;`;
+        dot.innerHTML = `${flameSvg}<img src="${imgSrc}" alt="" width="${size}" height="${size}" style="${imgStyle}" />`;
         dot.style.cssText = `
             position: fixed;
             left: ${sx - half}px; top: ${sy - half}px;
@@ -272,6 +303,12 @@ function createFlyingDot(sx: number, sy: number) {
         });
 
         anim.onfinish = () => {
+            onLand?.();
+
+            const liveRect = cartEl.getBoundingClientRect();
+            const cx = liveRect.left + liveRect.width / 2 + (cfg.flyTargetOffsetX || 0);
+            const cy = liveRect.top + liveRect.height / 2 + (cfg.flyTargetOffsetY || 0);
+
             const holdMs = Math.max(0, cfg.flyDropHoldMs ?? 110);
             if (holdMs > 0) {
                 const sinkAnim = dot.animate(
@@ -297,7 +334,7 @@ function createFlyingDot(sx: number, sy: number) {
                 const ring = document.createElement('div');
                 ring.style.cssText = `
                     position: fixed;
-                    left: ${tx - 22}px; top: ${ty - 22}px;
+                    left: ${cx - 22}px; top: ${cy - 22}px;
                     width: 44px; height: 44px;
                     border-radius: 999px;
                     border: 2px solid ${cfg.borderColorHex || '#CC0E1D'};
@@ -325,7 +362,7 @@ function createFlyingDot(sx: number, sy: number) {
                     const h = 16 + Math.random() * 14;
                     tongue.style.cssText = `
                         position: fixed;
-                        left: ${tx + spreadX - w / 2}px; top: ${ty - h * 0.6}px;
+                        left: ${cx + spreadX - w / 2}px; top: ${cy - h * 0.6}px;
                         width: ${w}px; height: ${h}px;
                         border-radius: 50% 50% 40% 40% / 70% 70% 30% 30%;
                         background: linear-gradient(to top, #CC0E1D 0%, #FF5014 55%, #FFD27D 100%);
@@ -371,20 +408,22 @@ function createFlyingDot(sx: number, sy: number) {
                 { duration: bounceMs, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
             );
 
-            // Pop the cart count badge if present
-            const badgeEl = cartEl.querySelector('span');
-            const badgeScale = cfg.cartBadgePopScale ?? 1.45;
-            if (badgeEl && badgeScale > 1) {
-                badgeEl.animate(
-                    [
-                        { transform: 'scale(1)' },
-                        { transform: `scale(${badgeScale})` },
-                        { transform: 'scale(0.92)' },
-                        { transform: 'scale(1)' },
-                    ],
-                    { duration: Math.round(bounceMs * 0.85), easing: 'ease-out' }
-                );
-            }
+            // Pop the cart count badge on catch (after React commits badgeCount)
+            window.requestAnimationFrame(() => {
+                const badgeEl = cartEl.querySelector('span');
+                const badgeScale = cfg.cartBadgePopScale ?? 1.45;
+                if (badgeEl && badgeScale > 1) {
+                    badgeEl.animate(
+                        [
+                            { transform: 'scale(1)' },
+                            { transform: `scale(${badgeScale})` },
+                            { transform: 'scale(0.92)' },
+                            { transform: 'scale(1)' },
+                        ],
+                        { duration: Math.round(bounceMs * 0.85), easing: 'ease-out' }
+                    );
+                }
+            });
         };
     };
 
@@ -392,12 +431,13 @@ function createFlyingDot(sx: number, sy: number) {
     if (delay > 0) {
         window.setTimeout(launch, delay);
     } else {
-        launch();
+        window.requestAnimationFrame(launch);
     }
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
     const [count, setCount] = useState(0);
+    const [inFlightQty, setInFlightQty] = useState(0);
     const [items, setItems] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const itemsRef = useRef<CartItem[]>([]);
@@ -475,12 +515,39 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setIsCartOpen(false);
     }, []);
 
-    const triggerFlyAnimation = useCallback((source: { x: number; y: number }) => {
-        createFlyingDot(source.x, source.y);
+    const triggerFlyAnimation = useCallback((source: FlyAnimationSource) => {
+        if (typeof window !== 'undefined' && source.itemName && !source.isStudioTest) {
+            window.dispatchEvent(
+                new CustomEvent(SYNC_LIVE_PRODUCT_EVENT, {
+                    detail: {
+                        name: source.itemName,
+                        imageSrc: source.imageSrc,
+                        categoryIcon: source.categoryIcon,
+                    },
+                })
+            );
+        }
+        const delta = Math.max(0, source.arrivingQty || 0);
+        if (delta > 0) {
+            setInFlightQty(q => q + delta);
+            let settled = false;
+            const finish = () => {
+                if (settled) return;
+                settled = true;
+                setInFlightQty(q => Math.max(0, q - delta));
+            };
+            createFlyingDot(source, finish);
+            window.setTimeout(finish, 3200);
+        } else {
+            createFlyingDot(source);
+        }
     }, []);
+
+    const badgeCount = Math.max(0, count - inFlightQty);
 
     const contextValue = useMemo(() => ({
         count,
+        badgeCount,
         setCount,
         items,
         addItem,
@@ -491,7 +558,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         closeCart,
         registerCartOpener,
         triggerFlyAnimation,
-    }), [count, items, addItem, removeItem, changeQty, isCartOpen, openCart, closeCart, registerCartOpener, triggerFlyAnimation]);
+    }), [count, badgeCount, items, addItem, removeItem, changeQty, isCartOpen, openCart, closeCart, registerCartOpener, triggerFlyAnimation]);
 
     return (
         <CartContext.Provider value={contextValue}>

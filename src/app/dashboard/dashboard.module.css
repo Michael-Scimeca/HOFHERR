@@ -1874,8 +1874,8 @@
 
 .dashAvatarShowcase {
     position: relative;
-    width: 220px;
-    height: 220px;
+    width: 340px;
+    height: 340px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1928,8 +1928,8 @@
 .dashOrbitalBadge {
     position: absolute;
     transform: translate(-50%, -50%);
-    width: 38px;
-    height: 38px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background: #171310;
     border: 1.5px solid rgba(var(--gold-rgb), 0.25);
@@ -2006,12 +2006,12 @@
 }
 
 .dashOrbitalEmoji {
-    font-size: 13px;
+    font-size: 16px;
     line-height: 1;
 }
 
 .dashOrbitalCount {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.02em;
     line-height: 1;
@@ -2106,8 +2106,8 @@
 
 .dashAvatarFrame {
     position: relative;
-    width: 132px;
-    height: 132px;
+    width: 220px;
+    height: 220px;
     border-radius: 50%;
     border: 3px solid var(--gold);
     box-shadow: 0 0 28px rgba(var(--gold-rgb), 0.28), 0 12px 32px rgba(0, 0, 0, 0.8);
@@ -2130,7 +2130,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 52px;
+    font-size: 76px;
     font-weight: 900;
     color: var(--gold);
     background: var(--bg-4);
@@ -2139,10 +2139,10 @@
 
 .dashAvatarEditBtn {
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 30px;
-    height: 30px;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     background: var(--gold);
     color: var(--dark);
@@ -2159,6 +2159,28 @@
 .dashAvatarEditBtn:hover {
     transform: scale(1.1);
     background: #fff;
+}
+
+@media (max-width: 420px) {
+    .dashAvatarShowcase {
+        width: 288px;
+        height: 288px;
+    }
+
+    .dashAvatarFrame {
+        width: 184px;
+        height: 184px;
+    }
+
+    .dashOrbitalBadge {
+        width: 42px;
+        height: 42px;
+    }
+
+    .dashAvatarEditBtn {
+        top: 10px;
+        right: 10px;
+    }
 }
 
 /* ── Profile Reward System Panel (Orders + 7 Animals) ── */
@@ -2459,9 +2481,9 @@
     font-family: var(--font-mono, monospace);
     font-size: 9.5px;
     font-weight: 800;
-    color: #4ade80;
+    color: #16a34a;
     background: rgba(34, 197, 94, 0.16);
-    border: 1px solid rgba(74, 222, 128, 0.45);
+    border: 1px solid rgba(22, 163, 74, 0.45);
     padding: 1px 6px;
     border-radius: 999px;
     white-space: nowrap;
@@ -3069,7 +3091,7 @@
 }
 
 .liveTrackerEtaValueGreen {
-    color: #4ade80;
+    color: #16a34a;
 }
 
 .liveTrackerBar {
@@ -3167,11 +3189,11 @@
 }
 
 .liveSegPickedUp .liveSegFill {
-    background: linear-gradient(90deg, var(--green-depot, #142a1e) 0%, #15803d 55%, #16a34a 100%);
+    background: linear-gradient(90deg, var(--green-depot, #142a1e) 0%, #16a34a 55%, #16a34a 100%);
 }
 
 .liveSegPickedUp:hover {
-    border-color: #4ade80;
+    border-color: #16a34a;
     box-shadow: 0 0 22px rgba(34, 197, 94, 0.48);
 }
 
@@ -3631,10 +3653,11 @@
 
 .notFoundTitle {
     font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
-    font-size: 2.25rem;
-    font-weight: 700;
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    line-height: 0.96;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.02em;
     color: var(--gold, #d4af37);
     margin: 0 0 16px 0;
 }

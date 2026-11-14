@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, type CSSProperties } from 'react';
 import Link from 'next/link';
+import styles from './page.module.css';
 
 type Animal = 'beef' | 'pork' | 'chicken' | 'lamb' | 'game';
 type CutEntry = { name: string; sub: string; best: string; cook: string; tip: string; image?: string | null };
@@ -123,76 +124,60 @@ const COOK_COLORS: Record<string, string> = {
         return (
             <main>
                 {/* ── Hero ── */}
-                <section style={{ background: 'var(--bg-2)', borderBottom: '1px solid var(--border)', padding: '80px 40px 64px', textAlign: 'center' }}>
-                    <p className="animate-fade-up" style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: 'var(--red)', marginBottom: 14 }}>
-                        From the butcher&apos;s block
-                    </p>
-                    <h1 className="animate-fade-up" style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', color: 'var(--fg)', marginBottom: 16, animationDelay: '0.1s' }}>
+                <section className={styles.hero}>
+                    <h1 className={`animate-fade-up ${styles.headline}`}>
                         The Cut Guide
                     </h1>
-                    <p className="animate-fade-up" style={{ fontSize: '1rem', color: 'var(--fg-muted)', lineHeight: 1.7, animationDelay: '0.2s' }}>
+                    <p className={`animate-fade-up ${styles.sub}`}>
                         Every cut. What it&apos;s best for. How to cook it. Straight from Sean.
                     </p>
                 </section>
 
                 {/* ── Animal tabs ── */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: 8, padding: '28px 24px', background: 'var(--bg)', borderBottom: '1px solid var(--border)', position: 'sticky' as const, top: 72, zIndex: 10 }}>
+                <div className={styles.tabBar}>
                     {TABS.map((t) => (
                         <button
                             key={t.id}
+                            type="button"
                             onClick={() => setActive(t.id)}
-                            style={{
-                                display: 'flex', alignItems: 'center', gap: 8,
-                                padding: '10px 22px', borderRadius: 100,
-                                border: active === t.id ? '1.5px solid var(--red)' : '1.5px solid var(--border)',
-                                background: active === t.id ? 'var(--red)' : 'none',
-                                color: active === t.id ? '#fff' : 'var(--fg-muted)',
-                                fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-                                transition: 'all 0.18s',
-                            }}
+                            className={`${styles.tab} ${active === t.id ? styles.tabActive : ''}`}
                         >
-                            <span style={{ fontSize: 16 }}>{t.emoji}</span> {t.label}
+                            <span className={styles.tabEmoji}>{t.emoji}</span> {t.label}
                         </button>
                     ))}
                 </div>
 
                 {/* ── Cut cards ── */}
-                <section style={{ padding: '56px 0 80px' }}>
+                <section className={styles.grid}>
                     <div className="container">
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
+                        <div className={styles.cards}>
                             {cuts.map((cut) => (
-                                <div key={cut.name} style={{
-                                    background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 16,
-                                    padding: 28, display: 'flex', flexDirection: 'column' as const, gap: 14,
-                                }}>
+                                <div key={cut.name} className={styles.card}>
                                     <div>
-                                        <h2 style={{ fontFamily: "", fontSize: '1.25rem', color: 'var(--fg)', margin: '0 0 4px' }}>{cut.name}</h2>
-                                        <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: 'var(--fg-muted)', margin: 0 }}>{cut.sub}</p>
+                                        <h2 className={styles.cutName}>{cut.name}</h2>
+                                        <p className={styles.cutSub}>{cut.sub}</p>
                                     </div>
-                                    <p style={{ fontSize: 14, color: 'var(--fg-muted)', lineHeight: 1.6, margin: 0 }}>
-                                        <strong style={{ color: 'var(--fg)' }}>Best for:</strong> {cut.best}
+                                    <p className={styles.cutBest}>
+                                        <strong>Best for:</strong> {cut.best}
                                     </p>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 6 }}>
+                                    <div className={styles.cookMethods}>
                                         {cut.cook.split('·').map((m) => {
                                             const method = m.trim();
                                             const color = COOK_COLORS[method] ?? '#666';
                                             return (
-                                                <span key={method} style={{
-                                                    fontSize: 11.5, fontWeight: 600, padding: '4px 10px', borderRadius: 100,
-                                                    background: `${color}1a`, color, border: `1px solid ${color}4d`, whiteSpace: 'nowrap' as const,
-                                                }}>
+                                                <span
+                                                    key={method}
+                                                    className={styles.cookTag}
+                                                    style={{ '--tag-color': color } as CSSProperties}
+                                                >
                                                     {method}
                                                 </span>
                                             );
                                         })}
                                     </div>
-                                    <div style={{
-                                        display: 'flex', gap: 10, alignItems: 'flex-start',
-                                        background: 'var(--bg-2)', border: '1px solid var(--border)', borderRadius: 10,
-                                        padding: '12px 14px', marginTop: 'auto',
-                                    }}>
-                                        <span style={{ fontSize: 15, flexShrink: 0, lineHeight: 1.6 }}>💡</span>
-                                        <p style={{ fontSize: 13, color: 'var(--fg-muted)', lineHeight: 1.65, margin: 0, fontStyle: 'italic' }}>{cut.tip}</p>
+                                    <div className={styles.tip}>
+                                        <span className={styles.tipIcon}>💡</span>
+                                        <p>{cut.tip}</p>
                                     </div>
                                 </div>
                             ))}
@@ -201,13 +186,17 @@ const COOK_COLORS: Record<string, string> = {
                 </section>
 
                 {/* ── CTA ── */}
-                <section style={{ background: 'var(--bg-2)', borderTop: '1px solid var(--border)', padding: '72px 0', textAlign: 'center' }}>
+                <section className={styles.cta}>
                     <div className="container">
-                        <h2 style={{ fontFamily: ", serif", fontSize: '2rem', color: 'var(--fg)', marginBottom: 10 }}>Need a specific cut?</h2>
-                        <p style={{ fontSize: 15, color: 'var(--fg-muted)', marginBottom: 28 }}>We cut everything fresh to order. Just ask.</p>
-                        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' as const }}>
-                            <a href="tel:8474416328" className="btn btn-primary">📞 Call Us</a>
-                            <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
+                        <h2>Need a specific cut?</h2>
+                        <p>We cut everything fresh to order. Just ask.</p>
+                        <div className={styles.ctaBtns}>
+                            <a href="tel:8474416328" className="btn-hit">
+                                <span className="btn btn-primary">📞 Call Us</span>
+                            </a>
+                            <Link href="/online-orders" className="btn-hit">
+                                <span className="btn btn-primary">Order Online</span>
+                            </Link>
                         </div>
                     </div>
                 </section>

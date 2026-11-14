@@ -12,7 +12,7 @@ const FireTestClient = dynamic(() => import('@/app/fire-test/FireTestClient'), {
 
 /** Routes that skip the automatic initial preloader (CMS, admin, dashboard, and the fire test page). */
 const SKIP = ['/studio', '/admin', '/dashboard', '/fire-test'];
-const PRELOADER_SYNC_VERSION = 6;
+const PRELOADER_SYNC_VERSION = 7;
 
 /**
  * Site preloader, shown on every full page load and controllable on-demand from the

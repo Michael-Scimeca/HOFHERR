@@ -18,7 +18,7 @@ const BRAND = {
   white: '#ffffff',
   muted: '#999999',
   gold: '#A8905F',
-  green: '#2ecc71',
+  green: '#16a34a',
   font: "Arial, Helvetica, sans-serif",
 };
 
@@ -118,7 +118,7 @@ function buildCustomerReceipt(data: {
   ).join('');
 
   const sideChips = data.sides.map(s =>
-    `<span style="display:inline-block;background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:600;margin:2px 4px 2px 0;font-family:${BRAND.font};">${s}</span>`
+    `<span style="display:inline-block;background:#e8f5e9;color:#16a34a;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:600;margin:2px 4px 2px 0;font-family:${BRAND.font};">${s}</span>`
   ).join('');
 
   const body = [

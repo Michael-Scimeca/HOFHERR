@@ -2,19 +2,21 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import styles from './FooterMap.module.css';
+import {
+    loadGoogleMaps,
+    onGoogleMapsAuthFailure,
+    createMapPinOverlay,
+    GOOGLE_MAPS_KEY,
+    type MapPinOverlayHandle,
+} from '@/lib/googleMapsLoader';
+import { HOFHERR_MAP_STYLE } from '@/lib/mapTheme';
 
 const GOOGLE_MAPS_SANDBOX = 'allow-scripts allow-same-origin allow-popups';
 
-/* How the map avoids ever showing blank:
-   - A static picture of the map is always there, so there is something to see the instant you
-     scroll to the footer.
-   - The live Google map only starts loading when the footer is getting close (it isn't needed
-     before that, and two map embeds are heavy to load on every page).
-   - Browsers don't draw an off-screen embed, so "loaded" doesn't mean its tiles are painted.
-     The live map therefore stays invisible on top of the picture until it has loaded AND has
-     been on screen long enough to draw, then fades in over the picture. */
-const NEAR_MARGIN = '150% 0px';
-const PAINT_DELAY_MS = 2000;
+/* Preload the brand-themed Google Map well ahead of the footer so tiles and custom pins
+   are already rendered on the #0b0b0b canvas by the time the user scrolls down — without
+   showing any legacy Google Maps preloader screenshot or artificial delay. */
+const NEAR_MARGIN = '250% 0px';
 
 /* ─── Location data ─── */
 const LOCATIONS = [
@@ -25,7 +27,8 @@ const LOCATIONS = [
         address: '300 Happ Rd, Northfield, IL 60093',
         lat: 42.1042,
         lng: -87.7715,
-        preloaderSrc: '/assets/maps/footer-map-butcher-preloader.jpg',
+        pin: '/icons/butcher-pin.png',
+        pinSize: 56,
         directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd+Northfield+IL+60093&travelmode=driving',
     },
     {
@@ -35,29 +38,112 @@ const LOCATIONS = [
         address: '754 Elm St, Winnetka, IL 60093',
         lat: 42.1081,
         lng: -87.7359,
-        preloaderSrc: '/assets/maps/footer-map-depot-preloader.jpg',
+        pin: '/icons/depot-pin.png',
+        pinSize: 72,
         directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=754+Elm+St+Winnetka+IL+60093&travelmode=driving',
     },
 ] as const;
+
+/* ─── Brand-themed live map (Google Maps JS + HOFHERR_MAP_STYLE from src/lib/mapTheme.ts) ─── */
+export interface ThemedMapProps {
+    lat: number;
+    lng: number;
+    label: string;
+    pin: string;
+    pinSize: number;
+    directionsUrl: string;
+    className: string;
+    onReady: () => void;
+    onFail: () => void;
+}
+
+function mountThemedGoogleMap(
+    container: HTMLDivElement,
+    { lat, lng, label, pin, pinSize, directionsUrl, onReady, onFail }: Omit<ThemedMapProps, 'className'>
+): () => void {
+    let cancelled = false;
+    let pinOverlay: MapPinOverlayHandle | null = null;
+    let tilesListener: google.maps.MapsEventListener | null = null;
+
+    loadGoogleMaps()
+        .then(() => {
+            if (cancelled) return;
+
+            const map = new google.maps.Map(container, {
+                center: { lat, lng },
+                zoom: 15,
+                styles: HOFHERR_MAP_STYLE,
+                backgroundColor: '#0b0b0b',
+                disableDefaultUI: true,
+                zoomControl: true,
+                zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP },
+                gestureHandling: 'cooperative',
+                keyboardShortcuts: false,
+            });
+
+            pinOverlay = createMapPinOverlay({
+                map,
+                position: { lat, lng },
+                title: `${label} — get directions`,
+                iconUrl: pin,
+                size: pinSize,
+                onClick: () => window.open(directionsUrl, '_blank', 'noopener,noreferrer'),
+            });
+
+            tilesListener = google.maps.event.addListenerOnce(map, 'tilesloaded', () => {
+                if (!cancelled) onReady();
+            });
+        })
+        .catch(() => {
+            if (!cancelled) onFail();
+        });
+
+    return () => {
+        cancelled = true;
+        pinOverlay?.destroy();
+        tilesListener?.remove();
+    };
+}
+
+export function ThemedMap({ lat, lng, label, pin, pinSize, directionsUrl, className, onReady, onFail }: ThemedMapProps) {
+    const el = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!el.current) return;
+        return mountThemedGoogleMap(el.current, {
+            lat,
+            lng,
+            label,
+            pin,
+            pinSize,
+            directionsUrl,
+            onReady,
+            onFail,
+        });
+        // Location never changes for a mounted map — one instance per location.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    return <div ref={el} className={className} aria-label={`Map of ${label}`} role="region" />;
+}
 
 export default function FooterMap() {
     const [active, setActive] = useState(0);
     const [loadedMaps, setLoadedMaps] = useState<Record<string, boolean>>({});
     const [requestedMaps, setRequestedMaps] = useState<Record<string, boolean>>({});
-    const [revealedMaps, setRevealedMaps] = useState<Record<string, boolean>>({});
     const [near, setNear] = useState(false);
-    const [inView, setInView] = useState(false);
+    /* Themed map needs a working Google Maps key; without one (or if Google rejects it) fall back to the plain embed. */
+    const [useThemedMap, setUseThemedMap] = useState(Boolean(GOOGLE_MAPS_KEY));
     const wrapRef = useRef<HTMLDivElement>(null);
     const readySentRef = useRef(false);
     const loc = LOCATIONS[active];
 
-    // Watch for the footer map getting close to, and actually onto, the screen.
+    // Watch for the footer map getting within NEAR_MARGIN so tiles are warm before scrolling into view.
     useEffect(() => {
         const el = wrapRef.current;
         if (!el) return;
         if (typeof IntersectionObserver === 'undefined') {
             setNear(true);
-            setInView(true);
             return;
         }
         const nearObserver = new IntersectionObserver(
@@ -69,33 +155,21 @@ export default function FooterMap() {
             },
             { rootMargin: NEAR_MARGIN },
         );
-        const viewObserver = new IntersectionObserver(
-            (entries) => setInView(entries.some((e) => e.isIntersecting)),
-            { threshold: 0.2 },
-        );
         nearObserver.observe(el);
-        viewObserver.observe(el);
         return () => {
             nearObserver.disconnect();
-            viewObserver.disconnect();
         };
     }, []);
 
-    // Start loading the live map for whichever location is showing, once the footer is close.
+    useEffect(() => onGoogleMapsAuthFailure(() => setUseThemedMap(false)), []);
+
+    // Start loading the live themed map once the footer approaches, and warm both locations.
     useEffect(() => {
         if (!near) return;
-        setRequestedMaps((prev) => (prev[loc.id] ? prev : { ...prev, [loc.id]: true }));
-    }, [near, loc.id]);
-
-    // Fade the live map in only after it has loaded and had time on screen to draw its tiles.
-    const activeLoaded = Boolean(loadedMaps[loc.id]);
-    const activeRevealed = Boolean(revealedMaps[loc.id]);
-    useEffect(() => {
-        if (!activeLoaded || activeRevealed || !inView) return;
-        const id = loc.id;
-        const timer = window.setTimeout(() => setRevealedMaps((prev) => ({ ...prev, [id]: true })), PAINT_DELAY_MS);
-        return () => window.clearTimeout(timer);
-    }, [activeLoaded, activeRevealed, inView, loc.id]);
+        setRequestedMaps((prev) =>
+            prev.butcher && prev.depot ? prev : { ...prev, butcher: true, depot: true }
+        );
+    }, [near]);
 
     const handleMapLoad = useCallback((locationId: string, isFirst: boolean) => {
         setLoadedMaps((prev) => (prev[locationId] ? prev : { ...prev, [locationId]: true }));
@@ -132,28 +206,34 @@ export default function FooterMap() {
                 <span className={styles.addressText}>{loc.address}</span>
             </a>
 
-            {/* Map container: the static picture is always underneath; the live map fades in on top */}
+            {/* Map container: renders only the Hofherr brand-themed map over #0b0b0b */}
             <div className={styles.mapWrap} ref={wrapRef}>
                 {LOCATIONS.map((item, idx) => {
                     const isActive = idx === active;
-                    const isRevealed = Boolean(revealedMaps[item.id]);
+                    const isLoaded = Boolean(loadedMaps[item.id]);
 
                     return (
                         <div
                             key={item.id}
                             className={`${styles.mapLayer} ${isActive ? styles.mapLayerActive : styles.mapLayerHidden}`}
                         >
-                            <img
-                                src={item.preloaderSrc}
-                                alt={`Map preview of ${item.label} — ${item.address}`}
-                                loading="eager"
-                                decoding="async"
-                                className={styles.mapPreloaderImg}
-                            />
-                            {requestedMaps[item.id] && (
+                            {requestedMaps[item.id] && useThemedMap && (
+                                <ThemedMap
+                                    lat={item.lat}
+                                    lng={item.lng}
+                                    label={item.label}
+                                    pin={item.pin}
+                                    pinSize={item.pinSize}
+                                    directionsUrl={item.directionsUrl}
+                                    className={`${styles.mapThemed} ${isLoaded ? styles.mapIframeLoaded : styles.mapIframeLoading}`}
+                                    onReady={() => handleMapLoad(item.id, idx === 0)}
+                                    onFail={() => setUseThemedMap(false)}
+                                />
+                            )}
+                            {requestedMaps[item.id] && !useThemedMap && (
                                 <iframe
                                     src={`https://www.google.com/maps?q=${encodeURIComponent(item.address)}&output=embed`}
-                                    className={`${styles.mapIframe} ${isRevealed ? styles.mapIframeLoaded : styles.mapIframeLoading}`}
+                                    className={`${styles.mapIframe} ${isLoaded ? styles.mapIframeLoaded : styles.mapIframeLoading}`}
                                     allowFullScreen
                                     loading="eager"
                                     referrerPolicy="no-referrer-when-downgrade"

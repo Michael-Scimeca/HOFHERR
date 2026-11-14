@@ -5,7 +5,7 @@ import { useCartCount } from '@/context/CartContext';
 import styles from './Navbar.module.css';
 
 export default function NavCartIcon() {
-    const { count, openCart } = useCartCount();
+    const { count, badgeCount, openCart } = useCartCount();
 
     return (
         <div className={styles.cartWrap}>
@@ -29,8 +29,8 @@ export default function NavCartIcon() {
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <path d="M16 10a4 4 0 0 1-8 0"></path>
                 </svg>
-                {count > 0 && (
-                    <span className={styles.cartBadge}>{count}</span>
+                {badgeCount > 0 && (
+                    <span className={styles.cartBadge}>{badgeCount}</span>
                 )}
             </button>
         </div>

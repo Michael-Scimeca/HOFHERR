@@ -658,21 +658,21 @@ export default function CheckoutClient() {
                     <h1 className={styles.heading}>Complete Your Order</h1>
 
                     {/* Store banner + location switcher */}
-                    <div className={styles.storeBanner}>
+                    <div className={`${styles.storeBanner} ${activeStore === 'depot' ? styles.storeBannerDepot : ''}`}>
                         <span className={styles.storeBannerLocation}>
                             📍 Pickup at: {activeStore === 'butcher' ? 'The Butcher Shop (300 Happ Rd, Northfield)' : 'The Depot (600 Elm St, Winnetka)'}
                         </span>
                         <div className={styles.storeSwitchRow}>
                             <button
                                 type="button"
-                                className={`${styles.storeSwitchBtn} ${activeStore === 'butcher' ? styles.storeSwitchBtnActive : ''}`}
+                                className={`${styles.storeSwitchBtn} ${styles.storeSwitchBtnButcher} ${activeStore === 'butcher' ? styles.storeSwitchBtnButcherActive : ''}`}
                                 onClick={() => handleStoreSwitch('butcher')}
                             >
                                 Northfield Butcher Shop
                             </button>
                             <button
                                 type="button"
-                                className={`${styles.storeSwitchBtn} ${activeStore === 'depot' ? styles.storeSwitchBtnActive : ''}`}
+                                className={`${styles.storeSwitchBtn} ${styles.storeSwitchBtnDepot} ${activeStore === 'depot' ? styles.storeSwitchBtnDepotActive : ''}`}
                                 onClick={() => handleStoreSwitch('depot')}
                             >
                                 Winnetka Depot
