@@ -54,6 +54,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.75,
         },
         {
+            url: `${base}/recipes`,
+            lastModified: now,
+            changeFrequency: 'monthly',
+            priority: 0.75,
+        },
+        {
             url: `${base}/our-story`,
             lastModified: now,
             changeFrequency: 'yearly',

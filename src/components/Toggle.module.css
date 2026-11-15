@@ -39,7 +39,7 @@
 
 .switchChecked {
     background: var(--red);
-    border-color: var(--red-light);
+    border-color: var(--red);
 }
 
 .switchCheckedGold {

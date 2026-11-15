@@ -499,7 +499,7 @@
     justify-content: center;
     padding: 32px 20px;
     border-radius: var(--radius);
-    border: 1px solid #26211e;
+    border: 1px solid #2a2320;
     overflow: hidden;
     position: relative;
 }
@@ -568,7 +568,7 @@
     width: 100%;
     max-width: 480px;
     background: #121214;
-    border: 1px solid #27272a;
+    border: 1px solid #ffffff1a;
     border-radius: var(--radius);
     padding: 20px;
     display: flex;

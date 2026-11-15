@@ -268,8 +268,8 @@ export default async function SpecialsPage() {
                 const rStatus = isChicken ? rotisserie : null;
                 const stockBadgeColor =
                     rStatus?.status === 'available' ? { bg: '#16a34a', border: '#15803d' }
-                        : rStatus?.status === 'low' ? { bg: '#d97706', border: '#b45309' }
-                            : rStatus?.status === 'sold_out' ? { bg: '#dc2626', border: '#b91c1c' }
+                        : rStatus?.status === 'low' ? { bg: '#d97706', border: '#e85222' }
+                            : rStatus?.status === 'sold_out' ? { bg: '#dc2626', border: '#cc0e1d' }
                                 : { bg: '#475569', border: '#334155' };
 
                 const stockMessage =

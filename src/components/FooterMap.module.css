@@ -45,7 +45,7 @@
 
 .toggleActive:hover {
     background: var(--red-dark);
-    border-color: var(--red-dark);
+    border-color: #8b0a10;
     color: #fff;
 }
 

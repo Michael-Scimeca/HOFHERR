@@ -44,7 +44,7 @@ export default function RecipesBrowser({ featuredCollectionId, today }: Props) {
     const toggleRecipe = (slug: string) =>
         setOpenSlugs(cur => (cur.includes(slug) ? cur.filter(s => s !== slug) : [...cur, slug]));
 
-    // A link such as /recipes-test#chuck opens that recipe.
+    // A link such as /recipes#chuck opens that recipe.
     useEffect(() => {
         const openFromHash = () => {
             const slug = window.location.hash.slice(1);

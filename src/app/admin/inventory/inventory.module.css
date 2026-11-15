@@ -25,7 +25,7 @@
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    padding: var(--space-16) 0;
+    padding: 62px 0 48px;
     border-bottom: 1px solid var(--border);
     background:
         radial-gradient(ellipse 60% 70% at 18% 45%, rgba(var(--red-rgb), 0.16) 0%, transparent 65%),
@@ -44,11 +44,17 @@
 .heroTitleGroup {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--space-4);
 }
 
 .headline {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    font-weight: 800;
+    line-height: 0.96;
+    letter-spacing: 0.02em;
     color: var(--fg);
+    margin: 0;
 }
 
 .headline em {
@@ -960,7 +966,7 @@
 
 .storePillActiveButcher {
     background: var(--red);
-    border-color: var(--red-light);
+    border-color: var(--red);
     color: var(--fg);
     box-shadow: var(--shadow-red);
 }
@@ -2263,24 +2269,30 @@
     max-width: 448px;
 }
 
-/* ── Native <dialog> Modals (modern-web-guidance: dialog) ── */
+/* ── Native <dialog> Modals (modern-web-guidance: dialog + animate-to-from-top-layer) ── */
 .dialog {
-    margin: auto;
-    padding: 0;
-    border: 1px solid var(--border);
-    border-top: 2px solid var(--red);
-    border-radius: var(--radius-lg);
-    background: #0c0a09;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: var(--space-4);
+    border: none;
+    background: transparent;
     color: var(--fg);
-    width: min(512px, calc(100vw - 32px));
-    max-height: 90dvh;
-    box-shadow: var(--shadow-lg);
+    overflow-y: auto;
 }
 
 /* Scope display strictly to dialog[open] so closed state is never overridden */
 .dialog[open] {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialog[data-closing] {
+    pointer-events: none;
 }
 
 /* MANDATORY scroll containment rules for native modal dialogs */
@@ -2291,8 +2303,45 @@
 .dialog::backdrop {
     overflow: hidden;
     overscroll-behavior: contain;
-    background: rgba(0, 0, 0, 0.78);
+    background-color: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    transition-property: background-color, backdrop-filter, -webkit-backdrop-filter, display, overlay;
+    transition-duration: var(--burn-ms, 0.78s);
+    transition-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+    transition-behavior: allow-discrete;
+}
+
+:is(.dialog[open]):where(:not([data-closing]))::backdrop {
+    background-color: rgba(0, 0, 0, 0.78);
     backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+@starting-style {
+    :is(.dialog[open]):where(:not([data-closing]))::backdrop {
+        background-color: rgba(0, 0, 0, 0);
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dialog::backdrop {
+        transition-duration: 0.1s;
+    }
+}
+
+.dialogCard {
+    background: #0c0a09;
+    border: 2px solid var(--red);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 512px;
+    max-height: 90dvh;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
 }
 
 .dialogInner {

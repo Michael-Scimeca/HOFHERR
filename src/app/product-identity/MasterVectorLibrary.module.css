@@ -65,7 +65,7 @@
 
 .tabBtn:hover {
     color: var(--fg);
-    border-color: var(--fg-3);
+    border-color: #666666;
 }
 
 .tabBtnActive {

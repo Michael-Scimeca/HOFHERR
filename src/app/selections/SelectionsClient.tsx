@@ -326,7 +326,10 @@ export default function SelectionsClient() {
                     </p>
                     <div className={styles.heroActions}>
                         <Link href="/online-orders" className="btn-hit">
-                            <span className="btn btn-primary">Order Online for Pickup</span>
+                            <span className="btn btn-primary">
+                                <FireBorder active={true} radius={6} />
+                                Order Online for Pickup
+                            </span>
                         </Link>
                         <Link href="/cut-guide" className="btn-hit">
                             <span className="btn btn-primary">Interactive Cut &amp; Cooking Guide</span>
@@ -752,7 +755,10 @@ export default function SelectionsClient() {
                         <div className={styles.ctaStyle4Right}>
                             <span className={styles.ctaKickerGold}>DIRECT COUNTER DISPATCH</span>
                             <Link href="/online-orders" className="btn-hit">
-                                <span className="btn btn-primary">Order Online Now</span>
+                                <span className="btn btn-primary">
+                                    <FireBorder active={true} radius={6} />
+                                    Order Online Now
+                                </span>
                             </Link>
                             <a href="tel:8474416328" className="btn-hit">
                                 <span className="btn btn-secondary">Call (847) 441-MEAT</span>

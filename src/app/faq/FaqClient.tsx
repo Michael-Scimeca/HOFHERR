@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './page.module.css';
 
 type FaqGroup = { category: string; items: { q: string; a: string }[] };
@@ -43,7 +44,10 @@ export default function FaqClient({ faqs }: { faqs: FaqGroup[] }) {
                                     href="/online-orders"
                                     className={`btn-hit ${styles.sideBtn}`}
                                 >
-                                    <span className="btn btn-primary">Order Online</span>
+                                    <span className="btn btn-primary">
+                                        <FireBorder active={true} radius={6} />
+                                        Order Online
+                                    </span>
                                 </Link>
                             </div>
                         </aside>
@@ -102,7 +106,10 @@ export default function FaqClient({ faqs }: { faqs: FaqGroup[] }) {
                     <p>300 Happ Rd, Northfield Square · Tue–Fri 10am–6pm · Sat 10am–5pm · Sun 10am–4pm</p>
                     <div className={styles.ctaBtns}>
                         <Link href="/online-orders" className="btn-hit">
-                            <span className="btn btn-primary">Order Online</span>
+                            <span className="btn btn-primary">
+                                <FireBorder active={true} radius={6} />
+                                Order Online
+                            </span>
                         </Link>
                         <Link href="/visit" className="btn-hit">
                             <span className="btn btn-secondary">Get Directions</span>

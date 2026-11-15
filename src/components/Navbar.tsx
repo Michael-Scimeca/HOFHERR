@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import TransitionLink from './TransitionLink';
 import Image from 'next/image';
@@ -9,6 +9,8 @@ import { useSession, signOut } from 'next-auth/react';
 import { openAuthModal } from '@/components/AuthModal';
 import { useSiteSettings, type StoreHourEntry } from '@/context/SiteSettingsContext';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
+import MobileMenuBurn from '@/components/MobileMenuBurn';
+import { lockScroll } from '@/lib/scrollLock';
 import styles from './Navbar.module.css';
 import NavCartIcon from './NavCartIcon';
 
@@ -35,7 +37,8 @@ const NAV_ITEMS = [
     { label: 'Specials', href: '/specials' },
     { label: 'BBQ', href: '/bbq' },
     { label: 'Catering', href: '/catering' },
-    { label: 'Recipes', href: '/recipes-test' },
+    { label: 'Cut Guide', href: '/cut-guide' },
+    { label: 'Recipes', href: '/recipes' },
     { label: 'Visit Us', href: '/visit' },
     { label: 'Our Story', href: '/our-story' },
     { label: 'Press', href: '/press' },
@@ -131,6 +134,12 @@ export default function Navbar() {
     const { butcherHours, depotHours } = useSiteSettings();
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    // The menu stays mounted while its exit burn plays, then MobileMenuBurn tells us to unmount it.
+    const [menuMounted, setMenuMounted] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+    const menuBurnTextRef = useRef<HTMLDivElement>(null);
+    const hamburgerRef = useRef<HTMLButtonElement>(null);
+    const handleMenuExited = useCallback(() => setMenuMounted(false), []);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [avatarOverride, setAvatarOverride] = useState<string | null>(null);
 
@@ -146,7 +155,10 @@ export default function Navbar() {
                 setShowOwnerPortal(prev => !prev);
             }
         };
-        const handleOpenMobileMenu = () => setMobileOpen(prev => !prev);
+        const handleOpenMobileMenu = () => {
+            setMenuMounted(true);
+            setMobileOpen(prev => !prev);
+        };
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('hofherr-open-mobile-menu', handleOpenMobileMenu);
         return () => {
@@ -191,18 +203,10 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Prevent background scrolling when mobile menu is open
+    // Prevent background scrolling when mobile menu is open without shifting layout or sticky header
     useEffect(() => {
-        if (mobileOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
-
-        // Cleanup on unmount
-        return () => {
-            document.body.style.overflow = '';
-        };
+        if (!mobileOpen) return;
+        return lockScroll();
     }, [mobileOpen]);
 
     // Active nav indicator
@@ -354,8 +358,12 @@ export default function Navbar() {
                         <NavCartIcon />
 
                         <button
+                            ref={hamburgerRef}
                             className={`${styles.hamburger} ${mobileOpen ? styles.active : ''}`}
-                            onClick={() => setMobileOpen(!mobileOpen)}
+                            onClick={() => {
+                                if (!mobileOpen) setMenuMounted(true);
+                                setMobileOpen(!mobileOpen);
+                            }}
                             aria-label="Toggle menu"
                         >
                             <svg viewBox="0 0 64 48">
@@ -378,8 +386,21 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Menu */}
-            {mobileOpen && (
-                <div className={styles.mobile}>
+            {menuMounted && (
+                <MobileMenuBurn
+                    open={mobileOpen}
+                    onExited={handleMenuExited}
+                    menuRef={menuRef}
+                    buttonRef={hamburgerRef}
+                    textLayerRef={menuBurnTextRef}
+                    linkSelector={`.${styles.mobilePrimary}`}
+                    className={styles.mobileBurn}
+                />
+            )}
+            {menuMounted && (
+                <div ref={menuRef} className={styles.mobile} data-lenis-prevent>
+                    {/* Burning link text is drawn into this box by MobileMenuBurn */}
+                    <div ref={menuBurnTextRef} className={styles.mobileBurnText} aria-hidden="true" />
                     {/* Top Group: Primary Links */}
                     <div className={styles.mobileTopGroup}>
                         {NAV_ITEMS.map((item) => (
@@ -444,7 +465,19 @@ export default function Navbar() {
                                     <Link href="/online-orders?signup=true" prefetch={false} data-no-transition className={`btn btn-secondary ${styles.authGridBtn}`} onClick={(e) => openAuthFromLink(e, 'register', true)}>Sign Up</Link>
                                 </div>
                             ) : (
-                                <TransitionLink href="/dashboard" className="btn btn-secondary" onClick={() => setMobileOpen(false)}>Dashboard</TransitionLink>
+                                <div className={styles.mobileAuthGrid}>
+                                    <TransitionLink href={user.isAdmin ? '/admin-dashboard/admin' : '/dashboard'} className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Dashboard</TransitionLink>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-secondary ${styles.authGridBtn}`}
+                                        onClick={() => {
+                                            setMobileOpen(false);
+                                            signOut();
+                                        }}
+                                    >
+                                        Sign Out
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>

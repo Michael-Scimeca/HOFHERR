@@ -123,7 +123,8 @@ export function BurnPanel({
         canvas.setAttribute('aria-hidden', 'true');
         canvas.className = styles.canvas;
         canvas.style.zIndex = String(zIndex);
-        document.body.appendChild(canvas);
+        const topLayerDialog = panel.closest('dialog:modal');
+        (topLayerDialog ?? document.body).appendChild(canvas);
 
         const burner = createBurner(canvas, cooledRgb);
 

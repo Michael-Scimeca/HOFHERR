@@ -1,10 +1,13 @@
 'use client';
 
-import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import React, { useEffect, useEffectEvent, useState, useCallback, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Toggle from '@/components/Toggle';
+import BurnModalShell from '@/components/BurnModalShell';
 import { usePageTransition } from '@/components/PageTransition';
+import { lockScroll } from '@/lib/scrollLock';
 import styles from './inventory.module.css';
 
 type SalesData = { totalSold: number; last30Days: number; last7Days: number; lastSoldDate: string | null; revenue: number; };
@@ -53,18 +56,55 @@ export default function InventoryPage() {
     const [editPriceValue, setEditPriceValue] = useState('');
     const priceInputRef = useRef<HTMLInputElement>(null);
     const [showAddModal, setShowAddModal] = useState(false);
-
-    useEffect(() => {
-        const openAdd = () => setShowAddModal(true);
-        if (typeof window !== 'undefined' && window.location.search.includes('devModal=add')) {
-            openAdd();
-        }
-        window.addEventListener('hofherr-dev-add-product-modal', openAdd);
-        return () => window.removeEventListener('hofherr-dev-add-product-modal', openAdd);
-    }, []);
+    const [addModalClosing, setAddModalClosing] = useState(false);
     const [addForm, setAddForm] = useState({ name: '', price: '', categoryId: '', description: '', stockQuantity: 5 });
     const [addError, setAddError] = useState('');
     const [addSaving, setAddSaving] = useState(false);
+
+    const openAddModal = useCallback(() => {
+        setAddModalClosing(false);
+        setShowAddModal(true);
+    }, []);
+
+    const finalizeCloseAddModal = useCallback(() => {
+        setAddModalClosing(false);
+        setShowAddModal(false);
+        setAddError('');
+    }, []);
+
+    const requestCloseAddModal = useCallback(() => {
+        if (!addSaving) {
+            setAddModalClosing(true);
+        }
+    }, [addSaving]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.location.search.includes('devModal=add')) {
+            queueMicrotask(openAddModal);
+        }
+        window.addEventListener('hofherr-dev-add-product-modal', openAddModal);
+        return () => window.removeEventListener('hofherr-dev-add-product-modal', openAddModal);
+    }, [openAddModal]);
+
+    useEffect(() => {
+        if (!showAddModal || addModalClosing) return;
+        return lockScroll();
+    }, [showAddModal, addModalClosing]);
+
+    const onEscapeAddModal = useEffectEvent((e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+            requestCloseAddModal();
+        }
+    });
+
+    useEffect(() => {
+        if (!showAddModal || addModalClosing) return;
+        const onKeyDown = (e: KeyboardEvent) => {
+            onEscapeAddModal(e);
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [showAddModal, addModalClosing]);
     const [availableCategories, setAvailableCategories] = useState<CategoryInfo[]>([]);
     const [alertDismissed, setAlertDismissed] = useState(false);
     const [editingNote, setEditingNote] = useState<string | null>(null);
@@ -215,7 +255,7 @@ export default function InventoryPage() {
                 setAddError(err.error || 'Failed to create product');
                 return;
             }
-            setShowAddModal(false);
+            setAddModalClosing(true);
             setAddForm({ name: '', price: '', categoryId: '', description: '', stockQuantity: 5 });
             setToastMessage('Product successfully created');
             await fetchInventory();
@@ -376,7 +416,7 @@ export default function InventoryPage() {
                         </p>
                     </div>
                     <div className={styles.headerActions}>
-                        <button className={styles.addProductBtn} onClick={() => setShowAddModal(true)}>+ Add Product</button>
+                        <button className={styles.addProductBtn} onClick={openAddModal}>+ Add Product</button>
                         <button className={styles.backBtn} onClick={fetchInventory}>↻ Refresh</button>
                         <button className={styles.backBtn} onClick={() => navigateTo('/admin-dashboard/admin')}>← Dashboard</button>
                     </div>
@@ -1204,14 +1244,27 @@ export default function InventoryPage() {
                     )}
 
                     {/* ═══════════════ ADD PRODUCT MODAL ═══════════════ */}
-                    {showAddModal && (
-                        <div className={styles.modalOverlay} onClick={() => setShowAddModal(false)}>
-                            <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+                    {showAddModal && typeof document !== 'undefined' && createPortal(
+                        <div
+                            className={`${styles.modalOverlay} ${addModalClosing ? styles.modalOverlayClosing : ''}`}
+                            data-pt-portal
+                            data-lenis-prevent={addModalClosing ? undefined : true}
+                            onMouseDown={e => {
+                                if (e.target === e.currentTarget) requestCloseAddModal();
+                            }}
+                        >
+                            <BurnModalShell
+                                className={styles.modalContent}
+                                maxWidth={496}
+                                closing={addModalClosing}
+                                onCloseComplete={finalizeCloseAddModal}
+                                onClick={e => e.stopPropagation()}
+                            >
                                 <div className={styles.modalHeader}>
-                                    <h2>Add New Product</h2>
-                                    <button className={styles.modalClose} onClick={() => setShowAddModal(false)} aria-label="Close modal">×</button>
+                                    <h2 id="inventory-add-product-title">Add New Product</h2>
+                                    <button type="button" className={styles.modalClose} onClick={requestCloseAddModal} aria-label="Close modal">×</button>
                                 </div>
-                                {addError && <div className={styles.modalError}>{addError}</div>}
+                                {addError && <div className={styles.modalError} role="alert">{addError}</div>}
                                 <div className={styles.modalForm}>
                                     <div className={styles.formGroup}>
                                         <label htmlFor="prod-name">Product Name *</label>
@@ -1288,13 +1341,14 @@ export default function InventoryPage() {
                                     </div>
                                 </div>
                                 <div className={styles.modalActions}>
-                                    <button className={styles.modalCancelBtn} onClick={() => setShowAddModal(false)}>Cancel</button>
-                                    <button className={styles.modalSaveBtn} onClick={createProduct} disabled={addSaving}>
+                                    <button type="button" className={styles.modalCancelBtn} onClick={requestCloseAddModal}>Cancel</button>
+                                    <button type="button" className={styles.modalSaveBtn} onClick={createProduct} disabled={addSaving}>
                                         {addSaving ? 'Creating...' : '✓ Create Product'}
                                     </button>
                                 </div>
-                            </div>
-                        </div>
+                            </BurnModalShell>
+                        </div>,
+                        document.body
                     )}
                 </div>
             </section>

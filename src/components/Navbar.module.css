@@ -8,7 +8,10 @@
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid transparent;
     transition: border-color 0.3s, box-shadow 0.3s, background 0.3s, backdrop-filter 0.3s;
+    height: 88px;
     min-height: 88px;
+    /* the menu button's drawing box overhangs the button; never let it widen the page */
+    overflow-x: clip;
     display: flex;
     align-items: center;
 }
@@ -26,7 +29,7 @@
 /* ─── Inner row ─── */
 .inner {
     width: 100%;
-    max-width: var(--max-w, 1800px);
+    max-width: var(--max-w, 1400px);
     margin: 0 auto;
     padding: 0 var(--container-px);
     display: flex;
@@ -199,6 +202,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    min-height: 40px;
 }
 
 .authPill {
@@ -841,12 +845,13 @@
     width: 36px;
     height: 36px;
     padding: 0;
-    margin: 0;
+    margin: 0 -5px 0 0; /* nudged 5px to the right */
     outline: none;
     position: relative;
     border: none;
     background: none;
     cursor: pointer;
+    flex-shrink: 0;
     -webkit-appearance: none;
     appearance: none;
     -webkit-tap-highlight-color: transparent;
@@ -908,20 +913,72 @@
 /* ─── Mobile menu ─── */
 .mobile {
     position: fixed; /* Fixed is safer for fullscreen overlays */
-    top: 100px;
+    top: 88px;
     left: 0;
     z-index: 999;
     border-top: 1px solid #ffffff1a;
-    background: rgba(0, 0, 0, 0.98);
+    background: transparent; /* painted by MobileMenuBurn */
     padding: 24px 24px 48px;
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Spread content out */
-    height: calc(100dvh - 100px);
-    min-height: calc(100dvh - 100px);
+    height: calc(100dvh - 88px);
+    min-height: calc(100dvh - 88px);
     overflow-y: auto;
     width: 100%;
     box-sizing: border-box;
+}
+
+/* The menu's dark background is painted by MobileMenuBurn on this canvas, which sits just under the
+   menu and burns the page away ("lit fuse"). The data-* states below are set by that component. */
+.mobileBurn {
+    position: fixed;
+    top: 88px;
+    left: 0;
+    z-index: 998;
+    display: block;
+    width: 100%;
+    height: calc(100dvh - 88px);
+    pointer-events: none;
+}
+
+.mobileBurnText {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.mobile[data-closing] {
+    pointer-events: none;
+}
+
+/* if the canvas ever fails, fall back to the plain dark panel */
+.mobile[data-menu-burn-failed] {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+/* while the links are burning in they are drawn by canvas, so hide the real text */
+.mobile[data-menu-burn='in'] .mobilePrimary {
+    color: transparent;
+}
+
+/* dividers and the bottom group wait until the background has arrived */
+.mobile .mobileSection,
+.mobile {
+    transition: border-color 0.4s;
+}
+
+.mobile:not([data-lit]),
+.mobile:not([data-lit]) .mobileSection {
+    border-color: transparent;
+}
+
+.mobileBottomGroup {
+    transition: opacity 0.35s;
+}
+
+.mobile:not([data-lit]) .mobileBottomGroup {
+    opacity: 0;
 }
 
 .mobileScroll {
@@ -945,7 +1002,7 @@
 .mobilePrimary {
     display: block;
     width: 100%;
-    font-size: 21px;
+    font-size: var(--text-3xl);
     font-weight: 700;
     color: var(--text, #F2F2F2);
     padding: 0;
@@ -1020,6 +1077,13 @@
 }
 
 /* ─── Responsive ─── */
+@media (max-width: 1460px) {
+    .navLink {
+        padding: 8px;
+        font-size: 12px;
+    }
+}
+
 @media (max-width: 1300px) {
     .storeStatus {
         font-size: 10px;
@@ -1033,7 +1097,9 @@
     }
 }
 
-@media (max-width: 1024px) {
+/* Below 1320px the 10 desktop links no longer fit beside the logo and the right-hand controls,
+   so switch to the hamburger menu while keeping the exact same 88px header & 2-row right structure. */
+@media (max-width: 1320px) {
     .nav {
         display: none;
     }
@@ -1045,85 +1111,36 @@
     .hamburger {
         display: flex;
     }
+}
 
-    /* Hide desktop-only elements on mobile */
-    .authPill {
+@media (max-width: 680px) {
+    .authPill,
+    .signOutInlineBtn {
         display: none;
-    }
-
-    .storeStatusOuter {
-        display: flex;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 24px;
-        background: #000;
-        z-index: 10;
-        justify-content: flex-end;
-        border-bottom: 1px solid #ffffff1a;
-        margin-bottom: 10px;
-    }
-
-    .storeStatusWrap {
-        display: flex;
-        width: 100%;
-        justify-content: flex-end;
-        gap: 20px;
-        margin: 0;
-        padding: 0 var(--container-px) 0 0;
-    }
-
-    .right {
-        margin-left: auto;
-    }
-
-    .inner {
-        flex-wrap: nowrap;
-        padding: 0 var(--container-px);
-        height: 80px;
-        min-height: 80px;
-    }
-
-    .header {
-        min-height: 100px;
-        flex-direction: column;
-        align-items: stretch;
-        background: #000;
-        box-shadow: none;
-        border: none;
-    }
-
-    .mobile {
-        top: 100px;
-        height: calc(100dvh - 100px);
-        min-height: calc(100dvh - 100px);
     }
 }
 
-@media (max-width: 480px) {
-    .inner {
-        padding: 0 var(--container-px);
-        height: 80px;
-        min-height: 80px;
-    }
-
-    .header {
-        min-height: 100px;
-        flex-direction: column;
-        align-items: stretch;
-        background: #000;
-        box-shadow: none;
-        border: none;
+@media (max-width: 520px) {
+    .rightActions {
+        gap: 8px;
     }
 
     .cta {
-        padding: 6px 10px;
-        font-size: 11.5px;
+        padding: 7px 12px;
+        font-size: 10.5px;
+        letter-spacing: 1px;
     }
 
-    /* ── Scrolling store-status ticker ── */
+    /* Keep store status in its exact slot below rightActions; scroll horizontally if narrower */
+    /* The right group takes only the room left beside the logo, so the status row can never
+       push the menu button past the page's side padding. */
+    .right {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
     .storeStatusOuter {
+        max-width: 100%;
         overflow: hidden;
         justify-content: flex-start;
     }
@@ -1140,8 +1157,10 @@
 }
 
 @media (max-width: 400px) {
-    .logo img {
-        height: 28px !important;
+    /* .logo prefix so this beats the base .logoImgMain rule further down the file */
+    .logo .logoImgMain {
+        width: 88px;
+        height: 42px;
     }
 }
 

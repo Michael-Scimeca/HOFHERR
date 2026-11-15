@@ -4,7 +4,7 @@
     background-size: 200% 100%;
     animation: shimmer 4s linear infinite;
     padding: 22px 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 @keyframes shimmer {

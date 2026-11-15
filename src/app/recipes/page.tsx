@@ -1,28 +1,39 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import RecipesBrowser from './RecipesBrowser';
 import { COLLECTIONS } from './recipes';
 import styles from './page.module.css';
-
-/* ── Dev-only gate (same as /fire-test, /order-tracker-test) ── */
-const IS_DEV = process.env.NODE_ENV === 'development';
 
 /* The featured collection follows the calendar, so read the date on each request. */
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-    title: 'Beef Cut Recipes Test | Hofherr Meat Co.',
-    description: 'Test page: recipes by cut, occasion and season.',
-    robots: { index: false, follow: false },
+    title: "Butcher's Cut Recipes — Hofherr Meat Co. | Beef, Pork, Poultry & Lamb",
+    description:
+        'Craft butcher recipes for every primal cut of beef, pork, poultry, lamb, and holiday centerpieces — scale ingredients and add cuts directly to your Hofherr pickup order.',
+    alternates: { canonical: 'https://hofherrmeatco.com/recipes' },
+    openGraph: {
+        siteName: 'Hofherr Meat Co.',
+        type: 'website',
+        locale: 'en_US',
+        title: "Butcher's Cut Recipes | Hofherr Meat Co.",
+        description:
+            'Craft recipes built around daily cuts from the Hofherr counter — scale ingredients by servings and add cuts straight to your pickup order.',
+        url: 'https://hofherrmeatco.com/recipes',
+        images: [{ url: '/OG/og-image.jpg', width: 1200, height: 630, alt: "Butcher's Cut Recipes — Hofherr Meat Co." }],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: "Butcher's Cut Recipes | Hofherr Meat Co.",
+        description:
+            'Craft butcher recipes by cut, occasion, and season from Hofherr Meat Co. in Northfield & Winnetka, IL.',
+    },
 };
 
-export default function RecipesTestPage() {
-    if (!IS_DEV) notFound();
-
+export default function RecipesPage() {
     const now = new Date();
     const month = now.getMonth();
     const today = `${now.getFullYear()}-${String(month + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    const featured = COLLECTIONS.find(c => c.months.includes(month)) ?? null;
+    const featured = COLLECTIONS.find((c) => c.months.includes(month)) ?? null;
 
     return (
         <main>

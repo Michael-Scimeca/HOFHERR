@@ -7,8 +7,9 @@ import { PressCanvasStage } from './PressTickerFire';
 /**
  * PressTicker — "As featured in" marquee in the same tilted, two-direction
  * style as the catering ticker, separated by Hofherr circular SVG emblem icons.
- * Butcher emblems ignite with <canvas> torch flames + sparks on hover; press
- * logos emit <canvas> embers behind them.
+ * Butcher emblems ignite with <canvas> torch flames + sparks, and press logos
+ * emit <canvas> embers behind them, automatically while they pass through an
+ * invisible circle in the centre of the ticker (no hover needed).
  */
 type Outlet = {
     name: string;

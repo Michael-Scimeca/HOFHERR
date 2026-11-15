@@ -58,6 +58,7 @@ const SITE_MAP: SiteSection[] = [
             { name: 'Our Story', path: '/our-story', icon: '📖' },
             { name: 'Visit Us', path: '/visit', icon: '📍' },
             { name: 'Cut Guide', path: '/cut-guide', icon: '🔪' },
+            { name: 'Recipes', path: '/recipes', icon: '🍳' },
             { name: 'FAQ', path: '/faq', icon: '❓' },
             { name: 'Press', path: '/press', icon: '📰' },
             { name: 'Jobs & Careers', path: '/jobs', icon: '💼' },

@@ -1,4 +1,4 @@
-/* Scaling helpers for /recipes-test: ingredient amounts, how much meat to order, and cost. */
+/* Scaling helpers for /recipes: ingredient amounts, how much meat to order, and cost. */
 
 import type { BuyItem } from './recipes';
 

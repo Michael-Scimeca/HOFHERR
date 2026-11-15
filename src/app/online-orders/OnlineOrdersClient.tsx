@@ -3122,7 +3122,7 @@ export default function CustomOrdersPage({
                                 <div className={styles.modalTitle} style={{ letterSpacing: '-0.02em', marginBottom: '8px' }}>
                                     Complete Your Order
                                 </div>
-                                <div style={{ fontSize: '18px', fontWeight: 700, backgroundColor: 'rgba(128,0,32,0.1)', color: 'var(--red)', padding: '12px 16px', borderRadius: '8px', marginBottom: '16px', border: '1px solid rgba(128,0,32,0.2)' }}>
+                                <div style={{ fontSize: '18px', fontWeight: 700, backgroundColor: 'rgba(128,0,32,0.1)', color: 'var(--red)', padding: '12px 16px', borderRadius: '8px', marginBottom: '16px', border: '1px solid rgba(139, 10, 16,0.2)' }}>
                                     {activeStore === 'butcher' ? '📍 Pickup at: The Butcher Shop (Northfield)' : '📍 Pickup at: The Depot (Winnetka)'}
                                 </div>
                                 <p className={styles.modalDesc}>

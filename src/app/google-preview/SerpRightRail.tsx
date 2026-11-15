@@ -4,6 +4,9 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import Link from 'next/link';
 import type { StoreHourEntry } from '@/context/SiteSettingsContext';
 import {
+    GOOGLE_POST_UPDATE,
+    HOLIDAY_PICKUP_HOURS,
+    KNOWLEDGE_PRODUCTS,
     SERP_LOCATIONS,
     type GbpTabId,
     type LiveHoursStatus,
@@ -16,6 +19,11 @@ type SerpRightRailProps = {
     mode: RightRailMode;
     shopName: string;
     displayPhone: string;
+    email: string;
+    instagramUrl: string;
+    facebookUrl: string;
+    yelpUrl: string;
+    googleMapsUrl: string;
     butcherHours: StoreHourEntry[];
     depotHours: StoreHourEntry[];
     butcherStatus: LiveHoursStatus;
@@ -39,7 +47,7 @@ function ReviewSummaryBlock({
 }) {
     return (
         <div className={styles.reviewSummaryBox}>
-            <p className={styles.reviewSummaryTitle}>Google review summary</p>
+            <h4 className={styles.kpSectionHeading}>Google review summary</h4>
             <div className={styles.reviewSummaryGrid}>
                 <div className={styles.reviewBars} aria-hidden="true">
                     <div className={styles.reviewBarRow}>
@@ -85,10 +93,173 @@ function ReviewSummaryBlock({
     );
 }
 
+function HolidayPickupHoursBlock() {
+    return (
+        <details className={styles.kpHoursDetails} open>
+            <summary className={styles.kpHoursSummary}>
+                <span className={styles.kpHoursHeaderLeft}>
+                    <span className={styles.kpHoursStoreLabel}>
+                        🗓️ Holiday &amp; Special Pickup Hours
+                    </span>
+                    <span className={styles.kpHoursStatusLine}>
+                        Confirmed holiday schedules via{' '}
+                        <code>specialOpeningHoursSpecification</code>
+                    </span>
+                </span>
+                <span aria-hidden="true">⌄</span>
+            </summary>
+            <div className={styles.kpHoursTable}>
+                {HOLIDAY_PICKUP_HOURS.map((item) => (
+                    <div key={item.id} className={styles.gbpHoursDayRow}>
+                        <span>{item.occasion}</span>
+                        <span className={styles.kpHolidayRowRight}>
+                            <span>{item.schedule}</span>
+                            <span
+                                className={
+                                    item.isClosed
+                                        ? styles.kpHolidayTagClosed
+                                        : styles.kpHolidayTagConfirmed
+                                }
+                            >
+                                {item.isClosed ? 'Closed' : 'Confirmed'}
+                            </span>
+                        </span>
+                    </div>
+                ))}
+            </div>
+        </details>
+    );
+}
+
+function ProductsShowcaseBlock() {
+    return (
+        <div className={styles.kpSectionBlock}>
+            <h4 className={styles.kpSectionHeading}>Products &amp; Butcher Case</h4>
+            <div className={styles.kpProductsGrid}>
+                {KNOWLEDGE_PRODUCTS.map((product) => (
+                    <Link key={product.id} href={product.href} className={styles.kpProductCard}>
+                        <img
+                            src={product.imageSrc}
+                            alt={product.imageAlt}
+                            width={180}
+                            height={96}
+                            loading="lazy"
+                            className={styles.kpProductImg}
+                        />
+                        <span className={styles.kpProductBody}>
+                            <span className={styles.kpProductTitle}>{product.title}</span>
+                            <span className={styles.kpProductMeta}>{product.meta}</span>
+                        </span>
+                    </Link>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function SocialProfilesBlock({
+    instagramUrl,
+    facebookUrl,
+    yelpUrl,
+    googleMapsUrl,
+}: {
+    instagramUrl: string;
+    facebookUrl: string;
+    yelpUrl: string;
+    googleMapsUrl: string;
+}) {
+    return (
+        <div className={styles.kpSectionBlock}>
+            <h4 className={styles.kpSectionHeading}>Profiles</h4>
+            <div className={styles.kpProfilesRow}>
+                <a
+                    href={instagramUrl || 'https://www.instagram.com/hofherrmeatco'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.kpProfileBadge}
+                >
+                    <span className={styles.kpProfileCircle} aria-hidden="true">
+                        IG
+                    </span>
+                    <span>Instagram</span>
+                </a>
+                <a
+                    href={facebookUrl || 'https://www.facebook.com/HofherrMeatCo'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.kpProfileBadge}
+                >
+                    <span className={styles.kpProfileCircle} aria-hidden="true">
+                        FB
+                    </span>
+                    <span>Facebook</span>
+                </a>
+                <a
+                    href={yelpUrl || 'https://www.yelp.com/biz/hofherr-meat-co-northfield'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.kpProfileBadge}
+                >
+                    <span className={styles.kpProfileCircle} aria-hidden="true">
+                        ★
+                    </span>
+                    <span>Yelp</span>
+                </a>
+                <a
+                    href={googleMapsUrl || 'https://g.page/hofherrmeatco'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.kpProfileBadge}
+                >
+                    <span className={styles.kpProfileCircle} aria-hidden="true">
+                        📍
+                    </span>
+                    <span>Maps</span>
+                </a>
+            </div>
+        </div>
+    );
+}
+
+function GooglePostUpdateBlock({ shopName }: { shopName: string }) {
+    return (
+        <div className={styles.kpSectionBlock}>
+            <h4 className={styles.kpSectionHeading}>From {shopName || 'Hofherr Meat Co.'}</h4>
+            <div className={styles.kpUpdateCard}>
+                <div className={styles.kpUpdateTop}>
+                    <span className={styles.kpUpdateAuthor}>
+                        <span aria-hidden="true">📢</span>
+                        <span>{GOOGLE_POST_UPDATE.badge}</span>
+                    </span>
+                </div>
+                <div className={styles.kpUpdateMediaRow}>
+                    <img
+                        src={GOOGLE_POST_UPDATE.imageSrc}
+                        alt={GOOGLE_POST_UPDATE.imageAlt}
+                        width={80}
+                        height={80}
+                        loading="lazy"
+                        className={styles.kpUpdateThumb}
+                    />
+                    <p className={styles.kpUpdateCopy}>{GOOGLE_POST_UPDATE.body}</p>
+                </div>
+                <Link href={GOOGLE_POST_UPDATE.ctaHref} className={styles.kpUpdateCta}>
+                    {GOOGLE_POST_UPDATE.ctaLabel}
+                </Link>
+            </div>
+        </div>
+    );
+}
+
 export function SerpRightRail({
     mode,
     shopName,
     displayPhone,
+    email,
+    instagramUrl,
+    facebookUrl,
+    yelpUrl,
+    googleMapsUrl,
     butcherHours,
     depotHours,
     butcherStatus,
@@ -176,7 +347,9 @@ export function SerpRightRail({
 
                 <div className={styles.kpHeaderBlock}>
                     <h3 className={styles.kpTitle}>{shopName || 'Hofherr Meat Co.'}</h3>
-                    <p className={styles.kpSubtitle}>Craft butcher shop &amp; BBQ catering company</p>
+                    <p className={styles.kpSubtitle}>
+                        Craft butcher shop &amp; BBQ catering company · $$
+                    </p>
                 </div>
 
                 <div className={styles.kpMosaic}>
@@ -217,10 +390,24 @@ export function SerpRightRail({
                     <span>hofherrmeatco.com</span>
                 </Link>
 
-                <Link href="/online-orders" className={styles.kpSecondaryPill}>
-                    <span aria-hidden="true">🥩</span>
-                    <span>Order Custom Cuts Online</span>
-                </Link>
+                <div className={styles.kpQuickActionsGrid}>
+                    <Link href="/online-orders" className={styles.kpSecondaryPill}>
+                        <span aria-hidden="true">🥩</span>
+                        <span>Order Cuts</span>
+                    </Link>
+                    <Link href="/cut-guide" className={styles.kpSecondaryPill}>
+                        <span aria-hidden="true">📋</span>
+                        <span>Cut Menu</span>
+                    </Link>
+                    <Link href="/catering" className={styles.kpSecondaryPill}>
+                        <span aria-hidden="true">🔥</span>
+                        <span>Catering Quote</span>
+                    </Link>
+                    <Link href="/gift-cards" className={styles.kpSecondaryPill}>
+                        <span aria-hidden="true">🎁</span>
+                        <span>Gift Cards</span>
+                    </Link>
+                </div>
 
                 <p className={styles.kpBlurb}>
                     Hofherr Meat Co. is an{' '}
@@ -232,23 +419,116 @@ export function SerpRightRail({
                     Metra station.
                 </p>
 
+                <div className={styles.kpHoursGroup}>
+                    <details className={styles.kpHoursDetails} open>
+                        <summary className={styles.kpHoursSummary}>
+                            <span className={styles.kpHoursHeaderLeft}>
+                                <span className={styles.kpHoursStoreLabel}>
+                                    🕒 Hours · The Butcher Shop (300 Happ Rd, Northfield)
+                                </span>
+                                <span className={styles.kpHoursStatusLine}>
+                                    <span
+                                        className={
+                                            butcherStatus.isOpen
+                                                ? styles.statusOpen
+                                                : styles.statusClosed
+                                        }
+                                    >
+                                        {butcherStatus.badgeText}
+                                    </span>{' '}
+                                    · {butcherStatus.detailText}
+                                </span>
+                            </span>
+                            <span aria-hidden="true">⌄</span>
+                        </summary>
+                        <div className={styles.kpHoursTable}>
+                            {butcherHours.map((entry) => {
+                                const isToday =
+                                    butcherStatus.currentDay.toLowerCase() ===
+                                    entry.day.toLowerCase();
+                                return (
+                                    <div
+                                        key={entry.day}
+                                        className={`${styles.gbpHoursDayRow} ${isToday ? styles.gbpHoursDayToday : ''}`}
+                                    >
+                                        <span>{entry.day}</span>
+                                        <span>
+                                            {entry.isClosed
+                                                ? 'Closed'
+                                                : `${entry.open} – ${entry.close}`}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </details>
+
+                    <details className={styles.kpHoursDetails} open>
+                        <summary className={styles.kpHoursSummary}>
+                            <span className={styles.kpHoursHeaderLeft}>
+                                <span className={styles.kpHoursStoreLabel}>
+                                    🕒 Hours · The Depot (754 Elm St, Winnetka Metra)
+                                </span>
+                                <span className={styles.kpHoursStatusLine}>
+                                    <span
+                                        className={
+                                            depotStatus.isOpen
+                                                ? styles.statusOpen
+                                                : styles.statusClosed
+                                        }
+                                    >
+                                        {depotStatus.badgeText}
+                                    </span>{' '}
+                                    · {depotStatus.detailText}
+                                </span>
+                            </span>
+                            <span aria-hidden="true">⌄</span>
+                        </summary>
+                        <div className={styles.kpHoursTable}>
+                            {depotHours.map((entry) => {
+                                const isToday =
+                                    depotStatus.currentDay.toLowerCase() ===
+                                    entry.day.toLowerCase();
+                                return (
+                                    <div
+                                        key={entry.day}
+                                        className={`${styles.gbpHoursDayRow} ${isToday ? styles.gbpHoursDayToday : ''}`}
+                                    >
+                                        <span>{entry.day}</span>
+                                        <span>
+                                            {entry.isClosed
+                                                ? 'Closed'
+                                                : `${entry.open} – ${entry.close}`}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </details>
+
+                    <HolidayPickupHoursBlock />
+                </div>
+
+                <ProductsShowcaseBlock />
+
                 <dl className={styles.kpFactsList}>
                     <div className={styles.kpFactRow}>
                         <dt className={styles.kpFactTerm}>Customer service</dt>
                         <dd className={styles.kpFactValue}>
-                            <span className={styles.kpFactDotted}>{displayPhone}</span>
+                            <span className={styles.kpFactDotted}>{displayPhone}</span> ·{' '}
+                            {email || 'butcher@hofherrmeatco.com'}
                         </dd>
                     </div>
                     <div className={styles.kpFactRow}>
-                        <dt className={styles.kpFactTerm}>Founder</dt>
+                        <dt className={styles.kpFactTerm}>Founders</dt>
                         <dd className={styles.kpFactValue}>
-                            <span className={styles.kpFactDotted}>Sean Hofherr</span>
-                        </dd>
-                    </div>
-                    <div className={styles.kpFactRow}>
-                        <dt className={styles.kpFactTerm}>Co-owner</dt>
-                        <dd className={styles.kpFactValue}>
-                            <span className={styles.kpFactDotted}>Arielle Hofherr</span>
+                            <Link href="/our-story" className={styles.kpFactLink}>
+                                Sean Hofherr
+                            </Link>{' '}
+                            &amp;{' '}
+                            <Link href="/our-story" className={styles.kpFactLink}>
+                                Arielle Hofherr
+                            </Link>
                         </dd>
                     </div>
                     <div className={styles.kpFactRow}>
@@ -258,16 +538,48 @@ export function SerpRightRail({
                     <div className={styles.kpFactRow}>
                         <dt className={styles.kpFactTerm}>Headquarters</dt>
                         <dd className={styles.kpFactValue}>
-                            <span className={styles.kpFactDotted}>300 Happ Rd, Northfield, IL</span>
+                            <span className={styles.kpFactDotted}>
+                                300 Happ Rd, Northfield, IL 60093
+                            </span>
                         </dd>
                     </div>
                     <div className={styles.kpFactRow}>
                         <dt className={styles.kpFactTerm}>Locations</dt>
                         <dd className={styles.kpFactValue}>
-                            Northfield Butcher Shop · Winnetka Depot
+                            Northfield Butcher Shop · Winnetka Depot (UP-N Metra)
+                        </dd>
+                    </div>
+                    <div className={styles.kpFactRow}>
+                        <dt className={styles.kpFactTerm}>Price &amp; pay</dt>
+                        <dd className={styles.kpFactValue}>
+                            $$ · Apple Pay, Google Pay, Credit/Debit, Cash
+                        </dd>
+                    </div>
+                    <div className={styles.kpFactRow}>
+                        <dt className={styles.kpFactTerm}>Service area</dt>
+                        <dd className={styles.kpFactValue}>
+                            Northfield, Winnetka, Wilmette, Kenilworth, Glencoe, Glenview,
+                            Northbrook, Evanston, Highland Park, Lake Forest &amp; Chicago
+                        </dd>
+                    </div>
+                    <div className={styles.kpFactRow}>
+                        <dt className={styles.kpFactTerm}>Featured in</dt>
+                        <dd className={styles.kpFactValue}>
+                            <Link href="/press" className={styles.kpFactLink}>
+                                America’s Test Kitchen (Proof Podcast) · WGN &amp; North Shore Press
+                            </Link>
                         </dd>
                     </div>
                 </dl>
+
+                <SocialProfilesBlock
+                    instagramUrl={instagramUrl}
+                    facebookUrl={facebookUrl}
+                    yelpUrl={yelpUrl}
+                    googleMapsUrl={googleMapsUrl}
+                />
+
+                <GooglePostUpdateBlock shopName={shopName} />
             </aside>
         );
     }
@@ -307,6 +619,8 @@ export function SerpRightRail({
                         ★★★★★
                     </span>
                     <span>({location.reviewCount})</span>
+                    <span aria-hidden="true">·</span>
+                    <span>$$</span>
                     <span aria-hidden="true">·</span>
                     <span>{location.categoryLabel}</span>
                 </div>
@@ -385,9 +699,21 @@ export function SerpRightRail({
                             </a>
                             <Link href="/online-orders" className={styles.gbpActionChip}>
                                 <span className={styles.gbpActionIconBlue} aria-hidden="true">
-                                    🛍️
+                                    🥩
                                 </span>
                                 <span>Order</span>
+                            </Link>
+                            <Link href="/catering" className={styles.gbpActionChip}>
+                                <span className={styles.gbpActionIconBlue} aria-hidden="true">
+                                    🔥
+                                </span>
+                                <span>Catering</span>
+                            </Link>
+                            <Link href="/gift-cards" className={styles.gbpActionChip}>
+                                <span className={styles.gbpActionIconBlue} aria-hidden="true">
+                                    🎁
+                                </span>
+                                <span>Gift Cards</span>
                             </Link>
                             <a href={cleanTelHref} className={styles.gbpActionChip}>
                                 <span className={styles.gbpActionIconBlue} aria-hidden="true">
@@ -407,7 +733,7 @@ export function SerpRightRail({
                                 </div>
                             </div>
 
-                            <details className={styles.gbpHoursDetails}>
+                            <details className={styles.gbpHoursDetails} open>
                                 <summary className={styles.gbpHoursSummary}>
                                     <span className={styles.gbpInfoLeft}>
                                         <span className={styles.gbpIconBadge} aria-hidden="true">
@@ -429,18 +755,28 @@ export function SerpRightRail({
                                     <span aria-hidden="true">⌄</span>
                                 </summary>
                                 <div className={styles.gbpHoursTable}>
-                                    {hoursList.map((entry) => (
-                                        <div key={entry.day} className={styles.gbpHoursDayRow}>
-                                            <span>{entry.day}</span>
-                                            <span>
-                                                {entry.isClosed
-                                                    ? 'Closed'
-                                                    : `${entry.open} – ${entry.close}`}
-                                            </span>
-                                        </div>
-                                    ))}
+                                    {hoursList.map((entry) => {
+                                        const isToday =
+                                            liveStatus.currentDay.toLowerCase() ===
+                                            entry.day.toLowerCase();
+                                        return (
+                                            <div
+                                                key={entry.day}
+                                                className={`${styles.gbpHoursDayRow} ${isToday ? styles.gbpHoursDayToday : ''}`}
+                                            >
+                                                <span>{entry.day}</span>
+                                                <span>
+                                                    {entry.isClosed
+                                                        ? 'Closed'
+                                                        : `${entry.open} – ${entry.close}`}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </details>
+
+                            <HolidayPickupHoursBlock />
 
                             <div className={styles.gbpInfoRow}>
                                 <div className={styles.gbpInfoLeft}>
@@ -488,10 +824,21 @@ export function SerpRightRail({
 
                         <p className={styles.kpBlurb}>{location.editorialBlurb}</p>
 
+                        <ProductsShowcaseBlock />
+
                         <ReviewSummaryBlock
                             rating={location.rating}
                             reviewCount={location.reviewCount}
                         />
+
+                        <SocialProfilesBlock
+                            instagramUrl={instagramUrl}
+                            facebookUrl={facebookUrl}
+                            yelpUrl={yelpUrl}
+                            googleMapsUrl={googleMapsUrl}
+                        />
+
+                        <GooglePostUpdateBlock shopName={shopName} />
                     </div>
                 </div>
 

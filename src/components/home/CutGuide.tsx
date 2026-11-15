@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './CutGuide.module.css';
 
 type Animal = 'beef' | 'pork' | 'chicken' | 'lamb';
@@ -116,8 +117,15 @@ export default function CutGuide() {
                 <div className={styles.cta}>
                     <p>Need a specific cut? We cut everything fresh to order.</p>
                     <div className={styles.ctaBtns}>
-                        <a href="tel:8474416328" className="btn btn-primary">📞 Call Us</a>
-                        <Link href="/online-orders" className="btn btn-primary">Order Online</Link>
+                        <a href="tel:8474416328" className="btn-hit">
+                            <span className="btn btn-secondary">📞 Call Us</span>
+                        </a>
+                        <Link href="/online-orders" className="btn-hit">
+                            <span className="btn btn-primary">
+                                <FireBorder active={true} radius={6} />
+                                Order Online
+                            </span>
+                        </Link>
                     </div>
                 </div>
             </div>

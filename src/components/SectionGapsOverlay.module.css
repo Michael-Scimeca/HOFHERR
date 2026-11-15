@@ -145,6 +145,41 @@
     padding: 3px 5px;
 }
 
+/* ── Top / bottom space: the padding inside cards and the gap between stacked cards ── */
+.tallBar {
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    height: var(--h);
+    border-left: 2px solid currentColor;
+    color: var(--gap-side);
+}
+
+.tallBar::before,
+.tallBar::after {
+    content: '';
+    position: absolute;
+    left: -7px;
+    width: 12px;
+    border-top: 2px solid currentColor;
+}
+
+.tallBar::before {
+    top: 0;
+}
+
+.tallBar::after {
+    bottom: 0;
+}
+
+.tallLabel {
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    padding: 3px 5px;
+}
+
 .swatchSide {
     color: var(--gap-side);
 }

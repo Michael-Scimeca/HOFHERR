@@ -134,7 +134,7 @@
 .minimizedPill:hover {
     transform: translateY(-1px);
     background: var(--fg);
-    border-color: var(--fg);
+    border-color: #666666;
 }
 
 .pillBadge {
@@ -439,7 +439,7 @@
 }
 .actionBtnPrimary:hover {
     background: var(--red-light);
-    border-color: var(--red-light);
+    border-color: var(--red);
 }
 
 /* ─── Duration & Effect Sliders ─── */

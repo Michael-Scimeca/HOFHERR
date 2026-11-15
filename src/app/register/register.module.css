@@ -56,8 +56,7 @@
     grid-template-columns: 384px minmax(0, 1fr);
     gap: var(--space-12);
     align-items: start;
-    max-width: 1184px;
-    margin-inline: auto;
+    width: 100%;
 }
 
 /* ── Left Sidebar ── */

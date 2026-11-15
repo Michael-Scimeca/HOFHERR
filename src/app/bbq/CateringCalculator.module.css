@@ -266,7 +266,7 @@
 /* Receipt / Estimate panel */
 .receiptPan {
     background: rgba(200, 20, 30, 0.03);
-    border: 1px solid rgba(220, 20, 40, 0.15);
+    border: 1px solid rgba(204, 14, 29, 0.15);
     border-radius: 12px;
     padding: 32px 28px;
     display: flex;

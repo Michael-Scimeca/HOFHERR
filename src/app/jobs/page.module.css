@@ -288,7 +288,7 @@
     flex-direction: column;
     justify-content: center;
     gap: 16px;
-    border-right: 1px solid rgba(242, 233, 216, 0.18);
+    border-right: 1px solid #666666;
 }
 
 .generalAppTitle {
@@ -345,7 +345,7 @@
 
     .generalAppLeft {
         border-right: none;
-        border-bottom: 1px solid rgba(242, 233, 216, 0.18);
+        border-bottom: 1px solid #666666;
     }
 }
 

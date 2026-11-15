@@ -1,5 +1,5 @@
 .page {
-    max-width: 1520px;
+    max-width: var(--max-w, 1400px);
     margin: 0 auto;
     padding: calc(var(--nav-h, 80px) + 24px) 24px 80px;
     color: var(--fg, #f3ead8);
@@ -327,7 +327,7 @@
 }
 
 .cardIssues {
-    border-color: #a33;
+    border-color: #8b0a10;
 }
 
 .cardHead {
@@ -597,7 +597,7 @@
 }
 
 .slideFrameCream {
-    border-color: #f3ead8;
+    border-color: #666666;
 }
 
 .slideFrameCrimson {

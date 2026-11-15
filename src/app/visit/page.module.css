@@ -37,7 +37,52 @@
     inset: 0;
     z-index: 0;
     overflow: hidden;
-    background: #000;
+    background: #080606;
+}
+
+.heroSlideLayer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.heroSlideBase {
+    z-index: 2;
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
+    transition:
+        transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.38s ease-out;
+}
+
+.heroSlideHover {
+    z-index: 3;
+    opacity: 0;
+    transform: translateX(14%) rotate(3.5deg) scale(0.92);
+    box-shadow: -20px 0 48px rgba(0, 0, 0, 0.85);
+    transition:
+        transform 0.54s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.32s ease-out;
+}
+
+.heroSlideBaseSwapped {
+    opacity: 0.18;
+    transform: translateX(-16%) rotate(-4deg) scale(0.9);
+}
+
+.heroSlideHoverSwapped {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .heroSlideBase,
+    .heroSlideHover {
+        transition: none;
+    }
 }
 
 .heroImg {
@@ -60,7 +105,7 @@
 .heroInner {
     position: relative;
     z-index: 2;
-    max-width: var(--max-w, 1800px);
+    max-width: var(--max-w, 1400px);
     margin: 0 auto;
     width: 100%;
     padding: 100px var(--container-px) calc(var(--visit-overlap) + 40px);
@@ -68,7 +113,7 @@
 
 .heroBox {
     background: var(--bg, #f7f3ec);
-    border-left: 5px solid var(--red, #800020);
+    border-left: 5px solid var(--red, #8b0a10);
     border-radius: 12px;
     padding: 36px 40px;
     max-width: 480px;
@@ -137,7 +182,11 @@
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        box-shadow 0.25s ease;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     white-space: nowrap;
@@ -151,13 +200,13 @@
 
 .toggleActive {
     background: var(--red, #800020);
-    border-color: var(--red, #800020);
+    border-color: var(--red, #8b0a10);
     color: #fff;
 }
 
 .toggleActive:hover {
     background: var(--red-dark, #a93226);
-    border-color: var(--red-dark, #a93226);
+    border-color: #8b0a10;
 }
 
 .toggleBtnDepot {

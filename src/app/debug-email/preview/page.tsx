@@ -223,7 +223,7 @@ export default async function EmailPreviewPage({ searchParams }: { searchParams:
                 <strong style={{ color: '#111' }}>Subject:</strong> <span style={{ color: '#555' }}>{selected.subject}</span>
             </div>
 
-            <div style={{ border: '1px solid #ddd', borderRadius: 8, overflow: 'hidden' }}>
+            <div style={{ border: '1px solid #666666', borderRadius: 8, overflow: 'hidden' }}>
                 <div dangerouslySetInnerHTML={{ __html: selected.html }} />
             </div>
 

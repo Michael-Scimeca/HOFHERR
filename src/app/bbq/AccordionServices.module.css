@@ -1,12 +1,12 @@
 /* ── Accordion Services ── */
 
 .list {
-    border-top: 1px solid #1e1e1e;
+    border-top: 1px solid #ffffff1a;
 }
 
 /* ── Row container ── */
 .row {
-    border-bottom: 1px solid #1e1e1e;
+    border-bottom: 1px solid #ffffff1a;
     overflow: hidden;
     transition: border-bottom-color 0.3s;
     display: grid;
@@ -20,7 +20,7 @@
 }
 
 .row:not(.active):hover {
-    border-bottom-color: #2a2a2a;
+    border-bottom-color: #ffffff1a;
 }
 
 /* ── Header (always visible) ── */

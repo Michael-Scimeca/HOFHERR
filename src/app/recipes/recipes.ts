@@ -1,4 +1,4 @@
-/* Recipes — one per cut on the beef map, plus holiday centerpieces. Test content for /recipes-test.
+/* Recipes — one per cut on the beef map, plus holiday centerpieces. Test content for /recipes.
    Thirty more (beef, pork, poultry, lamb, veal, fish) live in recipes-more.ts and are appended to RECIPES below. */
 
 import { MORE_RECIPES } from './recipes-more';

@@ -414,6 +414,11 @@ export default function GooglePreviewClient() {
                                                                     · {status.detailText}
                                                                 </span>
                                                                 <span
+                                                                    className={styles.locationMeta}
+                                                                >
+                                                                    {loc.weeklySummaryLabel}
+                                                                </span>
+                                                                <span
                                                                     className={
                                                                         styles.locationReviewSnippet
                                                                     }
@@ -476,10 +481,10 @@ export default function GooglePreviewClient() {
                                             <div className={styles.siteAttribution}>
                                                 <span className={styles.faviconCircle}>
                                                     <img
-                                                        src="/assets/identity/hofherr-app-icon.svg"
+                                                        src="/assets/identity/hofherr-favicon-circle.svg"
                                                         alt=""
-                                                        width={24}
-                                                        height={24}
+                                                        width={28}
+                                                        height={28}
                                                         className={styles.faviconImg}
                                                     />
                                                 </span>
@@ -577,6 +582,11 @@ export default function GooglePreviewClient() {
                                     mode={rightRailMode}
                                     shopName={settings.shopName}
                                     displayPhone={displayPhone}
+                                    email={settings.email}
+                                    instagramUrl={settings.instagram}
+                                    facebookUrl={settings.facebook}
+                                    yelpUrl={settings.yelp}
+                                    googleMapsUrl={settings.googleMaps}
                                     butcherHours={settings.butcherHours}
                                     depotHours={settings.depotHours}
                                     butcherStatus={butcherStatus}

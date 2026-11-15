@@ -154,6 +154,44 @@
     cursor: default;
 }
 
+/* Shine: matches the Gift Card diagonal glint sweep every 10 seconds */
+.ctaCard::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background-image: linear-gradient(
+        100deg,
+        rgba(255, 255, 255, 0) 42%,
+        rgba(255, 255, 255, 0.1) 46%,
+        rgba(255, 255, 255, 0.28) 50%,
+        rgba(255, 255, 255, 0) 55%
+    );
+    background-repeat: no-repeat;
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    animation: ctaCardShine 10s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes ctaCardShine {
+    0% {
+        background-position: 100% 0;
+    }
+
+    18%,
+    100% {
+        background-position: 0% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ctaCard::before {
+        animation: none;
+    }
+}
+
 .ctaOverlay {
     display: flex;
     flex-direction: column;

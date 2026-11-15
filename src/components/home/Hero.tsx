@@ -4,26 +4,7 @@ import styles from './Hero.module.css';
 import HeroVideo from './HeroVideo';
 import LazyTrophy from './LazyTrophy';
 
-const SCHEDULE: Record<number, [number, number] | null> = {
-    0: [600, 960],   // Sun 10am–4pm
-    1: null,         // Mon closed
-    2: [600, 1080],  // Tue 10am–6pm
-    3: [600, 1080],
-    4: [600, 1080],
-    5: [600, 1080],
-    6: [600, 1020],  // Sat 10am–5pm
-};
-
-function isOpen() {
-    const now = new Date();
-    const h = SCHEDULE[now.getDay()];
-    const mins = now.getHours() * 60 + now.getMinutes();
-    return h ? mins >= h[0] && mins < h[1] : false;
-}
-
 export default function Hero() {
-    const open = isOpen();
-    const responseText = open ? '· Responds within the hour' : '· Leave a message — we\'ll reply soon';
     return (
         <section className={styles.hero} data-asset-editor-root="true">
             <div className={styles.bg} />
@@ -82,14 +63,22 @@ export default function Hero() {
                         <div className={styles.ctas}>
                             <Link href="/online-orders" className="btn-hit">
                                 <span className="btn btn-primary">
-                                    <FireBorder active={true} radius={8} />
+                                    <FireBorder active={true} radius={6} />
                                     Order Online
                                 </span>
                             </Link>
                             <a href="tel:8474416328" className="btn-hit">
                                 <span className="btn btn-secondary">📞 (847) 441-MEAT</span>
                             </a>
+                            <Link href="/newsletter" className={`btn-hit ${styles.subscribeHit}`}>
+                                <span className={`btn ${styles.subscribeBtn}`}>✉️ Subscribe</span>
+                            </Link>
                         </div>
+
+                        <p className={styles.subscribeNote}>
+                            <strong className={styles.subscribeNoteLead}>Why subscribe?</strong>{' '}
+                            Tuesday first dibs on small-batch dry-aged drops, member-only weekly cut pricing &amp; 48-hr early access to holiday roasts — one email a week, zero spam.
+                        </p>
 
 
 

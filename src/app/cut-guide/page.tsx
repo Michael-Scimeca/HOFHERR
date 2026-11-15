@@ -1,37 +1,29 @@
+import type { Metadata } from 'next';
 import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
 import { CUT_GUIDE_QUERY } from '@/sanity/queries';
-import CutGuideClient from './CutGuideClient';
+import CutGuideClient, { type SanityCut } from './CutGuideClient';
 
-export const metadata = {
-    title: 'Cut Guide — Hofherr Meat Co. | Beef, Pork, Chicken & Lamb Cuts',
-    description: 'Every cut of beef, pork, chicken, and lamb — what it\'s best for, how to cook it, and pro tips from our butcher Sean.',
+export const metadata: Metadata = {
+    title: 'Cut Guide — Hofherr Meat Co. | Beef, Pork, Poultry, Lamb & Wild Game',
+    description:
+        "Every cut of beef, pork, poultry, lamb, and wild game — what it's best for, how to cook it, and pro tips straight from master butcher Sean Hofherr.",
     alternates: { canonical: 'https://hofherrmeatco.com/cut-guide' },
     openGraph: {
         siteName: 'Hofherr Meat Co.',
         type: 'website',
         locale: 'en_US',
-        title: 'Cut Guide | Hofherr Meat Co.',
-        description: 'Every cut explained — what it\'s best for, how to cook it, and pro tips from butcher Sean Hofherr.',
+        title: 'The Cut Guide | Hofherr Meat Co.',
+        description:
+            "Every cut explained — what it's best for, how to cook it, and pro tips straight from master butcher Sean Hofherr.",
         url: 'https://hofherrmeatco.com/cut-guide',
-        images: [{ url: '/OG/og-image.jpg', width: 1200, height: 630, alt: 'Cut Guide — Hofherr Meat Co.' }],
+        images: [{ url: '/OG/og-image.jpg', width: 1200, height: 630, alt: 'The Cut Guide — Hofherr Meat Co.' }],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Cut Guide | Hofherr Meat Co.',
-        description: 'Beef, pork, chicken & lamb — every cut explained with cooking tips from our butcher.',
+        title: 'The Cut Guide | Hofherr Meat Co.',
+        description: 'Beef, pork, poultry, lamb & wild game — every cut explained with cooking tips from Sean Hofherr.',
     },
-};
-
-type SanityCut = {
-    _id: string;
-    name: string;
-    animal: string;
-    subcut: string | null;
-    bestFor: string | null;
-    cookingMethod: string | null;
-    tip: string | null;
-    image: string | null;
 };
 
 export default async function CutGuidePage() {

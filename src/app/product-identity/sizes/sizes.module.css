@@ -1,6 +1,6 @@
 /* Print Sizes editor — site tokens (globals.css) */
 .page {
-    max-width: 1500px;
+    max-width: var(--max-w, 1400px);
     margin: 0 auto;
     padding: calc(var(--nav-h, 68px) + 24px) 24px 80px;
     color: var(--fg);
@@ -349,7 +349,7 @@
 }
 
 .ref {
-    border: 1.5px dashed rgba(242, 242, 242, .45);
+    border: 1.5px dashed #666666;
     border-radius: 3px;
     width: var(--ref-w);
     height: var(--ref-h);

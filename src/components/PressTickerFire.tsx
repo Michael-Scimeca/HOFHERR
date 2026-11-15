@@ -381,7 +381,9 @@ function drawEmberShape(ctx: CanvasRenderingContext2D, e: CanvasEmber, alpha: nu
     ctx.restore();
 }
 
-/* ───────────────────────── Torch-On-Hover Canvas Stage ───────────────────────── */
+/* ───────────────────────── Centre-Circle Torch Canvas Stage ─────────────────────────
+ * Marks ignite automatically while their centre sits inside an invisible circle in the
+ * middle of the ticker — no pointer hover involved. */
 
 interface MeasuredMark {
     kind: 'logo' | 'icon';
@@ -426,7 +428,12 @@ export function PressCanvasStage({ containerRef }: PressCanvasStageProps) {
         let rows: MeasuredRow[] = [];
         let disposed = false;
 
-        const hoveredKeys = new Set<string>();
+        // Activation circle (stage coords): marks whose centre is inside it are lit
+        let zoneCx = 0;
+        let zoneCy = 0;
+        let zoneR = 0;
+        let inView = true;
+
         const hoverHeat = new Map<string, number>();
         const sparks: CanvasEmber[] = [];
 
@@ -504,6 +511,19 @@ export function PressCanvasStage({ containerRef }: PressCanvasStageProps) {
             });
 
             rows = nextRows;
+
+            // Centre the activation circle on the two rows of marks
+            let top = Infinity;
+            let bottom = -Infinity;
+            for (const row of nextRows) {
+                for (const m of row.marks) {
+                    if (m.y < top) top = m.y;
+                    if (m.y + m.h > bottom) bottom = m.y + m.h;
+                }
+            }
+            zoneCx = stageW * 0.5;
+            zoneCy = Number.isFinite(top) ? (top + bottom) * 0.5 : stageH * 0.5;
+            zoneR = Math.min(420, Math.max(150, stageW * 0.22));
         };
 
         const domImgs = Array.from(host.querySelectorAll<HTMLImageElement>('img'));
@@ -567,27 +587,14 @@ export function PressCanvasStage({ containerRef }: PressCanvasStageProps) {
             frontCtx.setTransform(1, 0, 0, 1, 0, 0);
             frontCtx.clearRect(0, 0, frontCanvas.width, frontCanvas.height);
 
-            const hasActiveTargets = hoveredKeys.size > 0 || hoverHeat.size > 0;
-            let needsIconAtlas = false;
-            if (hasActiveTargets) {
-                for (const key of hoveredKeys) {
-                    if (key.endsWith(':icon')) {
-                        needsIconAtlas = true;
-                        break;
-                    }
-                }
-                if (!needsIconAtlas) {
-                    for (const key of hoverHeat.keys()) {
-                        if (key.endsWith(':icon')) {
-                            needsIconAtlas = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            const atlas = needsIconAtlas ? renderVolumetricAtlas(simTime) : null;
+            // Flame atlas is rendered lazily, at most once per frame, only when an icon is lit
+            let atlasCache: HTMLCanvasElement | null | undefined;
+            const getAtlas = () => {
+                if (atlasCache === undefined) atlasCache = renderVolumetricAtlas(simTime);
+                return atlasCache;
+            };
 
-            if (hasActiveTargets) {
+            if (inView || hoverHeat.size > 0) {
                 for (const row of rows) {
                     const halfTrack = row.trackEl.offsetWidth * 0.5 || row.groupWidth * 2;
                     const copyStep = halfTrack * 0.5 || row.groupWidth;
@@ -601,12 +608,14 @@ export function PressCanvasStage({ containerRef }: PressCanvasStageProps) {
                         for (let mIdx = 0; mIdx < row.marks.length; mIdx++) {
                             const mark = row.marks[mIdx];
                             const instanceKey = `${copyIdx}:${mark.baseKey}`;
-                            const isHovered = hoveredKeys.has(instanceKey);
+                            const mx = mark.x + offsetX;
+                            const dxZone = mx + mark.w * 0.5 - zoneCx;
+                            const dyZone = mark.y + mark.h * 0.5 - zoneCy;
+                            const isHovered = inView && dxZone * dxZone + dyZone * dyZone <= zoneR * zoneR;
                             let heatVal = hoverHeat.get(instanceKey) ?? 0;
 
                             if (!isHovered && heatVal <= 0.004) continue;
 
-                            const mx = mark.x + offsetX;
                             if (isHovered) {
                                 const prev = heatVal;
                                 heatVal = Math.min(1, heatVal + dt * 8.4);
@@ -701,12 +710,9 @@ export function PressCanvasStage({ containerRef }: PressCanvasStageProps) {
                             }
 
                             // Torch flames render ONLY behind circular butcher icons — never behind press logos
-                            if (
-                                mark.kind === 'icon' &&
-                                atlas &&
-                                mx + mark.w >= -90 &&
-                                mx <= stageW + 90
-                            ) {
+                            const atlas =
+                                mark.kind === 'icon' && mx + mark.w >= -90 && mx <= stageW + 90 ? getAtlas() : null;
+                            if (atlas) {
                                 backCtx.save();
                                 backCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
                                 backCtx.globalCompositeOperation = 'lighter';
@@ -775,8 +781,8 @@ export function PressCanvasStage({ containerRef }: PressCanvasStageProps) {
                 }
             }
 
-            // Sleep cleanly at 0% CPU/GPU once all hovered targets & trailing embers finish cooling
-            if (hoveredKeys.size > 0 || hoverHeat.size > 0 || sparks.length > 0) {
+            // Sleep cleanly at 0% CPU/GPU once the ticker is off-screen and trailing embers finish cooling
+            if (inView || hoverHeat.size > 0 || sparks.length > 0) {
                 raf = requestAnimationFrame(tick);
             } else {
                 raf = 0;
@@ -790,41 +796,21 @@ export function PressCanvasStage({ containerRef }: PressCanvasStageProps) {
             }
         };
 
-        const onPointerOver = (e: PointerEvent) => {
-            const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-fire-id]');
-            const id = target?.dataset.fireId;
-            if (!id) return;
-            hoveredKeys.add(id);
-            ensureRunning();
-        };
-
-        const onPointerOut = (e: PointerEvent) => {
-            const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-fire-id]');
-            const id = target?.dataset.fireId;
-            if (!id) return;
-            const related = e.relatedTarget as Node | null;
-            if (related && target.contains(related)) return;
-            hoveredKeys.delete(id);
-            ensureRunning();
-        };
-
-        const onPointerLeaveHost = () => {
-            if (hoveredKeys.size > 0) {
-                hoveredKeys.clear();
+        // Only burn while the ticker is on screen
+        const io = new IntersectionObserver(
+            entries => {
+                inView = entries[entries.length - 1]?.isIntersecting ?? true;
                 ensureRunning();
-            }
-        };
-
-        host.addEventListener('pointerover', onPointerOver);
-        host.addEventListener('pointerout', onPointerOut);
-        host.addEventListener('pointerleave', onPointerLeaveHost);
+            },
+            { rootMargin: '80px 0px' },
+        );
+        io.observe(host);
+        ensureRunning();
 
         return () => {
             disposed = true;
             pendingImgs.forEach(img => img.removeEventListener('load', onImgReady));
-            host.removeEventListener('pointerover', onPointerOver);
-            host.removeEventListener('pointerout', onPointerOut);
-            host.removeEventListener('pointerleave', onPointerLeaveHost);
+            io.disconnect();
             window.clearTimeout(lateMeasure);
             if (raf) cancelAnimationFrame(raf);
             ro.disconnect();

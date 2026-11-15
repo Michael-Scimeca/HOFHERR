@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './page.module.css';
 
 const WORTH_IT_REASONS = [
@@ -147,11 +148,16 @@ export default function NewsletterPage() {
                                 time from the link in any email.
                             </p>
                             <div className={styles.successLinks}>
-                                <Link href="/specials" className="btn btn-primary">
-                                    See This Week&apos;s Specials
+                                <Link href="/specials" className="btn-hit">
+                                    <span className="btn btn-secondary">
+                                        See This Week&apos;s Specials
+                                    </span>
                                 </Link>
-                                <Link href="/online-orders" className="btn btn-primary">
-                                    Order Online
+                                <Link href="/online-orders" className="btn-hit">
+                                    <span className="btn btn-primary">
+                                        <FireBorder active={true} radius={6} />
+                                        Order Online
+                                    </span>
                                 </Link>
                             </div>
                         </div>

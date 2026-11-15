@@ -26,7 +26,7 @@
     flex: 1;
     padding: 0 var(--container-px) 96px;
     overflow-y: auto;
-    max-width: var(--max-w, 1800px);
+    max-width: var(--max-w, 1400px);
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
@@ -38,7 +38,7 @@
     isolation: isolate;
     margin-bottom: 48px;
     padding: 56px 0 48px;
-    border-bottom: 1px solid var(--border, #1e1e1e);
+    border-bottom: 1px solid var(--border, #ffffff1a);
 }
 
 .header::before,
@@ -123,7 +123,7 @@
 .logoutBtn {
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(209, 72, 54, 0.2);
     padding: 10px 24px;
     border-radius: 12px;
     font-size: 14px;
@@ -159,7 +159,7 @@
 
 .statCard:hover {
     transform: translateY(-5px);
-    border-color: var(--accent-gold);
+    border-color: var(--red);
 }
 
 .statLabel {
@@ -409,7 +409,7 @@
 .status_ready_pending {
     background: rgba(245, 158, 11, 0.15);
     color: #fbbf24;
-    border: 1px solid rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 155, 26, 0.2);
 }
 
 .status_cancelled {
@@ -450,7 +450,7 @@
 .reorderBtn {
     background: #f1f5f9;
     color: #1a1a1a;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #666666;
     padding: 10px 20px;
     border-radius: 12px;
     font-size: 14px;
@@ -469,7 +469,7 @@
     display: inline-block;
     padding: 4px 10px;
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #666666;
     border-radius: 6px;
     font-size: 12px;
     font-weight: 500;
@@ -713,7 +713,7 @@
     margin-bottom: 20px;
     padding: 14px;
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid #1e1e1e;
+    border: 1px solid #ffffff1a;
     border-radius: 14px;
 }
 
@@ -727,7 +727,7 @@
     width: 100%;
     aspect-ratio: 1;
     border-radius: 50%;
-    border: 2px solid #262626;
+    border: 2px solid #ffffff1a;
     padding: 0;
     cursor: pointer;
     overflow: hidden;
@@ -793,7 +793,7 @@
 .editInput {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #d1d5db;
+    border: 1px solid #666666;
     border-radius: 8px;
     font-size: 15px;
     color: #1a1a1a;
@@ -1071,7 +1071,7 @@
 .storeTagButcher {
     background: #7a0000;
     color: #fff;
-    border: 1px solid #b91c1c;
+    border: 1px solid #cc0e1d;
 }
 
 .storeTagDepot {
@@ -1245,7 +1245,7 @@
     gap: 16px;
     margin-top: 24px;
     padding-top: 24px;
-    border-top: 1px solid #1e1e1e;
+    border-top: 1px solid #ffffff1a;
 }
 
 .statBarItem {
@@ -1282,7 +1282,7 @@
     gap: 16px;
     padding: 16px 24px;
     background: rgba(139, 0, 0, 0.08);
-    border: 1px solid rgba(139, 0, 0, 0.25);
+    border: 1px solid rgba(139, 10, 16, 0.25);
 }
 
 .restockTitle {
@@ -1421,7 +1421,7 @@
     letter-spacing: 0.05em;
     text-transform: uppercase;
     background: rgba(245, 158, 11, 0.15);
-    border: 1px solid rgba(245, 158, 11, 0.42);
+    border: 1px solid rgba(245, 155, 26, 0.42);
     color: #fcd34d;
 }
 
@@ -1603,7 +1603,7 @@
     width: 17px;
     height: 17px;
     border-radius: 50%;
-    border: 1px solid #3d3d3d;
+    border: 1px solid #ffffff1a;
     background: rgba(255, 255, 255, 0.04);
     color: var(--text-secondary);
     font-family: Georgia, serif;
@@ -1673,7 +1673,7 @@
 .unsubscribeInlineBtn,
 .subscribeInlineBtn {
     background: transparent;
-    border: 1px solid #2b2b2b;
+    border: 1px solid #ffffff1a;
     color: var(--text-secondary);
     font-size: 11px;
     font-weight: 700;
@@ -2929,7 +2929,7 @@
 
 .copyOrderBtn {
     background: none;
-    border: 1px solid #333;
+    border: 1px solid #ffffff1a;
     color: var(--text-secondary);
     border-radius: 4px;
     padding: 2px 7px;
@@ -2987,7 +2987,7 @@
     padding: 40px;
     text-align: center;
     color: var(--text-secondary);
-    border: 1px solid #181818;
+    border: 1px solid #ffffff1a;
     border-radius: 12px;
 }
 
@@ -3116,7 +3116,7 @@
     min-height: 52px;
     padding: 0 14px;
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid #222;
+    border: 1px solid #ffffff1a;
     overflow: hidden;
     color: var(--text-secondary);
     cursor: pointer;
@@ -3238,7 +3238,7 @@
     gap: 24px;
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px solid #1e1e1e;
+    border-top: 1px solid #ffffff1a;
 }
 
 .liveTrackerDetailMain {
@@ -3284,7 +3284,7 @@
 .liveTrackerHelp {
     margin-top: 20px;
     padding-top: 16px;
-    border-top: 1px solid #1e1e1e;
+    border-top: 1px solid #ffffff1a;
 }
 
 .liveTrackerHelpRow {
@@ -3317,7 +3317,7 @@
     padding: 0 16px;
     background: transparent;
     color: #d4d4d4;
-    border: 1px solid #3a3a3a;
+    border: 1px solid #ffffff1a;
     border-radius: 8px;
     font-size: 11px;
     font-weight: 800;
@@ -3346,7 +3346,7 @@
 .liveTrackerControls {
     margin-top: 22px;
     padding: 16px 18px;
-    border: 1px dashed #2a2a2a;
+    border: 1px dashed #ffffff1a;
     border-radius: 14px;
     background: rgba(0, 0, 0, 0.45);
 }
@@ -3400,7 +3400,7 @@
     padding: 0 10px;
     background: #0a0a0a;
     color: #fff;
-    border: 1px solid #2b2b2b;
+    border: 1px solid #ffffff1a;
     border-radius: 8px;
     font-size: 13px;
     font-weight: 500;
@@ -3535,7 +3535,7 @@
 
 .trackerCutStage {
     background: #f3ead8;
-    border-bottom: 2px solid #6b070b;
+    border-bottom: 2px solid #8b0a10;
     padding: 6px;
 }
 

@@ -1,4 +1,4 @@
-/* Thirty more recipes for /recipes-test: more beef, plus pork, poultry, lamb, veal and fish.
+/* Thirty more recipes for /recipes: more beef, plus pork, poultry, lamb, veal and fish.
    Product names and prices match /online-orders as of the date in PRICES_AS_OF (recipes.ts). */
 
 import type { Recipe } from './recipes';

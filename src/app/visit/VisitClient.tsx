@@ -140,17 +140,35 @@ export default function VisitClient() {
             {/* ── Hero with toggle ── */}
                 <section id="visit-hero" aria-labelledby="visit-hero-heading" className={styles.hero}>
                     <div className={styles.heroImgWrapper}>
-                        <img
-                            src={loc.heroImage}
-                            alt={loc.heroAlt}
-                            width={1376}
-                            height={768}
-                            fetchPriority="high"
-                            loading="eager"
-                            decoding="sync"
-                            className={styles.heroImg}
-                            data-parallax="inset"
-                        />
+                        <div
+                            className={`${styles.heroSlideLayer} ${styles.heroSlideBase} ${active === 1 ? styles.heroSlideBaseSwapped : ''}`}
+                        >
+                            <img
+                                src={LOCATIONS[0].heroImage}
+                                alt={LOCATIONS[0].heroAlt}
+                                width={1376}
+                                height={768}
+                                fetchPriority="high"
+                                loading="eager"
+                                decoding="sync"
+                                className={styles.heroImg}
+                                data-parallax="inset"
+                            />
+                        </div>
+                        <div
+                            className={`${styles.heroSlideLayer} ${styles.heroSlideHover} ${active === 1 ? styles.heroSlideHoverSwapped : ''}`}
+                        >
+                            <img
+                                src={LOCATIONS[1].heroImage}
+                                alt={LOCATIONS[1].heroAlt}
+                                width={1376}
+                                height={768}
+                                loading="eager"
+                                decoding="async"
+                                className={styles.heroImg}
+                                data-parallax="inset"
+                            />
+                        </div>
                     </div>
 
 

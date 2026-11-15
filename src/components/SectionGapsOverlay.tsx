@@ -8,12 +8,15 @@ import styles from './SectionGapsOverlay.module.css';
 type Bar = { key: string; y: number; h: number; px: number; side: 'left' | 'mid' | 'between'; off: boolean };
 type Edge = { key: string; y: number; text: string };
 type SideBar = { key: string; x: number; y: number; w: number; px: number };
-type Snapshot = { bars: Bar[]; edges: Edge[]; sides: SideBar[]; base: number };
+type TallBar = { key: string; x: number; y: number; h: number; px: number };
+type Snapshot = { bars: Bar[]; edges: Edge[]; sides: SideBar[]; talls: TallBar[]; base: number };
 
-const EMPTY: Snapshot = { bars: [], edges: [], sides: [], base: 0 };
+const EMPTY: Snapshot = { bars: [], edges: [], sides: [], talls: [], base: 0 };
 /** Cards further than this from the viewport don't get side-padding markers (keeps big pages light). */
-const CARD_RANGE = 1200;
-const MAX_CARDS = 40;
+const CARD_RANGE = 600;
+const MAX_CARDS = 80;
+/** How many levels of card-inside-card get measured. */
+const MAX_DEPTH = 3;
 const CONTENT =
     'h1,h2,h3,h4,h5,h6,p,a,button,img,video,li,input,textarea,select,label,iframe,table,figure,blockquote';
 const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'LINK']);
@@ -38,6 +41,18 @@ const isCard = (el: Element) => {
     const bordered =
         (parseFloat(s.borderTopWidth) > 0 && isPainted(s.borderTopColor)) ||
         (parseFloat(s.borderBottomWidth) > 0 && isPainted(s.borderBottomColor));
+    const filled = isPainted(s.backgroundColor) && parseFloat(s.borderTopLeftRadius) > 0;
+    return bordered || filled;
+};
+
+/** A box closed on its sides too. A box with only a top / bottom rule is a divider, not a card. */
+const isBox = (el: Element) => {
+    const s = getComputedStyle(el);
+    const bordered =
+        parseFloat(s.borderTopWidth) > 0 &&
+        isPainted(s.borderTopColor) &&
+        parseFloat(s.borderLeftWidth) > 0 &&
+        isPainted(s.borderLeftColor);
     const filled = isPainted(s.backgroundColor) && parseFloat(s.borderTopLeftRadius) > 0;
     return bordered || filled;
 };
@@ -78,6 +93,7 @@ function sideInset(box: Element) {
     let left = Infinity;
     let right = -Infinity;
     let top = Infinity;
+    let bottom = -Infinity;
     const cards = new Set<Element>();
     box.querySelectorAll('*').forEach(el => {
         if (!el.matches(CONTENT) && !hasOwnText(el)) return;
@@ -114,19 +130,25 @@ function sideInset(box: Element) {
         for (let a = (frame ?? el).parentElement; a && a !== box; a = a.parentElement) {
             const ar = a.getBoundingClientRect();
             if (ar.height >= rect.height - 2 && ar.width >= rect.width - 2) break; // a wrapper, not a card
-            if (!isCard(a)) continue;
+            if (!isBox(a)) continue;
             outer = a;
             elLeft = Math.min(elLeft, ar.left);
             elRight = Math.max(elRight, ar.right);
             elTop = Math.min(elTop, ar.top);
+            elBottom = Math.max(elBottom, ar.bottom);
         }
         if (outer) cards.add(outer);
         left = Math.min(left, elLeft);
         right = Math.max(right, elRight);
         top = Math.min(top, elTop);
+        bottom = Math.max(bottom, elBottom);
     });
     if (!Number.isFinite(left)) return null;
     return {
+        innerTop: rect.top + (parseFloat(cs.borderTopWidth) || 0),
+        innerBottom: rect.bottom - (parseFloat(cs.borderBottomWidth) || 0),
+        centerX: rect.left + rect.width / 2,
+        bottom,
         x: rect.left + borderLeft,
         left: left - rect.left - borderLeft,
         rightX: right,
@@ -199,6 +221,7 @@ function measure(): Snapshot {
     const scrollY = window.scrollY;
     const scrollX = window.scrollX;
     const sides: SideBar[] = [];
+    const talls: TallBar[] = [];
     let cardCount = 0;
     // One pair of markers per box: left edge -> content, content -> right edge.
     const addSides = (key: string, box: Element, scale: number, depth: number) => {
@@ -213,42 +236,71 @@ function measure(): Snapshot {
             // inside a card: its own side padding
             push('l', side.x, side.left);
             push('r', side.rightX, side.right);
-            return;
+            // ...and its top / bottom padding
+            const tall = (tag: string, top: number, h: number) => {
+                if (h < 1) return;
+                talls.push({ key: `${key}-${tag}`, x: side.centerX + scrollX, y: top + scrollY, h, px: Math.round(h / scale) });
+            };
+            tall('t', side.innerTop, side.top - side.innerTop);
+            tall('b', side.bottom, side.innerBottom - side.bottom);
+        } else {
+            // a page section: the gutter from the edge of the page to the content
+            const pageWidth = document.documentElement.clientWidth;
+            push('l', 0, side.x + side.left);
+            push('r', side.rightX, pageWidth - side.rightX);
         }
-        // a page section: the gutter from the edge of the page to the content
-        const pageWidth = document.documentElement.clientWidth;
-        push('l', 0, side.x + side.left);
-        push('r', side.rightX, pageWidth - side.rightX);
-        // the gap between two cards sitting side by side in the same row
         const nearby = side.cards
             .map(card => ({ card, r: card.getBoundingClientRect() }))
             .filter(v => v.r.bottom > -CARD_RANGE && v.r.top < window.innerHeight + CARD_RANGE)
             .slice(0, MAX_CARDS * 2);
         nearby.forEach((a, n) => {
+            // the gap to the next card in the same row
             let next: (typeof nearby)[number] | null = null;
+            // the gap to the next card stacked underneath
+            let below: (typeof nearby)[number] | null = null;
             for (const b of nearby) {
-                if (b === a || b.r.left < a.r.right - 1) continue;
-                const overlap = Math.min(a.r.bottom, b.r.bottom) - Math.max(a.r.top, b.r.top);
-                if (overlap < Math.min(a.r.height, b.r.height) * 0.3) continue;
-                if (!next || b.r.left < next.r.left) next = b;
+                if (b === a) continue;
+                if (b.r.left >= a.r.right - 1) {
+                    const overlap = Math.min(a.r.bottom, b.r.bottom) - Math.max(a.r.top, b.r.top);
+                    if (overlap >= Math.min(a.r.height, b.r.height) * 0.3 && (!next || b.r.left < next.r.left)) next = b;
+                }
+                if (b.r.top >= a.r.bottom - 1) {
+                    const overlap = Math.min(a.r.right, b.r.right) - Math.max(a.r.left, b.r.left);
+                    if (overlap >= Math.min(a.r.width, b.r.width) * 0.3 && (!below || b.r.top < below.r.top)) below = b;
+                }
             }
-            if (!next) return;
-            const w = next.r.left - a.r.right;
-            if (w < 1 || w > 400) return;
-            sides.push({
-                key: `${key}-g${n}`,
-                x: a.r.right + scrollX,
-                y: Math.max(a.r.top, next.r.top) + scrollY + 28,
-                w,
-                px: Math.round(w / scale),
-            });
+            if (next) {
+                const w = next.r.left - a.r.right;
+                if (w >= 1 && w <= 400) {
+                    sides.push({
+                        key: `${key}-g${n}`,
+                        x: a.r.right + scrollX,
+                        y: Math.max(a.r.top, next.r.top) + scrollY + 28,
+                        w,
+                        px: Math.round(w / scale),
+                    });
+                }
+            }
+            if (below) {
+                const h = below.r.top - a.r.bottom;
+                if (h >= 1 && h <= 400) {
+                    const from = Math.max(a.r.left, below.r.left);
+                    const to = Math.min(a.r.right, below.r.right);
+                    talls.push({
+                        key: `${key}-v${n}`,
+                        x: (from + to) / 2 + scrollX,
+                        y: a.r.bottom + scrollY,
+                        h,
+                        px: Math.round(h / scale),
+                    });
+                }
+            }
         });
-        side.cards.forEach((card, n) => {
+        if (depth >= MAX_DEPTH) return;
+        nearby.forEach(({ card }, n) => {
             if (cardCount >= MAX_CARDS) return;
-            const cr = card.getBoundingClientRect();
-            if (cr.bottom < -CARD_RANGE || cr.top > window.innerHeight + CARD_RANGE) return;
             cardCount += 1;
-            addSides(`${key}-c${n}`, card, scale, 1);
+            addSides(`${key}-c${n}`, card, scale, depth + 1);
         });
     };
     const rows = findSections().map((sec, i) => {
@@ -305,11 +357,14 @@ function measure(): Snapshot {
         add('mid', r.top, r.inset.top);
         add('left', r.bottom - r.inset.bottom, r.inset.bottom);
     });
-    return { bars, edges, sides, base };
+    return { bars, edges, sides, talls, base };
 }
 
 const sidePos = (bar: SideBar) =>
     ({ '--x': `${bar.x}px`, '--y': `${bar.y}px`, '--w': `${bar.w}px` }) as CSSProperties;
+
+const tallPos = (bar: TallBar) =>
+    ({ '--x': `${bar.x}px`, '--y': `${bar.y}px`, '--h': `${bar.h}px` }) as CSSProperties;
 
 const pos = (y: number, h?: number) =>
     ({ '--y': `${y}px`, ...(h === undefined ? {} : { '--h': `${h}px` }) }) as CSSProperties;
@@ -378,11 +433,16 @@ export default function SectionGapsOverlay() {
                     <span className={`${styles.chip} ${styles.sideLabel}`}>{side.px}px</span>
                 </div>
             ))}
+            {snap.talls.map(tall => (
+                <div key={tall.key} className={styles.tallBar} style={tallPos(tall)}>
+                    <span className={`${styles.chip} ${styles.tallLabel}`}>{tall.px}px</span>
+                </div>
+            ))}
             <div className={styles.legend}>
                 <span>Section gaps</span>
                 <span className={styles.swatchOk}>■ {snap.base}px (most common)</span>
                 <span className={styles.swatchOff}>■ differs</span>
-                <span className={styles.swatchSide}>■ left / right</span>
+                <span className={styles.swatchSide}>■ card padding / gaps</span>
                 <span>Alt+G</span>
             </div>
         </div>,

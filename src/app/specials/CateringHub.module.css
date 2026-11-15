@@ -74,7 +74,7 @@
 /* Receipt Column (Sticky) */
 .receiptCol {
     background: rgba(200, 20, 30, 0.03);
-    border: 1px solid rgba(220, 20, 40, 0.15);
+    border: 1px solid rgba(204, 14, 29, 0.15);
     border-radius: 16px;
     padding: 24px;
     align-self: flex-start;

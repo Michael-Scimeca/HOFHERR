@@ -254,10 +254,10 @@ export const ALL_SITE_COLORS: SiteColorEntry[] = [
     "hex": "#A3A3A3",
     "count": 25,
     "family": "neutrals",
-    "files": "admin/AdminDashboardClient.tsx, admin/admin.module.css, recipes-test/page.module.css",
+    "files": "admin/AdminDashboardClient.tsx, admin/admin.module.css, recipes/page.module.css",
     "routes": [
       "/admin",
-      "/recipes-test"
+      "/recipes"
     ]
   },
   {
@@ -966,9 +966,9 @@ export const ALL_SITE_COLORS: SiteColorEntry[] = [
     "hex": "#DCDCDC",
     "count": 6,
     "family": "neutrals",
-    "files": "recipes-test/page.module.css",
+    "files": "recipes/page.module.css",
     "routes": [
-      "/recipes-test"
+      "/recipes"
     ]
   },
   {
@@ -996,9 +996,9 @@ export const ALL_SITE_COLORS: SiteColorEntry[] = [
     "hex": "#0F0F10",
     "count": 5,
     "family": "neutrals",
-    "files": "recipes-test/page.module.css",
+    "files": "recipes/page.module.css",
     "routes": [
-      "/recipes-test"
+      "/recipes"
     ]
   },
   {
@@ -1166,9 +1166,9 @@ export const ALL_SITE_COLORS: SiteColorEntry[] = [
     "hex": "#C9C9C9",
     "count": 5,
     "family": "neutrals",
-    "files": "recipes-test/page.module.css",
+    "files": "recipes/page.module.css",
     "routes": [
-      "/recipes-test"
+      "/recipes"
     ]
   },
   {
@@ -1197,9 +1197,9 @@ export const ALL_SITE_COLORS: SiteColorEntry[] = [
     "hex": "#140F10",
     "count": 4,
     "family": "reds",
-    "files": "recipes-test/page.module.css",
+    "files": "recipes/page.module.css",
     "routes": [
-      "/recipes-test"
+      "/recipes"
     ]
   },
   {
@@ -1433,7 +1433,7 @@ export const ALL_SITE_COLORS: SiteColorEntry[] = [
     "hex": "#F0F0F0",
     "count": 4,
     "family": "neutrals",
-    "files": "dashboard/dashboard.module.css, debug-email/page.tsx, debug-email/preview/page.tsx",
+    "files": "dashboard/dashboard.module.css, debug-email/preview/page.tsx",
     "routes": [
       "/dashboard",
       "/debug-email/preview"
@@ -1949,9 +1949,9 @@ export const ALL_SITE_COLORS: SiteColorEntry[] = [
     "hex": "#1B1111",
     "count": 2,
     "family": "reds",
-    "files": "recipes-test/page.module.css",
+    "files": "recipes/page.module.css",
     "routes": [
-      "/recipes-test"
+      "/recipes"
     ]
   },
   {
@@ -2630,18 +2630,18 @@ export const ALL_SITE_COLORS: SiteColorEntry[] = [
     "hex": "#110B0C",
     "count": 1,
     "family": "reds",
-    "files": "recipes-test/page.module.css",
+    "files": "recipes/page.module.css",
     "routes": [
-      "/recipes-test"
+      "/recipes"
     ]
   },
   {
     "hex": "#0F0D0E",
     "count": 1,
     "family": "neutrals",
-    "files": "recipes-test/page.module.css",
+    "files": "recipes/page.module.css",
     "routes": [
-      "/recipes-test"
+      "/recipes"
     ]
   },
   {
@@ -4268,9 +4268,9 @@ export const ALL_SITE_COLORS: SiteColorEntry[] = [
     "hex": "#E6E6E6",
     "count": 1,
     "family": "neutrals",
-    "files": "recipes-test/page.module.css",
+    "files": "recipes/page.module.css",
     "routes": [
-      "/recipes-test"
+      "/recipes"
     ]
   },
   {

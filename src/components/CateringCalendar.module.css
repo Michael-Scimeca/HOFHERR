@@ -75,8 +75,8 @@
 }
 
 .legendTooSoon {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid #ffffff1a;
+    background: rgba(var(--gold-rgb), 0.55);
+    border: 1px solid rgba(var(--gold-rgb), 0.35);
 }
 
 /* Month navigation */
@@ -121,11 +121,71 @@
     font-weight: 600;
 }
 
-/* Calendar grid */
+/* Calendar grid + 4-day advance notice */
+.calendarBody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
 .calendarGrid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 5px;
+}
+
+.leadNotice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius);
+    background: rgba(var(--gold-rgb), 0.08);
+    border: 1px solid rgba(var(--gold-rgb), 0.28);
+    transition: border-color 0.2s var(--ease-out), background-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+}
+
+.leadNoticeActive {
+    background: rgba(var(--gold-rgb), 0.14);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(var(--gold-rgb), 0.2);
+}
+
+.leadNoticeIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    flex-shrink: 0;
+    padding-top: var(--space-05);
+}
+
+.leadNoticeContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-05);
+    min-width: 0;
+}
+
+.leadNoticeTitle {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    line-height: 1.4;
+}
+
+.leadNoticeText {
+    font-size: var(--text-xs);
+    color: var(--fg-2);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.leadNoticeText strong {
+    color: var(--fg);
+    font-weight: 700;
 }
 
 .dayLabel {
@@ -191,8 +251,8 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid #ffffff1a;
+    background: rgba(var(--gold-rgb), 0.55);
+    border: 1px solid rgba(var(--gold-rgb), 0.35);
     position: absolute;
     bottom: 8px;
     left: 50%;
@@ -239,7 +299,7 @@
 
 .booked {
     background: rgba(231, 76, 60, 0.08);
-    border-color: rgba(231, 76, 60, 0.2);
+    border-color: rgba(209, 72, 54, 0.2);
 }
 
 .booked .dayNum {
@@ -249,12 +309,12 @@
 
 .booked:hover:not(:disabled) {
     background: rgba(231, 76, 60, 0.12);
-    border-color: rgba(231, 76, 60, 0.3);
+    border-color: rgba(209, 72, 54, 0.3);
 }
 
 .hold {
     background: rgba(243, 156, 18, 0.08);
-    border-color: rgba(243, 156, 18, 0.2);
+    border-color: rgba(245, 155, 26, 0.2);
 }
 
 .hold .dayNum {
@@ -263,7 +323,7 @@
 
 .hold:hover:not(:disabled) {
     background: rgba(243, 156, 18, 0.12);
-    border-color: rgba(243, 156, 18, 0.3);
+    border-color: rgba(245, 155, 26, 0.3);
 }
 
 .selected {
@@ -606,7 +666,7 @@
     margin: 0;
     padding: 8px 12px;
     background: rgba(231, 76, 60, 0.08);
-    border: 1px solid rgba(231, 76, 60, 0.2);
+    border: 1px solid rgba(209, 72, 54, 0.2);
     border-radius: 8px;
 }
 

@@ -97,6 +97,7 @@ export default function JsonLd({ settings = DEFAULT_SETTINGS }: JsonLdProps) {
         settings.instagram || DEFAULT_SETTINGS.instagram,
         settings.facebook || DEFAULT_SETTINGS.facebook,
         settings.yelp || DEFAULT_SETTINGS.yelp,
+        settings.googleMaps || DEFAULT_SETTINGS.googleMaps,
     ].filter((url): url is string => Boolean(url && url.startsWith('http')));
 
     const butcherOpeningHours = buildOpeningHours(
@@ -106,16 +107,97 @@ export default function JsonLd({ settings = DEFAULT_SETTINGS }: JsonLdProps) {
         settings.depotHours?.length ? settings.depotHours : DEFAULT_SETTINGS.depotHours
     );
 
+    const year = new Date().getFullYear();
+    const northShoreCities = [
+        'Northfield',
+        'Winnetka',
+        'Wilmette',
+        'Kenilworth',
+        'Glencoe',
+        'Glenview',
+        'Northbrook',
+        'Evanston',
+        'Highland Park',
+        'Lake Forest',
+        'Chicago',
+    ].map((cityName) => ({
+        '@type': 'City',
+        name: `${cityName}, IL`,
+    }));
+
+    const butcherSpecialHours = [
+        {
+            '@type': 'OpeningHoursSpecification',
+            validFrom: `${year}-07-03`,
+            validThrough: `${year}-07-03`,
+            opens: '10:00',
+            closes: '18:00',
+        },
+        {
+            '@type': 'OpeningHoursSpecification',
+            validFrom: `${year}-11-25`,
+            validThrough: `${year}-11-25`,
+            opens: '09:00',
+            closes: '17:00',
+        },
+        {
+            '@type': 'OpeningHoursSpecification',
+            validFrom: `${year}-11-26`,
+            validThrough: `${year}-11-26`,
+            opens: '00:00',
+            closes: '00:00',
+        },
+        {
+            '@type': 'OpeningHoursSpecification',
+            validFrom: `${year}-12-24`,
+            validThrough: `${year}-12-24`,
+            opens: '09:00',
+            closes: '16:00',
+        },
+        {
+            '@type': 'OpeningHoursSpecification',
+            validFrom: `${year}-12-25`,
+            validThrough: `${year}-12-25`,
+            opens: '00:00',
+            closes: '00:00',
+        },
+        {
+            '@type': 'OpeningHoursSpecification',
+            validFrom: `${year}-12-31`,
+            validThrough: `${year}-12-31`,
+            opens: '10:00',
+            closes: '16:00',
+        },
+    ];
+
+    const depotSpecialHours = [
+        {
+            '@type': 'OpeningHoursSpecification',
+            validFrom: `${year}-11-26`,
+            validThrough: `${year}-11-26`,
+            opens: '00:00',
+            closes: '00:00',
+        },
+        {
+            '@type': 'OpeningHoursSpecification',
+            validFrom: `${year}-12-24`,
+            validThrough: `${year}-12-25`,
+            opens: '00:00',
+            closes: '00:00',
+        },
+    ];
+
     const schema = {
         '@context': 'https://schema.org',
         '@graph': [
-            // ── Parent Brand Entity (powers Knowledge Panel facts: Founder, Founded, HQ, Customer Service) ──
+            // ── Parent Brand Entity (powers Knowledge Panel facts: Founders, Founded, HQ, Profiles, Press) ──
             {
                 '@type': 'Organization',
                 '@id': 'https://hofherrmeatco.com/#organization',
                 name: shopName,
                 legalName: 'Hofherr Meat Company',
                 alternateName: ['Hofherr Meat Company', "Hofherr's Meats Co."],
+                slogan: 'Whole-Animal Craft Butchery & Competition BBQ on Chicago’s North Shore',
                 url: 'https://hofherrmeatco.com',
                 description:
                     "North Shore Chicago's premier craft butcher shop and BBQ catering company, carrying forward a family butchering tradition rooted in early-1900s Chicago's South Side.",
@@ -130,13 +212,43 @@ export default function JsonLd({ settings = DEFAULT_SETTINGS }: JsonLdProps) {
                         addressCountry: 'US',
                     },
                 },
-                founder: {
-                    '@type': 'Person',
-                    '@id': 'https://hofherrmeatco.com/#founder',
-                    name: 'Sean Hofherr',
-                    jobTitle: 'Founder & Master Butcher',
-                    url: 'https://hofherrmeatco.com/our-story#founder',
-                },
+                founder: [
+                    {
+                        '@type': 'Person',
+                        '@id': 'https://hofherrmeatco.com/#founder-sean',
+                        name: 'Sean Hofherr',
+                        jobTitle: 'Founder & Master Butcher',
+                        url: 'https://hofherrmeatco.com/our-story#founder',
+                    },
+                    {
+                        '@type': 'Person',
+                        '@id': 'https://hofherrmeatco.com/#founder-arielle',
+                        name: 'Arielle Hofherr',
+                        jobTitle: 'Co-Owner & Operations Director',
+                        url: 'https://hofherrmeatco.com/our-story',
+                    },
+                ],
+                knowsAbout: [
+                    'Whole-Animal Butchery',
+                    'USDA Prime & Dry-Aged Steaks',
+                    'Chicago Italian Beef',
+                    'Housemade Sausages & Charcuterie',
+                    'Whole-Hog Pig Roasts',
+                    'Offset Smoker BBQ Catering',
+                ],
+                areaServed: northShoreCities,
+                subjectOf: [
+                    {
+                        '@type': 'PodcastEpisode',
+                        name: "America's Test Kitchen Proof Podcast — Chicago Italian Beef Feature",
+                        url: 'https://hofherrmeatco.com/press',
+                    },
+                    {
+                        '@type': 'CreativeWork',
+                        name: 'Hofherr Meat Co. Press & Culinary Media Coverage',
+                        url: 'https://hofherrmeatco.com/press',
+                    },
+                ],
                 logo: {
                     '@type': 'ImageObject',
                     '@id': 'https://hofherrmeatco.com/#logo',
@@ -148,6 +260,8 @@ export default function JsonLd({ settings = DEFAULT_SETTINGS }: JsonLdProps) {
                 },
                 image: [
                     'https://hofherrmeatco.com/images/visit/northfield-storefront-front.jpg',
+                    'https://hofherrmeatco.com/assets/press/sean-and-arielle-hofherr-northfield-shop.webp',
+                    'https://hofherrmeatco.com/assets/press/hofherr-stay-smoking-bbq-smoker.webp',
                     'https://hofherrmeatco.com/assets/shop-interior.jpg',
                     'https://hofherrmeatco.com/OG/og-home.jpg',
                 ],
@@ -193,7 +307,7 @@ export default function JsonLd({ settings = DEFAULT_SETTINGS }: JsonLdProps) {
 
             // ── Location A: The Butcher Shop (Northfield, IL) ──────────────────
             {
-                '@type': ['LocalBusiness', 'FoodEstablishment', 'GroceryStore'],
+                '@type': ['LocalBusiness', 'ButcherShop', 'FoodEstablishment', 'GroceryStore'],
                 '@id': 'https://hofherrmeatco.com/#business',
                 name: shopName,
                 alternateName: 'Hofherr Meat Co. — The Butcher Shop',
@@ -208,10 +322,12 @@ export default function JsonLd({ settings = DEFAULT_SETTINGS }: JsonLdProps) {
                 currenciesAccepted: 'USD',
                 paymentAccepted: 'Cash, Credit Card, Debit Card, Apple Pay, Google Pay',
                 servesCuisine: ['American', 'Barbecue', 'Butcher Shop', 'Italian Beef', 'Deli'],
+                areaServed: northShoreCities,
                 logo: { '@id': 'https://hofherrmeatco.com/#logo' },
                 image: [
                     'https://hofherrmeatco.com/images/visit/northfield-storefront-front.jpg',
                     'https://hofherrmeatco.com/images/visit/northfield-butcher-shop-signage.jpg',
+                    'https://hofherrmeatco.com/assets/press/arielle-hofherr-northfield-butcher-counter.webp',
                     'https://hofherrmeatco.com/assets/shop-interior.jpg',
                     'https://hofherrmeatco.com/OG/og-home.jpg',
                 ],
@@ -229,40 +345,102 @@ export default function JsonLd({ settings = DEFAULT_SETTINGS }: JsonLdProps) {
                     longitude: -87.7715,
                 },
                 openingHoursSpecification: butcherOpeningHours,
+                specialOpeningHoursSpecification: butcherSpecialHours,
                 hasMap: 'https://www.google.com/maps/search/?api=1&query=Hofherr+Meat+Co.+300+Happ+Rd+Northfield+IL+60093',
-                hasMenu: 'https://hofherrmeatco.com/online-orders?store=butcher',
+                hasMenu: 'https://hofherrmeatco.com/cut-guide',
                 sameAs,
                 amenityFeature: [
                     { '@type': 'LocationFeatureSpecification', name: 'In-store shopping', value: true },
                     { '@type': 'LocationFeatureSpecification', name: 'In-store pickup', value: true },
                     { '@type': 'LocationFeatureSpecification', name: 'Curbside pickup', value: true },
+                    { '@type': 'LocationFeatureSpecification', name: 'Custom butcher cuts', value: true },
                     { '@type': 'LocationFeatureSpecification', name: 'Free parking', value: true },
                 ],
-                potentialAction: {
-                    '@type': 'OrderAction',
-                    target: {
-                        '@type': 'EntryPoint',
-                        urlTemplate: 'https://hofherrmeatco.com/online-orders?store=butcher',
-                        inLanguage: 'en-US',
-                        actionPlatform: [
-                            'http://schema.org/DesktopWebPlatform',
-                            'http://schema.org/IOSPlatform',
-                            'http://schema.org/AndroidPlatform',
-                        ],
+                potentialAction: [
+                    {
+                        '@type': 'OrderAction',
+                        target: {
+                            '@type': 'EntryPoint',
+                            urlTemplate: 'https://hofherrmeatco.com/online-orders?store=butcher',
+                            inLanguage: 'en-US',
+                            actionPlatform: [
+                                'http://schema.org/DesktopWebPlatform',
+                                'http://schema.org/IOSPlatform',
+                                'http://schema.org/AndroidPlatform',
+                            ],
+                        },
+                        deliveryMethod: ['http://purl.org/goodrelations/v1#DeliveryModePickUp'],
                     },
-                    deliveryMethod: ['http://purl.org/goodrelations/v1#DeliveryModePickUp'],
-                },
+                    {
+                        '@type': 'ReserveAction',
+                        name: 'Book BBQ & Whole-Hog Catering Quote',
+                        target: {
+                            '@type': 'EntryPoint',
+                            urlTemplate: 'https://hofherrmeatco.com/catering',
+                            inLanguage: 'en-US',
+                        },
+                    },
+                    {
+                        '@type': 'BuyAction',
+                        name: 'Purchase Hofherr Meat Co. Gift Cards',
+                        target: {
+                            '@type': 'EntryPoint',
+                            urlTemplate: 'https://hofherrmeatco.com/gift-cards',
+                            inLanguage: 'en-US',
+                        },
+                    },
+                ],
                 hasOfferCatalog: {
                     '@type': 'OfferCatalog',
-                    name: 'Premium Meat & Butcher Services',
+                    name: 'Featured Butcher Case & Catering Products',
                     itemListElement: [
-                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Custom Cuts & USDA Prime Steaks' } },
-                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Dry-Aged Beef & Housemade Sausages' } },
-                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Pasture-Raised Rotisserie Chicken Dinners' } },
-                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Whole Pig Roasts (50+ guests)' } },
-                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Full-Service BBQ Catering (20–500+ guests)' } },
-                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Gift Cards' } },
-                        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Online Ordering & Curbside Pickup' } },
+                        {
+                            '@type': 'Offer',
+                            url: 'https://hofherrmeatco.com/online-orders',
+                            itemOffered: {
+                                '@type': 'Product',
+                                name: 'USDA Prime & Dry-Aged Steaks',
+                                image: 'https://hofherrmeatco.com/assets/cuts/beef-prime-cuts-packaged.jpg',
+                                description: 'Hand-trimmed ribeyes, NY strips, porterhouses, and standing rib roasts cut to order.',
+                            },
+                        },
+                        {
+                            '@type': 'Offer',
+                            url: 'https://hofherrmeatco.com/specials',
+                            itemOffered: {
+                                '@type': 'Product',
+                                name: 'Thursday Pasture-Raised Rotisserie Chicken Dinner',
+                                image: 'https://hofherrmeatco.com/assets/rotisserie-chickens.jpg',
+                                description: 'Spit-roasted pasture-raised chicken with schmaltzy potatoes and seasonal greens.',
+                            },
+                        },
+                        {
+                            '@type': 'Offer',
+                            url: 'https://hofherrmeatco.com/visit#depot',
+                            itemOffered: {
+                                '@type': 'Product',
+                                name: 'Acclaimed Dipped Chicago Italian Beef',
+                                image: 'https://hofherrmeatco.com/assets/italian-beef.jpg',
+                                description: 'Slow-roasted prime beef shaved thin in natural jus with hot or sweet giardiniera.',
+                            },
+                        },
+                        {
+                            '@type': 'Offer',
+                            url: 'https://hofherrmeatco.com/catering',
+                            itemOffered: {
+                                '@type': 'Service',
+                                name: 'Whole-Hog Pig Roasts & Offset Smoker BBQ Catering',
+                                image: 'https://hofherrmeatco.com/assets/pig-roast-spread.jpg',
+                            },
+                        },
+                        {
+                            '@type': 'Offer',
+                            url: 'https://hofherrmeatco.com/gift-cards',
+                            itemOffered: {
+                                '@type': 'Product',
+                                name: 'Hofherr Meat Co. Gift Cards',
+                            },
+                        },
                     ],
                 },
             },
@@ -303,7 +481,13 @@ export default function JsonLd({ settings = DEFAULT_SETTINGS }: JsonLdProps) {
                     latitude: 42.1081,
                     longitude: -87.7359,
                 },
+                containedInPlace: {
+                    '@type': 'TrainStation',
+                    name: 'Winnetka Metra Station (UP-N Line)',
+                },
+                areaServed: northShoreCities,
                 openingHoursSpecification: depotOpeningHours,
+                specialOpeningHoursSpecification: depotSpecialHours,
                 hasMap: 'https://www.google.com/maps/search/?api=1&query=Hofherr+Meat+Co.+The+Depot+754+Elm+St+Winnetka+IL+60093',
                 hasMenu: 'https://hofherrmeatco.com/online-orders?store=depot',
                 sameAs,

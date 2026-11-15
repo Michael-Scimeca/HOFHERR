@@ -61,6 +61,7 @@ export default function Footer() {
                         <div className={styles.colTitle}>Discover</div>
                         <Link href="/selections">Our Selections</Link>
                         <Link href="/cut-guide">Cut Guide</Link>
+                        <Link href="/recipes">Recipes</Link>
                         <Link href="/faq">FAQ</Link>
                         <Link href="/our-story">Our Story</Link>
                         <Link href="/press">Press</Link>

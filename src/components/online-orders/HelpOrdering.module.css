@@ -69,14 +69,14 @@
 
 .ctaSide .btnPrimary:hover {
     background: var(--red-dark);
-    border-color: var(--red-light);
+    border-color: var(--red);
     color: var(--fg);
 }
 
 .ctaSide :global(.btn-hit:hover:not(:disabled)) > .btnPrimary,
 .ctaSide :global(.btn-hit:focus-visible:not(:disabled)) > .btnPrimary {
     background: var(--red-dark);
-    border-color: var(--red-light);
+    border-color: var(--red);
     color: var(--fg);
     transform: translateY(-2px);
 }
@@ -90,14 +90,14 @@
 
 .ctaSide .btnSecondary:hover {
     background: #241c19;
-    border-color: var(--red-light);
+    border-color: var(--red);
     color: var(--gold-light);
 }
 
 .ctaSide :global(.btn-hit:hover:not(:disabled)) > .btnSecondary,
 .ctaSide :global(.btn-hit:focus-visible:not(:disabled)) > .btnSecondary {
     background: #241c19;
-    border-color: var(--red-light);
+    border-color: var(--red);
     color: var(--gold-light);
     transform: translateY(-2px);
 }

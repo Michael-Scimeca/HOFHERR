@@ -63,8 +63,8 @@
   /* ── Layout ── */
   --nav-h: 68px;
   --page-stem: 40px;
-  --max-w: 1800px;
-  --container-px-desktop: clamp(32px, 6vw, 120px);
+  --max-w: 1400px;
+  --container-px-desktop: 65px;
   --container-px-tablet: 32px;
   --container-px-mobile: 16px;
   --container-px: var(--container-px-desktop);

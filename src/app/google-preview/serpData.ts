@@ -36,6 +36,7 @@ export type SerpLocationConfig = {
     reviewCount: number;
     reviewerInitial: string;
     featuredQuote: string;
+    weeklySummaryLabel: string;
     serviceOptions: string;
     editorialBlurb: string;
     heroPhotos: [LocationPhoto, LocationPhoto];
@@ -77,6 +78,7 @@ export const SERP_LOCATIONS: Record<LocationId, SerpLocationConfig> = {
         reviewerInitial: 'M',
         featuredQuote:
             '"Best dry-aged prime ribeye, housemade sausages, and custom butcher counter on the North Shore."',
+        weeklySummaryLabel: 'Tue–Fri 10 AM–6 PM · Sat 10 AM–5 PM · Sun 10 AM–4 PM · Closed Mon',
         serviceOptions: 'In-store shopping · Curbside pickup · Custom butcher cuts',
         editorialBlurb:
             'Whole-animal craft butcher shop cutting USDA Prime & dry-aged steaks, heritage pork, housemade sausages, Thursday rotisserie chicken, and BBQ catering.',
@@ -145,6 +147,7 @@ export const SERP_LOCATIONS: Record<LocationId, SerpLocationConfig> = {
         reviewerInitial: 'D',
         featuredQuote:
             '"Right inside the Winnetka Metra station — incredible dipped Italian beef and hot weekday lunches."',
+        weeklySummaryLabel: 'Mon–Fri 10:30 AM–6 PM · Closed Sat–Sun',
         serviceOptions: 'Takeout · Commuter grab-and-go · Hot dipped Italian beef',
         editorialBlurb:
             'Hofherr Meat Co.’s weekday commuter counter inside the historic Winnetka UP-N Metra station serving slow-roasted Italian beef, butcher sandwiches, soups, and espresso.',
@@ -228,21 +231,21 @@ export const SCHEMA_ENTITIES: SchemaEntitySummary[] = [
         title: 'Brand Organization',
         schemaType: 'Organization',
         description:
-            'Parent brand entity linking Founders Sean & Arielle Hofherr, March 2014 founding date, social profiles, and subOrganization pointers to both storefronts.',
+            'Parent brand entity linking Founders Sean & Arielle Hofherr, March 2014 founding date, social sameAs profiles, North Shore areaServed, press subjectOf, and subOrganization pointers.',
     },
     {
         id: 'https://hofherrmeatco.com/#business',
         title: 'The Butcher Shop (Pin A)',
         schemaType: 'ButcherShop + LocalBusiness',
         description:
-            'Primary Northfield flagship at 300 Happ Rd (42.1042, -87.7715) with Tue–Sun openingHoursSpecification, curbside/custom-cut amenities, and OfferCatalog.',
+            'Primary Northfield flagship at 300 Happ Rd (42.1042, -87.7715) with Tue–Sun hours, holiday specialOpeningHoursSpecification, Order/Reserve/Buy actions, and Product OfferCatalog.',
     },
     {
         id: 'https://hofherrmeatco.com/#depot',
         title: 'The Depot Winnetka (Pin B)',
         schemaType: 'FastFoodRestaurant + LocalBusiness',
         description:
-            'Second physical location at 754 Elm St inside the Winnetka UP-N Metra station (42.1081, -87.7359) with Mon–Fri 10:30 AM–6:00 PM commuter lunch hours.',
+            'Second physical location at 754 Elm St inside the Winnetka UP-N Metra station (42.1081, -87.7359) with Mon–Fri 10:30 AM–6:00 PM commuter lunch hours and holiday schedule.',
     },
     {
         id: 'https://hofherrmeatco.com/#catering',
@@ -259,6 +262,105 @@ export const SCHEMA_ENTITIES: SchemaEntitySummary[] = [
             'Connects canonical https://hofherrmeatco.com sitelinks, brand attribution, and publisher metadata back to #organization.',
     },
 ];
+
+export type KnowledgeProductCard = {
+    id: string;
+    title: string;
+    meta: string;
+    href: string;
+    imageSrc: string;
+    imageAlt: string;
+};
+
+export const KNOWLEDGE_PRODUCTS: KnowledgeProductCard[] = [
+    {
+        id: 'prime-steaks',
+        title: 'USDA Prime & Dry-Aged Steaks',
+        meta: 'Cut to order · Order pickup',
+        href: '/online-orders',
+        imageSrc: '/assets/cuts/beef-prime-cuts-packaged.jpg',
+        imageAlt: 'Hand-trimmed USDA Prime and dry-aged steaks at Hofherr Meat Co.',
+    },
+    {
+        id: 'italian-beef',
+        title: 'Dipped Chicago Italian Beef',
+        meta: 'Winnetka Depot & Hot Kits',
+        href: '/visit#depot',
+        imageSrc: '/assets/italian-beef.jpg',
+        imageAlt: 'Dipped Chicago Italian beef sandwich from Hofherr Meat Co. The Depot',
+    },
+    {
+        id: 'rotisserie-dinner',
+        title: 'Thursday Rotisserie Chicken',
+        meta: 'Pasture-raised · Pre-order',
+        href: '/specials',
+        imageSrc: '/assets/rotisserie-chickens.jpg',
+        imageAlt: 'Spit-roasted pasture-raised rotisserie chickens at Hofherr Meat Co.',
+    },
+    {
+        id: 'whole-hog-catering',
+        title: 'Whole-Hog & BBQ Catering',
+        meta: '20–500+ Guests · Get quote',
+        href: '/catering',
+        imageSrc: '/assets/pig-roast-spread.jpg',
+        imageAlt: 'Whole-hog pig roast and offset smoker BBQ catering spread',
+    },
+];
+
+export type HolidayHoursRow = {
+    id: string;
+    occasion: string;
+    schedule: string;
+    isClosed: boolean;
+};
+
+export const HOLIDAY_PICKUP_HOURS: HolidayHoursRow[] = [
+    {
+        id: 'july-3',
+        occasion: 'July 3rd · Summer BBQ Pickup',
+        schedule: '10:00 AM – 6:00 PM',
+        isClosed: false,
+    },
+    {
+        id: 'thanksgiving-eve',
+        occasion: 'Thanksgiving Eve · Turkey Pickup',
+        schedule: '9:00 AM – 5:00 PM',
+        isClosed: false,
+    },
+    {
+        id: 'thanksgiving-day',
+        occasion: 'Thanksgiving Day',
+        schedule: 'Closed',
+        isClosed: true,
+    },
+    {
+        id: 'christmas-eve',
+        occasion: 'Christmas Eve · Standing Rib Roasts',
+        schedule: '9:00 AM – 4:00 PM',
+        isClosed: false,
+    },
+    {
+        id: 'christmas-day',
+        occasion: 'Christmas Day',
+        schedule: 'Closed',
+        isClosed: true,
+    },
+    {
+        id: 'nye',
+        occasion: 'New Year’s Eve · Prime Steaks',
+        schedule: '10:00 AM – 4:00 PM',
+        isClosed: false,
+    },
+];
+
+export const GOOGLE_POST_UPDATE = {
+    badge: 'Pinned update · From Hofherr Meat Co.',
+    imageSrc: '/assets/rotisserie-chickens.jpg',
+    imageAlt: 'Thursday pasture-raised rotisserie chicken dinners at Hofherr Meat Co.',
+    body: 'Thursday Pasture-Raised Rotisserie Chicken Dinners & Holiday Roast Pre-Orders — Reserve custom-cut USDA Prime steaks for Northfield pickup or request a whole-hog BBQ catering quote.',
+    ctaLabel: 'View Weekly Specials →',
+    ctaHref: '/specials',
+} as const;
 
 const WEEKDAYS = [
     'Sunday',
@@ -291,6 +393,7 @@ export type LiveHoursStatus = {
     isOpen: boolean;
     badgeText: string;
     detailText: string;
+    currentDay: string;
 };
 
 const CHICAGO_LIVE_FORMATTER = new Intl.DateTimeFormat('en-US', {
@@ -311,6 +414,7 @@ export function getChicagoLiveStatus(
             isOpen: true,
             badgeText: 'Open',
             detailText: firstOpen ? `Closes ${compactTimeLabel(firstOpen.close)}` : 'See hours',
+            currentDay: '',
         };
     }
 
@@ -332,6 +436,7 @@ export function getChicagoLiveStatus(
                     isOpen: true,
                     badgeText: 'Open',
                     detailText: `Closes ${compactTimeLabel(todayEntry.close)}`,
+                    currentDay: weekday,
                 };
             }
             if (currentMinutes < openMins) {
@@ -339,6 +444,7 @@ export function getChicagoLiveStatus(
                     isOpen: false,
                     badgeText: 'Closed',
                     detailText: `Opens ${compactTimeLabel(todayEntry.open)}`,
+                    currentDay: weekday,
                 };
             }
         }
@@ -360,6 +466,7 @@ export function getChicagoLiveStatus(
                     offset === 1
                         ? `Opens ${compactTimeLabel(nextEntry.open)} ${shortDay}`
                         : `Opens ${shortDay} ${compactTimeLabel(nextEntry.open)}`,
+                currentDay: weekday,
             };
         }
     }
@@ -368,7 +475,27 @@ export function getChicagoLiveStatus(
         isOpen: false,
         badgeText: 'Closed',
         detailText: 'Temporarily closed',
+        currentDay: weekday,
     };
+}
+
+function to24HourSpec(timeStr: string): string {
+    const mins = parseMinutes(timeStr);
+    if (mins === null) return '00:00';
+    const hh = String(Math.floor(mins / 60)).padStart(2, '0');
+    const mm = String(mins % 60).padStart(2, '0');
+    return `${hh}:${mm}`;
+}
+
+function mapSchemaHours(hours: StoreHourEntry[]) {
+    return hours
+        .filter((h) => !h.isClosed && h.open && h.close)
+        .map((h) => ({
+            '@type': 'OpeningHoursSpecification',
+            dayOfWeek: h.day,
+            opens: to24HourSpec(h.open),
+            closes: to24HourSpec(h.close),
+        }));
 }
 
 export function formatDisplayPhone(rawPhone: string): string {
@@ -380,6 +507,12 @@ export function formatDisplayPhone(rawPhone: string): string {
 
 export function buildPreviewJsonLdSnippet(settings: SiteSettings): string {
     const displayPhone = formatDisplayPhone(settings.phone);
+    const sameAs = [
+        settings.instagram,
+        settings.facebook,
+        settings.yelp,
+        settings.googleMaps,
+    ].filter(Boolean);
     const previewGraph = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -389,8 +522,32 @@ export function buildPreviewJsonLdSnippet(settings: SiteSettings): string {
                 name: settings.shopName || 'Hofherr Meat Co.',
                 url: 'https://hofherrmeatco.com',
                 foundingDate: '2014-03',
+                founder: [
+                    { '@type': 'Person', name: 'Sean Hofherr', jobTitle: 'Founder & Master Butcher' },
+                    { '@type': 'Person', name: 'Arielle Hofherr', jobTitle: 'Co-Owner & Operations Director' },
+                ],
                 telephone: '+1-847-441-6328',
                 email: settings.email || 'butcher@hofherrmeatco.com',
+                sameAs,
+                areaServed: [
+                    'Northfield, IL',
+                    'Winnetka, IL',
+                    'Wilmette, IL',
+                    'Kenilworth, IL',
+                    'Glencoe, IL',
+                    'Glenview, IL',
+                    'Evanston, IL',
+                    'Highland Park, IL',
+                    'Lake Forest, IL',
+                    'Chicago, IL',
+                ],
+                subjectOf: [
+                    {
+                        '@type': 'PodcastEpisode',
+                        name: "America's Test Kitchen Proof Podcast — Chicago Italian Beef Feature",
+                        url: 'https://hofherrmeatco.com/press',
+                    },
+                ],
                 subOrganization: [
                     { '@id': 'https://hofherrmeatco.com/#business' },
                     { '@id': 'https://hofherrmeatco.com/#depot' },
@@ -402,6 +559,9 @@ export function buildPreviewJsonLdSnippet(settings: SiteSettings): string {
                 name: 'Hofherr Meat Co. — The Butcher Shop',
                 branchCode: 'NORTHFIELD-BUTCHER',
                 telephone: displayPhone,
+                priceRange: '$$',
+                paymentAccepted: 'Cash, Credit Card, Debit Card, Apple Pay, Google Pay',
+                hasMenu: 'https://hofherrmeatco.com/cut-guide',
                 address: {
                     '@type': 'PostalAddress',
                     streetAddress: '300 Happ Rd',
@@ -411,6 +571,18 @@ export function buildPreviewJsonLdSnippet(settings: SiteSettings): string {
                     addressCountry: 'US',
                 },
                 geo: { '@type': 'GeoCoordinates', latitude: 42.1042, longitude: -87.7715 },
+                openingHoursSpecification: mapSchemaHours(settings.butcherHours),
+                specialOpeningHoursSpecification: [
+                    { validFrom: '2026-11-25', validThrough: '2026-11-25', opens: '09:00', closes: '17:00' },
+                    { validFrom: '2026-11-26', validThrough: '2026-11-26', opens: '00:00', closes: '00:00' },
+                    { validFrom: '2026-12-24', validThrough: '2026-12-24', opens: '09:00', closes: '16:00' },
+                    { validFrom: '2026-12-25', validThrough: '2026-12-25', opens: '00:00', closes: '00:00' },
+                ],
+                potentialAction: [
+                    { '@type': 'OrderAction', target: 'https://hofherrmeatco.com/online-orders?store=butcher' },
+                    { '@type': 'ReserveAction', target: 'https://hofherrmeatco.com/catering' },
+                    { '@type': 'BuyAction', target: 'https://hofherrmeatco.com/gift-cards' },
+                ],
                 parentOrganization: { '@id': 'https://hofherrmeatco.com/#organization' },
             },
             {
@@ -419,6 +591,7 @@ export function buildPreviewJsonLdSnippet(settings: SiteSettings): string {
                 name: 'Hofherr Meat Co. — The Depot',
                 branchCode: 'WINNETKA-DEPOT',
                 telephone: displayPhone,
+                priceRange: '$$',
                 address: {
                     '@type': 'PostalAddress',
                     streetAddress: '754 Elm St',
@@ -428,6 +601,7 @@ export function buildPreviewJsonLdSnippet(settings: SiteSettings): string {
                     addressCountry: 'US',
                 },
                 geo: { '@type': 'GeoCoordinates', latitude: 42.1081, longitude: -87.7359 },
+                openingHoursSpecification: mapSchemaHours(settings.depotHours),
                 containedInPlace: {
                     '@type': 'TrainStation',
                     name: 'Winnetka Metra Station (UP-N)',

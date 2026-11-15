@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Toggle from '@/components/Toggle';
+import BurnModalShell from '@/components/BurnModalShell';
 import { usePageTransition } from '@/components/PageTransition';
 import styles from './inventory.module.css';
 
@@ -168,7 +169,9 @@ export default function InventoryPage() {
     const [editingPrice, setEditingPrice] = useState<{ id: string; field: 'price' | 'salePrice' } | null>(null);
     const [editPriceValue, setEditPriceValue] = useState('');
     const [showAddModal, setShowAddModal] = useState(false);
+    const [addModalClosing, setAddModalClosing] = useState(false);
     const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
+    const [deleteModalClosing, setDeleteModalClosing] = useState(false);
     const [deleteBusy, setDeleteBusy] = useState(false);
     const [addForm, setAddForm] = useState({
         name: '',
@@ -192,6 +195,8 @@ export default function InventoryPage() {
     const noteInputRef = useRef<HTMLTextAreaElement>(null);
     const addDialogRef = useRef<HTMLDialogElement>(null);
     const deleteDialogRef = useRef<HTMLDialogElement>(null);
+    const addSavingRef = useRef(false);
+    const deleteBusyRef = useRef(false);
     const tabRefs = useRef<Record<ViewTab, HTMLButtonElement | null>>({
         stock: null,
         sales: null,
@@ -203,14 +208,41 @@ export default function InventoryPage() {
     const { navigateTo } = usePageTransition();
     const { data: session } = useSession();
 
+    const openAddModal = useCallback(() => {
+        setAddModalClosing(false);
+        setShowAddModal(true);
+    }, []);
+
+    const finalizeCloseAddModal = useCallback(() => {
+        setAddModalClosing(false);
+        setShowAddModal(false);
+        setAddError('');
+    }, []);
+
+    const requestCloseAddModal = useCallback(() => {
+        if (!addSavingRef.current) {
+            setAddModalClosing(true);
+        }
+    }, []);
+
+    const finalizeCloseDeleteModal = useCallback(() => {
+        setDeleteModalClosing(false);
+        setPendingDelete(null);
+    }, []);
+
+    const requestCloseDeleteModal = useCallback(() => {
+        if (!deleteBusyRef.current) {
+            setDeleteModalClosing(true);
+        }
+    }, []);
+
     // Listen for dev modal trigger event & initial query parameters
     useEffect(() => {
-        const openAdd = () => setShowAddModal(true);
-        window.addEventListener('hofherr-dev-add-product-modal', openAdd);
+        window.addEventListener('hofherr-dev-add-product-modal', openAddModal);
 
         const params = new URLSearchParams(window.location.search);
         if (params.get('devModal') === 'add') {
-            queueMicrotask(openAdd);
+            queueMicrotask(openAddModal);
         }
         const tabParam = params.get('tab');
         if (
@@ -222,8 +254,8 @@ export default function InventoryPage() {
             queueMicrotask(() => setViewTab(tabParam));
         }
 
-        return () => window.removeEventListener('hofherr-dev-add-product-modal', openAdd);
-    }, []);
+        return () => window.removeEventListener('hofherr-dev-add-product-modal', openAddModal);
+    }, [openAddModal]);
 
     // Sync native Add Product <dialog> with showAddModal state
     useEffect(() => {
@@ -236,6 +268,28 @@ export default function InventoryPage() {
         }
     }, [showAddModal]);
 
+    // Light-dismiss outside the BurnModalShell card with reversed flame burn-out
+    useEffect(() => {
+        const dialog = addDialogRef.current;
+        if (!dialog) return;
+        let pressedBackdrop = false;
+        const onPointerDown = (e: PointerEvent) => {
+            pressedBackdrop = e.target === dialog;
+        };
+        const onPointerUp = (e: PointerEvent) => {
+            if (pressedBackdrop && e.target === dialog) {
+                requestCloseAddModal();
+            }
+            pressedBackdrop = false;
+        };
+        dialog.addEventListener('pointerdown', onPointerDown);
+        dialog.addEventListener('pointerup', onPointerUp);
+        return () => {
+            dialog.removeEventListener('pointerdown', onPointerDown);
+            dialog.removeEventListener('pointerup', onPointerUp);
+        };
+    }, [loading, requestCloseAddModal]);
+
     // Sync native Delete Confirmation <dialog> with pendingDelete state
     useEffect(() => {
         const dialog = deleteDialogRef.current;
@@ -246,39 +300,6 @@ export default function InventoryPage() {
             dialog.close();
         }
     }, [pendingDelete]);
-
-    // Light-dismiss fallback for <dialog closedby="any"> where native closedBy is unsupported
-    useEffect(() => {
-        const dialog = addDialogRef.current;
-        if (!dialog || 'closedBy' in HTMLDialogElement.prototype) return;
-
-        const isOutside = (e: PointerEvent) => {
-            const rect = dialog.getBoundingClientRect();
-            return (
-                e.clientX < rect.left ||
-                e.clientX > rect.right ||
-                e.clientY < rect.top ||
-                e.clientY > rect.bottom
-            );
-        };
-
-        let pressedOutside = false;
-        const onPointerDown = (e: PointerEvent) => {
-            pressedOutside = isOutside(e);
-        };
-        const onPointerUp = (e: PointerEvent) => {
-            if (pressedOutside && isOutside(e)) {
-                dialog.close();
-            }
-        };
-
-        dialog.addEventListener('pointerdown', onPointerDown);
-        dialog.addEventListener('pointerup', onPointerUp);
-        return () => {
-            dialog.removeEventListener('pointerdown', onPointerDown);
-            dialog.removeEventListener('pointerup', onPointerUp);
-        };
-    }, [loading]);
 
     // Keep active tab scrolled into view inside single-row horizontal tablist
     useEffect(() => {
@@ -508,6 +529,7 @@ export default function InventoryPage() {
             setAddError('Please choose a category.');
             return;
         }
+        addSavingRef.current = true;
         setAddSaving(true);
         try {
             const res = await fetch('/api/admin/inventory', {
@@ -520,19 +542,21 @@ export default function InventoryPage() {
                 setAddError(err.error || 'Failed to create product.');
                 return;
             }
-            setShowAddModal(false);
+            setAddModalClosing(true);
             setAddForm({ name: '', price: '', categoryId: '', description: '', stockQuantity: 5 });
             setToastMessage(`Added "${addForm.name.trim()}" to inventory.`);
             await fetchInventory();
         } catch {
             setAddError('Failed to create product. Please try again.');
         } finally {
+            addSavingRef.current = false;
             setAddSaving(false);
         }
     };
 
     const confirmDeleteProduct = async () => {
         if (!pendingDelete) return;
+        deleteBusyRef.current = true;
         setDeleteBusy(true);
         const { id, name } = pendingDelete;
         try {
@@ -544,11 +568,12 @@ export default function InventoryPage() {
             if (!res.ok) throw new Error('Delete failed');
             setProducts(prev => prev.filter(p => p._id !== id));
             setToastMessage(`Removed "${name}" from inventory.`);
-            setPendingDelete(null);
+            setDeleteModalClosing(true);
         } catch {
             setToastMessage(`Could not delete "${name}". Please try again.`);
-            setPendingDelete(null);
+            setDeleteModalClosing(true);
         } finally {
+            deleteBusyRef.current = false;
             setDeleteBusy(false);
         }
     };
@@ -755,7 +780,7 @@ export default function InventoryPage() {
                     <div className={styles.heroInner}>
                         <div className={styles.heroTitleGroup}>
                             <h1 className={styles.headline}>
-                                INVENTORY <em>MANAGER</em>
+                                Inventory <em>Manager</em>
                             </h1>
                             <p className={styles.lastUpdated}>
                                 <span className={styles.syncDot} aria-hidden="true" />
@@ -769,7 +794,7 @@ export default function InventoryPage() {
                             <button
                                 type="button"
                                 className="btn-hit"
-                                onClick={() => setShowAddModal(true)}
+                                onClick={openAddModal}
                             >
                                 <span className="btn btn-primary">
                                     <svg
@@ -2623,12 +2648,13 @@ export default function InventoryPage() {
                                                                                                 className={
                                                                                                     styles.deleteBtn
                                                                                                 }
-                                                                                                onClick={() =>
+                                                                                                onClick={() => {
+                                                                                                    setDeleteModalClosing(false);
                                                                                                     setPendingDelete({
                                                                                                         id: p._id,
                                                                                                         name: p.name,
-                                                                                                    })
-                                                                                                }
+                                                                                                    });
+                                                                                                }}
                                                                                                 title={`Delete ${p.name}`}
                                                                                                 aria-label={`Delete ${p.name}`}
                                                                                             >
@@ -2675,145 +2701,161 @@ export default function InventoryPage() {
                 ref={addDialogRef}
                 aria-labelledby="add-product-dialog-title"
                 className={styles.dialog}
+                data-pt-portal
+                data-closing={addModalClosing ? '' : undefined}
+                onCancel={e => {
+                    e.preventDefault();
+                    requestCloseAddModal();
+                }}
                 onClose={() => {
                     if (addDialogRef.current) {
                         addDialogRef.current.returnValue = '';
                     }
+                    setAddModalClosing(false);
                     setShowAddModal(false);
                     setAddError('');
                 }}
                 {...({ closedby: 'any' } as Record<string, string>)}
             >
-                <div className={styles.dialogInner}>
-                    <div className={styles.modalHeader}>
-                        <h2 id="add-product-dialog-title" className={styles.modalTitle}>
-                            Add New Product
-                        </h2>
-                        <button
-                            type="button"
-                            className={styles.modalClose}
-                            onClick={() => setShowAddModal(false)}
-                            aria-label="Close Add Product dialog"
-                        >
-                            ×
-                        </button>
-                    </div>
-
-                    {addError && (
-                        <div className={styles.modalError} role="alert">
-                            {addError}
-                        </div>
-                    )}
-
-                    <form className={styles.modalForm} onSubmit={createProduct}>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="add-product-name">
-                                Product Name <span className={styles.requiredMark}>*</span>
-                            </label>
-                            <input
-                                id="add-product-name"
-                                type="text"
-                                placeholder="e.g. USDA Prime Dry-Aged Ribeye"
-                                value={addForm.name}
-                                onChange={e => setAddForm(f => ({ ...f, name: e.target.value }))}
-                                className={styles.formInput}
-                                autoFocus
-                            />
-                        </div>
-
-                        <div className={styles.formRow}>
-                            <div className={styles.formGroup}>
-                                <label htmlFor="add-product-price">
-                                    Price <span className={styles.requiredMark}>*</span>
-                                </label>
-                                <input
-                                    id="add-product-price"
-                                    type="text"
-                                    placeholder="$42.99/lb"
-                                    value={addForm.price}
-                                    onChange={e => setAddForm(f => ({ ...f, price: e.target.value }))}
-                                    className={styles.formInput}
-                                />
+                {showAddModal && (
+                    <BurnModalShell
+                        className={styles.dialogCard}
+                        maxWidth={512}
+                        closing={addModalClosing}
+                        onCloseComplete={finalizeCloseAddModal}
+                    >
+                        <div className={styles.dialogInner}>
+                            <div className={styles.modalHeader}>
+                                <h2 id="add-product-dialog-title" className={styles.modalTitle}>
+                                    Add New Product
+                                </h2>
+                                <button
+                                    type="button"
+                                    className={styles.modalClose}
+                                    onClick={requestCloseAddModal}
+                                    aria-label="Close Add Product dialog"
+                                >
+                                    ×
+                                </button>
                             </div>
-                            <div className={styles.formGroup}>
-                                <label htmlFor="add-product-qty">Starting Quantity</label>
-                                <input
-                                    id="add-product-qty"
-                                    type="number"
-                                    min="0"
-                                    max="99"
-                                    value={addForm.stockQuantity}
-                                    onChange={e =>
-                                        setAddForm(f => ({
-                                            ...f,
-                                            stockQuantity: Number.parseInt(e.target.value, 10) || 0,
-                                        }))
-                                    }
-                                    className={styles.formInput}
-                                />
-                            </div>
-                        </div>
 
-                        <div className={styles.formGroup}>
-                            <label htmlFor="add-product-category">
-                                Category <span className={styles.requiredMark}>*</span>
-                            </label>
-                            <select
-                                id="add-product-category"
-                                value={addForm.categoryId}
-                                onChange={e => setAddForm(f => ({ ...f, categoryId: e.target.value }))}
-                                className={styles.formInput}
-                            >
-                                <option value="">Select a category…</option>
-                                <optgroup label="Northfield Butcher Shop">
-                                    {availableCategories
-                                        .filter(c => c.store !== 'depot')
-                                        .map(cat => (
-                                            <option key={cat._id} value={cat._id}>
-                                                {cat.label}
-                                            </option>
-                                        ))}
-                                </optgroup>
-                                <optgroup label="Winnetka Depot">
-                                    {availableCategories
-                                        .filter(c => c.store === 'depot')
-                                        .map(cat => (
-                                            <option key={cat._id} value={cat._id}>
-                                                {cat.label}
-                                            </option>
-                                        ))}
-                                </optgroup>
-                            </select>
-                        </div>
+                            {addError && (
+                                <div className={styles.modalError} role="alert">
+                                    {addError}
+                                </div>
+                            )}
 
-                        <div className={styles.formGroup}>
-                            <label htmlFor="add-product-description">Description (Optional)</label>
-                            <input
-                                id="add-product-description"
-                                type="text"
-                                placeholder="Cut notes, aging details, or serving suggestion…"
-                                value={addForm.description}
-                                onChange={e => setAddForm(f => ({ ...f, description: e.target.value }))}
-                                className={styles.formInput}
-                            />
-                        </div>
+                            <form className={styles.modalForm} onSubmit={createProduct}>
+                                <div className={styles.formGroup}>
+                                    <label htmlFor="add-product-name">
+                                        Product Name <span className={styles.requiredMark}>*</span>
+                                    </label>
+                                    <input
+                                        id="add-product-name"
+                                        type="text"
+                                        placeholder="e.g. USDA Prime Dry-Aged Ribeye"
+                                        value={addForm.name}
+                                        onChange={e => setAddForm(f => ({ ...f, name: e.target.value }))}
+                                        className={styles.formInput}
+                                        autoFocus
+                                    />
+                                </div>
 
-                        <div className={styles.modalActions}>
-                            <button
-                                type="button"
-                                className="btn-hit"
-                                onClick={() => setShowAddModal(false)}
-                            >
-                                <span className="btn btn-secondary">Cancel</span>
-                            </button>
-                            <button type="submit" className="btn-hit" disabled={addSaving}>
-                                <span className="btn btn-primary">
-                                    {addSaving ? 'Creating…' : 'Create Product'}
-                                </span>
-                            </button>
+                                <div className={styles.formRow}>
+                                    <div className={styles.formGroup}>
+                                        <label htmlFor="add-product-price">
+                                            Price <span className={styles.requiredMark}>*</span>
+                                        </label>
+                                        <input
+                                            id="add-product-price"
+                                            type="text"
+                                            placeholder="$42.99/lb"
+                                            value={addForm.price}
+                                            onChange={e => setAddForm(f => ({ ...f, price: e.target.value }))}
+                                            className={styles.formInput}
+                                        />
+                                    </div>
+                                    <div className={styles.formGroup}>
+                                        <label htmlFor="add-product-qty">Starting Quantity</label>
+                                        <input
+                                            id="add-product-qty"
+                                            type="number"
+                                            min="0"
+                                            max="99"
+                                            value={addForm.stockQuantity}
+                                            onChange={e =>
+                                                setAddForm(f => ({
+                                                    ...f,
+                                                    stockQuantity: Number.parseInt(e.target.value, 10) || 0,
+                                                }))
+                                            }
+                                            className={styles.formInput}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                    <label htmlFor="add-product-category">
+                                        Category <span className={styles.requiredMark}>*</span>
+                                    </label>
+                                    <select
+                                        id="add-product-category"
+                                        value={addForm.categoryId}
+                                        onChange={e => setAddForm(f => ({ ...f, categoryId: e.target.value }))}
+                                        className={styles.formInput}
+                                    >
+                                        <option value="">Select a category…</option>
+                                        <optgroup label="Northfield Butcher Shop">
+                                            {availableCategories
+                                                .filter(c => c.store !== 'depot')
+                                                .map(cat => (
+                                                    <option key={cat._id} value={cat._id}>
+                                                        {cat.label}
+                                                    </option>
+                                                ))}
+                                        </optgroup>
+                                        <optgroup label="Winnetka Depot">
+                                            {availableCategories
+                                                .filter(c => c.store === 'depot')
+                                                .map(cat => (
+                                                    <option key={cat._id} value={cat._id}>
+                                                        {cat.label}
+                                                    </option>
+                                                ))}
+                                        </optgroup>
+                                    </select>
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                    <label htmlFor="add-product-description">Description (Optional)</label>
+                                    <input
+                                        id="add-product-description"
+                                        type="text"
+                                        placeholder="Cut notes, aging details, or serving suggestion…"
+                                        value={addForm.description}
+                                        onChange={e => setAddForm(f => ({ ...f, description: e.target.value }))}
+                                        className={styles.formInput}
+                                    />
+                                </div>
+
+                                <div className={styles.modalActions}>
+                                    <button
+                                        type="button"
+                                        className="btn-hit"
+                                        onClick={requestCloseAddModal}
+                                    >
+                                        <span className="btn btn-secondary">Cancel</span>
+                                    </button>
+                                    <button type="submit" className="btn-hit" disabled={addSaving}>
+                                        <span className="btn btn-primary">
+                                            {addSaving ? 'Creating…' : 'Create Product'}
+                                        </span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
-                </div>
+                    </BurnModalShell>
+                )}
             </dialog>
 
             {/* ═══════════════ NATIVE <dialog>: DELETE PRODUCT CONFIRMATION ═══════════════ */}
@@ -2821,55 +2863,71 @@ export default function InventoryPage() {
                 ref={deleteDialogRef}
                 aria-labelledby="delete-product-dialog-title"
                 className={styles.dialog}
+                data-pt-portal
+                data-closing={deleteModalClosing ? '' : undefined}
+                onCancel={e => {
+                    e.preventDefault();
+                    requestCloseDeleteModal();
+                }}
                 onClose={() => {
                     if (deleteDialogRef.current) {
                         deleteDialogRef.current.returnValue = '';
                     }
+                    setDeleteModalClosing(false);
                     setPendingDelete(null);
                 }}
                 {...({ closedby: 'closerequest' } as Record<string, string>)}
             >
-                <div className={styles.dialogInner}>
-                    <div className={styles.modalHeader}>
-                        <h2 id="delete-product-dialog-title" className={styles.modalTitle}>
-                            Remove Cut from Inventory?
-                        </h2>
-                        <button
-                            type="button"
-                            className={styles.modalClose}
-                            onClick={() => setPendingDelete(null)}
-                            aria-label="Close confirmation dialog"
-                        >
-                            ×
-                        </button>
-                    </div>
+                {pendingDelete && (
+                    <BurnModalShell
+                        className={styles.dialogCard}
+                        maxWidth={512}
+                        closing={deleteModalClosing}
+                        onCloseComplete={finalizeCloseDeleteModal}
+                    >
+                        <div className={styles.dialogInner}>
+                            <div className={styles.modalHeader}>
+                                <h2 id="delete-product-dialog-title" className={styles.modalTitle}>
+                                    Remove Cut from Inventory?
+                                </h2>
+                                <button
+                                    type="button"
+                                    className={styles.modalClose}
+                                    onClick={requestCloseDeleteModal}
+                                    aria-label="Close confirmation dialog"
+                                >
+                                    ×
+                                </button>
+                            </div>
 
-                    <p className={styles.modalDescription}>
-                        This will permanently delete <strong>{pendingDelete?.name}</strong> from the Hofherr
-                        product catalog. This action cannot be undone.
-                    </p>
+                            <p className={styles.modalDescription}>
+                                This will permanently delete <strong>{pendingDelete.name}</strong> from the Hofherr
+                                product catalog. This action cannot be undone.
+                            </p>
 
-                    <div className={styles.modalActions}>
-                        <button
-                            type="button"
-                            className="btn-hit"
-                            autoFocus
-                            onClick={() => setPendingDelete(null)}
-                        >
-                            <span className="btn btn-secondary">Keep Product</span>
-                        </button>
-                        <button
-                            type="button"
-                            className="btn-hit"
-                            disabled={deleteBusy}
-                            onClick={confirmDeleteProduct}
-                        >
-                            <span className="btn btn-primary">
-                                {deleteBusy ? 'Deleting…' : 'Delete Product'}
-                            </span>
-                        </button>
-                    </div>
-                </div>
+                            <div className={styles.modalActions}>
+                                <button
+                                    type="button"
+                                    className="btn-hit"
+                                    autoFocus
+                                    onClick={requestCloseDeleteModal}
+                                >
+                                    <span className="btn btn-secondary">Keep Product</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn-hit"
+                                    disabled={deleteBusy}
+                                    onClick={confirmDeleteProduct}
+                                >
+                                    <span className="btn btn-primary">
+                                        {deleteBusy ? 'Deleting…' : 'Delete Product'}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </BurnModalShell>
+                )}
             </dialog>
         </main>
     );

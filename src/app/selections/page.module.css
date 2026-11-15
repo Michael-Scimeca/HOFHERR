@@ -1084,7 +1084,7 @@
 
 .btnOxblood:hover {
     background: #18120E;
-    border-color: #18120E;
+    border-color: #141210;
     color: #F59B1A;
 }
 
@@ -1100,7 +1100,7 @@
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    border: 2px solid #18120E;
+    border: 2px solid #141210;
     transition: all 0.2s ease;
 }
 
@@ -1168,14 +1168,17 @@
     display: grid;
     grid-template-columns: 1.4fr 1fr;
     border-radius: 20px;
-    overflow: hidden;
+    overflow: visible;
     border: 1px solid rgba(245, 155, 26, 0.45);
     box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
 }
 
 .ctaStyle4Left {
+    position: relative;
+    z-index: 4;
     padding: var(--space-6); /* 24px + 1px border = 25px to the card edge */
     background: linear-gradient(135deg, #8B0A10 0%, #610509 100%);
+    border-radius: 19px 0 0 19px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1209,8 +1212,11 @@
 }
 
 .ctaStyle4Right {
+    position: relative;
+    z-index: 4;
     padding: var(--space-6);
     background: #14100E;
+    border-radius: 0 19px 19px 0;
     border-left: 2px solid rgba(245, 155, 26, 0.35);
     display: flex;
     flex-direction: column;
@@ -1263,7 +1269,12 @@
         grid-template-columns: 1fr;
     }
 
+    .ctaStyle4Left {
+        border-radius: 19px 19px 0 0;
+    }
+
     .ctaStyle4Right {
+        border-radius: 0 0 19px 19px;
         border-left: none;
         border-top: 2px solid rgba(245, 155, 26, 0.35);
     }

@@ -51,7 +51,7 @@
 
 .filterBtn:hover {
     color: var(--fg);
-    border-color: var(--fg-muted);
+    border-color: #666666;
 }
 
 .filterBtnActive {
@@ -160,7 +160,7 @@
 
 .copyPromptBtn:hover {
     color: var(--fg);
-    border-color: var(--fg-muted);
+    border-color: #666666;
 }
 
 .promptText {
