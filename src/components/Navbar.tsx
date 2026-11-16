@@ -33,10 +33,10 @@ function AvatarImage({ src, name }: { src: string; name: string }) {
 }
 
 const NAV_ITEMS = [
-    { label: 'Selections', href: '/selections' },
     { label: 'Specials', href: '/specials' },
     { label: 'BBQ', href: '/bbq' },
     { label: 'Catering', href: '/catering' },
+    { label: 'Selections', href: '/selections' },
     { label: 'Cut Guide', href: '/cut-guide' },
     { label: 'Recipes', href: '/recipes' },
     { label: 'Visit Us', href: '/visit' },
@@ -208,6 +208,19 @@ export default function Navbar() {
         if (!mobileOpen) return;
         return lockScroll();
     }, [mobileOpen]);
+
+    // Close the mobile menu as soon as the window is wide enough for the desktop nav
+    // (keep 1321px in step with the hamburger breakpoint in Navbar.module.css).
+    useEffect(() => {
+        const wide = window.matchMedia('(min-width: 1321px)');
+        const onChange = () => {
+            if (!wide.matches) return;
+            setMobileOpen(false);
+            setMenuMounted(false);
+        };
+        wide.addEventListener('change', onChange);
+        return () => wide.removeEventListener('change', onChange);
+    }, []);
 
     // Active nav indicator
     useEffect(() => {
@@ -461,8 +474,8 @@ export default function Navbar() {
                         <div className={styles.mobileCTA}>
                             {!user ? (
                                 <div className={styles.mobileAuthGrid}>
-                                    <Link href="/online-orders?login=true" prefetch={false} data-no-transition className={`btn btn-secondary ${styles.authGridBtn}`} onClick={(e) => openAuthFromLink(e, 'login', true)}>Sign In</Link>
-                                    <Link href="/online-orders?signup=true" prefetch={false} data-no-transition className={`btn btn-secondary ${styles.authGridBtn}`} onClick={(e) => openAuthFromLink(e, 'register', true)}>Sign Up</Link>
+                                    <Link href="/online-orders?login=true" prefetch={false} data-no-transition className={`btn btn-primary ${styles.authGridBtn}`} onClick={(e) => openAuthFromLink(e, 'login', true)}>Sign In</Link>
+                                    <Link href="/online-orders?signup=true" prefetch={false} data-no-transition className={`btn btn-primary ${styles.authGridBtn}`} onClick={(e) => openAuthFromLink(e, 'register', true)}>Sign Up</Link>
                                 </div>
                             ) : (
                                 <div className={styles.mobileAuthGrid}>

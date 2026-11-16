@@ -744,3 +744,14 @@
         min-height: 280px;
     }
 }
+/* Phones: one column that can never be wider than the screen. The wide photo's 16/6 shape
+   plus its 200px minimum height made it 533px wide, so give it a taller shape here. */
+@media (max-width: 900px) {
+    .galleryGrid {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .galleryItemWide {
+        aspect-ratio: 16 / 10;
+    }
+}

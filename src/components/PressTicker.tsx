@@ -7,9 +7,8 @@ import { PressCanvasStage } from './PressTickerFire';
 /**
  * PressTicker — "As featured in" marquee in the same tilted, two-direction
  * style as the catering ticker, separated by Hofherr circular SVG emblem icons.
- * Butcher emblems ignite with <canvas> torch flames + sparks, and press logos
- * emit <canvas> embers behind them, automatically while they pass through an
- * invisible circle in the centre of the ticker (no hover needed).
+ * Butcher emblems ignite with <canvas> torch flames + sparks on hover; press
+ * logos emit <canvas> embers behind them.
  */
 type Outlet = {
     name: string;
@@ -81,7 +80,7 @@ function Row({ outlets, direction, rowIndex }: RowProps) {
                                         data-fire-kind="logo"
                                         data-fire-plaque={outlet.plaque ? 'true' : undefined}
                                         data-fire-id={`${copyIdx}:${rowIndex}:${logoIdx}:logo`}
-                                        className={styles.logoHost}
+                                        className={`${styles.logoHost} ${styles.torchHoverTarget}`}
                                     >
                                         {outlet.plaqueBackdrop && (
                                             <span className={styles.plaqueBackdrop} aria-hidden="true" />
@@ -106,7 +105,7 @@ function Row({ outlets, direction, rowIndex }: RowProps) {
                                     <span
                                         data-fire-kind="icon"
                                         data-fire-id={`${copyIdx}:${rowIndex}:${iconIdx}:icon`}
-                                        className={styles.bulletHost}
+                                        className={`${styles.bulletHost} ${styles.torchHoverTarget}`}
                                     >
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img

@@ -484,6 +484,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .featured,
     .card,
     .cta span {

@@ -465,3 +465,10 @@
         padding: 48px 0;
     }
 }
+/* Phones: the card captions wrap under their card instead of running off the side. */
+@media (max-width: 520px) {
+    .swatchCaption {
+        white-space: normal;
+        align-items: flex-start;
+    }
+}

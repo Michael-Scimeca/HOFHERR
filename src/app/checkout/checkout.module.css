@@ -15,7 +15,7 @@
     color: #888;
     text-decoration: none;
     width: 100%;
-    max-width: calc(var(--max-w, 1400px) - (2 * var(--container-px)));
+    max-width: calc(var(--max-w, 1800px) - (2 * var(--container-px)));
     margin: 0 auto 28px;
     transition: color 0.2s;
 }
@@ -26,13 +26,13 @@
     grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
     gap: 48px;
     width: 100%;
-    max-width: calc(var(--max-w, 1400px) - (2 * var(--container-px)));
+    max-width: calc(var(--max-w, 1800px) - (2 * var(--container-px)));
     margin: 0 auto;
     align-items: start;
 }
 @media (max-width: 768px) {
     .layout {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
     /* Summary goes below form on mobile */
     .summaryCol { order: -1; }
@@ -102,13 +102,13 @@
 
 .storeSwitchBtnButcher:hover {
     background: var(--red-dark);
-    border-color: var(--red);
+    border-color: var(--red-light);
     opacity: 1;
 }
 
 .storeSwitchBtnButcherActive {
     background: var(--red);
-    border-color: #666666;
+    border-color: var(--fg);
     box-shadow: var(--shadow-red);
     opacity: 1;
 }
@@ -194,7 +194,7 @@
 .statusBadgeClosed {
     background: rgba(139, 10, 16, 0.28);
     color: #f87171;
-    border: 1px solid rgba(209, 72, 54, 0.35);
+    border: 1px solid rgba(248, 113, 113, 0.35);
 }
 
 .todayHoursTag {
@@ -289,7 +289,7 @@
 
 .nextBizBanner {
     background: rgba(212, 168, 83, 0.12);
-    border: 1px solid #ffffff1a;
+    border: 1px solid rgba(212, 168, 83, 0.35);
     border-radius: 10px;
     padding: 10px 14px;
     font-size: 13px;
@@ -332,7 +332,7 @@
 /* ── Auth box ─────────────────────────────────────────────────────────── */
 .authBox {
     background: #111;
-    border: 1px solid #ffffff1a;
+    border: 1px solid #1e1e1e;
     border-radius: 16px;
     padding: 28px;
     width: 100%;
@@ -357,7 +357,7 @@
     gap: 8px;
     padding: 10px 14px;
     background: #1a1a1a;
-    border: 1px solid #ffffff1a;
+    border: 1px solid #272727;
     border-radius: 8px;
     color: #f0ece4;
     font-size: 13px;
@@ -365,7 +365,7 @@
     cursor: pointer;
     transition: background 0.2s, border-color 0.2s;
 }
-.socialBtn:hover { background: #222; border-color: #ffffff1a; }
+.socialBtn:hover { background: #222; border-color: #333; }
 
 .dividerOr {
     display: flex;
@@ -389,7 +389,7 @@
     width: 100%;
     padding: 11px 14px;
     background: #0d0d0d;
-    border: 1px solid #ffffff1a;
+    border: 1px solid #1e1e1e;
     border-radius: 8px;
     color: #f0ece4;
     font-size: 14px;
@@ -397,7 +397,7 @@
     transition: border-color 0.2s;
     box-sizing: border-box;
 }
-.authInput:focus { border-color: var(--red, #8b0a10); }
+.authInput:focus { border-color: var(--red, #800020); }
 .authInput::placeholder { color: #555; }
 
 .authBtn {
@@ -417,7 +417,7 @@
 .guestBtn {
     padding: 11px;
     background: transparent;
-    border: 1px solid #ffffff1a;
+    border: 1px solid #1e1e1e;
     border-radius: 8px;
     color: #888;
     font-size: 13px;
@@ -425,7 +425,7 @@
     cursor: pointer;
     transition: all 0.2s;
 }
-.guestBtn:hover { border-color: #ffffff1a; color: #f0ece4; }
+.guestBtn:hover { border-color: #333; color: #f0ece4; }
 
 .switchRow { display: flex; justify-content: space-between; align-items: center; }
 .switchLink {
@@ -448,7 +448,7 @@
     width: 100%;
     padding: 12px 14px;
     background: #0d0d0d;
-    border: 1px solid #ffffff1a;
+    border: 1px solid #1e1e1e;
     border-radius: 10px;
     color: #f0ece4;
     font-size: 14px;
@@ -456,7 +456,7 @@
     transition: border-color 0.2s;
     box-sizing: border-box;
 }
-.input:focus { border-color: var(--red, #8b0a10); }
+.input:focus { border-color: var(--red, #800020); }
 .input::placeholder { color: #555; }
 
 .contactGrid {
@@ -502,7 +502,7 @@
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     text-align: center;
 }
-.prefBtnActive { background: var(--red, #800020); border-color: var(--red, #8b0a10); color: #fff; }
+.prefBtnActive { background: var(--red, #800020); border-color: var(--red, #800020); color: #fff; }
 
 /* ── Date selector ────────────────────────────────────────────────────── */
 .dateSelectorContainer {
@@ -588,11 +588,11 @@
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     min-width: 74px;
 }
-.dateBtn:hover { border-color: var(--red, #8b0a10); }
+.dateBtn:hover { border-color: var(--red, #800020); }
 
 .dateBtnActive {
     background: var(--red, #800020) !important;
-    border-color: var(--red, #8b0a10) !important;
+    border-color: var(--red, #800020) !important;
 }
 .dateBtnActive .dateDay, .dateBtnActive .dateNum { color: #fff !important; }
 
@@ -619,13 +619,13 @@
     transition: all 0.2s;
     text-align: center;
 }
-.timeSlotBtn:hover { border-color: var(--red, #8b0a10); color: var(--red, #800020); }
-.timeSlotBtnActive { background: var(--red, #800020) !important; border-color: var(--red, #8b0a10) !important; color: #fff !important; }
+.timeSlotBtn:hover { border-color: var(--red, #800020); color: var(--red, #800020); }
+.timeSlotBtnActive { background: var(--red, #800020) !important; border-color: var(--red, #800020) !important; color: #fff !important; }
 
 .timeSlotBtnDisabled {
     padding: 12px 8px;
     background: #1c1c1c;
-    border: 1px solid #ffffff1a;
+    border: 1px solid #282828;
     border-radius: 10px;
     font-size: 12px;
     font-weight: 600;
@@ -642,7 +642,7 @@
     width: 100%;
     padding: 12px 14px;
     background: #0d0d0d;
-    border: 1px solid #ffffff1a;
+    border: 1px solid #1e1e1e;
     border-radius: 10px;
     color: #f0ece4;
     font-size: 13px;
@@ -652,7 +652,7 @@
     box-sizing: border-box;
     font-family: inherit;
 }
-.noteArea:focus { border-color: var(--red, #8b0a10); }
+.noteArea:focus { border-color: var(--red, #800020); }
 .noteArea::placeholder { color: #555; }
 
 /* ── Coupon ───────────────────────────────────────────────────────────── */
@@ -661,17 +661,17 @@
     flex: 1;
     padding: 10px 14px;
     background: #0d0d0d;
-    border: 1px solid #ffffff1a;
+    border: 1px solid #1e1e1e;
     border-radius: 8px;
     color: #f0ece4;
     font-size: 14px;
     outline: none;
 }
-.couponInput:focus { border-color: var(--red, #8b0a10); }
+.couponInput:focus { border-color: var(--red, #800020); }
 .couponApplyBtn {
     padding: 10px 18px;
     background: #1a1a1a;
-    border: 1px solid #ffffff1a;
+    border: 1px solid #272727;
     border-radius: 8px;
     color: #f0ece4;
     font-size: 13px;
@@ -705,14 +705,14 @@
     transition: all 0.2s;
     display: block;
 }
-.payBtnActive { background: var(--red, #800020); border-color: var(--red, #8b0a10); color: #fff; }
+.payBtnActive { background: var(--red, #800020); border-color: var(--red, #800020); color: #fff; }
 
 /* ── Form actions ─────────────────────────────────────────────────────── */
 .formActions { display: flex; gap: 12px; margin-top: 24px; }
 .backBtn {
     padding: 14px 20px;
     background: transparent;
-    border: 1px solid #ffffff1a;
+    border: 1px solid #1e1e1e;
     border-radius: 10px;
     color: #888;
     font-size: 14px;
@@ -720,7 +720,7 @@
     cursor: pointer;
     transition: all 0.2s;
 }
-.backBtn:hover { border-color: #ffffff1a; color: #f0ece4; }
+.backBtn:hover { border-color: #333; color: #f0ece4; }
 .submitBtn {
     flex: 1;
     padding: 14px;
@@ -787,7 +787,7 @@
     color: var(--red, #800020);
     margin-top: 10px;
     padding-top: 10px;
-    border-top: 1px solid #ffffff1a;
+    border-top: 1px solid #1e1e1e;
 }
 .summaryNote { font-size: 11px; color: #555; margin-top: 10px; }
 
@@ -800,7 +800,7 @@
     gap: 12px;
     padding: 14px 18px;
     background: rgba(212, 168, 83, 0.08);
-    border: 1px solid #ffffff1a;
+    border: 1px solid rgba(212, 168, 83, 0.35);
     border-radius: var(--radius, 12px);
 }
 

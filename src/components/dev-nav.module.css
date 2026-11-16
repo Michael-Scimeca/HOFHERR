@@ -255,8 +255,24 @@
     text-overflow: ellipsis;
 }
 
+/* Phones: keep only the two measuring toggles (gaps and border colours), small, bottom-left. */
 @media (max-width: 768px) {
     .floatingNav {
+        bottom: 12px;
+        left: 12px;
+    }
+
+    .floatingBar > :not(.mobileKeep),
+    .panel {
         display: none;
+    }
+
+    .floatingBar {
+        gap: 6px;
+    }
+
+    .mobileKeep {
+        padding: 6px 10px;
+        font-size: 10px;
     }
 }

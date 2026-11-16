@@ -48,7 +48,6 @@
     padding: 48px 0 24px;
     transform: rotate(-2deg);
     transform-origin: center center;
-    cursor: default;
 }
 
 /* Background procedural WebGL/2D fire canvas behind crisp editorial marks */
@@ -98,6 +97,10 @@
 
 .rowRight {
     animation: pressRight 52s linear infinite;
+}
+
+.wrap:hover .track {
+    animation-play-state: paused;
 }
 
 @keyframes pressLeft {
@@ -203,9 +206,23 @@
     -webkit-user-drag: none;
 }
 
+/* Torch-On-Hover Ignite interactive target */
+.torchHoverTarget {
+    cursor: pointer;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.torchHoverTarget:hover {
+    transform: translateY(-2px) scale(1.03);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .rowLeft,
     .rowRight {
         animation: none;
+    }
+
+    .torchHoverTarget {
+        transition: none;
     }
 }

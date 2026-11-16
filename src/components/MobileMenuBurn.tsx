@@ -20,12 +20,14 @@ import { createBurner, type Burner } from '@/lib/burner';
  *   data-closing     the menu is on its way out: ignore taps
  */
 
-const SWEEP_MS = 1300; // fuse + page burn
-const TEXT_AT_MS = SWEEP_MS * 0.42; // links start burning before the page has finished
-const TEXT_MS = 550;
+const SWEEP_MS = 600; // fuse + page burn
+const TEXT_AT_MS = SWEEP_MS - 200; // links start flaming in as the page burn is finishing
+const TEXT_MS = 450;
 const TOTAL_MS = Math.max(SWEEP_MS, TEXT_AT_MS + TEXT_MS);
+const LINE_MS = 250; // the divider lines fade in over this long, ending the moment the text flame ends
 const CLOSE_SPEED = 1.7;
-const FUSE_END_T = 0.42; // fraction of the sweep the spark takes to reach the end of the fuse
+const FUSE_END_T = 0.6; // fraction of the sweep the spark takes to reach the end of the fuse
+const FUSE_POWER = 2.6; // the spark starts slow and keeps speeding up (1 = steady speed)
 const FIELD_W = 80; // the burn is computed on a small buffer and scaled up smooth
 
 /** Same flame settings as the site's burning modals. */
@@ -230,7 +232,8 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
                     // when does the burn reach this pixel: when the spark passed the nearest point of the fuse, plus the time to spread out to here
                     const s = clamp(((X - fuseFrom[0]) * dx + (Y - fuseFrom[1]) * dy) / len2);
                     const dist = Math.hypot(X - fuseFrom[0] - dx * s, Y - fuseFrom[1] - dy * s);
-                    const d = (t - s * FUSE_END_T - (dist / diag) * 0.78 - fbm(u * 6, v * 6 * asp) * 0.14) * 1.7;
+                    // the spark passes s later the further along it is (it is speeding up), and the burn spreads sideways faster toward the end
+                    const d = (t - FUSE_END_T * Math.pow(s, 1 / FUSE_POWER) - (dist / diag) * (1.5 - s) - fbm(u * 6, v * 6 * asp) * 0.12) * 1.7;
                     const cover = sstep(0.03, 0.1, d);
                     const heat = d > 0 && d < 0.15 ? (d < 0.03 ? d / 0.03 : 1 - (d - 0.03) / 0.12) * (0.82 + 0.18 * Math.sin(time * 21 + u * 40)) : 0;
                     const hs = clamp(heat) * 4, k = Math.min(3, Math.floor(hs)), f = hs - k, A = HEAT[k], B = HEAT[k + 1], i = (y * bw + x) * 4;
@@ -253,9 +256,10 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
             ctx.restore();
         };
 
-        /** The spark running along the fuse, shedding sparks, with a flash where it burns out. */
+        /** The spark running along the fuse, shedding sparks. It simply dies out at the end: no burst. */
         const drawSpark = (t: number, timeMs: number) => {
-            const k = clamp(t / FUSE_END_T);
+            const k = Math.pow(clamp(t / FUSE_END_T), FUSE_POWER);
+            const grow = 1 + k * 1.1; // the spark gets bigger as it speeds up
             const dx = fuseTo[0] - fuseFrom[0], dy = fuseTo[1] - fuseFrom[1];
             const at = (q: number): Vec => [fuseFrom[0] + dx * q, fuseFrom[1] + dy * q];
             if (k > 0 && k < 1) {
@@ -263,11 +267,11 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
                 const flick = (i: number) => 0.8 + 0.2 * Math.sin(timeMs * 0.031 + i * 2.1) * Math.sin(timeMs * 0.013 + i);
                 sctx.globalCompositeOperation = 'lighter';
                 for (let s = 14; s >= 1; s--) {
-                    const q = s / 14, p = at(Math.max(0, k - q * 0.1));
-                    glow(sctx, p[0], p[1], (13 * (1 - q) + 3) * flick(s), a * (1 - q) * 0.55);
+                    const q = s / 14, p = at(Math.max(0, k - q * (0.08 + k * 0.22)));
+                    glow(sctx, p[0], p[1], (13 * (1 - q) + 3) * grow * flick(s), a * (1 - q) * 0.55);
                 }
                 const head = at(k);
-                glow(sctx, head[0], head[1], 17.5 * flick(0), a);
+                glow(sctx, head[0], head[1], 17.5 * grow * flick(0), a);
                 sctx.globalCompositeOperation = 'source-over';
                 sctx.fillStyle = HOT;
                 sctx.globalAlpha = a;
@@ -285,13 +289,6 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
                     sctx.fillRect(e[0] + Math.cos(an) * sp * age - z / 2, e[1] + Math.sin(an) * sp * age - 20 * age + 260 * age * age - z / 2, z, z);
                 }
                 sctx.globalAlpha = 1;
-            }
-            const age = ((t - FUSE_END_T) * SWEEP_MS) / 1000;
-            if (age >= 0 && age < 0.5) {
-                const q = age / 0.5;
-                sctx.globalCompositeOperation = 'lighter';
-                glow(sctx, fuseTo[0], fuseTo[1], 22 + 70 * Math.sqrt(q), Math.pow(1 - q, 1.6));
-                sctx.globalCompositeOperation = 'source-over';
             }
         };
 
@@ -324,6 +321,9 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
             menu.setAttribute('data-menu-burn', done || plain ? 'done' : 'in');
             if (t > 0.86 || plain) menu.setAttribute('data-lit', '');
             else menu.removeAttribute('data-lit');
+            // the divider lines (full width throughout) take LINE_MS to fade in and are fully visible the moment the text flame finishes
+            const line = clamp((m - (TEXT_AT_MS + TEXT_MS - LINE_MS)) / LINE_MS);
+            menu.style.setProperty('--menu-line', plain ? '1' : line.toFixed(3));
         };
 
         /** If anything in the drawing throws, fall back to a plain, fully visible menu. */
@@ -332,6 +332,7 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
             menu.setAttribute('data-menu-burn', 'done');
             menu.setAttribute('data-lit', '');
             menu.setAttribute('data-menu-burn-failed', '');
+            menu.style.setProperty('--menu-line', '1');
             if (layer) layer.style.visibility = 'hidden';
         };
 

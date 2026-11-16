@@ -851,8 +851,11 @@
                     grid-template-columns: 1fr;
                 }
 
+                /* phones: no box around each menu group, and no side padding */
                 .menuCategory {
-                    padding: 24px 20px;
+                    padding: 24px 0;
+                    border: none;
+                    border-radius: 0;
                 }
 
                 .cta {

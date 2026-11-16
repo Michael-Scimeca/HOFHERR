@@ -183,3 +183,15 @@
 .swatchSide {
     color: var(--gap-side);
 }
+
+/* Phones: the labels must never make the page wider than the screen (that pushed the dev
+   buttons off the bottom), and the key is dropped to leave room for the page. */
+@media (max-width: 768px) {
+    .host {
+        overflow-x: clip;
+    }
+
+    .legend {
+        display: none;
+    }
+}

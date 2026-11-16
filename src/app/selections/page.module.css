@@ -295,6 +295,21 @@
     border: 1px solid var(--border);
 }
 
+/* Phones: no outer box around each board. The photo and text run the full width of the page
+   padding, with more space between boards to keep them apart. */
+@media (max-width: 640px) {
+    .boardCard {
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    .boardsGrid {
+        gap: 48px;
+    }
+}
+
 .systemBoardBanner {
     position: relative;
     height: 220px;
@@ -519,7 +534,7 @@
 
 @media (max-width: 640px) {
     .sandwichGrid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -555,7 +570,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    flex-wrap: wrap; /* the tag drops under the name when both don't fit on one line */
+    gap: 8px 16px;
 }
 
 .sandwichTitle {

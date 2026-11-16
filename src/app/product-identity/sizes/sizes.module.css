@@ -705,3 +705,15 @@
     border-color: var(--gold);
     color: var(--fg);
 }
+/* Phones: the size fields go two across (name and notes stay full width) so nothing runs off the side. */
+@media (max-width: 520px) {
+    .fields {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .fields input,
+    .fields select {
+        min-width: 0;
+        width: 100%;
+    }
+}

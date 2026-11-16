@@ -109,12 +109,12 @@ export default function AddToOrderAnimStudio() {
     const activeSample =
         useLiveProduct && liveProduct
             ? {
-                  name: liveProduct.name,
-                  price: liveProduct.price || 'Live Item',
-                  desc: liveProduct.desc || '',
-                  categoryIcon: liveProduct.categoryIcon || '',
-                  imageSrc: liveProduct.imageSrc,
-              }
+                name: liveProduct.name,
+                price: liveProduct.price || 'Live Item',
+                desc: liveProduct.desc || '',
+                categoryIcon: liveProduct.categoryIcon || '',
+                imageSrc: liveProduct.imageSrc,
+            }
             : fallbackSample;
     const resolvedPreviewSrc = resolveProductFlyImage(
         {
@@ -249,8 +249,8 @@ export default function AddToOrderAnimStudio() {
                             {cfg.flyImageMode === 'auto-product'
                                 ? `Auto Medallion → ${resolvedPreviewSrc}`
                                 : cfg.flyImageMode === 'auto-photo'
-                                  ? `Auto Cut Photo → ${resolvedPreviewSrc}`
-                                  : `Fixed Icon → ${cfg.flyImageSrc}`}
+                                    ? `Auto Cut Photo → ${resolvedPreviewSrc}`
+                                    : `Fixed Icon → ${cfg.flyImageSrc}`}
                         </span>
                     </div>
                 </div>

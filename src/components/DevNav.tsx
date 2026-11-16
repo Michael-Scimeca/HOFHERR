@@ -385,7 +385,7 @@ const DevNav = () => {
                 </button>
                 <button
                     type="button"
-                    className={`${styles.godBtn} ${gapsOn ? styles.godBtnActive : ''}`}
+                    className={`${styles.godBtn} ${styles.mobileKeep} ${gapsOn ? styles.godBtnActive : ''}`}
                     onClick={toggleSectionGaps}
                     aria-pressed={gapsOn}
                     title="Show the spacing between sections (Alt+G)"
@@ -395,7 +395,7 @@ const DevNav = () => {
                 </button>
                 <button
                     type="button"
-                    className={`${styles.godBtn} ${bordersOn ? styles.godBtnActive : ''}`}
+                    className={`${styles.godBtn} ${styles.mobileKeep} ${bordersOn ? styles.godBtnActive : ''}`}
                     onClick={toggleBorderColors}
                     aria-pressed={bordersOn}
                     title="Show the colour of every border (Alt+B)"

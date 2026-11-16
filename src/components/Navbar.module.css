@@ -10,8 +10,9 @@
     transition: border-color 0.3s, box-shadow 0.3s, background 0.3s, backdrop-filter 0.3s;
     height: 88px;
     min-height: 88px;
-    /* the menu button's drawing box overhangs the button; never let it widen the page */
-    overflow-x: clip;
+    /* No overflow-x: clip here: Safari then also clips vertically, which hides the mobile menu's
+       background canvas (a fixed child of this header). body { overflow-x: clip } in globals.css
+       already stops the menu button's overhanging drawing box from widening the page. */
     display: flex;
     align-items: center;
 }

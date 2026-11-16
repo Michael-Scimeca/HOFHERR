@@ -341,7 +341,7 @@
 }
 
 .segTodo:hover {
-    border-color: rgba(212, 168, 83, 0.45);
+    border-color: rgba(200, 164, 126, 0.45);
     color: var(--fg-2);
 }
 
@@ -1082,6 +1082,7 @@ a.infoValue:hover {
         opacity: 0;
         transform: translateY(4px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1089,10 +1090,12 @@ a.infoValue:hover {
 }
 
 @keyframes readyLinePulse {
+
     0%,
     100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.45;
     }
@@ -1228,7 +1231,7 @@ a.infoValue:hover {
 
 .cutPieceCard {
     background: #14100d;
-    border: 1px solid #ffffff1a;
+    border: 1px solid rgba(200, 164, 126, 0.28);
     border-radius: var(--radius);
     overflow: hidden;
     display: flex;
@@ -1243,7 +1246,7 @@ a.infoValue:hover {
 .cutPieceStage {
     position: relative;
     background: #f3ead8;
-    border-bottom: 2px solid #8b0a10;
+    border-bottom: 2px solid #6b070b;
     padding: 8px;
     display: flex;
     flex-direction: column;
@@ -1264,7 +1267,7 @@ a.infoValue:hover {
     text-transform: uppercase;
     color: #6b070b;
     background: rgba(107, 7, 11, 0.1);
-    border: 1px solid rgba(139, 10, 16, 0.35);
+    border: 1px solid rgba(107, 7, 11, 0.35);
     padding: 2px 8px;
     border-radius: 999px;
 }

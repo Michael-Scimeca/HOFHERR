@@ -181,6 +181,14 @@
     gap: 8px;
     border-bottom: 1px solid #ffffff1a;
     padding-bottom: 2px;
+    /* on a phone the tab strip scrolls sideways inside itself instead of widening the page */
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.tab {
+    flex-shrink: 0;
 }
 
 .tab {
@@ -247,7 +255,8 @@
 
 .statCard {
     background: #111111;
-    padding: 23px 22px; /* 23px + 1px border = 24px from the card edge to its text */
+    padding: 23px 22px;
+    /* 23px + 1px border = 24px from the card edge to its text */
     border-radius: 16px;
     border: 1px solid #ffffff1a;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -519,7 +528,8 @@
     border: 1px solid rgba(204, 14, 29, 0.65);
     border-radius: 20px;
     padding: 28px;
-    margin-bottom: 96px; /* section rhythm: 96px between the big blocks */
+    margin-bottom: 96px;
+    /* section rhythm: 96px between the big blocks */
     box-shadow: 0 14px 40px rgba(204, 14, 29, 0.15);
 }
 
@@ -554,10 +564,13 @@
 }
 
 @keyframes urgentPulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
         transform: scale(1);
     }
+
     50% {
         opacity: 0.4;
         transform: scale(0.82);
@@ -846,7 +859,8 @@
     border: 1px solid #ffffff1a;
     border-radius: 20px;
     padding: 28px;
-    margin-bottom: 96px; /* section rhythm: 96px between the big blocks */
+    margin-bottom: 96px;
+    /* section rhythm: 96px between the big blocks */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
@@ -1742,7 +1756,7 @@
 /* ── 4-Stage Live Order Tracker Cards (matches /dashboard tracker) ── */
 .trackerCardsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr));
     gap: 20px;
 }
 
@@ -2389,6 +2403,7 @@
     from {
         background-position: 100% 0;
     }
+
     to {
         background-position: -120% 0;
     }
@@ -2662,7 +2677,7 @@
     }
 
     .trackerCardsGrid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .trackerBar {
@@ -2684,3 +2699,16 @@
     }
 }
 
+
+/* Phones: long action buttons wrap their label instead of running past the card. */
+@media (max-width: 640px) {
+
+    .urgentActionsRow button,
+    .actionBtnPrimary,
+    .actionBtnCompleted,
+    .expireNowBtn {
+        min-width: 0;
+        max-width: 100%;
+        white-space: normal;
+    }
+}

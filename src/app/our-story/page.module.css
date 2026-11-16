@@ -4,7 +4,7 @@
     overflow: hidden;
     background: var(--bg-2);
     margin-top: -88px;
-    padding: 150px 0 100px; /* 88px tucked under the nav + 62px visible above the headline */
+    padding: 208px 0 100px;
     text-align: center;
 }
 
@@ -219,7 +219,7 @@
 .featuredVideoCaption {
     padding: 20px 32px 28px;
     background: #0a0a0a;
-    border-top: 1px solid #ffffff1a;
+    border-top: 1px solid #1a1a1a;
 }
 
 .featuredVideoCaption span {
@@ -462,7 +462,7 @@
     background-position: center, center;
     background-size: 100% 100%, 380px auto;
     background-repeat: no-repeat, repeat;
-    padding: 96px 0;
+    padding: 72px 0;
     text-align: center;
     color: #f3ead8;
     position: relative;

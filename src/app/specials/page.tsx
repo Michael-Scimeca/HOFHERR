@@ -8,8 +8,8 @@ import VideoCallout from '@/components/specials/VideoCalloutWrapper';
 import ParallaxMedia from '@/components/ParallaxMedia';
 import ParallaxImg from '@/app/bbq/ParallaxImg';
 
-import styles from './page.module.css';
 import bbqStyles from '../bbq/page.module.css';
+import styles from './page.module.css';
 
 const getThumb = (name: string) => {
     const safeName = (name || '').toLowerCase();
@@ -474,7 +474,7 @@ export default async function SpecialsPage() {
 
                                 {/* Appetizers */}
                                 <h3 className={`${bbqStyles.catTitle} ${styles.appetizerTitleSpaced}`}>🧀 Appetizer Options</h3>
-                                <ul className={bbqStyles.menuList}>
+                                <ul className={`${bbqStyles.menuList} ${styles.appetizerBentoList}`}>
                                     {[
                                         "Butcher's Charcuterie Board",
                                         "Bacon Wrapped Chorizo Dates",
@@ -488,21 +488,27 @@ export default async function SpecialsPage() {
                                             </li>
                                         );
                                     })}
+                                    <li className={styles.pigRoastCtaItem}>
+                                        <div className={styles.pigRoastCtaSurface}>
+                                            <div className={styles.pigRoastCtaContent}>
+                                                <div className={styles.pigRoastCtaCopy}>
+                                                    <h4 className={styles.pigRoastCtaTitle}>Build Your Pig Roast Package</h4>
+                                                    <p className={styles.pigRoastCtaSub}>
+                                                        Use our interactive calculator to customize your menu, pick a date, and send an inquiry.
+                                                    </p>
+                                                </div>
+                                                <Link
+                                                    href="/catering#build-your-package"
+                                                    className={`btn ${styles.pigRoastCtaBtn}`}
+                                                >
+                                                    Start Building →
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Link to full catering calculator */}
-                    <div className={styles.pigRoastCtaWrap}>
-                        <Link href="/catering#build-your-package" className="btn-hit">
-                            <span className={`btn btn-primary ${styles.pigRoastCtaBtn}`}>
-                                Build Your Pig Roast Package →
-                            </span>
-                        </Link>
-                        <p className={styles.pigRoastCtaSub}>
-                            Use our interactive calculator to customize your package, pick a date, and send an inquiry.
-                        </p>
                     </div>
                 </div>
             </section>
