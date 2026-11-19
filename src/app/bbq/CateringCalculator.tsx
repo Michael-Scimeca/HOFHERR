@@ -12,15 +12,14 @@ const MEAT_OPTIONS = [
 ];
 
 const SIDE_OPTIONS = [
+    'Seasonal Pasta Salad',
     'Pimento Mac n Cheese',
-    'HMCo.leSlaw',
     'Potato Salad',
-    'Grilled Portobellos',
-    'Corn',
-    'Three Bean Salad',
-    'House Pasta Salad',
+    'Butchers Beans',
+    'HMCo.Slaw',
     'Collard Greens',
-    'North Shore Baked Beans',
+    'Seasonal Salad',
+    'Grilled Lion\'s Mane Mushrooms',
 ];
 
 interface Props {
@@ -58,7 +57,7 @@ export default function CateringCalculator({
 }: Props) {
     // State (either from props or local if needed)
     const { guests, selectedMeats = [], selectedSides = [], charcuterie, pimento, delivery, notes } = state || {
-        guests: 25, selectedMeats: ['Smoked Brisket', 'BBQ Pulled Pork'], selectedSides: ['Pimento Mac n Cheese', 'North Shore Baked Beans'], charcuterie: false, pimento: 0, delivery: false, notes: ''
+        guests: 25, selectedMeats: ['Smoked Brisket', 'BBQ Pulled Pork'], selectedSides: ['Pimento Mac n Cheese', 'Butchers Beans'], charcuterie: false, pimento: 0, delivery: false, notes: ''
     };
 
     const MIN_GUESTS = 20;

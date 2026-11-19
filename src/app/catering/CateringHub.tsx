@@ -24,15 +24,14 @@ const MEAT_OPTIONS = [
 ];
 
 const SIDE_OPTIONS = [
+    'Seasonal Pasta Salad',
     'Pimento Mac n Cheese',
-    'HMCo.leSlaw',
     'Potato Salad',
-    'Grilled Portobellos',
-    'Corn',
-    'Three Bean Salad',
-    'House Pasta Salad',
+    'Butchers Beans',
+    'HMCo.Slaw',
     'Collard Greens',
-    'North Shore Baked Beans',
+    'Seasonal Salad',
+    'Grilled Lion\'s Mane Mushrooms',
 ];
 
 type EventType = 'backyard' | 'feast' | 'pig';
@@ -127,7 +126,10 @@ export default function CateringHub({ events, calendarPricing }: Props) {
     const DELIVERY_FEE = 50;
 
 
-    const safeGuests = Math.max(1, guests);
+    // Whole-hog roasts need 50+ guests (same minimum as the pig roast calculator on /specials)
+    const PIG_MIN_GUESTS = 50;
+    const minGuests = eventType === 'pig' ? PIG_MIN_GUESTS : 1;
+    const safeGuests = Math.max(minGuests, guests);
 
     // Derived counts from actual selections
     const meats = selectedMeats.length;
@@ -194,6 +196,8 @@ export default function CateringHub({ events, calendarPricing }: Props) {
             setSelectedMeats(MEAT_OPTIONS.slice(0, 2));
             setSelectedSides(SIDE_OPTIONS.slice(0, 2));
             setCharcuterie(true);
+        } else if (type === 'pig') {
+            setGuests(prev => Math.max(PIG_MIN_GUESTS, prev));
         }
     };
 
@@ -202,7 +206,7 @@ export default function CateringHub({ events, calendarPricing }: Props) {
     };
 
     const handleGuestBlur = () => {
-        if (guests < 1) setGuests(1);
+        if (guests < minGuests) setGuests(minGuests);
         if (guests > 500) setGuests(500);
     };
 
@@ -264,7 +268,7 @@ export default function CateringHub({ events, calendarPricing }: Props) {
                             {[
                                 { id: 'backyard' as EventType, emoji: '🔥', label: 'Backyard BBQ', sub: '1 meat + 1 side · $16/pp' },
                                 { id: 'feast' as EventType, emoji: '🍖', label: 'BBQ Feast', sub: '2 meats + 2 sides · $22/pp' },
-                                { id: 'pig' as EventType, emoji: '🐷', label: 'Pig Roast', sub: 'Whole hog · from $30/pp' },
+                                { id: 'pig' as EventType, emoji: '🐷', label: 'Pig Roast', sub: 'Whole hog · 50+ guests · from $30/pp' },
                             ].map(opt => {
                                 const isActive = eventType === opt.id;
                                 const isHighlighted = highlightType && isActive;
@@ -298,7 +302,7 @@ export default function CateringHub({ events, calendarPricing }: Props) {
                         <div className={calcStyles.inputGroup}>
                             <label htmlFor="catering-guest-count" className={calcStyles.label}>Number of Guests</label>
                             <div className={calcStyles.numberInputWrap}>
-                                <button className={calcStyles.stepperBtn} onClick={() => setGuests(Math.max(1, guests - 5))} aria-label="Decrease guests">−</button>
+                                <button className={calcStyles.stepperBtn} onClick={() => setGuests(Math.max(minGuests, guests - 5))} aria-label="Decrease guests">−</button>
                                 <input id="catering-guest-count" aria-label="Number of Guests" type="number" className={calcStyles.numberInput} value={guests} onChange={handleGuestChange} onBlur={handleGuestBlur} />
                                 <button className={calcStyles.stepperBtn} onClick={() => setGuests(Math.min(500, guests + 5))} aria-label="Increase guests">+</button>
                             </div>

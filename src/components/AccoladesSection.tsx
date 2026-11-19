@@ -18,13 +18,21 @@ type BigStat = {
 };
 
 const BIG_STATS: BigStat[] = [
-    { id: 'stat-wins', num: '5', label: 'Competition Wins' },
+    { id: 'stat-wins', num: '6', label: 'Competition Wins' },
     { id: 'stat-guilds', num: '2', label: 'Guild Memberships' },
     { id: 'stat-years', num: '10+', label: 'Years Competing' },
     { id: 'stat-press', num: '1', label: 'National Feature' },
 ];
 
 const ACCOLADES: AccoladeItem[] = [
+    {
+        id: 'baconfest-best-in-show',
+        title: "Wagner Farms BaconFest — Cheeseburger Sausage",
+        outcome: 'Best in Show',
+        tier: 'win',
+        stamp: 'WINNER',
+        category: 'Competition Win',
+    },
     {
         id: 'chili-2009',
         title: 'North Shore Chili Cookoff',

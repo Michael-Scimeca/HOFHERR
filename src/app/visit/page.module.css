@@ -755,3 +755,14 @@
         aspect-ratio: 16 / 10;
     }
 }
+
+.storyLink {
+  margin-top: var(--space-6);
+  text-align: center;
+  color: var(--fg-2);
+}
+
+.storyLink a {
+  color: var(--red);
+  font-weight: 600;
+}

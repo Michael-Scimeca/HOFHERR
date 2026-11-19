@@ -392,7 +392,7 @@ function SuccessContent() {
                                 />
                                 <div className={styles.sealMeta}>
                                     <span className={styles.ticketSerial}>CUSTOM CUT TICKET · VERIFIED</span>
-                                    <span className={styles.ticketSub}>HOFHERR MEAT CO. · EST. 2018</span>
+                                    <span className={styles.ticketSub}>HOFHERR MEAT CO. · EST. 2014</span>
                                 </div>
                             </div>
                             <div className={styles.stampBadge}>
@@ -810,7 +810,7 @@ function SuccessContent() {
                                         rel="noopener noreferrer"
                                         className={styles.infoValue}
                                     >
-                                        The Depot · Winnetka<br />780 Elm St, Winnetka, IL
+                                        The Depot · Winnetka<br />754 Elm St, Winnetka, IL
                                     </a>
                                 ) : (
                                     <a
@@ -901,7 +901,7 @@ function SuccessContent() {
                                 </>
                             )}
                         </h2>
-                        <p>300 Happ Rd · Northfield &amp; 780 Elm St · Winnetka Depot</p>
+                        <p>300 Happ Rd · Northfield &amp; 754 Elm St · Winnetka Depot</p>
                     </div>
                 </div>
             </div>

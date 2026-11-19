@@ -36,7 +36,6 @@ const NAV_ITEMS = [
     { label: 'Specials', href: '/specials' },
     { label: 'BBQ & Catering', href: '/catering' },
     { label: 'Selections', href: '/selections' },
-    { label: 'Cut Guide', href: '/cut-guide' },
     { label: 'Recipes', href: '/recipes' },
     { label: 'Parcel Sheets', href: '/recipes/sheets' },
     { label: 'Visit Us', href: '/visit' },
@@ -229,9 +228,12 @@ export default function Navbar() {
             if (el && navRef.current) {
                 const navRect = navRef.current.getBoundingClientRect();
                 const elRect = el.getBoundingClientRect();
+                const cs = window.getComputedStyle(el);
+                const padLeft = parseFloat(cs.paddingLeft) || 0;
+                const padRight = parseFloat(cs.paddingRight) || 0;
                 setIndicator({
-                    left: elRect.left - navRect.left,
-                    width: elRect.width,
+                    left: elRect.left - navRect.left + padLeft,
+                    width: Math.max(0, elRect.width - padLeft - padRight),
                 });
             }
         } else {
@@ -327,9 +329,6 @@ export default function Navbar() {
                 {/* Right side group */}
                 <div className={styles.right}>
                     <div className={styles.rightActions}>
-                        <a href="tel:8474416328" className={styles.phone} aria-label="Call Hofherr Meat Co. at (847) 441-6328">
-                            📞 (847) 441-MEAT
-                        </a>
                         {!user ? (
                             <div className={styles.authPill}>
                                 <Link href="/online-orders?login=true" prefetch={false} data-no-transition className={styles.signInLink} onClick={(e) => openAuthFromLink(e, 'login')}>Sign In</Link>
@@ -390,6 +389,9 @@ export default function Navbar() {
                     </div>
 
                     <div className={styles.storeStatusOuter}>
+                        <a href="tel:8474416328" className={styles.phone} aria-label="Call Hofherr Meat Co. at (847) 441-6328">
+                            📞 (847) 441-MEAT
+                        </a>
                         <div className={styles.marqueeTrack}>
                             {storePills}
                             <div className={styles.mobileOnlyClone} aria-hidden="true">{storePills}</div>

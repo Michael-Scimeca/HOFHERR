@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import ParcelSheetsTeaser from '@/components/home/ParcelSheetsTeaser';
 import RecipesBrowser from './RecipesBrowser';
 import { COLLECTIONS } from './recipes';
 import styles from './page.module.css';
@@ -59,6 +60,7 @@ export default function RecipesPage() {
             <div className={styles.page}>
                 <RecipesBrowser featuredCollectionId={featured?.id ?? null} today={today} />
             </div>
+            <ParcelSheetsTeaser />
         </main>
     );
 }

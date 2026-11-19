@@ -89,7 +89,7 @@ export default function PrivacyPolicyPage() {
                 <p><strong>Hofherr Meat Co.</strong></p>
                 <p>📍 <a href="https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093" target="_blank" rel="noopener noreferrer">300 Happ Rd, Northfield, IL 60093</a></p>
                 <p>📞 <a href="tel:8474416328">(847) 441-6328</a></p>
-                <p>✉️ <a href="mailto:info@hofherrmeatco.com">info@hofherrmeatco.com</a></p>
+                <p>✉️ <a href="mailto:butcher@hofherrmeatco.com">butcher@hofherrmeatco.com</a></p>
             </div>
             </div>
         </main>

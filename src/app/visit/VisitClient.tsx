@@ -65,8 +65,8 @@ const LOCATIONS = [
         heroImage: '/shops/winnetka.png',
         heroAlt: 'The Depot at Winnetka Elm Street Metra Station',
         hours: [
-            { day: 'Monday – Friday', time: '10:30am – 6pm', open: true },
-            { day: 'Saturday', time: 'Closed', open: false },
+            { day: 'Monday – Friday', time: '10:30am – 6pm (Beef: 10:30–2 & 4–6)', open: true },
+            { day: 'Saturday (Farmers Market)', time: '10:30am – 1pm', open: true },
             { day: 'Sunday', time: 'Closed', open: false },
         ],
         curbside: false,
@@ -324,6 +324,10 @@ export default function VisitClient() {
                                     </div>
                                 </div>
 
+                                <p className={styles.storyLink}>
+                                    Curious about the family behind the counter?{' '}
+                                    <Link href="/our-story">Read Our Story →</Link>
+                                </p>
                             </div>
                         </section>
                     </main>

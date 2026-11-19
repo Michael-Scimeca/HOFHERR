@@ -53,14 +53,14 @@ export default function Footer() {
                     <div className={styles.col}>
                         <div className={styles.colTitle}>BBQ &amp; Catering</div>
                         <Link href="/catering">Overview</Link>
-                        <Link href="/catering#bbq-menu">BBQ Menu</Link>
+                        <Link href="/catering#build-your-package">BBQ Menu</Link>
                         <Link href="/catering#build-your-package">Pricing &amp; Quote</Link>
                         <Link href="/catering#beyond-bbq" className={styles.link}>Pig Roasts &amp; Events</Link>
                     </div>
                     <div className={styles.col}>
                         <div className={styles.colTitle}>Discover</div>
                         <Link href="/selections">Our Selections</Link>
-                        <Link href="/cut-guide">Cut Guide</Link>
+                        <Link href="/selections#cut-guide">Cut Guide</Link>
                         <Link href="/recipes">Recipes</Link>
                         <Link href="/faq">FAQ</Link>
                         <Link href="/our-story">Our Story</Link>

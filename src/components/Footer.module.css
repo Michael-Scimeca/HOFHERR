@@ -7,7 +7,7 @@
 }
 
 .inner {
-    max-width: var(--max-w);
+    max-width: calc(var(--max-w) + var(--container-px) * 2);
     margin: 0 auto;
     padding: 64px var(--container-px);
     display: grid;
@@ -120,7 +120,7 @@
 }
 
 .bottomInner {
-    max-width: var(--max-w);
+    max-width: calc(var(--max-w) + var(--container-px) * 2);
     margin: 0 auto;
     padding: 24px var(--container-px);
     display: flex;

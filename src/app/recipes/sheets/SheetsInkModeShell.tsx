@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import { Toggle } from '@/components/Toggle';
 import styles from '../parcel-sheet.module.css';
 
@@ -14,9 +14,10 @@ const BwPrintContext = createContext<{
 
 export function SheetsInkModeShell({ children }: { children: ReactNode }) {
     const [bwPrintMode, setBwPrintMode] = useState(true);
+    const contextValue = useMemo(() => ({ bwPrintMode, setBwPrintMode }), [bwPrintMode]);
 
     return (
-        <BwPrintContext.Provider value={{ bwPrintMode, setBwPrintMode }}>
+        <BwPrintContext.Provider value={contextValue}>
             <main className={styles.indexMain} data-bw-print={bwPrintMode ? 'true' : 'false'}>
                 {children}
             </main>

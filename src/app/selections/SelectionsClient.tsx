@@ -255,60 +255,7 @@ const SOUPS_AND_STOCKS = {
     stocks: ['Beef Stock', 'Chicken Stock', 'Duck Stock', 'Turkey Stock', 'Veal Stock', 'Vegetable Stock'],
 };
 
-const PREPARED_MEALS_CARDS = [
-    {
-        title: 'Heat-and-Eat Entrees',
-        kicker: 'CASE-READY TRAYS · FOIL & SLEEVE SYSTEM',
-        icon: '/assets/identity/stickers/sticker-prepared.svg',
-        img: '/assets/cuts/prepared-heat-and-eat-entrees-packaged.jpg',
-        imgAlt: 'Hofherr Meat Co. chicken pot pie, glazed meatloaf, and Italian meatballs alongside branded foil and case-ready tray sleeves',
-        items: [
-            'Chicken Pot Pie',
-            'Italian Beef',
-            'Italian Meatballs',
-            'Meat Loaf',
-            'Handmade Authentic Pierogis',
-            'Pulled Pork',
-            'Sloppy Joes',
-            'Spaghetti Sauce',
-            'Tamales',
-        ],
-    },
-    {
-        title: 'Portioned Ready-to-Cook Proteins',
-        kicker: 'CRYOVAC VACUUM-SEALED · FRONT & BACK LABELS',
-        icon: '/assets/identity/stickers/sticker-grabgo.svg',
-        img: '/assets/cuts/prepared-ready-to-cook-proteins-packaged.jpg',
-        imgAlt: 'Hofherr Meat Co. bacon-wrapped filet mignon, veal osso bucco, and herb-marinated salmon with Cryovac vacuum-sealed labels',
-        items: [
-            'Irish Bacon',
-            'Beef Shanks',
-            'Boneless Skinless Chicken Thighs',
-            'Duck Confit',
-            'Fajita Mix',
-            'Bacon-Wrapped Filet Mignon',
-            'Marinated Salmon',
-            'Veal Osso Bucco',
-        ],
-    },
-    {
-        title: 'Scratch Side Dishes, Broths & Rubs',
-        kicker: 'DELI QUART & PINT TUBS · TAMPER-EVIDENT LIDS',
-        icon: '/assets/identity/stickers/sticker-pantry.svg',
-        img: '/assets/cuts/prepared-sides-broths-rubs-packaged.jpg',
-        imgAlt: 'Hofherr Meat Co. Northshore baked beans, twice-baked potatoes, and cole slaw alongside branded bone broth, rub tins, and BBQ sauce',
-        items: [
-            'Northshore Baked Beans',
-            'Turkey Gravy',
-            'Twice-Baked Potatoes',
-            'Vinegar Cole Slaw',
-            '24-Hour Bone Broths',
-            'House Dry Rubs & Marinades',
-        ],
-    },
-];
-
-export default function SelectionsClient() {
+export default function SelectionsClient({ cutGuide }: { cutGuide?: React.ReactNode }) {
     return (
         <main className={styles.page}>
             {/* ── Hero Header (No Content-Boxing, Single H1, No Pill Above H1) ── */}
@@ -331,9 +278,9 @@ export default function SelectionsClient() {
                                 Order Online for Pickup
                             </span>
                         </Link>
-                        <Link href="/cut-guide" className="btn-hit">
+                        <a href="#cut-guide" className="btn-hit">
                             <span className="btn btn-primary">Interactive Cut &amp; Cooking Guide</span>
-                        </Link>
+                        </a>
                         <Link href="/specials" className="btn-hit">
                             <span className="btn btn-primary">This Week&apos;s Specials</span>
                         </Link>
@@ -352,7 +299,7 @@ export default function SelectionsClient() {
                             Soups &amp; Sandwiches
                         </a>
                         <a href="#prepared-and-bbq" className={styles.jumpLink}>
-                            Prepared Meals &amp; Barbeque
+                            Wild Game &amp; Ready-to-Eat
                         </a>
                     </nav>
                 </div>
@@ -613,7 +560,7 @@ export default function SelectionsClient() {
                 </div>
             </section>
 
-            {/* ── Prepared Meals & Barbeque Headquarters (Design System Images) ── */}
+            {/* ── Wild game processing + ready-to-eat link across to Specials ── */}
             <section
                 id="prepared-and-bbq"
                 aria-labelledby="prepared-and-bbq-heading"
@@ -622,115 +569,25 @@ export default function SelectionsClient() {
                 <div className={`container ${styles.sectionStack}`}>
                     <div className={styles.sectionHeader}>
                         <h2 id="prepared-and-bbq-heading" className={styles.sectionTitle}>
-                            Scratch Prepared Meals &amp; Barbeque Headquarters
+                            Wild Game Processing &amp; Ready-to-Eat
                         </h2>
                         <p className={styles.sectionDesc}>
-                            All of our prepared meals are made from scratch — choose from heat-and-eat entrees, classic
-                            Northshore sides, or ready-to-cook portioned proteins, plus our year-round supply of
-                            hard-to-find lump charcoal, smoking wood chunks, competition rubs, and sauces.
+                            Bring us your deer, elk or waterfowl and we&apos;ll process it to your cut sheet. Looking
+                            for heat-and-eat meals, barbecue and sides? They live on our Specials page.
                         </p>
                     </div>
-
-                    <div className={styles.trioGrid}>
-                        {PREPARED_MEALS_CARDS.map((card) => (
-                            <article key={card.title} className={styles.pantryCard}>
-                                <div className={styles.pantryBannerWrap}>
-                                    <img
-                                        src={card.img}
-                                        alt={card.imgAlt}
-                                        className={styles.pantryBannerImg}
-                                    />
-                                    <div className={styles.pantryBannerBadge}>
-                                        <img
-                                            src={card.icon}
-                                            alt=""
-                                            className={styles.pantryIcon}
-                                        />
-                                    </div>
-                                </div>
-                                <div className={styles.pantryHeadMeta}>
-                                    <span className={styles.pantryKicker}>{card.kicker}</span>
-                                    <h3 className={styles.pantryTitle}>{card.title}</h3>
-                                </div>
-                                <div className={styles.tagCloud}>
-                                    {card.items.map((item) => (
-                                        <span key={item} className={styles.rosterPill}>
-                                            {item}
-                                        </span>
-                                    ))}
-                                </div>
-                            </article>
-                        ))}
-                    </div>
-
-                    <div className={styles.bbqFeatureCard}>
-                        <div className={styles.bbqVisualStack}>
-                            <div className={styles.bbqPhotoWrap}>
-                                <img
-                                    src="/assets/cuts/bbq-smokehouse-catering-packaged.jpg"
-                                    alt="Hofherr Meat Co. Smoked Beef Brisket, St. Louis Ribs & Pulled Pork with Kraft Catering Box"
-                                    className={styles.bbqPhoto}
-                                />
-                            </div>
-                            <div className={styles.bbqSubGrid}>
-                                <div className={styles.bbqMiniCard}>
-                                    <img
-                                        src="/assets/cuts/bbq-reserve-pitmaster-box-packaged.jpg"
-                                        alt="Hofherr Meat Co. Reserve Pitmaster Box with Prime Steaks, Ribs & Sausages"
-                                        className={styles.bbqMiniImg}
-                                    />
-                                    <span className={styles.bbqMiniCap}>Reserve Pitmaster Box</span>
-                                </div>
-                                <div className={styles.bbqMiniCard}>
-                                    <img
-                                        src="/assets/cuts/bbq-insulated-butcher-tote-packaged.jpg"
-                                        alt="Hofherr Meat Co. Insulated Cold-Chain Butcher Tote Packed with Wrapped Butcher Parcels & Steaks"
-                                        className={styles.bbqMiniImg}
-                                    />
-                                    <span className={styles.bbqMiniCap}>Insulated Cold-Chain Tote</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.bbqContent}>
-                            <div className={styles.bbqBadgeRow}>
-                                <img
-                                    src="/assets/identity/hofherr-stamp-circular-crimson.svg"
-                                    alt="Hofherr Meat Co. Northfield Provenance Seal"
-                                    className={styles.cleaverBadge}
-                                />
-                                <img
-                                    src="/assets/identity/stickers/sticker-catering.svg"
-                                    alt="Hofherr Smokehouse & Catering Truck Emblem"
-                                    className={styles.cleaverBadge}
-                                />
-                                <div>
-                                    <span className={styles.pantryKicker}>NORTHFIELD &amp; WINNETKA DEPOT · SMOKEHOUSE</span>
-                                    <h3 className={styles.bbqTitle}>BARBEQUE — YEAR-ROUND PITMASTER SUPPLY</h3>
-                                </div>
-                            </div>
-                            <p className={styles.bbqText}>
-                                Our passion for barbecue borders on zealotry. Regardless of the season, we carry an
-                                impressive selection of hard-to-find lump charcoal, smoking wood chips and chunks,
-                                competition rubs, and regional sauces.
-                            </p>
-                            <p className={styles.bbqText}>
-                                We have relationships with the best suppliers in the barbecue business — from legendary
-                                hotbeds throughout the South to local artisans who share our dedication to quality and
-                                authenticity. We&apos;re a one-stop shop for advice on competition-level techniques,
-                                serving size recommendations, and grilling recipes.
-                            </p>
-                            <div className={styles.bbqActions}>
-                                <Link href="/catering#bbq-menu" className="btn-hit">
-                                    <span className="btn btn-primary">Explore BBQ &amp; Catering</span>
-                                </Link>
-                                <a href="mailto:sean@hofherrmeatco.com" className="btn btn-outline">
-                                    Email Sean Your BBQ Questions
-                                </a>
-                            </div>
-                        </div>
+                    <div className={styles.bbqActions}>
+                        <a href="mailto:sean@hofherrmeatco.com?subject=Wild%20game%20processing" className="btn-hit">
+                            <span className="btn btn-primary">Ask About Wild Game Processing</span>
+                        </a>
+                        <Link href="/specials" className="btn btn-outline">
+                            Prepared Meals &amp; BBQ on Specials
+                        </Link>
                     </div>
                 </div>
             </section>
+
+            {cutGuide}
 
             {/* ── Section 06: Custom Cut & Counter Dispatch CTA ── */}
             <section id="selections-cta" aria-labelledby="selections-cta-heading" className="section">
@@ -763,9 +620,9 @@ export default function SelectionsClient() {
                             <a href="tel:8474416328" className="btn-hit">
                                 <span className="btn btn-secondary">Call (847) 441-MEAT</span>
                             </a>
-                            <Link href="/cut-guide" className="btn btn-outline">
+                            <a href="#cut-guide" className="btn btn-outline">
                                 View Interactive Cut Guide
-                            </Link>
+                            </a>
                         </div>
                     </div>
                 </div>

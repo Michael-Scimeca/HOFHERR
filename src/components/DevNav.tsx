@@ -111,8 +111,10 @@ const SECTIONS: DevSection[] = [
             { href: '/sitemap-page', icon: '🗺️', label: 'Sitemap' },
             { href: '/specials', icon: '🔥', label: 'Specials' },
             { href: '/catering', icon: '🍖', label: 'BBQ & Catering' },
+            { href: '/catering/holidays', icon: '📅', label: 'Holiday & Event Catering' },
             { href: '/cut-guide', icon: '🥩', label: 'Cut Guide' },
             { href: '/recipes', icon: '🍳', label: 'Recipes' },
+            { href: '/burn-transitions', icon: '🔥', label: '20 Burn Transitions' },
             { href: '/newsletter', icon: '✉️', label: 'Newsletter' },
         ],
     },
@@ -371,15 +373,6 @@ const DevNav = () => {
                 >
                     <span>⚡</span>
                     <span>{godBusy ? 'LOADING…' : isGodMode ? 'GOD MODE: ON' : 'GOD MODE'}</span>
-                </button>
-                <button
-                    type="button"
-                    className={styles.godBtn}
-                    onClick={() => window.dispatchEvent(new CustomEvent(TOGGLE_ANIM_STUDIO_EVENT))}
-                    title="Open Add-to-Cart Animation Preview & Test UI"
-                >
-                    <span>🛒</span>
-                    <span>CART ANIM</span>
                 </button>
                 <button
                     type="button"

@@ -67,7 +67,14 @@ const MARQUEE_ROWS: MarqueeRow[] = [
 /** Four copies match PressCanvasStage's 4-copy transform stride and cover ultrawide viewports seamlessly. */
 const COPY_KEYS = ['copy-a', 'copy-b', 'copy-c', 'copy-d'] as const;
 
-export default function CateringMarquee({ id = 'catering-marquee' }: { id?: string }) {
+export default function CateringMarquee({
+    id = 'catering-marquee',
+    rows = MARQUEE_ROWS.length,
+}: {
+    id?: string;
+    /** How many of the ticker rows to show (default: all four). */
+    rows?: number;
+}) {
     const wrapRef = useRef<HTMLDivElement>(null);
 
     return (
@@ -77,7 +84,7 @@ export default function CateringMarquee({ id = 'catering-marquee' }: { id?: stri
                     <PressCanvasStage containerRef={wrapRef} />
 
                     <div className={styles.crispLayer}>
-                        {MARQUEE_ROWS.map((row, rowIndex) => (
+                        {MARQUEE_ROWS.slice(0, rows).map((row, rowIndex) => (
                             <div
                                 key={row.id}
                                 className={styles.rowShell}

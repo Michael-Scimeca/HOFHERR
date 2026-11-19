@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
 import {
-    BBQ_MENU_QUERY,
     BBQ_SERVICES_QUERY,
     CATERING_EVENTS_QUERY,
     CATERING_CALENDAR_PRICING_QUERY,
 } from '@/sanity/queries';
 import CateringHub from './CateringHub';
 import CateringHeroButtons from './CateringHeroButtons';
-import ParallaxImg from '@/app/bbq/ParallaxImg';
+import PigRoastsSection from './PigRoastsSection';
 import MosaicServices from '@/app/bbq/MosaicServices';
 import CateringMarquee from '@/components/CateringMarquee';
 import styles from './page.module.css';
@@ -18,7 +18,7 @@ import bbqStyles from '@/app/bbq/page.module.css';
 export const metadata: Metadata = {
     title: 'BBQ & Catering | Pig Roasts, Smoked Brisket & Events | Hofherr Meat Co. — Northfield, IL',
     description:
-        'Full-service BBQ catering, whole-pig roasts, Ravinia picnic baskets, game day spreads, corporate buffets, and custom event menus from Hofherr Meat Co. Smoked brisket, ribs, pulled pork & sides for 20–500+ guests across Chicago\'s North Shore.',
+        'Full-service BBQ catering, whole-pig roasts, Ravinia picnic baskets, game day spreads, corporate buffets, and custom event menus from Hofherr Meat Co. Smoked brisket, ribs, pulled pork & sides for up to 500+ guests across Chicago\'s North Shore.',
     keywords: [
         'BBQ catering Northfield IL',
         'pig roast Chicago',
@@ -37,18 +37,17 @@ export const metadata: Metadata = {
         locale: 'en_US',
         title: 'BBQ & Catering | Hofherr Meat Co.',
         description:
-            'Authentic low-and-slow BBQ catering, whole-pig roasts, rotisserie packages & custom event menus for 20–500+ guests. Northfield & Winnetka, IL.',
+            'Authentic low-and-slow BBQ catering, whole-pig roasts, rotisserie packages & custom event menus for up to 500+ guests. Northfield & Winnetka, IL.',
         url: 'https://hofherrmeatco.com/catering',
         images: [{ url: '/OG/og-catering.jpg', width: 1200, height: 630, alt: 'BBQ & Catering — Hofherr Meat Co.' }],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'BBQ & Catering | Hofherr Meat Co.',
-        description: 'Smoked brisket, ribs, pulled pork, whole-pig roasts & custom event menus. 20–500+ guests. Chicago North Shore.',
+        description: 'Smoked brisket, ribs, pulled pork, whole-pig roasts & custom event menus. Up to 500+ guests. Chicago North Shore.',
     },
 };
 
-type MenuItem = { name: string; category: string; image?: string };
 type ServiceItem = {
     title: string;
     emoji?: string | null;
@@ -58,27 +57,6 @@ type ServiceItem = {
 };
 type CateringEventData = { _id: string; date: string; eventType: string; status: string };
 type CalendarPricingRow = { label: string; price: string };
-
-const FALLBACK_MENU: MenuItem[] = [
-    { name: "Butcher's Charcuterie Board", category: 'appetizer', image: '/images/bbq/charcuterie.jpg' },
-    { name: 'Bacon Wrapped Chorizo Dates', category: 'appetizer', image: '/images/bbq/chorizo_dates.jpg' },
-    { name: 'Pimento Cheese + Crackers', category: 'appetizer', image: '/images/bbq/pimento_cheese.jpg' },
-    { name: 'Smoked Brisket', category: 'meat', image: '/images/bbq/brisket.jpg' },
-    { name: 'BBQ Pulled Pork', category: 'meat', image: '/images/bbq/pulled_pork.jpg' },
-    { name: 'BBQ Pulled Chicken', category: 'meat', image: '/images/bbq/pulled_chicken.jpg' },
-    { name: 'Rib Tips & Hot Links Combo', category: 'meat', image: '/images/bbq/rib_tips.jpg' },
-    { name: 'Ribs', category: 'meat', image: '/images/bbq/ribs.jpg' },
-    { name: 'Any of our HMC Sausages', category: 'meat', image: '/images/bbq/sausage.jpg' },
-    { name: 'Pimento Mac n Cheese', category: 'side', image: '/images/bbq/mac_cheese.jpg' },
-    { name: 'HMCo.leslaw', category: 'side', image: '/images/bbq/coleslaw.jpg' },
-    { name: 'Marinated Grilled Portobellos', category: 'side', image: '/images/bbq/portobellos.jpg' },
-    { name: 'Corn', category: 'side', image: '/images/bbq/corn.jpg' },
-    { name: 'Collard Greens', category: 'side', image: '/images/bbq/collard_greens.jpg' },
-    { name: 'Three Bean Salad', category: 'side', image: '/images/bbq/bean_salad.jpg' },
-    { name: 'House Pasta Salad', category: 'side', image: '/images/bbq/pasta_salad.jpg' },
-    { name: 'Potato Salad', category: 'side', image: '/images/bbq/potato_salad.jpg' },
-    { name: 'North Shore Baked Beans', category: 'side', image: '/images/bbq/baked_beans.jpg' },
-];
 
 const FALLBACK_SERVICES: ServiceItem[] = [
     {
@@ -125,69 +103,26 @@ const FALLBACK_SERVICES: ServiceItem[] = [
     },
 ];
 
-const CATEGORY_META: Record<string, { emoji: string; label: string }> = {
-    appetizer: { emoji: '🧀', label: 'Appetizer Options' },
-    meat: { emoji: '🔥', label: 'Meat Options' },
-    side: { emoji: '🥗', label: 'Side Options' },
-};
-
-function matchMenuImage(name: string): string | undefined {
-    const safeName = name.toLowerCase();
-    if (safeName.includes('brisket')) return '/images/bbq/brisket.jpg';
-    if (safeName.includes('pulled pork')) return '/images/bbq/pulled_pork.jpg';
-    if (safeName.includes('pulled chicken')) return '/images/bbq/pulled_chicken.jpg';
-    if (safeName.includes('rib tips')) return '/images/bbq/rib_tips.jpg';
-    if (safeName.includes('ribs') && !safeName.includes('tips')) return '/images/bbq/ribs.jpg';
-    if (safeName.includes('sausage')) return '/images/bbq/sausage.jpg';
-    if (safeName.includes('dates')) return '/images/bbq/chorizo_dates.jpg';
-    if (safeName.includes('charcuterie')) return '/images/bbq/charcuterie.jpg';
-    if (safeName.includes('pimento cheese') && !safeName.includes('mac')) return '/images/bbq/pimento_cheese.jpg';
-    if (
-        safeName.includes('mac and cheese') ||
-        safeName.includes('mac & cheese') ||
-        (safeName.includes('pimento') && safeName.includes('mac'))
-    ) {
-        return '/images/bbq/mac_cheese.jpg';
-    }
-    if (safeName.includes('slaw')) return '/images/bbq/coleslaw.jpg';
-    if (safeName.includes('beans')) return '/images/bbq/baked_beans.jpg';
-    if (safeName.includes('collard')) return '/images/bbq/collard_greens.jpg';
-    if (safeName.includes('portobello')) return '/images/bbq/portobellos.jpg';
-    if (safeName.includes('bean salad')) return '/images/bbq/bean_salad.jpg';
-    if (safeName.includes('pasta salad')) return '/images/bbq/pasta_salad.jpg';
-    if (safeName.includes('potato salad')) return '/images/bbq/potato_salad.jpg';
-    if (safeName.includes('corn')) return '/images/bbq/corn.jpg';
-    return undefined;
-}
-
 export default async function CateringPage() {
     const { isEnabled: preview } = await draftMode();
     const sanityClient = getClient(preview);
 
-    let menuItems: MenuItem[] = FALLBACK_MENU;
     let services: ServiceItem[] = FALLBACK_SERVICES;
     let cateringEvents: CateringEventData[] = [];
     let calendarPricing: CalendarPricingRow[] = [
         { label: 'Pig Roast (50+ guests)', price: 'From $30/pp' },
-        { label: 'BBQ Catering (20+ guests)', price: 'From $16/pp' },
+        { label: 'BBQ Catering', price: 'From $16/pp' },
         { label: 'Ask us about custom options', price: 'Contact us' },
     ];
 
     try {
         const todayStr = new Date().toISOString().split('T')[0];
-        const [rawMenu, rawServices, rawEvents, rawCalPricing] = await Promise.all([
-            sanityClient.fetch(BBQ_MENU_QUERY),
+        const [rawServices, rawEvents, rawCalPricing] = await Promise.all([
             sanityClient.fetch(BBQ_SERVICES_QUERY),
             sanityClient.fetch(CATERING_EVENTS_QUERY, { today: todayStr }),
             sanityClient.fetch(CATERING_CALENDAR_PRICING_QUERY),
         ]);
 
-        if (rawMenu?.length) {
-            menuItems = rawMenu.map((m: MenuItem) => ({
-                ...m,
-                image: matchMenuImage(m.name || ''),
-            }));
-        }
         if (rawServices?.length) services = rawServices;
         cateringEvents = rawEvents ?? [];
         if (rawCalPricing?.length) calendarPricing = rawCalPricing;
@@ -195,15 +130,12 @@ export default async function CateringPage() {
         // Fallback to static defaults above
     }
 
-    const grouped = menuItems.reduce(
-        (acc, item) => {
-            const cat = item.category ?? 'meat';
-            if (!acc[cat]) acc[cat] = [];
-            acc[cat].push(item);
-            return acc;
-        },
-        {} as Record<string, MenuItem[]>,
-    );
+    // Wild game processing lives on /selections, and pig roasts have their own section above.
+    const isMovedElsewhere = (svc: ServiceItem) => /wild game|pig roast/i.test(svc.title);
+    const isSmallLink = (svc: ServiceItem) => /picnic|game day|tailgate/i.test(svc.title);
+    const remaining = services.filter((svc) => !isMovedElsewhere(svc));
+    const mosaicServices = remaining.filter((svc) => !isSmallLink(svc));
+    const smallLinks = remaining.filter(isSmallLink);
 
     return (
         <main>
@@ -236,7 +168,18 @@ export default async function CateringPage() {
                     </div>
                     <div className={styles.steps}>
                         <div className={styles.step}>
-                            <div className={styles.stepNum}>1</div>
+                            <div className={styles.stepMediaWrap}>
+                                <div className={styles.stepMedia}>
+                                    <Image
+                                        src="/assets/catering/how-it-works-build-package.jpg"
+                                        alt="Illustrated BBQ catering platter with ribs, brisket, sausages, sides, crossed cleaver and fork, and rising flames"
+                                        fill
+                                        sizes="128px"
+                                        className={styles.stepImg}
+                                    />
+                                </div>
+                                <div className={styles.stepNum}>1</div>
+                            </div>
                             <h3>Build Your Package</h3>
                             <p>
                                 Choose your event type, pick your meats &amp; sides, and get an instant estimate — all
@@ -244,7 +187,18 @@ export default async function CateringPage() {
                             </p>
                         </div>
                         <div className={styles.step}>
-                            <div className={styles.stepNum}>2</div>
+                            <div className={styles.stepMediaWrap}>
+                                <div className={styles.stepMedia}>
+                                    <Image
+                                        src="/assets/catering/how-it-works-pick-date.jpg"
+                                        alt="Illustrated flaming calendar with a checked event date square"
+                                        fill
+                                        sizes="128px"
+                                        className={styles.stepImg}
+                                    />
+                                </div>
+                                <div className={styles.stepNum}>2</div>
+                            </div>
                             <h3>Pick a Date</h3>
                             <p>
                                 Select your event date on our live availability calendar. We require a minimum of 4 days
@@ -252,144 +206,24 @@ export default async function CateringPage() {
                             </p>
                         </div>
                         <div className={styles.step}>
-                            <div className={styles.stepNum}>3</div>
+                            <div className={styles.stepMediaWrap}>
+                                <div className={styles.stepMedia}>
+                                    <Image
+                                        src="/assets/catering/how-it-works-full-service.jpg"
+                                        alt="Illustrated full-service banquet cloche lifted over curling smoke, rising flames, and crossed carving knife and fork"
+                                        fill
+                                        sizes="128px"
+                                        className={styles.stepImg}
+                                    />
+                                </div>
+                                <div className={styles.stepNum}>3</div>
+                            </div>
                             <h3>We Handle Everything</h3>
                             <p>
                                 Submit your inquiry and Sean confirms within 24 hours. We arrive with food, setup,
                                 serving, and cleanup.
                             </p>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── BBQ & Catering Menu ── */}
-            <section id="bbq-menu" aria-labelledby="bbq-menu-heading" className={`section ${bbqStyles.menuSection}`}>
-                <div className="container">
-                    <div className={bbqStyles.menuHeader}>
-                        <div className="section-label">BBQ &amp; Catering · Min. 4 Days Notice</div>
-                        <h2 id="bbq-menu-heading" className={bbqStyles.menuTitle}>
-                            What&apos;s On The Menu
-                        </h2>
-                        <p className={bbqStyles.menuSub}>
-                            All smoked low-and-slow in-house. Choose your meats, sides, and add-ons — we handle the
-                            rest.
-                        </p>
-                    </div>
-
-                    <div className={bbqStyles.menuBoard}>
-                        {grouped['meat']?.length > 0 && (
-                            <div className={`${bbqStyles.menuCategory} ${bbqStyles.meatCategory}`}>
-                                <h3 className={bbqStyles.catTitle}>
-                                    {CATEGORY_META['meat'].emoji} {CATEGORY_META['meat'].label}
-                                </h3>
-                                <ul className={bbqStyles.menuList}>
-                                    {grouped['meat'].map((item) => (
-                                        <li key={item.name} className={item.image ? bbqStyles.hasThumb : ''}>
-                                            {item.image && (
-                                                <ParallaxImg
-                                                    src={item.image}
-                                                    alt={item.name}
-                                                    className={bbqStyles.listThumb}
-                                                />
-                                            )}
-                                            <span>{item.name}</span>
-                                        </li>
-                                    ))}
-                                    <li className={bbqStyles.buildYourPlate}>
-                                        <div className={bbqStyles.buildHeader}>
-                                            <span className={bbqStyles.buildTag}>— How It Works —</span>
-                                            <h4 className={bbqStyles.buildTitle}>Build Your Plate</h4>
-                                        </div>
-                                        <div className={bbqStyles.buildSteps}>
-                                            <div className={bbqStyles.buildStep}>
-                                                <span className={bbqStyles.buildStepNum}>01</span>
-                                                <div>
-                                                    <div className={bbqStyles.buildStepTitle}>Choose Your Meat</div>
-                                                    <div className={bbqStyles.buildStepDesc}>
-                                                        1 meat + 1 side — from $16/person
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className={bbqStyles.buildStep}>
-                                                <span className={bbqStyles.buildStepNum}>+</span>
-                                                <div>
-                                                    <div className={bbqStyles.buildStepTitle}>Add More Proteins</div>
-                                                    <div className={bbqStyles.buildStepDesc}>
-                                                        +$4/person per extra meat
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className={bbqStyles.buildStep}>
-                                                <span className={bbqStyles.buildStepNum}>+</span>
-                                                <div>
-                                                    <div className={bbqStyles.buildStepTitle}>Stack Your Sides</div>
-                                                    <div className={bbqStyles.buildStepDesc}>
-                                                        +$2/person per additional side
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className={bbqStyles.buildStep}>
-                                                <span className={bbqStyles.buildStepNum}>+</span>
-                                                <div>
-                                                    <div className={bbqStyles.buildStepTitle}>Add Appetizers</div>
-                                                    <div className={bbqStyles.buildStepDesc}>
-                                                        Charcuterie board +$4/person
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <a href="#build-your-package" className={bbqStyles.buildCta}>
-                                            See Full Pricing →
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
-
-                        {grouped['appetizer']?.length > 0 && (
-                            <div className={bbqStyles.menuCategory}>
-                                <h3 className={bbqStyles.catTitle}>
-                                    {CATEGORY_META['appetizer'].emoji} {CATEGORY_META['appetizer'].label}
-                                </h3>
-                                <ul className={bbqStyles.menuListDual}>
-                                    {grouped['appetizer'].map((item) => (
-                                        <li key={item.name} className={item.image ? bbqStyles.hasThumb : ''}>
-                                            {item.image && (
-                                                <ParallaxImg
-                                                    src={item.image}
-                                                    alt={item.name}
-                                                    className={bbqStyles.listThumb}
-                                                />
-                                            )}
-                                            <span>{item.name}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-
-                        {grouped['side']?.length > 0 && (
-                            <div className={bbqStyles.menuCategory}>
-                                <h3 className={bbqStyles.catTitle}>
-                                    {CATEGORY_META['side'].emoji} {CATEGORY_META['side'].label}
-                                </h3>
-                                <ul className={bbqStyles.menuListDual}>
-                                    {grouped['side'].map((item) => (
-                                        <li key={item.name} className={item.image ? bbqStyles.hasThumb : ''}>
-                                            {item.image && (
-                                                <ParallaxImg
-                                                    src={item.image}
-                                                    alt={item.name}
-                                                    className={bbqStyles.listThumb}
-                                                />
-                                            )}
-                                            <span>{item.name}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
                     </div>
                 </div>
             </section>
@@ -414,8 +248,11 @@ export default async function CateringPage() {
                 </div>
             </section>
 
+            {/* ── Pig Roasts (moved from /specials) ── */}
+            <PigRoastsSection />
+
             {/* ── Marquee Ticker ── */}
-            <CateringMarquee id="catering-marquee" />
+            <CateringMarquee id="catering-marquee" rows={1} />
 
             {/* ── Beyond BBQ ── */}
             <section id="beyond-bbq" aria-labelledby="beyond-bbq-heading" className={`section ${bbqStyles.servicesSection}`}>
@@ -429,7 +266,18 @@ export default async function CateringPage() {
                             From backyard pig roasts to corporate buffets — we handle it all.
                         </p>
                     </div>
-                    <MosaicServices services={services} />
+                    <MosaicServices services={mosaicServices} />
+                    {smallLinks.length > 0 && (
+                        <ul className={styles.moreLinks} aria-label="More catering options">
+                            {smallLinks.map((svc) => (
+                                <li key={svc.title}>
+                                    <a href={svc.linkUrl ?? 'tel:8474416328'}>
+                                        {svc.emoji} {svc.title} →
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             </section>
         </main>

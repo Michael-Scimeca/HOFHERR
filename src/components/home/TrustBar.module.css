@@ -4,7 +4,7 @@
 }
 
 .inner {
-    max-width: var(--max-w);
+    max-width: calc(var(--max-w) + var(--container-px) * 2);
     margin: 0 auto;
     padding: 0 var(--container-px);
     display: grid;

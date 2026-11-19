@@ -46,7 +46,7 @@ const EVENT_EMOJI: Record<string, string> = {
 
 const DEFAULT_PRICING = [
     { label: 'Pig Roast (50+ guests)', price: 'From $30/pp' },
-    { label: 'BBQ Catering (20+ guests)', price: 'From $16/pp' },
+    { label: 'BBQ Catering', price: 'From $16/pp' },
     { label: 'Ask us about custom options', price: 'Contact us' },
 ];
 

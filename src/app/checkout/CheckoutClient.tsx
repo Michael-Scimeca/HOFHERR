@@ -660,7 +660,7 @@ export default function CheckoutClient() {
                     {/* Store banner + location switcher */}
                     <div className={`${styles.storeBanner} ${activeStore === 'depot' ? styles.storeBannerDepot : ''}`}>
                         <span className={styles.storeBannerLocation}>
-                            📍 Pickup at: {activeStore === 'butcher' ? 'The Butcher Shop (300 Happ Rd, Northfield)' : 'The Depot (600 Elm St, Winnetka)'}
+                            📍 Pickup at: {activeStore === 'butcher' ? 'The Butcher Shop (300 Happ Rd, Northfield)' : 'The Depot (754 Elm St, Winnetka)'}
                         </span>
                         <div className={styles.storeSwitchRow}>
                             <button

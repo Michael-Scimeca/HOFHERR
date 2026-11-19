@@ -9,8 +9,8 @@ export default function CateringHeroButtons() {
             <a href="#build-your-package" className="btn-hit">
                 <span className="btn btn-primary">Build Your Package</span>
             </a>
-            <a href="#bbq-menu" className="btn-hit">
-                <span className="btn btn-secondary">See the Menu</span>
+            <a href="#pig-roasts" className="btn-hit">
+                <span className="btn btn-secondary">Pig Roasts</span>
             </a>
             <a href="tel:8474416328" className="btn-hit">
                 <span className="btn btn-secondary">📞 (847) 441-MEAT</span>

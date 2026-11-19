@@ -1,4 +1,8 @@
 import type { Metadata } from 'next';
+import { draftMode } from 'next/headers';
+import { getClient } from '@/sanity/client';
+import { CUT_GUIDE_QUERY } from '@/sanity/queries';
+import CutGuideClient, { type SanityCut } from '../cut-guide/CutGuideClient';
 import SelectionsClient from './SelectionsClient';
 
 export const metadata: Metadata = {
@@ -18,7 +22,14 @@ export const metadata: Metadata = {
     },
 };
 
-export default function SelectionsPage() {
-    return <SelectionsClient />;
+export default async function SelectionsPage() {
+    const { isEnabled: preview } = await draftMode();
+    let cuts: SanityCut[] = [];
+    try {
+        cuts = await getClient(preview).fetch(CUT_GUIDE_QUERY);
+    } catch {
+        // Falls back to hardcoded data in the client component
+    }
+    return <SelectionsClient cutGuide={<CutGuideClient sanityCuts={cuts} embedded />} />;
 }
 

@@ -2,12 +2,11 @@ import type { Metadata } from 'next';
 import Hero from '@/components/home/Hero';
 import SeasonalBanner from '@/components/home/SeasonalBanner';
 import SignatureDishesSection from '@/components/SignatureDishesSection';
-import ParcelSheetsTeaser from '@/components/home/ParcelSheetsTeaser';
+import RecipesTeaser from '@/components/home/RecipesTeaser';
+import StoryTeaser from '@/components/home/StoryTeaser';
 
 import Newsletter from '@/components/home/Newsletter';
-import dynamic from 'next/dynamic';
 
-const AwardsSection = dynamic(() => import('@/components/home/AwardsSection'), { ssr: true });
 export const metadata: Metadata = {
   title: 'Hofherr Meat Co. | Premium Butcher Shop — Northfield, IL',
   description:
@@ -37,8 +36,8 @@ export default function HomePage() {
       <Hero />
       <SeasonalBanner />
       <SignatureDishesSection />
-      <ParcelSheetsTeaser />
-
+      <RecipesTeaser />
+      <StoryTeaser />
       <Newsletter />
     </main>
   );

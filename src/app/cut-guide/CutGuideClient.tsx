@@ -31,6 +31,8 @@ export type SanityCut = {
 
 interface Props {
     sanityCuts?: SanityCut[];
+    /** Rendered inside another page (Shop): no <main>, H2 heading, no closing CTA. */
+    embedded?: boolean;
 }
 
 type AnimalMeta = {
@@ -163,7 +165,7 @@ function matchesQuery(cut: CutEntry, normalizedQuery: string): boolean {
     return haystack.includes(normalizedQuery);
 }
 
-export default function CutGuideClient({ sanityCuts = EMPTY_SANITY_CUTS }: Props) {
+export default function CutGuideClient({ sanityCuts = EMPTY_SANITY_CUTS, embedded = false }: Props) {
     const [active, setActive] = useState<Animal>('beef');
     const [query, setQuery] = useState('');
     const settings = useSiteSettings();
@@ -292,15 +294,18 @@ export default function CutGuideClient({ sanityCuts = EMPTY_SANITY_CUTS }: Props
         ? ANIMALS.filter((m) => m.id !== active && filteredByAnimal[m.id].length > 0)
         : [];
 
+    const Shell = embedded ? 'div' : 'main';
+    const Heading = embedded ? 'h2' : 'h1';
+
     return (
-        <main className={styles.page}>
+        <Shell id={embedded ? 'cut-guide' : undefined} className={styles.page}>
             {/* ── Open Hero Header ── */}
             <header className={styles.hero}>
                 <div className="container">
                     <div className={styles.heroInner}>
-                        <h1 className={styles.headline}>
+                        <Heading className={styles.headline}>
                             The <em>Cut Guide</em>
-                        </h1>
+                        </Heading>
                         <p className={styles.sub}>
                             Every cut of beef, pork, poultry, lamb, and wild game — what it&apos;s best for, how to cook
                             it, and pro tips straight from master butcher Sean Hofherr.
@@ -526,6 +531,7 @@ export default function CutGuideClient({ sanityCuts = EMPTY_SANITY_CUTS }: Props
             </section>
 
             {/* ── Custom Butcher Order CTA ── */}
+            {!embedded && (
             <section id="custom-butcher-cta" aria-labelledby="custom-butcher-cta-heading" className="section-sm">
                 <div className="container">
                     <div className={styles.ctaCard}>
@@ -553,6 +559,7 @@ export default function CutGuideClient({ sanityCuts = EMPTY_SANITY_CUTS }: Props
                     </div>
                 </div>
             </section>
-        </main>
+            )}
+        </Shell>
     );
 }

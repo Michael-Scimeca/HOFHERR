@@ -16,6 +16,11 @@ import {
     type FlameSettings,
     type FlameSlot,
 } from '@/app/fire-test/FireTestClient';
+import {
+    BurnTransitionOverlay,
+    DEFAULT_SITE_BURN_DURATION_MS,
+    type BurnOverlayHandle,
+} from './BurnTransitionOverlay';
 import styles from './PageTransition.module.css';
 
 /* ─── Context ─── */
@@ -76,8 +81,8 @@ interface MeltConfig {
 }
 
 const DEFAULT_MELT_CONFIG: MeltConfig = {
-    exitMs: 380,
-    enterMs: 680,
+    exitMs: DEFAULT_SITE_BURN_DURATION_MS,
+    enterMs: DEFAULT_SITE_BURN_DURATION_MS,
     meltAmount: 100,
     meltY: 12,
     meltScale: 2,
@@ -105,8 +110,8 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
     const safetyRef = useRef<NodeJS.Timeout | null>(null);
     const exitDoneHandlerRef = useRef<(() => void) | null>(null);
-    const exitMsRef = useRef(380);
-    const enterMsRef = useRef(680);
+    const exitMsRef = useRef(DEFAULT_SITE_BURN_DURATION_MS);
+    const enterMsRef = useRef(DEFAULT_SITE_BURN_DURATION_MS);
 
     // Sync custom durations from HUD sliders
     useEffect(() => {
@@ -395,6 +400,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
     const pathname = usePathname();
     const { navigateTo } = usePageTransition();
     const wrapRef = useRef<HTMLDivElement>(null);
+    const burnRef = useRef<BurnOverlayHandle | null>(null);
+    const burnActiveRef = useRef(false);
     const scrubberInputRef = useRef<HTMLInputElement>(null);
     const timelineReadoutRef = useRef<HTMLSpanElement>(null);
 
@@ -739,12 +746,62 @@ export default function PageTransition({ children }: { children: React.ReactNode
             typeof window !== 'undefined' &&
             Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
 
+        const applyPageBurnMask = (burnP: number | null) => {
+            const portals = document.querySelectorAll<HTMLElement>('[data-pt-portal]');
+            if (burnP === null || burnP <= 0.002) {
+                el.style.maskImage = '';
+                el.style.webkitMaskImage = '';
+                el.style.opacity = '';
+                portals.forEach(p => {
+                    p.style.maskImage = '';
+                    p.style.webkitMaskImage = '';
+                    p.style.opacity = '';
+                });
+                return;
+            }
+            // Match #24 Smokehouse Draft Swirl's exact shader front: ndist = 1.06 - 1.286 * burnP
+            // so 100% of page content is completely consumed before the flame endFade (0.88..1.0).
+            const frontNdist = 1.06 - 1.286 * burnP;
+            if (frontNdist <= -0.04) {
+                el.style.maskImage = '';
+                el.style.webkitMaskImage = '';
+                el.style.opacity = '0';
+                portals.forEach(p => {
+                    p.style.maskImage = '';
+                    p.style.webkitMaskImage = '';
+                    p.style.opacity = '0';
+                });
+                return;
+            }
+            const rect = el.getBoundingClientRect();
+            const cx = Math.round(window.innerWidth * 0.5 - rect.left);
+            const cy = Math.round(window.innerHeight * 0.5 - rect.top);
+            const maxR = Math.hypot(window.innerWidth * 0.5, window.innerHeight * 0.5);
+            const innerR = Math.max(0, Math.round(maxR * (frontNdist - 0.08)));
+            const outerR = Math.max(innerR + 1, Math.round(maxR * (frontNdist + 0.06)));
+            const mask = `radial-gradient(circle at ${cx}px ${cy}px, #000 ${innerR}px, transparent ${outerR}px)`;
+            el.style.opacity = '1';
+            el.style.maskImage = mask;
+            el.style.webkitMaskImage = mask;
+
+            const portalMask = `radial-gradient(circle at 50vw 50vh, #000 ${innerR}px, transparent ${outerR}px)`;
+            portals.forEach(p => {
+                p.style.opacity = '1';
+                p.style.maskImage = portalMask;
+                p.style.webkitMaskImage = portalMask;
+            });
+        };
+
         const handleExit = () => {
             cancelLoop();
-            const { exitMs: dur, enterMs: en } = paramsRef.current;
+            const dur = DEFAULT_SITE_BURN_DURATION_MS;
+            const en = DEFAULT_SITE_BURN_DURATION_MS;
             const split = Math.round((dur / (dur + en)) * 100);
 
             if (prefersReducedMotion()) {
+                burnActiveRef.current = false;
+                burnRef.current?.clear();
+                applyPageBurnMask(null);
                 el.classList.remove('pt-enter', 'pt-waiting', 'pt-exit');
                 paintMeltStyle('clear', 1, false);
                 setScrubPct(split);
@@ -753,13 +810,16 @@ export default function PageTransition({ children }: { children: React.ReactNode
                 return;
             }
 
+            burnActiveRef.current = true;
             el.classList.remove('pt-enter', 'pt-waiting');
             el.classList.add('pt-exit');
+            paintMeltStyle('clear', 1, false);
+            applyPageBurnMask(0);
             setMeltStep(1);
-            setPhaseLabel('MELTING OUT');
+            setPhaseLabel('BURNING OUT');
             setScrubPct(0);
             syncScrubberDom(0);
-            paintMeltStyle('exit', 0, false);
+            burnRef.current?.renderFrame(0);
 
             let elapsed = 0;
             let lastNow = 0;
@@ -771,13 +831,16 @@ export default function PageTransition({ children }: { children: React.ReactNode
                 elapsed += dt;
                 const p = Math.min(1, elapsed / Math.max(1, dur));
 
-                paintMeltStyle('exit', p, false);
+                applyPageBurnMask(p);
+                burnRef.current?.renderFrame(p);
                 syncScrubberDom(Math.round(p * split));
 
                 if (p < 1) {
                     animRafRef.current = requestAnimationFrame(tick);
                 } else {
                     animRafRef.current = null;
+                    applyPageBurnMask(1);
+                    burnRef.current?.clear();
                     setScrubPct(split);
                     window.dispatchEvent(new CustomEvent('page-transition-exit-done'));
                 }
@@ -788,11 +851,16 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
         const handleWaiting = () => {
             cancelLoop();
-            const { exitMs: ex, enterMs: en } = paramsRef.current;
-            const split = Math.round((ex / (ex + en)) * 100);
+            const dur = DEFAULT_SITE_BURN_DURATION_MS;
+            const split = Math.round((dur / (dur + dur)) * 100);
             el.classList.remove('pt-exit', 'pt-enter');
             el.classList.add('pt-waiting');
-            paintMeltStyle('enter', 0, false);
+            if (burnActiveRef.current) {
+                applyPageBurnMask(1);
+                burnRef.current?.clear();
+            } else {
+                paintMeltStyle('enter', 0, false);
+            }
             setMeltStep(2);
             setPhaseLabel('DECODING ASSETS');
             setScrubPct(split);
@@ -803,15 +871,21 @@ export default function PageTransition({ children }: { children: React.ReactNode
             cancelLoop();
             const detail = (e as CustomEvent<{ includeHeader?: boolean; durationMs?: number }>).detail;
             const includeHeader = Boolean(detail?.includeHeader);
+            const useBurn = burnActiveRef.current && !includeHeader;
             const { exitMs: ex, enterMs: cfgDur } = paramsRef.current;
             const dur = typeof detail?.durationMs === 'number'
                 ? detail.durationMs
-                : includeHeader
-                    ? Math.min(560, cfgDur)
-                    : cfgDur;
+                : useBurn
+                    ? DEFAULT_SITE_BURN_DURATION_MS
+                    : includeHeader
+                        ? Math.min(560, cfgDur)
+                        : cfgDur;
             const split = Math.round((ex / (ex + dur)) * 100);
 
             if (prefersReducedMotion()) {
+                burnActiveRef.current = false;
+                burnRef.current?.clear();
+                applyPageBurnMask(null);
                 el.classList.remove('pt-exit', 'pt-waiting', 'pt-enter');
                 paintMeltStyle('clear', 1, includeHeader);
                 setMeltStep(4);
@@ -822,6 +896,53 @@ export default function PageTransition({ children }: { children: React.ReactNode
                 return;
             }
 
+            if (useBurn) {
+                // Keep live background embers 100% visible while the new page blooms back in behind the swirl
+                paintMeltStyle('clear', 1, false);
+                el.classList.remove('pt-exit', 'pt-waiting', 'pt-enter');
+                applyPageBurnMask(1);
+                burnRef.current?.renderFrame(1);
+                setMeltStep(3);
+                setPhaseLabel('BURNING IN');
+                setScrubPct(split);
+                syncScrubberDom(split);
+
+                let elapsed = 0;
+                let lastNow = 0;
+
+                const tick = (now: number) => {
+                    const dt = lastNow === 0 ? 0 : Math.min(now - lastNow, 28);
+                    lastNow = now;
+                    elapsed += dt;
+                    const p = Math.min(1, elapsed / Math.max(1, dur));
+                    const burnP = 1 - p;
+
+                    applyPageBurnMask(burnP);
+                    burnRef.current?.renderFrame(burnP);
+                    syncScrubberDom(Math.round(split + p * (100 - split)));
+
+                    if (p < 1) {
+                        animRafRef.current = requestAnimationFrame(tick);
+                    } else {
+                        animRafRef.current = null;
+                        burnActiveRef.current = false;
+                        applyPageBurnMask(null);
+                        burnRef.current?.clear();
+                        setMeltStep(4);
+                        setPhaseLabel('READY');
+                        setScrubPct(100);
+                        syncScrubberDom(100);
+                        window.dispatchEvent(new CustomEvent('page-transition-enter-done'));
+                    }
+                };
+
+                animRafRef.current = requestAnimationFrame(tick);
+                return;
+            }
+
+            burnActiveRef.current = false;
+            applyPageBurnMask(null);
+            burnRef.current?.clear();
             // Apply initial 0% melted styles BEFORE removing .pt-waiting so there is zero flash
             paintMeltStyle('enter', 0, includeHeader);
             el.classList.remove('pt-exit', 'pt-waiting');
@@ -1037,6 +1158,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
             <div ref={wrapRef} className="pt-wrap">
                 {children}
             </div>
+            <BurnTransitionOverlay ref={burnRef} />
 
                 {/* Left HUD: Dedicated Page Melt & Preloader Timeline UI (hidden) */}
                 {false && (

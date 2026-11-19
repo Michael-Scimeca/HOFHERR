@@ -61,6 +61,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/cut-guide',
+        destination: '/selections#cut-guide',
+        permanent: true,
+      },
+      {
         source: '/bbq',
         destination: '/catering',
         permanent: true,

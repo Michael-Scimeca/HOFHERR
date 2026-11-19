@@ -300,7 +300,7 @@ export const KNOWLEDGE_PRODUCTS: KnowledgeProductCard[] = [
     {
         id: 'whole-hog-catering',
         title: 'Whole-Hog & BBQ Catering',
-        meta: '20–500+ Guests · Get quote',
+        meta: 'Up to 500+ Guests · Get quote',
         href: '/catering',
         imageSrc: '/assets/pig-roast-spread.jpg',
         imageAlt: 'Whole-hog pig roast and offset smoker BBQ catering spread',

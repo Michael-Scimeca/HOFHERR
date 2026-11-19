@@ -39,17 +39,27 @@ export default function RecipeCookingSheetsIndexPage() {
     return (
         <SheetsInkModeShell>
             <header className={styles.indexHero}>
-                <div className={`container ${styles.indexHeroGrid}`}>
-                    <div className={styles.indexHeroCopy}>
+                <div className="container">
+                    <div className={styles.indexHeroInner}>
                         <h1 className={styles.indexTitle}>
                             Butcher&apos;s Parcel <em>Liners</em>
                         </h1>
                         <p className={styles.indexLede}>
                             Single-ink black-and-white 12 × 16 inch parchment print plates calibrated for two servings —
-                            strictly for <strong>oven-baked parcels at 425°F or below</strong>, with life-size 1:1
-                            ingredient contours, USDA safe internal temperatures, and a scannable QR code back to
-                            hofherrmeatco.com.
+                            strictly for oven-baked parcels at 425°F or below, with life-size 1:1 ingredient contours,
+                            USDA safe internal temperatures, and a scannable QR code back to hofherrmeatco.com.
                         </p>
+                    </div>
+                </div>
+            </header>
+
+            <section
+                id="how-parcel-sheets-work"
+                aria-labelledby="how-parcel-sheets-work-heading"
+                className="section"
+            >
+                <div className={`container ${styles.sectionStack}`}>
+                    <div className={styles.indexControlsBar}>
                         <SheetsInkModeToggleBar />
                         <div className={styles.indexMetaRow}>
                             <span className={styles.indexSpecStat}>
@@ -70,23 +80,6 @@ export default function RecipeCookingSheetsIndexPage() {
                         </div>
                     </div>
 
-                    <div className={styles.indexHeroMedia}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src="/assets/recipes/sheets/how-it-works-sausage-triptych.jpg"
-                            alt="Three-step progression showing Hofherr Italian sausages placed on a 12 by 16 inch parchment sheet, folded into a parcel on cast iron, and baked steaming hot"
-                            className={styles.indexHeroImg}
-                        />
-                    </div>
-                </div>
-            </header>
-
-            <section
-                id="how-parcel-sheets-work"
-                aria-labelledby="how-parcel-sheets-work-heading"
-                className="section-sm"
-            >
-                <div className={`container ${styles.sectionStack}`}>
                     <div className={styles.sectionHeader}>
                         <h2 id="how-parcel-sheets-work-heading" className={styles.sectionHeading}>
                             How the Parcel Liner Works

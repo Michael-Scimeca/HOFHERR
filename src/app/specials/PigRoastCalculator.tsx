@@ -23,15 +23,14 @@ const MEAT_OPTIONS = [
 ];
 
 const SIDE_OPTIONS = [
+    'Seasonal Pasta Salad',
     'Pimento Mac n Cheese',
-    'HMCo.leSlaw',
     'Potato Salad',
-    'Grilled Portobellos',
-    'Corn',
-    'Three Bean Salad',
-    'House Pasta Salad',
+    'Butchers Beans',
+    'HMCo.Slaw',
     'Collard Greens',
-    'North Shore Baked Beans',
+    'Seasonal Salad',
+    'Grilled Lion\'s Mane Mushrooms',
 ];
 
 interface Props {

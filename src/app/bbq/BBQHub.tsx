@@ -15,7 +15,7 @@ export default function BBQHub({ events, calendarPricing }: Props) {
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [guests, setGuests] = useState(25);
     const [selectedMeats, setSelectedMeats] = useState<string[]>(['Smoked Brisket', 'BBQ Pulled Pork']);
-    const [selectedSides, setSelectedSides] = useState<string[]>(['Pimento Mac n Cheese', 'North Shore Baked Beans']);
+    const [selectedSides, setSelectedSides] = useState<string[]>(['Pimento Mac n Cheese', 'Butchers Beans']);
     const [charcuterie, setCharcuterie] = useState(false);
     const [pimento, setPimento] = useState(0);
     const [delivery, setDelivery] = useState(false);

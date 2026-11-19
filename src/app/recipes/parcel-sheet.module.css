@@ -544,9 +544,9 @@
 .indexMain {
     --sheet-paper: #ffffff;
     --sheet-accent: #111111;
-    padding-top: calc(var(--nav-h) + var(--space-8));
     display: flex;
     flex-direction: column;
+    gap: 0;
 }
 
 .indexMain[data-bw-print='false'] {
@@ -623,39 +623,53 @@
     object-fit: cover;
 }
 
+/* ── Open Hero Header (Matches /cut-guide — centered, 64px top / 48px bottom, no enclosing card) ── */
 .indexHero {
-    padding: var(--space-8) 0 var(--space-6);
+    background: var(--bg-2);
+    background-image:
+        radial-gradient(at 20%, #80002026 0%, #0000 60%),
+        radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
+    border-bottom: 1px solid var(--border);
+    padding: 64px 0 48px;
+    text-align: center;
 }
 
-.indexHeroGrid {
-    display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    align-items: center;
-    gap: var(--space-8);
-}
-
-.indexHeroCopy {
+.indexHeroInner {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    align-items: center;
+    gap: 16px;
+    max-width: 760px;
+    margin-inline: auto;
 }
 
 .indexTitle {
-    margin: 0;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    line-height: 0.96;
     color: var(--fg);
+    animation: fadeInUp 0.6s var(--ease-out) both;
 }
 
 .indexTitle em {
-    font-style: normal;
+    font-style: italic;
     color: var(--red);
 }
 
 .indexLede {
-    margin: 0;
-    font-size: var(--text-lg);
+    max-width: 580px;
+    font-size: var(--text-base);
     color: var(--fg-2);
-    max-width: 58ch;
-    line-height: 1.6;
+    line-height: 1.7;
+    animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
+}
+
+.indexControlsBar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
 }
 
 .indexMetaRow {
@@ -689,19 +703,11 @@
     color: var(--gold);
 }
 
-.indexHeroMedia {
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    border: 1px solid #ffffff1a;
-    aspect-ratio: 16 / 9;
-    background: var(--bg-card);
-}
-
-.indexHeroImg {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+@media (prefers-reduced-motion: reduce) {
+    .indexTitle,
+    .indexLede {
+        animation: none;
+    }
 }
 
 .sectionHeader {
@@ -1290,9 +1296,6 @@
 
 @media screen and (max-width: 900px) {
     .cardRecipeCols {
-        grid-template-columns: 1fr;
-    }
-    .indexHeroGrid {
         grid-template-columns: 1fr;
     }
 

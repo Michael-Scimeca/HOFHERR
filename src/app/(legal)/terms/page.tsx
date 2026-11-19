@@ -269,8 +269,8 @@ export default function TermsPage() {
                                                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                                             </svg>
                                         </span>
-                                        <a href="mailto:info@hofherrmeatco.com" className={styles.contactLink}>
-                                            info@hofherrmeatco.com
+                                        <a href="mailto:butcher@hofherrmeatco.com" className={styles.contactLink}>
+                                            butcher@hofherrmeatco.com
                                         </a>
                                     </div>
                                 </div>

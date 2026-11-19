@@ -1,0 +1,852 @@
+.page {
+    min-height: 100vh;
+    padding-top: calc(var(--nav-h) + var(--space-8));
+    padding-bottom: var(--space-16);
+}
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--border);
+}
+
+.headerCopy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.title {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 0.96;
+    color: var(--fg);
+    margin: 0;
+}
+
+.title em {
+    font-style: italic;
+    color: var(--red);
+    font-weight: 600;
+}
+
+.sub {
+    font-size: var(--text-base);
+    line-height: 1.55;
+    color: var(--fg-2);
+    max-width: 66ch;
+    margin: 0;
+}
+
+.filterRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.filterBtn {
+    padding: var(--space-2) var(--space-4);
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--fg-2);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.18s var(--ease-out), color 0.18s var(--ease-out), background-color 0.18s var(--ease-out);
+}
+
+.filterBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.filterBtnActive {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+}
+
+/* ── Live Stage + Controls ── */
+.stagePanel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+}
+
+.stageTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.activeMeta {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.activeNum {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+}
+
+.activeName {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1;
+}
+
+.engineBadge {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--gold-light);
+}
+
+.stageActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.playBtn {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--red);
+    background: var(--red);
+    color: #fff;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.18s var(--ease-out);
+}
+
+.playBtn:hover {
+    background: var(--red-dark);
+}
+
+.ghostBtn {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg-2);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.18s var(--ease-out), color 0.18s var(--ease-out);
+}
+
+.ghostBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.ghostBtnActive {
+    border-color: var(--gold);
+    color: var(--gold-light);
+}
+
+.scrubberRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.scrubberLabel {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    min-width: 112px;
+    font-variant-numeric: tabular-nums;
+}
+
+.scrubberRange {
+    flex: 1;
+    min-width: 180px;
+    accent-color: var(--red);
+    cursor: pointer;
+}
+
+/* ── Per-Variant Live UI Tuning Panel ── */
+.tuningPanel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius);
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid var(--border);
+}
+
+.tuningHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.tuningTitle {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+}
+
+.tuningHeaderActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.tuningGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-5);
+}
+
+.tuningRow {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tuningLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--fg-2);
+}
+
+.tuningVal {
+    font-variant-numeric: tabular-nums;
+    color: var(--gold-light);
+    font-weight: 700;
+}
+
+.tuningRange {
+    width: 100%;
+    accent-color: var(--red);
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    .tuningGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .tuningGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Live Burn Preview Viewport ── */
+.stageViewport {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 360px;
+    max-height: 540px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #000;
+    border: 1px solid var(--border);
+}
+
+.stageViewportFull {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    max-height: none;
+    aspect-ratio: auto;
+    border-radius: 0;
+    border: none;
+    z-index: 10050;
+}
+
+.fullCloseBtn {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    z-index: 30;
+    padding: var(--space-2) var(--space-4);
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.85);
+    color: var(--fg);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+/* Underneath "next page" revealed after burn completes */
+.nextPageLayer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    background: radial-gradient(circle at 50% 45%, rgba(139, 10, 16, 0.22), #000 68%);
+    text-align: center;
+    padding: var(--space-6);
+}
+
+.nextPageTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin: 0;
+}
+
+.nextPageTitle em {
+    color: var(--gold-light);
+    font-style: italic;
+}
+
+.nextPageSub {
+    font-size: var(--text-sm);
+    color: var(--fg-3);
+    margin: 0;
+}
+
+/* Mock Hofherr page being burned away */
+.burnPageLayer {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+        radial-gradient(circle at 50% 18%, rgba(204, 14, 29, 0.24), transparent 52%),
+        linear-gradient(180deg, #090606 0%, #0e0a09 55%, #060505 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--space-6) var(--space-8);
+    will-change: clip-path, transform, filter, opacity;
+}
+
+.mockNav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+.mockBrand {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: 0.05em;
+}
+
+.mockHero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-3);
+}
+
+.mockH1 {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(2.25rem, 5vw, 4.25rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 0.96;
+    color: var(--fg);
+    margin: 0;
+}
+
+.mockH1 em {
+    font-style: italic;
+    color: var(--red);
+}
+
+.mockSub {
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+    max-width: 52ch;
+    margin: 0;
+}
+
+.mockBtns {
+    display: flex;
+    gap: var(--space-3);
+    padding-top: var(--space-2);
+}
+
+.mockBtnPrimary {
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    background: var(--red);
+    color: #fff;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.mockBtnGhost {
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    color: var(--fg-2);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.mockSteps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+}
+
+.mockStep {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-1);
+}
+
+.mockStepNum {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--red);
+    color: #fff;
+    font-size: var(--text-xs);
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mockStepTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: var(--text-lg);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--fg);
+}
+
+.mockStepDesc {
+    font-size: var(--text-xs);
+    color: var(--fg-3);
+}
+
+/* Canvas overlay layer for all 10 Canvas versions */
+.burnCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 6;
+    pointer-events: none;
+    display: block;
+}
+
+/* HTML glowing fire-rim overlay layer for HTML transitions */
+.htmlGlowOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   10 HTML / CSS / SVG BURN-OUT TRANSITIONS (driven by --burn 0..1)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 01: Parchment Corner Catch (bottom-right diagonal jagged eat) */
+.html01 {
+    --r: calc(var(--burn, 0) * 160%);
+    clip-path: polygon(
+        0% 0%,
+        100% 0%,
+        100% calc(100% - var(--r)),
+        calc(100% - var(--r)) 100%,
+        0% 100%
+    );
+    filter: sepia(calc(var(--burn, 0) * 0.7)) saturate(calc(1 + var(--burn, 0) * 2.2)) contrast(calc(1 + var(--burn, 0) * 0.5));
+}
+
+.glow01 {
+    background: linear-gradient(
+        135deg,
+        transparent calc(100% - var(--burn, 0) * 135% - 14%),
+        rgba(204, 14, 29, 0.9) calc(100% - var(--burn, 0) * 135% - 5%),
+        rgba(255, 196, 92, 1) calc(100% - var(--burn, 0) * 135%),
+        transparent calc(100% - var(--burn, 0) * 135% + 4%)
+    );
+    opacity: calc(min(1, var(--burn, 0) * 6) * (1 - max(0, (var(--burn, 0) - 0.85) * 6.6)));
+}
+
+/* 02: Center Ember Hole (expanding radial cigarette burn) */
+.html02 {
+    --hole: calc(var(--burn, 0) * 85%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent calc(var(--hole) - 3%), #000 calc(var(--hole) + 2%));
+    mask-image: radial-gradient(circle at 50% 50%, transparent calc(var(--hole) - 3%), #000 calc(var(--hole) + 2%));
+    filter: contrast(calc(1 + var(--burn, 0) * 0.6));
+}
+
+.glow02 {
+    --hole: calc(var(--burn, 0) * 85%);
+    background: radial-gradient(
+        circle at 50% 50%,
+        transparent calc(var(--hole) - 5%),
+        rgba(255, 226, 150, 1) calc(var(--hole) - 1%),
+        rgba(232, 82, 34, 0.95) calc(var(--hole) + 3%),
+        rgba(139, 10, 16, 0.5) calc(var(--hole) + 9%),
+        transparent calc(var(--hole) + 16%)
+    );
+    opacity: calc(min(1, var(--burn, 0) * 8) * (1 - max(0, (var(--burn, 0) - 0.88) * 8.3)));
+}
+
+/* 03: Rising Hearth Curtain (bottom-up flame wipe) */
+.html03 {
+    clip-path: inset(0 0 calc(var(--burn, 0) * 102%) 0);
+    filter: url(#hofherr-heat-shimmer) saturate(calc(1 + var(--burn, 0) * 1.8));
+}
+
+.glow03 {
+    --line: calc(100% - var(--burn, 0) * 102%);
+    background: linear-gradient(
+        to bottom,
+        transparent calc(var(--line) - 14%),
+        rgba(204, 14, 29, 0.85) calc(var(--line) - 5%),
+        rgba(255, 210, 120, 1) var(--line),
+        rgba(255, 90, 20, 0.6) calc(var(--line) + 4%),
+        transparent calc(var(--line) + 12%)
+    );
+    opacity: calc(min(1, var(--burn, 0) * 8) * (1 - max(0, (var(--burn, 0) - 0.9) * 10)));
+}
+
+/* 04: Top-Down Scorch Drop */
+.html04 {
+    clip-path: inset(calc(var(--burn, 0) * 102%) 0 0 0);
+    filter: sepia(calc(var(--burn, 0) * 0.6)) brightness(calc(1 - var(--burn, 0) * 0.25));
+}
+
+.glow04 {
+    --line: calc(var(--burn, 0) * 102%);
+    background: linear-gradient(
+        to bottom,
+        transparent calc(var(--line) - 8%),
+        rgba(255, 190, 80, 1) var(--line),
+        rgba(204, 14, 29, 0.85) calc(var(--line) + 6%),
+        transparent calc(var(--line) + 16%)
+    );
+    opacity: calc(min(1, var(--burn, 0) * 8) * (1 - max(0, (var(--burn, 0) - 0.9) * 10)));
+}
+
+/* 05: Heat-Warp Melt & Char (SVG turbulence film-melt) */
+.html05 {
+    filter: url(#hofherr-film-melt) contrast(calc(1 + var(--burn, 0) * 5)) saturate(calc(1 + var(--burn, 0) * 3)) brightness(calc(1 - var(--burn, 0) * 0.95));
+    transform: scale(calc(1 + var(--burn, 0) * 0.08)) translateY(calc(var(--burn, 0) * -18px));
+    opacity: calc(1 - max(0, (var(--burn, 0) - 0.62) * 2.65));
+}
+
+.glow05 {
+    background: radial-gradient(circle at 50% 60%, rgba(255, 110, 24, 0.75), rgba(204, 14, 29, 0.4) 55%, transparent 80%);
+    opacity: calc(sin(var(--burn, 0) * 3.14159));
+}
+
+/* 06: Dual-Edge Pinch Burn (left + right edges burn inward) */
+.html06 {
+    clip-path: inset(0 calc(var(--burn, 0) * 51%) 0 calc(var(--burn, 0) * 51%));
+    filter: contrast(calc(1 + var(--burn, 0) * 0.8)) saturate(calc(1 + var(--burn, 0) * 1.5));
+}
+
+.glow06 {
+    --edge: calc(var(--burn, 0) * 51%);
+    background:
+        linear-gradient(to right, transparent calc(var(--edge) - 4%), rgba(255, 200, 96, 1) var(--edge), rgba(204, 14, 29, 0.85) calc(var(--edge) + 4%), transparent calc(var(--edge) + 11%)),
+        linear-gradient(to left, transparent calc(var(--edge) - 4%), rgba(255, 200, 96, 1) var(--edge), rgba(204, 14, 29, 0.85) calc(var(--edge) + 4%), transparent calc(var(--edge) + 11%));
+    opacity: calc(min(1, var(--burn, 0) * 8) * (1 - max(0, (var(--burn, 0) - 0.9) * 10)));
+}
+
+/* 07: Butcher's Grill Sear Strips (horizontal repeating grate char) */
+.html07 {
+    --gap: calc(var(--burn, 0) * 56px);
+    -webkit-mask-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent var(--gap),
+        #000 calc(var(--gap) + 3px),
+        #000 56px
+    );
+    mask-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent var(--gap),
+        #000 calc(var(--gap) + 3px),
+        #000 56px
+    );
+}
+
+.glow07 {
+    --gap: calc(var(--burn, 0) * 56px);
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent calc(var(--gap) - 4px),
+        rgba(255, 195, 86, 0.95) var(--gap),
+        rgba(204, 14, 29, 0.8) calc(var(--gap) + 5px),
+        transparent calc(var(--gap) + 12px),
+        transparent 56px
+    );
+    opacity: calc(min(1, var(--burn, 0) * 8) * (1 - max(0, (var(--burn, 0) - 0.9) * 10)));
+}
+
+/* 08: Diagonal Torch Slash */
+.html08 {
+    --p: calc(var(--burn, 0) * 150%);
+    clip-path: polygon(
+        calc(var(--p) - 50%) 0%,
+        100% 0%,
+        100% 100%,
+        calc(var(--p) - 50%) 100%,
+        var(--p) 0%
+    );
+    clip-path: polygon(
+        calc(var(--burn, 0) * 145% - 45%) 0%,
+        100% 0%,
+        100% 100%,
+        calc(var(--burn, 0) * 145%) 100%
+    );
+}
+
+.glow08 {
+    background: linear-gradient(
+        112deg,
+        transparent calc(var(--burn, 0) * 130% - 26%),
+        rgba(204, 14, 29, 0.9) calc(var(--burn, 0) * 130% - 17%),
+        rgba(255, 240, 180, 1) calc(var(--burn, 0) * 130% - 12%),
+        rgba(255, 100, 20, 0.7) calc(var(--burn, 0) * 130% - 7%),
+        transparent calc(var(--burn, 0) * 130%)
+    );
+    opacity: calc(min(1, var(--burn, 0) * 8) * (1 - max(0, (var(--burn, 0) - 0.9) * 10)));
+}
+
+/* 09: Multi-Spot Spark Ignition (5 expanding burn holes) */
+.html09 {
+    --h1: calc(var(--burn, 0) * 62%);
+    --h2: calc(max(0, var(--burn, 0) - 0.08) * 68%);
+    -webkit-mask-image:
+        radial-gradient(circle at 20% 28%, transparent calc(var(--h1) - 2%), #000 calc(var(--h1) + 2%)),
+        radial-gradient(circle at 78% 30%, transparent calc(var(--h2) - 2%), #000 calc(var(--h2) + 2%)),
+        radial-gradient(circle at 50% 54%, transparent calc(var(--h1) - 2%), #000 calc(var(--h1) + 2%)),
+        radial-gradient(circle at 24% 78%, transparent calc(var(--h2) - 2%), #000 calc(var(--h2) + 2%)),
+        radial-gradient(circle at 76% 76%, transparent calc(var(--h1) - 2%), #000 calc(var(--h1) + 2%));
+    -webkit-mask-composite: destination-in;
+    mask-image:
+        radial-gradient(circle at 20% 28%, transparent calc(var(--h1) - 2%), #000 calc(var(--h1) + 2%)),
+        radial-gradient(circle at 78% 30%, transparent calc(var(--h2) - 2%), #000 calc(var(--h2) + 2%)),
+        radial-gradient(circle at 50% 54%, transparent calc(var(--h1) - 2%), #000 calc(var(--h1) + 2%)),
+        radial-gradient(circle at 24% 78%, transparent calc(var(--h2) - 2%), #000 calc(var(--h2) + 2%)),
+        radial-gradient(circle at 76% 76%, transparent calc(var(--h1) - 2%), #000 calc(var(--h1) + 2%));
+    mask-composite: intersect;
+}
+
+.glow09 {
+    --h1: calc(var(--burn, 0) * 62%);
+    --h2: calc(max(0, var(--burn, 0) - 0.08) * 68%);
+    background:
+        radial-gradient(circle at 20% 28%, transparent calc(var(--h1) - 4%), rgba(255, 195, 85, 0.95) var(--h1), rgba(204, 14, 29, 0.7) calc(var(--h1) + 5%), transparent calc(var(--h1) + 10%)),
+        radial-gradient(circle at 78% 30%, transparent calc(var(--h2) - 4%), rgba(255, 195, 85, 0.95) var(--h2), rgba(204, 14, 29, 0.7) calc(var(--h2) + 5%), transparent calc(var(--h2) + 10%)),
+        radial-gradient(circle at 50% 54%, transparent calc(var(--h1) - 4%), rgba(255, 195, 85, 0.95) var(--h1), rgba(204, 14, 29, 0.7) calc(var(--h1) + 5%), transparent calc(var(--h1) + 10%)),
+        radial-gradient(circle at 24% 78%, transparent calc(var(--h2) - 4%), rgba(255, 195, 85, 0.95) var(--h2), rgba(204, 14, 29, 0.7) calc(var(--h2) + 5%), transparent calc(var(--h2) + 10%)),
+        radial-gradient(circle at 76% 76%, transparent calc(var(--h1) - 4%), rgba(255, 195, 85, 0.95) var(--h1), rgba(204, 14, 29, 0.7) calc(var(--h1) + 5%), transparent calc(var(--h1) + 10%));
+    opacity: calc(min(1, var(--burn, 0) * 8) * (1 - max(0, (var(--burn, 0) - 0.88) * 8.3)));
+}
+
+/* 10: Flashover Cinder Fade */
+.html10 {
+    filter:
+        sepia(calc(min(1, var(--burn, 0) * 2.2)))
+        contrast(calc(1 + var(--burn, 0) * 3.5))
+        brightness(calc(1 + sin(var(--burn, 0) * 3.14159) * 1.4 - var(--burn, 0) * 1.25))
+        blur(calc(var(--burn, 0) * 12px));
+    transform: scale(calc(1 - var(--burn, 0) * 0.08));
+    opacity: calc(1 - pow(var(--burn, 0), 1.8));
+}
+
+.glow10 {
+    background: radial-gradient(circle at 50% 50%, rgba(255, 224, 140, 0.9), rgba(232, 82, 34, 0.7) 48%, rgba(139, 10, 16, 0.4) 80%);
+    opacity: calc(sin(var(--burn, 0) * 3.14159) * 0.85);
+}
+
+/* ── 20-Variant Selector Grid ── */
+.cardsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.18s var(--ease-out), transform 0.18s var(--ease-out), background-color 0.18s var(--ease-out);
+}
+
+.card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+.cardActive {
+    border-color: var(--red);
+    background: rgba(204, 14, 29, 0.12);
+}
+
+.cardTop {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.cardNum {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+}
+
+.cardTag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--fg-3);
+}
+
+.cardTagCanvas {
+    color: var(--gold-light);
+    border-color: rgba(168, 144, 95, 0.4);
+}
+
+.cardTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: var(--text-xl);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.05;
+}
+
+.cardDesc {
+    font-size: var(--text-xs);
+    line-height: 1.5;
+    color: var(--fg-2);
+    margin: 0;
+}
+
+.srSvg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+@media (max-width: 1100px) {
+    .cardsGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .cardsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .mockSteps {
+        grid-template-columns: 1fr;
+    }
+}
+

@@ -217,8 +217,7 @@ export default function EmberBackground() {
             const brightMult = 1 + (TRANSITION_CONFIG.brightness - 1) * surgeEnergy;
             const gustX = TRANSITION_CONFIG.windGust * surgeEnergy;
 
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, ww, wh);
+            ctx.clearRect(0, 0, ww, wh);
 
             windTime += 0.006;
             windStrength += (windTarget - windStrength) * 0.008;

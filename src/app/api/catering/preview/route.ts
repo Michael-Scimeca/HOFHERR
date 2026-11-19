@@ -101,7 +101,7 @@ const SAMPLE = {
   packageName: 'BBQ Catering (3 Meats, 2 Sides)',
   total: 1490,
   meats: ['Smoked Brisket', 'BBQ Pulled Pork', 'Smoked Ribs'],
-  sides: ['Pimento Mac n Cheese', 'North Shore Baked Beans'],
+  sides: ['Pimento Mac n Cheese', 'Butchers Beans'],
 };
 
 function buildCustomerReceipt(data: typeof SAMPLE): string {

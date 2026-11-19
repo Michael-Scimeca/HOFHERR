@@ -30,7 +30,7 @@
 /* ─── Inner row ─── */
 .inner {
     width: 100%;
-    max-width: var(--max-w);
+    max-width: calc(var(--max-w) + var(--container-px) * 2);
     margin: 0 auto;
     padding: 0 var(--container-px);
     display: flex;
@@ -90,8 +90,8 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 8px 9px;
-    font-size: 12px;
+    padding: 8px 11px;
+    font-size: 12.5px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.7);
     border-radius: 6px;
@@ -380,6 +380,13 @@
 
 
 /* ─── Store status pill ─── */
+.storeStatusOuter {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 4px;
+}
+
 .storeStatusWrap {
     display: flex;
     flex-direction: row;
@@ -387,7 +394,6 @@
     gap: 14px;
     padding: 0;
     margin: 0;
-    margin-top: 4px;
 }
 
 .marqueeTrack {
@@ -510,14 +516,16 @@
 .tickerSep   { display: none; }
 
 .phone {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    gap: 5px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-3);
     transition: color 0.2s;
     white-space: nowrap;
+    text-decoration: none;
 }
 
 .phone:hover {
@@ -1087,8 +1095,7 @@
 @media (max-width: 1400px) {
     .navBtn,
     .navLink {
-        padding: 8px 6px;
-        font-size: 11.5px;
+        padding: 8px 8px;
     }
 }
 
@@ -1112,10 +1119,6 @@
         display: none;
     }
 
-    .phone {
-        display: none;
-    }
-
     .hamburger {
         display: flex;
     }
@@ -1123,7 +1126,8 @@
 
 @media (max-width: 680px) {
     .authPill,
-    .signOutInlineBtn {
+    .signOutInlineBtn,
+    .phone {
         display: none;
     }
 }

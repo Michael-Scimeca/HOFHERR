@@ -42,7 +42,7 @@ export default function QuotesSection() {
                     <div className={styles.perks}>
                         {[
                             'Pig roasts & whole animals',
-                            'BBQ catering for 20–500+ guests',
+                            'BBQ catering for up to 500+ guests',
                             'Bulk & wholesale orders',
                             'Custom aging & specialty cuts',
                             'Holiday pre-orders',

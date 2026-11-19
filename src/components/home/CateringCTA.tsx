@@ -18,7 +18,7 @@ const SERVICES = [
         emoji: '🐷',
         title: 'Pig Roasts',
         desc: 'We source, prep, cook & serve. The full experience — from farm to fire to your table. Perfect for backyard parties, anniversaries, and graduation blowouts.',
-        detail: 'Serves 30–300+ guests',
+        detail: 'Serves 50–300+ guests',
         href: '/pig-roasts',
         cta: 'View Details',
     },
@@ -27,7 +27,7 @@ const SERVICES = [
         title: 'BBQ Catering',
         desc: 'Competition-style BBQ for any event. Brisket, ribs, pulled pork, sausages — smoked low and slow, served hot. From 20 to 500+ guests.',
         detail: 'Custom menus available',
-        href: '/catering#bbq-menu',
+        href: '/catering#build-your-package',
         cta: 'See the Menu',
     },
     {

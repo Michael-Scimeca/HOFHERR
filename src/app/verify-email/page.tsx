@@ -225,7 +225,7 @@ function VerifyEmailContent() {
                         <ul className={styles.dispatchSteps}>
                             <li>
                                 <span className={styles.stepBadge}>✓</span>
-                                <span>300 Happ Rd · Northfield &amp; 780 Elm St · Winnetka Depot</span>
+                                <span>300 Happ Rd · Northfield &amp; 754 Elm St · Winnetka Depot</span>
                             </li>
                         </ul>
                     </div>
