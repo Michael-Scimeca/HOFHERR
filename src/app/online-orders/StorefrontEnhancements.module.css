@@ -1,0 +1,213 @@
+.enhancementsWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.block {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-2);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.blockHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.blockTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin: 0;
+}
+
+.blockSub {
+    font-size: 12px;
+    color: var(--fg-muted);
+}
+
+/* ── 1-Click Buy Again Strip ── */
+.reorderStrip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.reorderCard {
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: #080808;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.reorderTop {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.reorderName {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--fg);
+}
+
+.reorderPrice {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    white-space: nowrap;
+}
+
+.reorderNote {
+    font-size: 11.5px;
+    color: var(--fg-muted);
+    font-style: italic;
+    margin: 0;
+}
+
+.reorderBtn {
+    margin-top: auto;
+    padding: 7px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--red);
+    background: rgba(204, 14, 29, 0.14);
+    color: var(--fg);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.16s, color 0.16s;
+}
+
+.reorderBtn:hover {
+    background: var(--red);
+    color: #fff;
+}
+
+/* ── 1-Click Curated Bundles ── */
+.bundleGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.bundleCard {
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: #080808;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bundleHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.bundleBadge {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid rgba(200, 164, 126, 0.45);
+}
+
+.bundleServes {
+    font-size: 11px;
+    color: var(--fg-muted);
+}
+
+.bundleTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.1;
+}
+
+.bundleDesc {
+    font-size: 12.5px;
+    color: var(--fg-muted);
+    line-height: 1.55;
+    margin: 0;
+}
+
+.bundleItems {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--fg-2);
+}
+
+.bundleBtn {
+    margin-top: auto;
+    width: 100%;
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--red);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.16s;
+}
+
+.bundleBtn:hover {
+    opacity: 0.9;
+}
+
+.bundleBtnDone {
+    background: #16a34a;
+}
+
+@media (max-width: 960px) {
+    .bundleGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.subError {
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(204, 14, 29, 0.45);
+    background: rgba(204, 14, 29, 0.12);
+    color: #fca5a5;
+    font-size: 12.5px;
+}

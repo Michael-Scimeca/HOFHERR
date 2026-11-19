@@ -20,6 +20,8 @@ import {
 import BurnModalShell, { BurnPanel } from '@/components/BurnModalShell';
 import { lockScroll } from '@/lib/scrollLock';
 import { estimateCartServings } from '@/lib/servings';
+import StorefrontEnhancements, { type ReorderItem } from './StorefrontEnhancements';
+import { getRecipePairing, getSocialProof, toProductSlug } from './storefrontData';
 const TAX_RATE = 0.0225; // 2.25% based on reference image
 
 /* ─── Payment Brand Badges ───────────────────────────────────────────── */
@@ -911,7 +913,15 @@ export default function CustomOrdersPage({
     const [restockQty, setRestockQty] = useState(1);
     const [restockSubmitted, setRestockSubmitted] = useState<Set<string>>(new Set());
     const searchRef = useRef<HTMLInputElement>(null);
-    const [modal, setModal] = useState<Item | null>(null);
+    const [modal, setModal] = useState<Item | null>(() => {
+        const slug = searchParams.get('item')?.toLowerCase();
+        if (!slug) return null;
+        for (const cat of [...butcherCategories, ...depotCategories]) {
+            const found = cat.items.find((it) => toProductSlug(it.name) === slug);
+            if (found) return found;
+        }
+        return null;
+    });
     const [modalClosing, setModalClosing] = useState(false);
     const [modalQty, setModalQty] = useState(1);
     const [modalNote, setModalNote] = useState('');
@@ -1808,6 +1818,7 @@ export default function CustomOrdersPage({
         setModal(item);
         setModalQty(1);
         setModalNote('');
+        setShareCopied(false);
         if (typeof window !== 'undefined') {
             window.dispatchEvent(
                 new CustomEvent(SYNC_LIVE_PRODUCT_EVENT, {
@@ -1822,6 +1833,40 @@ export default function CustomOrdersPage({
             );
         }
     }, [categoryIconByItemName]);
+
+    const [shareCopied, setShareCopied] = useState(false);
+
+    const handleShareCut = useCallback((itemName: string) => {
+        if (typeof window === 'undefined') return;
+        const url = `${window.location.origin}/online-orders?item=${toProductSlug(itemName)}`;
+        navigator.clipboard?.writeText(url).catch(() => {});
+        setShareCopied(true);
+        setTimeout(() => setShareCopied(false), 1800);
+    }, []);
+
+    const handleBulkAddItems = useCallback((incoming: ReorderItem[]) => {
+        setCart((prev) => {
+            const next = [...prev];
+            for (const item of incoming) {
+                const idx = next.findIndex((i) => i.name === item.name);
+                if (idx >= 0) {
+                    next[idx] = {
+                        ...next[idx],
+                        qty: Math.min(ITEM_MAX_QTY, next[idx].qty + item.qty),
+                        note: item.note || next[idx].note,
+                    };
+                } else {
+                    next.push({
+                        name: item.name,
+                        price: item.price,
+                        qty: Math.min(ITEM_MAX_QTY, item.qty),
+                        note: item.note,
+                    });
+                }
+            }
+            return next;
+        });
+    }, []);
 
     const handleRowAddClick = useCallback((item: Item, e: React.MouseEvent<HTMLButtonElement>) => {
         if (!animCfg.quickAddDirect) {
@@ -2393,6 +2438,11 @@ export default function CustomOrdersPage({
                     </div>
                 )}
 
+                {/* ── 1-Click Buy Again & Curated Butcher Bundles ── */}
+                {activeStore === 'butcher' && !searchQuery.trim() && !showFavoritesOnly && (
+                    <StorefrontEnhancements isLoggedIn={isLoggedIn} onAddItems={handleBulkAddItems} />
+                )}
+
                 {/* ── Recently Ordered Section ── */}
                 {recentlyOrdered.length > 0 && !searchQuery.trim() && !showFavoritesOnly && showRecentlyOrdered && (
                     <div className={styles.recentlyOrdered}>
@@ -2626,7 +2676,16 @@ export default function CustomOrdersPage({
                     <div className={styles.modalHeaderRow}>
                         <div className={styles.modalHeaderText}>
                             <div className={styles.modalTitle}>{modal.name}</div>
-                            <div className={styles.modalPrice}>{modal.price}</div>
+                            <div className={styles.modalPriceRow}>
+                                <span className={styles.modalPrice}>{modal.price}</span>
+                                <button
+                                    type="button"
+                                    className={styles.shareCutBtn}
+                                    onClick={() => handleShareCut(modal.name)}
+                                >
+                                    {shareCopied ? '✓ Link Copied' : 'Share Cut'}
+                                </button>
+                            </div>
                         </div>
                         {animCfg.flyShowModalPreview && (
                             <div className={styles.modalPreviewBadge} title="Product Flying Into Cart">
@@ -2648,6 +2707,34 @@ export default function CustomOrdersPage({
                         )}
                     </div>
                     {modal.desc && <p className={styles.modalDesc}>{modal.desc}</p>}
+
+                    {(() => {
+                        const proof = getSocialProof(modal.name);
+                        if (!proof) return null;
+                        return (
+                            <div className={styles.modalSocialProof}>
+                                <div className={styles.modalProofTop}>
+                                    <span className={styles.modalProofBadge}>{proof.badge}</span>
+                                    <span className={styles.modalProofRating}>★ {proof.rating} · {proof.weeklyOrders} ordered this week</span>
+                                </div>
+                                <p className={styles.modalProofQuote}>&ldquo;{proof.quote}&rdquo; — {proof.reviewer}</p>
+                            </div>
+                        );
+                    })()}
+
+                    {(() => {
+                        const pairing = getRecipePairing(modal.name);
+                        if (!pairing) return null;
+                        return (
+                            <div className={styles.modalRecipePairing}>
+                                <div className={styles.modalRecipeLabel}>Butcher&apos;s Cook Tip &amp; Parcel Sheet</div>
+                                <p className={styles.modalRecipeTip}>{pairing.tip}</p>
+                                <Link href={pairing.href} className={styles.modalRecipeLink}>
+                                    {pairing.title} →
+                                </Link>
+                            </div>
+                        );
+                    })()}
 
                     <div className={styles.qtyRow}>
                         <button className={styles.qtyBtn} onClick={() => setModalQty(q => Math.max(1, q - 1))}>−</button>

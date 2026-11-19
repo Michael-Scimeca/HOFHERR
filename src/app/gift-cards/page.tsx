@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
+import GiftCardBalanceChecker from '@/components/GiftCardBalanceChecker';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -203,6 +204,9 @@ export default function GiftCardsPage() {
                                 </a>
                             </div>
                         </div>
+
+                        {/* Balance Checker */}
+                        <GiftCardBalanceChecker />
 
                         {/* FAQ */}
                         <div className={styles.faqSection}>

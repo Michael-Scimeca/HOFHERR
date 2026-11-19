@@ -545,6 +545,42 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     const badgeCount = Math.max(0, count - inFlightQty);
 
+    // Cross-device cloud cart sync (pull on mount if local cart empty, debounced push on updates)
+    const cloudHydratedRef = useRef(false);
+    useEffect(() => {
+        let cancelled = false;
+        async function hydrateFromCloud() {
+            try {
+                const res = await fetch('/api/cart');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (!cancelled && Array.isArray(data?.items) && data.items.length > 0 && itemsRef.current.length === 0) {
+                    persistCart(data.items);
+                }
+            } catch {
+                // ignore offline/unauthenticated
+            } finally {
+                cloudHydratedRef.current = true;
+            }
+        }
+        void hydrateFromCloud();
+        return () => {
+            cancelled = true;
+        };
+    }, [persistCart]);
+
+    useEffect(() => {
+        if (!cloudHydratedRef.current) return;
+        const timer = window.setTimeout(() => {
+            void fetch('/api/cart', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ items }),
+            }).catch(() => {});
+        }, 900);
+        return () => window.clearTimeout(timer);
+    }, [items]);
+
     const contextValue = useMemo(() => ({
         count,
         badgeCount,

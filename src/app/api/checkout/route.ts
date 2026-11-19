@@ -79,6 +79,7 @@ export async function POST(req: Request) {
         const orderNote = sanitize(body?.orderNote, 500);
         const customerId = body?.customerId;
         const coupon = body?.coupon;
+        const giftCardCodeInput = sanitize(body?.giftCardCode, 40).toUpperCase();
         const storeId = sanitize(body?.storeId) || 'butcher'; // 'butcher' or 'depot'
         const paymentMethod = body?.paymentMethod || 'stripe';
         const tipAmount = typeof body?.tipAmount === 'number' ? Math.max(0, Math.round(body.tipAmount * 100)) : 0; // in cents
@@ -185,7 +186,69 @@ export async function POST(req: Request) {
         const discountedSubtotal = Math.max(0, subtotalCents - discountCents);
         const TAX_RATE = 0.0225;
         const taxCents = Math.round(discountedSubtotal * TAX_RATE);
-        const totalCents = discountedSubtotal + taxCents + tipAmount;
+
+        // ── Optional Server-Validated Gift Card Redemption ──
+        let validatedGiftCardCode: string | null = null;
+        let giftCardAppliedCents = 0;
+        let giftCardDocId: string | null = null;
+        let giftCardRemainingAfterCents = 0;
+
+        if (giftCardCodeInput) {
+            const gc = await adminClient.fetch<{
+                _id: string;
+                code: string;
+                balanceCents?: number;
+                balance?: number;
+                active?: boolean;
+                expiresAt?: string;
+            } | null>(
+                `*[_type == "giftCard" && upper(code) == $code][0]{ _id, code, balanceCents, balance, active, expiresAt }`,
+                { code: giftCardCodeInput }
+            );
+            const isValidCard =
+                gc &&
+                gc.active !== false &&
+                (!gc.expiresAt || new Date(gc.expiresAt).getTime() >= Date.now());
+
+            if (isValidCard) {
+                const availCents =
+                    typeof gc.balanceCents === 'number'
+                        ? Math.max(0, Math.round(gc.balanceCents))
+                        : typeof gc.balance === 'number'
+                          ? Math.max(0, Math.round(gc.balance * 100))
+                          : 0;
+                const preGiftTotal = discountedSubtotal + taxCents + tipAmount;
+                giftCardAppliedCents = Math.min(availCents, preGiftTotal);
+                if (giftCardAppliedCents > 0) {
+                    validatedGiftCardCode = gc.code || giftCardCodeInput;
+                    giftCardDocId = gc._id;
+                    giftCardRemainingAfterCents = Math.max(0, availCents - giftCardAppliedCents);
+                    lineItems.push({
+                        price_data: {
+                            currency: 'usd',
+                            product_data: {
+                                name: `Gift Card (${validatedGiftCardCode})`,
+                            },
+                            unit_amount: -giftCardAppliedCents,
+                        },
+                        quantity: 1,
+                    });
+                }
+            }
+        }
+
+        const totalCents = Math.max(0, discountedSubtotal + taxCents + tipAmount - giftCardAppliedCents);
+
+        if (giftCardDocId && giftCardAppliedCents > 0) {
+            adminClient
+                .patch(giftCardDocId)
+                .set({
+                    balanceCents: giftCardRemainingAfterCents,
+                    balance: Number((giftCardRemainingAfterCents / 100).toFixed(2)),
+                })
+                .commit()
+                .catch((err) => console.error('[Checkout] Gift card balance patch failed:', err));
+        }
 
         if (taxCents > 0) {
             lineItems.push({
@@ -267,11 +330,11 @@ export async function POST(req: Request) {
             return NextResponse.json({ url: false });
         }
 
-        // ── Create Stripe session ─────────────────────────────────────────────
+        // ── Create Stripe session (omit payment_method_types so Stripe enables Apple Pay, Google Pay & Link) ──
         const session = await stripe.checkout.sessions.create({
             mode: 'payment',
             line_items: lineItems,
-            payment_method_types: ['card'],
+            allow_promotion_codes: true,
             customer_email: email || undefined,
             // Stripe auto-emails a receipt to the customer after payment
             payment_intent_data: {

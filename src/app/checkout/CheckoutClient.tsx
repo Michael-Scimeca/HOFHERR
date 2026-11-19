@@ -392,6 +392,38 @@ export default function CheckoutClient() {
     const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'instore'>('stripe');
     const [orderNote, setOrderNote] = useState('');
     const [stripeError, setStripeError] = useState('');
+    const [giftCardInput, setGiftCardInput] = useState('');
+    const [appliedGiftCard, setAppliedGiftCard] = useState<{ code: string; balanceFormatted: string; balanceCents: number } | null>(null);
+    const [giftCardError, setGiftCardError] = useState('');
+    const [giftCardChecking, setGiftCardChecking] = useState(false);
+
+    const handleApplyGiftCard = async () => {
+        if (!giftCardInput.trim()) return;
+        setGiftCardChecking(true);
+        setGiftCardError('');
+        try {
+            const res = await fetch('/api/gift-cards/validate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: giftCardInput.trim() }),
+            });
+            const data = await res.json();
+            if (!res.ok || !data.valid) {
+                setAppliedGiftCard(null);
+                setGiftCardError(data.error || 'Invalid gift card code.');
+            } else {
+                setAppliedGiftCard({
+                    code: data.code,
+                    balanceFormatted: data.balanceFormatted,
+                    balanceCents: data.balanceCents,
+                });
+            }
+        } catch {
+            setGiftCardError('Network error — please try again.');
+        } finally {
+            setGiftCardChecking(false);
+        }
+    };
 
     // Auth state
     const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot'>('login');
@@ -594,6 +626,7 @@ export default function CheckoutClient() {
                         orderNote,
                         customerId: sessionUser?.id,
                         coupon: null,
+                        giftCardCode: appliedGiftCard?.code ?? null,
                         storeId: activeStore,
                         paymentMethod,
                     }),
@@ -601,6 +634,11 @@ export default function CheckoutClient() {
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error ?? 'Checkout failed');
                 try {
+                    // Save recent items for 1-click "Buy Again" on /online-orders
+                    localStorage.setItem(
+                        'hofherr_recent_order_items_v1',
+                        JSON.stringify(cart.slice(0, 10))
+                    );
                     const key = activeStore === 'butcher' ? 'hofherr_cart_butcher' : 'hofherr_cart_depot';
                     localStorage.removeItem(`${key}_${STORAGE_VERSION}`);
                     localStorage.removeItem(key);
@@ -971,12 +1009,40 @@ export default function CheckoutClient() {
                                 <textarea className={styles.noteArea} placeholder="Special instructions (optional)…" value={orderNote} onChange={e => setOrderNote(e.target.value)} rows={2} />
                             </div>
 
+                            {/* Gift Card Redemption */}
+                            <div className={styles.section}>
+                                <div className={styles.giftCardRow}>
+                                    <input
+                                        type="text"
+                                        value={giftCardInput}
+                                        onChange={(e) => setGiftCardInput(e.target.value)}
+                                        placeholder="Hofherr Gift Card code (optional)"
+                                        aria-label="Hofherr Gift Card code"
+                                        className={styles.giftCardInput}
+                                    />
+                                    <button
+                                        type="button"
+                                        className={styles.giftCardBtn}
+                                        disabled={giftCardChecking || !giftCardInput.trim()}
+                                        onClick={() => void handleApplyGiftCard()}
+                                    >
+                                        {giftCardChecking ? 'Checking…' : 'Apply'}
+                                    </button>
+                                </div>
+                                {appliedGiftCard && (
+                                    <p className={styles.giftCardOk}>
+                                        ✓ Gift card <strong>{appliedGiftCard.code}</strong> applied (up to {appliedGiftCard.balanceFormatted} deducted at payment).
+                                    </p>
+                                )}
+                                {giftCardError && <p className={styles.stripeError}>⚠️ {giftCardError}</p>}
+                            </div>
+
                             {/* Payment method */}
                             <div className={styles.section}>
                                 <div className={styles.payRow}>
                                     <label className={`${styles.payBtn} ${paymentMethod === 'stripe' ? styles.payBtnActive : ''}`}>
                                         <input type="radio" name="paymentMethod" value="stripe" checked={paymentMethod === 'stripe'} onChange={() => setPaymentMethod('stripe')} className={styles.hiddenRadio} />
-                                        💳 Pay Online
+                                        💳 Pay Online (Card / Apple Pay / Google Pay)
                                     </label>
                                     <label className={`${styles.payBtn} ${paymentMethod === 'instore' ? styles.payBtnActive : ''}`}>
                                         <input type="radio" name="paymentMethod" value="instore" checked={paymentMethod === 'instore'} onChange={() => setPaymentMethod('instore')} className={styles.hiddenRadio} />
@@ -992,10 +1058,10 @@ export default function CheckoutClient() {
                                     <button type="button" className={styles.backBtn} onClick={() => setGuestProceeded(false)}>← Back</button>
                                 )}
                                 <button type="submit" className={styles.submitBtn} disabled={isPending || !pickupString}>
-                                    {isPending ? 'Processing…' : (paymentMethod === 'stripe' ? 'Continue to Payment' : 'Place Order')}
+                                    {isPending ? 'Processing…' : (paymentMethod === 'stripe' ? 'Continue to Express Payment' : 'Place Order')}
                                 </button>
                             </div>
-                            <p className={styles.secureNote}>🔒 Powered by Stripe · 256-bit SSL</p>
+                            <p className={styles.secureNote}>🔒 Powered by Stripe · Apple Pay, Google Pay &amp; Link enabled · 256-bit SSL</p>
                         </form>
                     )}
                 </div>

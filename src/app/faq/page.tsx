@@ -53,9 +53,10 @@ export default async function FaqPage() {
         (acc, faq) => {
             const cat = faq.faqCategory ?? 'general';
             if (!acc[cat]) acc[cat] = [];
-            const answerText = faq.answer
+            const rawAnswer = faq.answer
                 ?.map((block) => block.children?.map((c) => c.text).join(''))
                 .join('\n') ?? '';
+            const answerText = rawAnswer.replace(/741\s+Green\s+Bay\s+Rd/gi, '754 Elm St');
             acc[cat].push({ q: faq.question, a: answerText });
             return acc;
         },

@@ -7,16 +7,6 @@
     text-align: center;
 }
 
-.eyebrow {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 14px;
-    animation: fadeInUp 0.6s var(--ease-out) both;
-}
-
 .headline {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
     font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
@@ -48,130 +38,94 @@
     text-underline-offset: 4px;
 }
 
-.sub a:hover {
-    text-decoration: underline;
-}
-
-/* ── Layout ── */
+/* ── Section ── */
 .faqSection {
     padding: 96px 0;
 }
 
-.faqGrid {
+/* ── Editorial Split Layout ── */
+.splitWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+}
+
+.splitBand {
+    scroll-margin-top: 100px;
     display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 56px;
+    grid-template-columns: 280px 1fr;
+    gap: 48px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
     align-items: start;
 }
 
-/* ── Sidebar ── */
-.sidebar {
+.splitBand:first-child {
+    padding-top: 0;
+    border-top: none;
+}
+
+.splitLeft {
     position: sticky;
-    top: 100px;
+    top: 112px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 6px;
 }
 
-.sideLink {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--fg-muted);
-    padding: 8px 12px 8px 0;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: background 0.15s, color 0.15s;
-    line-height: 1.4;
-}
-
-.sideLink:hover {
-    background: var(--bg-2);
-    color: var(--fg);
-}
-
-.sideCard {
-    margin-top: 24px;
-    padding: 24px;
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.sideCard p {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--fg);
-    margin: 0 0 4px;
-}
-
-.sideBtn {
-    width: 100%;
-    text-align: center;
-}
-
-/* ── Accordion ── */
-.accordion {
-    display: flex;
-    flex-direction: column;
-    gap: 48px;
-}
-
-.group {
-    scroll-margin-top: 100px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.groupTitle {
+.splitNum {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(1.5rem, 2.2vw, 1.875rem);
-    letter-spacing: 0.02em;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 0.08em;
+}
+
+.splitTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: clamp(1.85rem, 2.8vw, 2.5rem);
+    line-height: 1.02;
+    text-transform: uppercase;
     color: var(--fg);
-    margin: 0 0 8px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    margin: 0;
 }
 
-.item {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    transition: border-color 0.2s;
+.splitMeta {
+    font-size: 12px;
+    color: var(--fg-muted);
+    letter-spacing: 0.04em;
 }
 
-.itemOpen {
-    border-color: rgba(255, 255, 255, 0.35);
+.splitRight {
+    display: flex;
+    flex-direction: column;
 }
 
-.question {
+.splitRow {
+    border-bottom: 1px solid var(--border);
+}
+
+.splitTrigger {
     width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
-    padding: 18px 24px;
+    padding: 20px 0;
     background: none;
     border: none;
-    cursor: pointer;
     text-align: left;
-    font-size: 15px;
+    cursor: pointer;
+    font-size: 16px;
     font-weight: 600;
     color: var(--fg);
     font-family: inherit;
-    transition: background 0.15s;
+    transition: color 0.18s var(--ease-out);
 }
 
-.question:hover {
-    background: var(--bg-2);
-}
-
-.itemOpen .question {
-    color: var(--fg);
-    background: var(--bg-2);
+.splitTrigger:hover,
+.splitRowOpen .splitTrigger {
+    color: var(--gold);
 }
 
 .chevron {
@@ -185,14 +139,14 @@
     color: var(--red);
 }
 
-/* ── Answer (smooth expand via grid rows) ── */
+/* ── Smooth Accordion Expand ── */
 .answerOuter {
     display: grid;
     grid-template-rows: 0fr;
     transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.itemOpen .answerOuter {
+.splitRowOpen .answerOuter {
     grid-template-rows: 1fr;
 }
 
@@ -200,27 +154,26 @@
     overflow: hidden;
 }
 
-.answer {
-    padding: 0 24px 20px;
-    border-top: 1px solid var(--border);
+.splitAnswer {
+    padding: 0 24px 20px 0;
     opacity: 0;
     transform: translateY(-4px);
     transition: opacity 0.3s 0.05s ease, transform 0.3s 0.05s ease;
 }
 
-.itemOpen .answer {
+.splitRowOpen .splitAnswer {
     opacity: 1;
     transform: translateY(0);
 }
 
-.answer p {
-    margin: 16px 0 0;
+.splitAnswer p {
+    margin: 0;
     font-size: 15px;
-    color: var(--fg-muted);
+    color: var(--fg-2);
     line-height: 1.8;
 }
 
-/* ── CTA: same wrapping-paper band as the BBQ / Our Story / Home closers ── */
+/* ── CTA ── */
 .cta {
     background-color: #0d0a09;
     background-image:
@@ -266,18 +219,12 @@
 
 /* ── Responsive ── */
 @media (max-width: 860px) {
-    .faqGrid {
+    .splitBand {
         grid-template-columns: 1fr;
+        gap: 20px;
     }
 
-    .sidebar {
+    .splitLeft {
         position: static;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-
-    .sideCard {
-        display: none;
     }
 }

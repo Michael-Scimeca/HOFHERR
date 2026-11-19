@@ -3,6 +3,7 @@ import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
 import { CATEGORIES_QUERY } from '@/sanity/queries';
 import CustomOrdersPage from './OnlineOrdersClient';
+import { toProductSlug } from './storefrontData';
 
 const DESIGN_SYSTEM_ICONS: Record<string, string> = {
     beef: '/icons/cow.svg',
@@ -56,12 +57,56 @@ export default async function OnlineOrdersPage() {
         console.warn('Sanity fetch failed, using fallback data:', e);
     }
 
+    const allCategories = [...(Array.isArray(sanityButcher) ? sanityButcher : []), ...(Array.isArray(sanityDepot) ? sanityDepot : [])];
+    const productSchemaItems = allCategories.flatMap((cat: { items?: { name?: string; price?: string; desc?: string; stockStatus?: string }[] }) =>
+        (cat.items ?? []).map((item) => {
+            const priceMatch = typeof item.price === 'string' ? item.price.match(/(\d+(?:\.\d+)?)/) : null;
+            const slug = item.name ? toProductSlug(item.name) : '';
+            return {
+                '@type': 'Product',
+                name: item.name,
+                description: item.desc || `${item.name} — cut to order at Hofherr Meat Co., Northfield IL.`,
+                url: `https://hofherrmeatco.com/online-orders?item=${slug}`,
+                offers: {
+                    '@type': 'Offer',
+                    priceCurrency: 'USD',
+                    ...(priceMatch ? { price: priceMatch[1] } : {}),
+                    availability:
+                        item.stockStatus === 'out_of_stock'
+                            ? 'https://schema.org/OutOfStock'
+                            : 'https://schema.org/InStock',
+                },
+            };
+        })
+    ).slice(0, 80);
+
+    const catalogJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Hofherr Meat Co. Online Butcher & Depot Menu',
+        itemListElement: productSchemaItems.map((product, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            item: product,
+        })),
+    };
+
     return (
-        <Suspense fallback={<div className="route-loading" aria-busy="true" />}>
-            <CustomOrdersPage
-                sanityButcher={applyDesignSystemIcons(sanityButcher)}
-                sanityDepot={applyDesignSystemIcons(sanityDepot)}
-            />
-        </Suspense>
+        <>
+            {productSchemaItems.length > 0 && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify(catalogJsonLd).replace(/</g, '\\u003c'),
+                    }}
+                />
+            )}
+            <Suspense fallback={<div className="route-loading" aria-busy="true" />}>
+                <CustomOrdersPage
+                    sanityButcher={applyDesignSystemIcons(sanityButcher)}
+                    sanityDepot={applyDesignSystemIcons(sanityDepot)}
+                />
+            </Suspense>
+        </>
     );
 }
