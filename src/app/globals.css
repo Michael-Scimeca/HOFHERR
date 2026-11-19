@@ -189,6 +189,7 @@ html.scroll-locked {
    sideways when scrolling is locked and released (preloader ending, a modal opening). */
 html {
   scrollbar-gutter: stable;
+  overflow-x: clip;
 }
 
 .lenis.lenis-scrolling iframe {
@@ -745,8 +746,6 @@ body:has(.pt-wrap.pt-exit) [data-pt-portal] {
 .pt-waiting,
 body:has(.pt-wrap.pt-waiting) [data-pt-portal] {
   opacity: 0 !important;
-  filter: blur(var(--pt-max-blur, 0.9rem)) contrast(var(--pt-max-contrast, 12)) !important;
-  transform: scale(0.98) translateY(8px) !important;
   pointer-events: none !important;
   animation: none !important;
   will-change: filter, opacity, transform;
@@ -926,4 +925,22 @@ body:has(.pt-wrap.pt-enter) [data-pt-portal] {
   height: 100%;
   object-fit: contain;
   pointer-events: none;
+}
+
+/* ─── Print Media: Hide global site chrome (Navbar, Footer, Embers, Chat, Dev Overlays) ─── */
+@media print {
+  body > :not(.pt-wrap),
+  .pt-wrap > :not(.site-shell),
+  [data-no-print],
+  nextjs-portal {
+    display: none !important;
+  }
+
+  .pt-wrap,
+  .site-shell {
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
 }

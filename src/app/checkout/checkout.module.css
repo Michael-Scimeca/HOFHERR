@@ -15,7 +15,7 @@
     color: #888;
     text-decoration: none;
     width: 100%;
-    max-width: calc(var(--max-w, 1800px) - (2 * var(--container-px)));
+    max-width: calc(var(--max-w, 1400px) - (2 * var(--container-px)));
     margin: 0 auto 28px;
     transition: color 0.2s;
 }
@@ -26,7 +26,7 @@
     grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
     gap: 48px;
     width: 100%;
-    max-width: calc(var(--max-w, 1800px) - (2 * var(--container-px)));
+    max-width: calc(var(--max-w, 1400px) - (2 * var(--container-px)));
     margin: 0 auto;
     align-items: start;
 }

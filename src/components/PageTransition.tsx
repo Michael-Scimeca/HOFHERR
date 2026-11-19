@@ -37,7 +37,7 @@ export const MELT_TIMELINE_STEPS = [
         num: '01',
         label: 'Melt Out (Exit)',
         timing: '0 → 380ms',
-        desc: 'Current page & modals blur (0.9rem), spike contrast (12×), scale (1.02), and dissolve to 0% with ember burst.',
+        desc: 'Current page & modals blur (0.9rem), spike contrast (12×), scale (1.02), and dissolve to 0%.',
     },
     {
         id: 2,
@@ -88,8 +88,7 @@ const DEFAULT_MELT_CONFIG: MeltConfig = {
 const QUICK_ROUTES = [
     { label: 'Home', href: '/' },
     { label: 'Specials', href: '/specials' },
-    { label: 'BBQ', href: '/bbq' },
-    { label: 'Catering', href: '/catering' },
+    { label: 'BBQ & Catering', href: '/catering' },
     { label: 'Visit', href: '/visit' },
     { label: 'Order Online', href: '/online-orders' },
     { label: 'Sign In (?login=true)', href: '/online-orders?login=true' },
@@ -904,7 +903,10 @@ export default function PageTransition({ children }: { children: React.ReactNode
     useEffect(() => {
         const el = wrapRef.current;
         if (!el) return;
-        const skipsPreloader = PRELOADER_SKIP_ROUTES.some(p => pathname?.startsWith(p));
+        const isSheetRoute =
+            pathname === '/recipes/sheets' || Boolean(pathname?.endsWith('/sheet'));
+        const skipsPreloader =
+            PRELOADER_SKIP_ROUTES.some(p => pathname?.startsWith(p)) || isSheetRoute;
         if (!skipsPreloader) {
             el.classList.add('pt-waiting');
             setMeltStep(2);
@@ -912,7 +914,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
             return;
         }
 
-        if (pathname?.startsWith('/studio') || pathname?.startsWith('/fire-test')) {
+        if (pathname?.startsWith('/studio') || pathname?.startsWith('/fire-test') || isSheetRoute) {
             return;
         }
 

@@ -91,7 +91,7 @@
 
 .normalRect {
     width: min(92vw, calc(86vh * 16 / 9)) !important;
-    max-width: 1440px !important;
+    max-width: var(--max-w, 1400px) !important;
     aspect-ratio: 16 / 9;
     border-radius: 20px;
     border: 1px solid #ffffff1a;

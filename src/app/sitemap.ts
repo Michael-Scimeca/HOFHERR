@@ -30,16 +30,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.9,
         },
         {
-            url: `${base}/bbq`,
-            lastModified: now,
-            changeFrequency: 'monthly',
-            priority: 0.9,
-        },
-        {
             url: `${base}/catering`,
             lastModified: now,
             changeFrequency: 'monthly',
-            priority: 0.88,
+            priority: 0.9,
         },
         {
             url: `${base}/visit`,
@@ -81,12 +75,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
             url: `${base}/newsletter`,
             lastModified: now,
             changeFrequency: 'yearly',
-            priority: 0.5,
-        },
-        {
-            url: `${base}/press`,
-            lastModified: now,
-            changeFrequency: 'monthly',
             priority: 0.5,
         },
         {

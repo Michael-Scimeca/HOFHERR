@@ -4,10 +4,15 @@
  * before the preloader or page transition melts the page into view.
  */
 
+function isNearViewport(el: Element): boolean {
+    const rect = el.getBoundingClientRect();
+    return rect.bottom >= -200 && rect.top <= window.innerHeight * 1.5;
+}
+
 function waitForSingleImage(img: HTMLImageElement): Promise<void> {
     return new Promise(resolve => {
-        // Force eager loading so offscreen/below-fold images load before the curtain drops
-        if (img.loading === 'lazy') {
+        // Only force eager loading for images near the initial viewport; let below-fold lazy images stream in naturally
+        if (img.loading === 'lazy' && isNearViewport(img)) {
             img.loading = 'eager';
         }
 
@@ -37,10 +42,12 @@ function waitForSingleImage(img: HTMLImageElement): Promise<void> {
 
 function collectCssBackgroundUrls(root: ParentNode): string[] {
     const urls = new Set<string>();
-    const elements = root.querySelectorAll<HTMLElement>('*');
+    // Only scan structural HTML elements (never SVG subtrees with thousands of paths)
+    const elements = root.querySelectorAll<HTMLElement>('header, main, section, article, div, figure, aside');
     const urlRegex = /url\(["']?([^"')]+)["']?\)/g;
 
     elements.forEach(el => {
+        if (!isNearViewport(el)) return;
         const bg = window.getComputedStyle(el).backgroundImage;
         if (!bg || bg === 'none') return;
         let match: RegExpExecArray | null;
@@ -155,8 +162,10 @@ export function waitForPageAssets(
             // Allow one animation frame so hydrated React components mount their <img> tags
             await new Promise<void>(r => requestAnimationFrame(() => r()));
 
-            // 3. All <img> tags in document (including Navbar logo, hero images, product cards)
-            const imgs = Array.from(document.querySelectorAll<HTMLImageElement>('img'));
+            // 3. Above-the-fold & eager <img> tags (don't block page reveal on dozens of below-fold lazy images)
+            const imgs = Array.from(document.querySelectorAll<HTMLImageElement>('img')).filter(
+                img => img.loading !== 'lazy' || isNearViewport(img)
+            );
             imgs.forEach(img => {
                 tasks.push(track(waitForSingleImage(img)));
             });
@@ -175,10 +184,10 @@ export function waitForPageAssets(
 
             await Promise.allSettled(tasks);
 
-            // Second pass: catch any <img> tags mounted after the first batch resolved
+            // Second pass: catch any above-fold <img> tags mounted after the first batch resolved
             const seenImgs = new Set(imgs);
             const lateImgs = Array.from(document.querySelectorAll<HTMLImageElement>('img')).filter(
-                img => !seenImgs.has(img)
+                img => !seenImgs.has(img) && (img.loading !== 'lazy' || isNearViewport(img))
             );
             if (lateImgs.length > 0) {
                 await Promise.allSettled(lateImgs.map(img => track(waitForSingleImage(img))));

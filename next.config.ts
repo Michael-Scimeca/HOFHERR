@@ -60,6 +60,16 @@ const nextConfig: NextConfig = {
         destination: '/selections',
         permanent: true,
       },
+      {
+        source: '/bbq',
+        destination: '/catering',
+        permanent: true,
+      },
+      {
+        source: '/press',
+        destination: '/our-story#press',
+        permanent: true,
+      },
     ];
   },
 

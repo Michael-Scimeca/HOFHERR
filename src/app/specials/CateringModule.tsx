@@ -315,7 +315,7 @@ export default function CateringModule({ events, calendarPricing }: Props) {
                         ) : (
                             <div style={{ textAlign: 'center', padding: '40px 20px' }}>
                                 <div style={{ width: '64px', height: '64px', background: 'rgba(22, 163, 74, 0.1)', color: '#16a34a', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '32px' }}>✓</div>
-                                <h3 style={{ color: '#fff', fontSize: '20px', marginBottom: '12px' }}>Request Sent, {name.split(' ')[0]}!</h3>
+                                <h3 className={styles.inquirySuccessHeading}>Request Sent, {name.split(' ')[0]}!</h3>
                                 <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
                                     Your Pig Roast inquiry for <strong>{dateLabel}</strong> has been sent to our team.
                                 </p>

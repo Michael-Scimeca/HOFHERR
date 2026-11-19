@@ -48,14 +48,14 @@ export default function Footer() {
                         <Link href="/online-orders">Order Online</Link>
                         <Link href="/specials">Specials</Link>
                         <Link href="/online-orders">Custom Orders</Link>
-                        <Link href="/bbq#quote">Holiday Pre-Orders</Link>
+                        <Link href="/catering#build-your-package">Holiday Pre-Orders</Link>
                     </div>
                     <div className={styles.col}>
-                        <div className={styles.colTitle}>Catering</div>
+                        <div className={styles.colTitle}>BBQ &amp; Catering</div>
                         <Link href="/catering">Overview</Link>
-                        <Link href="/bbq">BBQ Catering</Link>
-                        <Link href="/catering#pricing">Pricing</Link>
-                        <Link href="/catering#inquire" className={styles.link}>Get a Quote</Link>
+                        <Link href="/catering#bbq-menu">BBQ Menu</Link>
+                        <Link href="/catering#build-your-package">Pricing &amp; Quote</Link>
+                        <Link href="/catering#beyond-bbq" className={styles.link}>Pig Roasts &amp; Events</Link>
                     </div>
                     <div className={styles.col}>
                         <div className={styles.colTitle}>Discover</div>
@@ -64,7 +64,7 @@ export default function Footer() {
                         <Link href="/recipes">Recipes</Link>
                         <Link href="/faq">FAQ</Link>
                         <Link href="/our-story">Our Story</Link>
-                        <Link href="/press">Press</Link>
+                        <Link href="/our-story#press">Press</Link>
                         <Link href="/jobs">Jobs</Link>
                         <Link href="/gift-cards">Gift Cards</Link>
                     </div>

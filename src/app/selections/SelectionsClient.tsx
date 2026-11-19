@@ -720,8 +720,8 @@ export default function SelectionsClient() {
                                 serving size recommendations, and grilling recipes.
                             </p>
                             <div className={styles.bbqActions}>
-                                <Link href="/bbq" className="btn-hit">
-                                    <span className="btn btn-primary">Explore BBQ &amp; Smokehouse</span>
+                                <Link href="/catering#bbq-menu" className="btn-hit">
+                                    <span className="btn btn-primary">Explore BBQ &amp; Catering</span>
                                 </Link>
                                 <a href="mailto:sean@hofherrmeatco.com" className="btn btn-outline">
                                     Email Sean Your BBQ Questions

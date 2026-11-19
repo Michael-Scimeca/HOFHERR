@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import RecipesBrowser from './RecipesBrowser';
 import { COLLECTIONS } from './recipes';
 import styles from './page.module.css';
@@ -47,6 +48,11 @@ export default function RecipesPage() {
                         centerpieces — built around daily cuts from the Hofherr counter. Pick an occasion or cut to
                         scale ingredients and add everything directly to your pickup order.
                     </p>
+                    <div className={styles.heroActionsRow}>
+                        <Link href="/recipes/sheets" className={styles.sheetsIndexCta}>
+                            Printable 12×16&quot; Parcel Cooking Sheets →
+                        </Link>
+                    </div>
                 </div>
             </header>
 

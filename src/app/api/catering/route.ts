@@ -332,16 +332,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.ethereal.email',
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USER || '',
-        pass: process.env.SMTP_PASS || '',
-      },
-    });
-
     const emailData = {
       name,
       email,
@@ -354,22 +344,61 @@ export async function POST(req: Request) {
       sides: cateringData.sides || [],
     };
 
-    // Send to Hofherr team
-    await transporter.sendMail({
-      from: '"Hofherr Website" <catering@hofherrmeats.com>',
-      to: 'catering@hofherrmeats.com',
-      replyTo: email,
-      subject: `Catering Inquiry: ${name} — ${emailData.date}`,
-      html: buildTeamNotification(emailData),
-    });
+    const teamHtml = buildTeamNotification(emailData);
+    const customerHtml = buildCustomerReceipt(emailData);
 
-    // Send receipt to customer
-    await transporter.sendMail({
-      from: '"Hofherr Meat Co." <catering@hofherrmeats.com>',
-      to: email,
-      subject: `Your Hofherr Catering Inquiry — Confirmation`,
-      html: buildCustomerReceipt(emailData),
-    });
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+
+    if (smtpHost && smtpUser && smtpPass) {
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: Number(process.env.SMTP_PORT) || 587,
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: {
+          user: smtpUser,
+          pass: smtpPass,
+        },
+      });
+
+      // Send to Hofherr team
+      await transporter.sendMail({
+        from: '"Hofherr Website" <catering@hofherrmeats.com>',
+        to: 'catering@hofherrmeats.com',
+        replyTo: email,
+        subject: `Catering Inquiry: ${name} — ${emailData.date}`,
+        html: teamHtml,
+      });
+
+      // Send receipt to customer
+      await transporter.sendMail({
+        from: '"Hofherr Meat Co." <catering@hofherrmeats.com>',
+        to: email,
+        subject: `Your Hofherr Catering Inquiry — Confirmation`,
+        html: customerHtml,
+      });
+    } else if (process.env.RESEND_API_KEY || process.env.SENDGRID_API_KEY) {
+      const { sendEmail } = await import('@/lib/email');
+      await sendEmail({
+        to: 'catering@hofherrmeats.com',
+        replyTo: email,
+        subject: `Catering Inquiry: ${name} — ${emailData.date}`,
+        html: teamHtml,
+        text: `New catering inquiry from ${name} (${email}, ${phone || 'no phone'}) for ${emailData.guests} guests on ${emailData.date} (${emailData.packageName}). Estimated total: $${emailData.total}.`,
+      });
+      await sendEmail({
+        to: email,
+        subject: `Your Hofherr Catering Inquiry — Confirmation`,
+        html: customerHtml,
+        text: `Hi ${name}, we received your Hofherr Meat Co. catering inquiry for ${emailData.date} (${emailData.guests} guests, ${emailData.packageName}). Sean and the team will follow up shortly.`,
+      });
+    } else {
+      console.info(
+        `[Catering Inquiry — dev mode] Logged inquiry from ${name} <${email}> for ${emailData.date} (${emailData.guests} guests, ${emailData.packageName}, $${emailData.total}) → would email catering@hofherrmeats.com + customer receipt`
+      );
+      return NextResponse.json({ success: true, devMode: true });
+    }
 
     return NextResponse.json({ success: true });
 

@@ -155,12 +155,13 @@ describe('Cut Collector Progress Calculation', () => {
             items: [
                 { name: 'Duck Breast', qty: 2 },
                 { name: 'Duck Legs', qty: 2 },
+                { name: 'Whole Duck', qty: 1 },
             ],
         };
 
         const res = calculateCutProgress([duckOrder]);
-        expect(res.animals.duck.collectedCount).toBe(2);
-        expect(res.animals.duck.totalCount).toBe(2);
+        expect(res.animals.duck.collectedCount).toBe(3);
+        expect(res.animals.duck.totalCount).toBe(3);
         expect(res.animals.duck.isComplete).toBe(true);
         expect(res.animals.duck.percent).toBe(100);
     });

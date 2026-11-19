@@ -30,7 +30,10 @@ export default function Preloader() {
     const syncVerRef = useRef(PRELOADER_SYNC_VERSION);
 
     // No scrolling while the preloader is on screen.
-    const skipped = SKIP.some(p => pathname?.startsWith(p));
+    const skipped =
+        SKIP.some(p => pathname?.startsWith(p)) ||
+        pathname === '/recipes/sheets' ||
+        Boolean(pathname?.endsWith('/sheet'));
     useEffect(() => {
         if (done || skipped) return;
         return lockScroll();

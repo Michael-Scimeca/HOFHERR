@@ -7,6 +7,7 @@ export const MORE_RECIPES: Recipe[] = [
     /* ── Beef ── */
     {
         slug: 'short-ribs',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '30 min',
@@ -63,6 +64,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'beef-tenderloin',
+        parcelFriendly: false,
         baseServings: 8,
         servingOptions: [6, 8, 10],
         difficulty: 'Medium',
@@ -130,6 +132,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'filet-mignon',
+        parcelFriendly: false,
         baseServings: 2,
         difficulty: 'Easy',
         handsOn: '20 min',
@@ -185,6 +188,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'picanha',
+        parcelFriendly: false,
         baseServings: 6,
         difficulty: 'Medium',
         handsOn: '20 min',
@@ -231,6 +235,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'hanger-steak',
+        parcelFriendly: false,
         baseServings: 2,
         difficulty: 'Easy',
         handsOn: '20 min',
@@ -283,6 +288,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'smash-burgers',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '20 min',
@@ -339,6 +345,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'oxtail',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '30 min',
@@ -395,6 +402,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'beef-stew',
+        parcelFriendly: false,
         baseServings: 6,
         difficulty: 'Easy',
         handsOn: '30 min',
@@ -455,6 +463,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'beef-back-ribs',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '20 min',
@@ -508,6 +517,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'meatloaf',
+        parcelFriendly: false,
         baseServings: 6,
         difficulty: 'Easy',
         handsOn: '20 min',
@@ -568,6 +578,7 @@ export const MORE_RECIPES: Recipe[] = [
     /* ── Pork and sausage ── */
     {
         slug: 'pulled-pork',
+        parcelFriendly: false,
         baseServings: 8,
         servingOptions: [8, 12, 16],
         difficulty: 'Easy',
@@ -623,6 +634,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'baby-back-ribs',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '20 min',
@@ -675,6 +687,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'pork-chops',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '20 min',
@@ -729,6 +742,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'pork-tenderloin',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '15 min',
@@ -781,6 +795,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'crown-roast',
+        parcelFriendly: false,
         baseServings: 12,
         servingOptions: [12],
         difficulty: 'Medium',
@@ -840,6 +855,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'glazed-ham',
+        parcelFriendly: false,
         baseServings: 12,
         servingOptions: [8, 12, 16],
         difficulty: 'Easy',
@@ -895,6 +911,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'sausage-stuffing',
+        parcelFriendly: false,
         baseServings: 8,
         difficulty: 'Easy',
         handsOn: '30 min',
@@ -953,6 +970,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'beer-brats',
+        parcelFriendly: false,
         baseServings: 6,
         difficulty: 'Easy',
         handsOn: '20 min',
@@ -1004,6 +1022,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'sausage-and-peppers',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '20 min',
@@ -1058,6 +1077,7 @@ export const MORE_RECIPES: Recipe[] = [
     /* ── Poultry ── */
     {
         slug: 'spatchcock-turkey',
+        parcelFriendly: false,
         baseServings: 10,
         servingOptions: [8, 10, 12],
         difficulty: 'Medium',
@@ -1118,6 +1138,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'turkey-breast',
+        parcelFriendly: false,
         baseServings: 6,
         servingOptions: [4, 6, 8],
         difficulty: 'Easy',
@@ -1176,6 +1197,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'turkey-gravy',
+        parcelFriendly: false,
         baseServings: 12,
         servingOptions: [8, 12, 16],
         difficulty: 'Easy',
@@ -1233,6 +1255,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'roast-chicken',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '15 min',
@@ -1287,6 +1310,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'chicken-thighs',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '15 min',
@@ -1339,6 +1363,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'wings',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '15 min',
@@ -1392,6 +1417,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'roast-duck',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Medium',
         handsOn: '30 min',
@@ -1453,6 +1479,7 @@ export const MORE_RECIPES: Recipe[] = [
     /* ── Lamb, veal and fish ── */
     {
         slug: 'rack-of-lamb',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Medium',
         handsOn: '25 min',
@@ -1509,6 +1536,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'lamb-shanks',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '30 min',
@@ -1564,6 +1592,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'veal-piccata',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '25 min',
@@ -1620,6 +1649,7 @@ export const MORE_RECIPES: Recipe[] = [
     },
     {
         slug: 'salmon',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '15 min',
@@ -1666,6 +1696,244 @@ export const MORE_RECIPES: Recipe[] = [
             'Cook without moving for 5 to 6 minutes, until the skin is crisp and the flesh has turned opaque most of the way up the sides.',
             'Flip and cook 1 to 2 minutes more. The USDA guideline for fish is 145°F; many cooks pull salmon at 125°F to 130°F for a softer center.',
             'Move the fish to plates. Melt the butter in the pan with the garlic for 30 seconds, add the lemon juice and dill, and spoon over the salmon.',
+        ],
+    },
+    /* ── Pure Oven-Baked Parchment Parcel Recipes (<= 425°F, zero searing, parcelFriendly: true) ── */
+    {
+        slug: 'salmon-parcel',
+        parcelFriendly: true,
+        baseServings: 4,
+        difficulty: 'Easy',
+        handsOn: '10 min',
+        leadDays: 1,
+        butcherTip: 'Lay center-cut salmon fillets skin-side down inside crimped parchment so they steam gently in lemon-dill butter without touching a pan.',
+        buy: [
+            { name: 'Salmon', price: '$22.99/lb', unitPrice: 22.99, unit: 'lb', baseAmount: 1.5, pieceLb: 0.375, pieceLabel: 'fillet' },
+        ],
+        sides: [
+            { name: 'Baby Arugula', price: '$4.99', why: 'Toss beside the opened parchment packet.' },
+            { name: 'Demi Baguette', price: '$2.00', why: 'For soaking up the lemon-dill butter.' },
+        ],
+        upgrades: [],
+        perfectFor: 'Zero-cleanup 20-minute weeknight fish dinner',
+        occasions: ['weeknight', 'date-night'],
+        cut: 'Salmon Fillet',
+        title: 'Baked salmon parcel with lemon-dill butter',
+        intro: 'Sealed inside a 12 × 16 inch parchment parcel at 400°F, salmon steams in its own lemon-dill butter with zero stovetop splattering.',
+        serves: '4',
+        prep: '8 min',
+        cook: '14 min',
+        total: '22 min',
+        ingredients: [
+            '{1} tsp kosher salt',
+            '{1/2} tsp black pepper',
+            '{1} tbsp high-heat oil',
+            '{3} tbsp butter',
+            '{1} garlic clove, minced',
+            'Juice of {1} lemon',
+            '{2} tbsp fresh dill, chopped',
+        ],
+        tools: [
+            'Rimmed half-sheet baking pan',
+            '12 × 16 inch unbleached parchment sheets',
+            'Instant-read thermometer',
+        ],
+        steps: [
+            'Heat the conventional oven to 400°F (keep away from broiler elements). Lay two 12 × 16 inch parchment sheets flat and brush the center bed with oil.',
+            'Set two 6 oz salmon fillets skin-side down on each sheet and season with kosher salt and black pepper.',
+            'Dot the fillets with cold butter and minced garlic, squeeze fresh lemon juice over top, and scatter chopped dill.',
+            'Bring the long parchment sides together above the fish, double-crease 1/2 inch twice, and crimp both ends tightly underneath to trap steam.',
+            'Bake on a rimmed sheet pan at 400°F for 12 to 15 minutes until the thickest part reaches the USDA safe internal temperature of 145°F. Vent steam away from your face when opening.',
+        ],
+    },
+    {
+        slug: 'pork-tenderloin-parcel',
+        parcelFriendly: true,
+        baseServings: 4,
+        difficulty: 'Easy',
+        handsOn: '10 min',
+        leadDays: 1,
+        butcherTip: 'Tuck the thin tail end under by 1.5 inches inside the parchment parcel so the tenderloin roasts evenly to 145°F.',
+        buy: [
+            { name: 'Pork Tenderloin', price: '$14.99/lb', unitPrice: 14.99, unit: 'lb', baseAmount: 1.5, pieceLb: 0.75, pieceLabel: 'tenderloin' },
+        ],
+        sides: [
+            { name: 'Baby Arugula', price: '$4.99', why: 'Bright peppery greens next to the honey-mustard jus.' },
+        ],
+        upgrades: [],
+        perfectFor: 'Clean 30-minute baked pork dinner',
+        occasions: ['weeknight', 'date-night'],
+        cut: 'Pork Tenderloin',
+        title: 'Baked honey-mustard pork tenderloin parcel',
+        intro: 'Baked entirely inside sealed parchment at 400°F — no stovetop sear required — keeping lean heritage pork tenderloin juicy in honey-mustard jus.',
+        serves: '4',
+        prep: '8 min',
+        cook: '22 min',
+        total: '30 min',
+        ingredients: [
+            '{1} tsp kosher salt',
+            '{1/2} tsp black pepper',
+            '{1} tbsp olive oil',
+            '{2} tbsp Dijon mustard',
+            '{2} tbsp honey',
+            '{2} garlic cloves, minced',
+            '{1} tbsp fresh thyme leaves',
+        ],
+        tools: [
+            'Rimmed half-sheet baking pan',
+            '12 × 16 inch unbleached parchment sheets',
+            'Instant-read thermometer',
+        ],
+        steps: [
+            'Heat the conventional oven to 400°F (never use the broiler). Brush the center of each 12 × 16 inch parchment liner with olive oil.',
+            'Set the trimmed pork tenderloin in the center, tucking the thin tail under, and season all sides with salt and pepper.',
+            'Stir together the Dijon mustard, honey, and minced garlic; brush generously over the pork and scatter stripped thyme leaves on top.',
+            'Double-crease the long edges above the roast and roll both ends tightly underneath to seal the parcel.',
+            'Bake at 400°F for 20 to 24 minutes until an instant-read thermometer reaches 145°F (USDA safe internal temperature), then rest 3 to 5 minutes before slicing.',
+        ],
+    },
+    {
+        slug: 'pork-chops-parcel',
+        parcelFriendly: true,
+        baseServings: 4,
+        difficulty: 'Easy',
+        handsOn: '10 min',
+        leadDays: 1,
+        butcherTip: 'Bone-in heritage chops stay remarkably juicy when baked with shallots, grain mustard, and a splash of apple cider inside crimped parchment.',
+        buy: [
+            { name: 'Pork Chops', price: '$13.99/lb', unitPrice: 13.99, unit: 'lb', baseAmount: 3, pieceLb: 0.75, pieceLabel: 'chop' },
+        ],
+        sides: [
+            { name: 'Creamed Spinach', price: '$14.99/lb', why: 'Warm alongside while the parcel bakes.' },
+        ],
+        upgrades: [],
+        perfectFor: 'Hands-off 30-minute bone-in chop supper',
+        occasions: ['weeknight', 'sunday-dinner'],
+        cut: 'Pork Loin',
+        title: 'Baked bone-in pork chops parcel with cider mustard jus',
+        intro: 'Thick bone-in pork chops bake from raw to 145°F inside a sealed 400°F parchment pocket over shallots, butter, and unfiltered apple cider.',
+        serves: '4',
+        prep: '8 min',
+        cook: '24 min',
+        total: '32 min',
+        ingredients: [
+            '{2} tsp kosher salt',
+            '{1} tsp black pepper',
+            '{1} tbsp high-heat oil',
+            '{2} tbsp butter',
+            '{1} shallot, finely chopped',
+            '{2/3} cup apple cider',
+            '{1} tbsp whole grain mustard',
+            '{2} sprigs thyme',
+        ],
+        tools: [
+            'Rimmed half-sheet baking pan',
+            '12 × 16 inch unbleached parchment sheets',
+            'Instant-read thermometer',
+        ],
+        steps: [
+            'Heat the conventional oven to 400°F. Scatter chopped shallots and oil across the center bed of each 12 × 16 inch parchment sheet.',
+            'Set two bone-in pork chops over the shallots and season both sides with kosher salt and black pepper.',
+            'Dot with butter, smear whole-grain mustard across the chops, and tuck in fresh thyme sprigs.',
+            'Fold the long sides and top end closed, splash in the apple cider, and crimp the bottom flap tightly underneath.',
+            'Bake on a rimmed half-sheet pan at 400°F for 22 to 25 minutes until the thickest chop reaches 145°F (USDA safe internal temperature), then rest 3 minutes.',
+        ],
+    },
+    {
+        slug: 'sausage-peppers-parcel',
+        parcelFriendly: true,
+        baseServings: 4,
+        difficulty: 'Easy',
+        handsOn: '12 min',
+        leadDays: 1,
+        butcherTip: 'Natural-casing Italian sausages roast plump without splitting when steamed-baked with sliced peppers, onions, and white wine in parchment.',
+        buy: [
+            { name: 'Sweet Italian Sausage', price: '$10.99/lb', unitPrice: 10.99, unit: 'lb', baseAmount: 1.5, pieceLb: 0, pieceLabel: 'package' },
+        ],
+        sides: [
+            { name: 'Demi Baguette', price: '$2.00', why: 'Split and toast for Italian sausage sandwiches.' },
+        ],
+        upgrades: [
+            { name: 'Hot Italian Sausage', price: '$10.99/lb', why: 'Swap half the links for spicy heat.' },
+        ],
+        perfectFor: 'Sheet-pan Italian sausage night with zero cleanup',
+        occasions: ['weeknight', 'game-day'],
+        cut: 'Italian Sausage',
+        title: 'Baked Italian sausage and bell peppers parcel',
+        intro: 'Sweet Italian sausages, bell pepper ribbons, onions, garlic, and white wine bake together inside a 400°F parchment parcel.',
+        serves: '4',
+        prep: '10 min',
+        cook: '28 min',
+        total: '38 min',
+        ingredients: [
+            '{2} tbsp olive oil',
+            '{4} bell peppers, mixed colors, sliced',
+            '{2} onions, sliced',
+            '{4} garlic cloves, sliced',
+            '{1} tsp dried oregano',
+            '{1/2} tsp red pepper flakes',
+            '{1/2} cup dry white wine or chicken stock',
+            '{1} tbsp red wine vinegar',
+            'Salt and pepper',
+        ],
+        tools: [
+            'Rimmed half-sheet baking pan',
+            '12 × 16 inch unbleached parchment sheets',
+            'Instant-read thermometer',
+        ],
+        steps: [
+            'Heat the conventional oven to 400°F. Toss sliced bell peppers and onions with olive oil directly on the center bed of each parchment sheet.',
+            'Nestle three sweet Italian sausage links on top of each pepper bed and scatter sliced garlic, dried oregano, red pepper flakes, salt, and pepper.',
+            'Double-crease the long edges above the links, roll the top flap snug, splash in the white wine and red wine vinegar, and crimp the bottom end shut.',
+            'Bake on a rimmed sheet pan at 400°F for 26 to 30 minutes until the center of the links reaches the USDA safe internal temperature of 160°F.',
+        ],
+    },
+    {
+        slug: 'chicken-thighs-parcel',
+        parcelFriendly: true,
+        baseServings: 4,
+        difficulty: 'Easy',
+        handsOn: '10 min',
+        leadDays: 1,
+        butcherTip: 'Bone-in thighs stay succulent in a 425°F parchment packet; open the top seam carefully for the final 3 minutes if you want extra golden color.',
+        buy: [
+            { name: 'Bone-In Chicken Thighs', price: '$6.99/lb', unitPrice: 6.99, unit: 'lb', baseAmount: 2.5, pieceLb: 0, pieceLabel: 'package' },
+            { name: 'Chicken Stock', price: '$10.99', unitPrice: 10.99, unit: 'each', baseAmount: 0.25, pieceLb: 0, pieceLabel: 'quart' },
+        ],
+        sides: [
+            { name: 'Demi Baguette', price: '$2.00', why: 'For mopping up the lemon-garlic chicken jus.' },
+        ],
+        upgrades: [],
+        perfectFor: 'Juicy weeknight lemon-garlic chicken with a clean pan',
+        occasions: ['weeknight', 'sunday-dinner'],
+        cut: 'Chicken Thigh',
+        title: 'Baked bone-in chicken thighs parcel with garlic, lemon & butter',
+        intro: 'Bone-in chicken thighs bake straight from raw inside a 425°F parchment packet with smashed garlic, lemon, butter, and chicken stock.',
+        serves: '4',
+        prep: '8 min',
+        cook: '32 min',
+        total: '40 min',
+        ingredients: [
+            '{2} tsp kosher salt',
+            '{1} tsp black pepper',
+            '{1} tbsp olive oil',
+            '{4} garlic cloves, smashed',
+            '{1/2} cup Chicken Stock',
+            'Juice of {1} lemon',
+            '{1} tbsp butter',
+            '{2} tbsp parsley, chopped',
+        ],
+        tools: [
+            'Rimmed half-sheet baking pan',
+            '12 × 16 inch unbleached parchment sheets',
+            'Instant-read thermometer',
+        ],
+        steps: [
+            'Heat the conventional oven to 425°F (maximum safe parchment temperature; keep away from broiler coils). Rub olive oil and set smashed garlic on the center of each sheet.',
+            'Place two bone-in chicken thighs skin-side up on each parchment liner and season well with kosher salt and black pepper.',
+            'Dot butter on top, squeeze fresh lemon juice over the thighs, and scatter chopped parsley.',
+            'Crease the long sides and top flap closed, splash in the chicken stock, and crimp the bottom corners tightly underneath.',
+            'Bake on a rimmed half-sheet pan at 425°F for 30 to 35 minutes until the thickest thigh exceeds the USDA safe poultry minimum of 165°F.',
         ],
     },
 ];

@@ -67,9 +67,9 @@ export default function Hero() {
                                     Order Online
                                 </span>
                             </Link>
-                            <a href="tel:8474416328" className="btn-hit">
-                                <span className="btn btn-secondary">📞 (847) 441-MEAT</span>
-                            </a>
+                            <Link href="/catering#build-your-package" className="btn-hit">
+                                <span className="btn btn-secondary">Build a Catering Package</span>
+                            </Link>
                             <Link href="/newsletter" className={`btn-hit ${styles.subscribeHit}`}>
                                 <span className={`btn ${styles.subscribeBtn}`}>✉️ Subscribe</span>
                             </Link>

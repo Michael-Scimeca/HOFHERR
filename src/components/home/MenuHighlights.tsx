@@ -22,7 +22,7 @@ const MENUS = [
         emoji: '🔥',
         title: 'BBQ Catering',
         desc: 'Smoked brisket, pulled pork, ribs, rib tips & hot links, plus all the fixings. From 20 to 500+ guests. 4 days notice required.',
-        href: '/bbq',
+        href: '/catering#bbq-menu',
         tag: 'Events',
         bg: 'rgba(168,74,42,0.08)',
     },

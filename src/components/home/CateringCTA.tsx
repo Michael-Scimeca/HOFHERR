@@ -27,7 +27,7 @@ const SERVICES = [
         title: 'BBQ Catering',
         desc: 'Competition-style BBQ for any event. Brisket, ribs, pulled pork, sausages — smoked low and slow, served hot. From 20 to 500+ guests.',
         detail: 'Custom menus available',
-        href: '/bbq',
+        href: '/catering#bbq-menu',
         cta: 'See the Menu',
     },
     {

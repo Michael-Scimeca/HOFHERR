@@ -179,7 +179,7 @@ export type FlameSettings = FlameSlot & {
     flames: FlameSlot[];
 };
 
-export const FLAME_STORAGE_KEY = 'hofherr_flame_settings_v13';
+export const FLAME_STORAGE_KEY = 'hofherr_flame_settings_v14';
 
 export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
     {
@@ -187,17 +187,17 @@ export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
         presetId: 'smokehouse_torch',
         label: '01 Smokehouse Torch',
         posX: 0,
-        posY: -1.61,
+        posY: -1.60,
         scale: 0.72,
         magnitude: 2.8,
-        lacunarity: 2.71,
+        lacunarity: 2.7,
         gain: 0.50,
         hue: 28,
         hueBase: 4,
         intensity: 9.8,
         width: 0.88,
-        speed: 1.45,
-        idle: 0.62,
+        speed: 1.4,
+        idle: 0.22,
         flareRise: 0.12,
         flareHold: 0.08,
         flareDecay: 0.95,
@@ -208,7 +208,7 @@ export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
         flareDelay: 0,
         emberRate: 1.4,
         emberLift: 1.2,
-        emberSize: 0.82,
+        emberSize: 0.8,
     },
     {
         enabled: true,
@@ -739,7 +739,7 @@ export default function FireTestClient({
                 uTime: { value: idx * 13.7 + 4.2 },
                 uSeed: { value: 3.1 + idx * 11.73 },
                 uMagnitude: { value: 2.8 },
-                uLacunarity: { value: 2.71 },
+                uLacunarity: { value: 2.7 },
                 uGain: { value: 0.5 },
                 uHue: { value: 28 },
                 uIntensity: { value: 10.2 },

@@ -35,7 +35,11 @@ interface Props { services: ServiceItem[] }
 function MosaicCard({ svc, className }: { svc: ServiceItem; className: string }) {
     const img = SERVICE_IMAGES[svc.title] ?? '/images/bbq/brisket.jpg';
     const tag = SERVICE_TAGS[svc.title];
-    const href = svc.linkUrl || 'tel:8474416328';
+    const rawHref = svc.linkUrl || 'tel:8474416328';
+    const href =
+        rawHref === '/catering#inquire' || rawHref === '#quote'
+            ? '/catering#build-your-package'
+            : rawHref;
     const label = svc.linkLabel ?? 'Get a Quote';
 
     return (
@@ -83,7 +87,7 @@ export default function MosaicServices({ services }: Props) {
                     <div className={styles.ctaOverlay}>
                         <h3 className={styles.ctaTitle}>Build Your Package</h3>
                         <p className={styles.ctaSub}>Pick your meats, sides, and event date for an instant catering estimate.</p>
-                        <Link href="#quote" className={`btn btn-secondary ${styles.ctaBtn}`}>
+                        <Link href="/catering#build-your-package" className={`btn btn-secondary ${styles.ctaBtn}`}>
                             Start Building
                         </Link>
                     </div>

@@ -558,8 +558,9 @@
     grid-template-columns: 200px 1fr;
     max-width: var(--max-w, 1400px);
     margin: 0 auto;
-    padding: 24px var(--container-px) 96px;
-    gap: 40px;
+    padding: var(--space-6) var(--container-px) 96px;
+    gap: clamp(var(--space-3), calc(5vw - var(--space-8)), var(--space-10));
+    gap: clamp(var(--space-3), calc(5dvw - var(--space-8)), var(--space-10));
     align-items: start;
     position: relative;
     z-index: 105;
@@ -3777,5 +3778,12 @@
         flex-direction: column;
         align-items: stretch;
     }
+}
+
+.choiceAuthHeading {
+    font-family: var(--font-heading);
+    color: var(--red);
+    font-size: var(--text-xl);
+    margin: 0;
 }
 

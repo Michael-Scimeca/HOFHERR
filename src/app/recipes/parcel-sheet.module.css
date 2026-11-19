@@ -1,0 +1,1399 @@
+/* Printable 12 x 16 in half-sheet-pan parchment cooking sheet + /recipes/sheets index styles.
+   Uses only design tokens from src/app/globals.css plus light-paper ink variables. */
+
+/* ── Screen Toolbar above /recipes/[slug]/sheet ── */
+.sheetRouteMain {
+    width: 100%;
+    padding: calc(var(--nav-h) + var(--space-8)) 0 var(--space-12);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+}
+
+.toolbarSection {
+    width: 100%;
+}
+
+.toolbarInner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-6);
+    background: var(--bg-card);
+    border: 1px solid #ffffff1a;
+    border-radius: var(--radius);
+}
+
+.toolbarNav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.toolbarLink {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    border: 1px solid #ffffff1a;
+    transition:
+        color 0.2s var(--ease-out),
+        border-color 0.2s var(--ease-out),
+        background-color 0.2s var(--ease-out);
+}
+
+.toolbarLink:hover,
+.toolbarLink:focus-visible {
+    color: var(--fg);
+    border-color: var(--gold);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.toolbarRight {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.printSpecHint {
+    font-size: var(--text-xs);
+    color: var(--fg-3);
+}
+
+.printBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    background-color: var(--red);
+    color: var(--fg);
+    border: 1px solid var(--red);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+        background-color 0.2s var(--ease-out),
+        border-color 0.2s var(--ease-out),
+        transform 0.2s var(--ease-out);
+}
+
+.printBtn:hover,
+.printBtn:focus-visible {
+    background-color: var(--red-dark);
+    border-color: var(--red-dark);
+    transform: translateY(-1px);
+}
+
+/* ── Outer Stage that holds the 12 x 16 in parchment sheet on screen ── */
+.sheetStageSection {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-inline: var(--space-4);
+}
+
+/* ── The 12 x 16 in Half-Sheet Parchment Liner (Default: Single-Ink B&W Print Plate) ── */
+.sheetPaper {
+    --sheet-parchment: #ffffff;
+    --sheet-paper: #ffffff;
+    --sheet-accent: #111111;
+    --sheet-ink: #111111;
+    --sheet-ink-soft: rgba(17, 17, 17, 0.82);
+    --sheet-rule: rgba(17, 17, 17, 0.36);
+
+    /* Force light paper context inside the dark site (re-specify background & color explicitly) */
+    color-scheme: only light;
+    background-color: var(--sheet-parchment);
+    background-image: none;
+    color: var(--sheet-ink);
+    box-sizing: border-box;
+    width: 12in;
+    height: 16in;
+    padding: 0.25in;
+    border: 1px solid #ffffff1a;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    overflow: clip;
+}
+
+/* Scale down proportionally on screens narrower than 12in + viewport gutter so horizontal overflow never occurs */
+@media screen and (max-width: 1215px) {
+    .sheetPaper {
+        width: 100%;
+        max-width: 12in;
+        height: auto;
+        aspect-ratio: 12 / 16;
+        padding: 2.0833%;
+    }
+}
+
+.sheetSafeFrame {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 2px solid var(--sheet-ink);
+    outline: 1px solid var(--sheet-rule);
+    outline-offset: -5px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+/* ── 1. Header Band (Woodcut Cleaver Crest, Recipe Name, Oven Temp, Bake Time, Serves 2) ── */
+.headerBand {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 2px solid var(--sheet-ink);
+}
+
+.headerTitleRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.headerCleaverSvg {
+    flex: none;
+    width: 48px;
+    height: 32px;
+    color: var(--sheet-accent, #111111);
+    transform: rotate(-6deg);
+}
+
+.headerTitleBlock {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-05);
+    min-width: 0;
+}
+
+.sheetHeading {
+    font-family: var(--font-heading), sans-serif;
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    line-height: 0.96;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--sheet-ink);
+    margin: 0;
+}
+
+.sheetSubmeta {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--sheet-ink-soft);
+    margin: 0;
+}
+
+.headerSpecs {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: var(--space-3);
+    margin: 0;
+}
+
+.specBox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: var(--space-3);
+    border-left: 1px solid var(--sheet-rule);
+}
+
+.specBox dt {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sheet-ink-soft);
+    line-height: 1.1;
+}
+
+.specBox dd {
+    margin: var(--space-05) 0 0;
+    font-family: var(--font-heading), sans-serif;
+    font-size: var(--text-xl);
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--sheet-ink);
+}
+
+.specBoxAccent dd {
+    color: var(--sheet-accent, #111111);
+}
+
+/* ── 2. True-to-Scale SVG Parcel Workspace (Single 12×16 Sheet, Recipe Inside Wrap Box) ── */
+.parcelCanvasWrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+}
+
+.parcelSvg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+}
+
+.styleSheetPaperFull {
+    position: relative;
+    padding: 0;
+    border: 2px solid var(--sheet-ink);
+}
+
+.bwRasterFilter {
+    filter: grayscale(1) contrast(1.26) brightness(1.06);
+}
+
+.srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Compact micro-letterpress recipe pocket in existing right negative space (takes zero portion space) */
+.sheetRecipePocketOverlay {
+    position: absolute;
+    right: 5.7%;
+    top: 42%;
+    width: 13.5%;
+    padding: 0;
+    background-color: transparent;
+    color: #111111;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.recipePocketKicker {
+    font-family: var(--font-heading), sans-serif;
+    font-size: var(--text-sm);
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1;
+    color: #111111;
+}
+
+.recipePocketSpec {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    line-height: 1.1;
+    color: #111111;
+    padding-bottom: var(--space-05);
+    border-bottom: 1.5px solid #111111;
+}
+
+.recipePocketHeading {
+    font-size: var(--text-xs);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.15;
+    color: #111111;
+    border-bottom: 1px solid rgba(17, 17, 17, 0.45);
+    margin-top: var(--space-05);
+}
+
+.recipePocketList {
+    margin: 0;
+    padding-left: var(--space-2);
+    font-size: var(--text-xs);
+    line-height: 1.18;
+    color: #111111;
+    display: flex;
+    flex-direction: column;
+}
+
+.recipePocketSteps {
+    margin: 0;
+    padding-left: var(--space-2);
+    font-size: var(--text-xs);
+    line-height: 1.18;
+    color: #111111;
+    list-style: decimal;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── 3. Footer Band (Hofherr Cut + QR + Hofherr Logo + Lockup) ── */
+.footerBand {
+    display: grid;
+    grid-template-columns: 1.2fr auto 1fr;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border-top: 2px solid var(--sheet-ink);
+}
+
+.cutBuyBlock {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.qrBox {
+    flex: none;
+    width: 64px;
+    height: 64px;
+    border: 1px solid var(--sheet-ink);
+    border-radius: var(--radius-sm);
+    padding: var(--space-05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qrSvg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: var(--sheet-ink);
+}
+
+.cutBuyText {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-05);
+    min-width: 0;
+}
+
+.cutBuyKicker {
+    font-size: var(--text-xs);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sheet-accent, #111111);
+}
+
+.cutBuyName {
+    font-family: var(--font-heading), sans-serif;
+    font-size: var(--text-xl);
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--sheet-ink);
+}
+
+.cutBuyDetail {
+    font-size: var(--text-xs);
+    color: var(--sheet-ink-soft);
+}
+
+.cutOrderLink {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--sheet-accent, #111111);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.foldSummaryBlock {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-05);
+    padding-inline: var(--space-3);
+    border-left: 1px solid var(--sheet-rule);
+    border-right: 1px solid var(--sheet-rule);
+    max-width: 310px;
+}
+
+.foldSummaryTitle {
+    font-size: var(--text-xs);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sheet-ink);
+}
+
+.foldSummaryList {
+    margin: 0;
+    padding-left: var(--space-4);
+    font-size: var(--text-xs);
+    line-height: 1.28;
+    color: var(--sheet-ink-soft);
+    list-style: decimal;
+}
+
+.brandLockupBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: var(--space-1);
+    text-align: right;
+}
+
+/* CSS mask renders white /assets/logo.svg in dark charcoal ink without CSS filter hacks */
+.footerLogoMark {
+    display: block;
+    width: 108px;
+    height: 52px;
+    background-color: var(--sheet-ink);
+    -webkit-mask: url('/assets/logo.svg') no-repeat right center / contain;
+    mask: url('/assets/logo.svg') no-repeat right center / contain;
+    forced-color-adjust: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.brandMotto {
+    font-family: var(--font-heading), sans-serif;
+    font-size: var(--text-base);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sheet-ink);
+    margin: 0;
+    line-height: 1;
+}
+
+.brandLocations {
+    font-size: var(--text-xs);
+    color: var(--sheet-ink-soft);
+    margin: 0;
+}
+
+@media screen and (max-width: 900px) {
+    .headerBand {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-3);
+    }
+
+    .sheetHeading {
+        font-size: var(--text-xl);
+    }
+
+    .headerSpecs {
+        gap: var(--space-2);
+    }
+
+    .specBox {
+        padding-left: var(--space-2);
+    }
+
+    .specBox dd {
+        font-size: var(--text-base);
+    }
+
+    .footerBand {
+        grid-template-columns: 1fr auto;
+        padding: var(--space-2) var(--space-3);
+        gap: var(--space-2);
+    }
+
+    .foldSummaryBlock {
+        display: none;
+    }
+
+    .qrBox {
+        width: 48px;
+        height: 48px;
+    }
+
+    .footerLogoMark {
+        width: 80px;
+        height: 38px;
+    }
+}
+
+/* ── Miniature Vector Thumbnail (used on /recipes/sheets index) ── */
+.thumbSheetSvg {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 12 / 16;
+    border-radius: var(--radius-sm);
+    border: 1px solid #ffffff1a;
+    background-color: var(--sheet-paper, #ffffff);
+}
+
+/* ── /recipes/sheets Index Page Styles ── */
+.indexMain {
+    --sheet-paper: #ffffff;
+    --sheet-accent: #111111;
+    padding-top: calc(var(--nav-h) + var(--space-8));
+    display: flex;
+    flex-direction: column;
+}
+
+.indexMain[data-bw-print='false'] {
+    --sheet-paper: #efe5d0;
+    --sheet-accent: #cc0e1d;
+}
+
+.inkToggleBar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-sm);
+    border: 1px solid #ffffff1a;
+    background-color: var(--bg-card);
+}
+
+.inkToggleNote {
+    font-size: var(--text-xs);
+    color: var(--fg-2);
+}
+
+.indexMain[data-bw-print='true'] .onlyBwMode {
+    display: block;
+}
+
+.indexMain[data-bw-print='true'] .onlyColorMode {
+    display: none;
+}
+
+.indexMain[data-bw-print='false'] .onlyBwMode {
+    display: none;
+}
+
+.indexMain[data-bw-print='false'] .onlyColorMode {
+    display: block;
+}
+
+.indexMain[data-bw-print='true'] .vignetteImg,
+.indexMain[data-bw-print='true'] .bwConvertibleImg {
+    filter: grayscale(1) contrast(1.26) brightness(1.06);
+}
+
+/* ── Full 12×16 (3:4) Sheet Cards with Recipe Inside the Perimeter Fold Box ── */
+.safetySheetsFullGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
+    gap: var(--space-6);
+}
+
+.fullSheetCardLink {
+    display: block;
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid #ffffff1a;
+    background-color: var(--sheet-paper, #ffffff);
+    text-decoration: none;
+    transition: border-color 0.2s var(--ease-out);
+}
+
+.fullSheetCardLink:hover,
+.fullSheetCardLink:focus-visible {
+    border-color: var(--gold);
+}
+
+.fullSheetCardImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.indexHero {
+    padding: var(--space-8) 0 var(--space-6);
+}
+
+.indexHeroGrid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.indexHeroCopy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.indexTitle {
+    margin: 0;
+    color: var(--fg);
+}
+
+.indexTitle em {
+    font-style: normal;
+    color: var(--red);
+}
+
+.indexLede {
+    margin: 0;
+    font-size: var(--text-lg);
+    color: var(--fg-2);
+    max-width: 58ch;
+    line-height: 1.6;
+}
+
+.indexMetaRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.indexSpecStat {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.indexBackLink {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.2s var(--ease-out);
+}
+
+.indexBackLink:hover,
+.indexBackLink:focus-visible {
+    color: var(--gold);
+}
+
+.indexHeroMedia {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid #ffffff1a;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-card);
+}
+
+.indexHeroImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sectionHeader {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.sectionHeading {
+    margin: 0;
+    font-size: var(--text-4xl);
+    color: var(--fg);
+}
+
+.sectionSub {
+    margin: 0;
+    font-size: var(--text-base);
+    color: var(--fg-2);
+    max-width: 68ch;
+}
+
+.sectionStack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.howGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+}
+
+.howStep {
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    border: 1px solid #ffffff1a;
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    transition:
+        border-color 0.22s var(--ease-out),
+        transform 0.22s var(--ease-out);
+}
+
+.howStep:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+.howStepMedia {
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid #ffffff1a;
+    aspect-ratio: 3 / 4;
+    background-color: var(--dark);
+}
+
+.howStepImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.howStepCopy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-inline: var(--space-2);
+    padding-bottom: var(--space-2);
+}
+
+.howStepHeaderRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.howStepNum {
+    font-family: var(--font-heading), sans-serif;
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+}
+
+.howStepTag {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.howStepTitle {
+    margin: 0;
+    font-size: var(--text-2xl);
+    color: var(--fg);
+}
+
+.howStepDesc {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+    line-height: 1.55;
+}
+
+.specsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+}
+
+.specCard {
+    padding: var(--space-6);
+    border-radius: var(--radius);
+    border: 1px solid #ffffff1a;
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.specCardKicker {
+    font-size: var(--text-xs);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.specCardTitle {
+    margin: 0;
+    font-size: var(--text-xl);
+    color: var(--fg);
+}
+
+.specCardBody {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+    line-height: 1.55;
+}
+
+.sheetsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+    gap: var(--space-6);
+}
+
+.sheetCard {
+    background: var(--bg-card);
+    border: 1px solid #ffffff1a;
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    transition:
+        border-color 0.22s var(--ease-out),
+        transform 0.22s var(--ease-out);
+}
+
+.sheetCard:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+.cardVisualSplit {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    align-items: stretch;
+}
+
+.thumbLink {
+    display: block;
+    text-decoration: none;
+}
+
+.vignetteWrap {
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid #ffffff1a;
+    background-color: var(--dark);
+    aspect-ratio: 3 / 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.vignetteImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.styleThumbLink {
+    display: block;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid #ffffff1a;
+    background-color: var(--sheet-paper, #ffffff);
+    aspect-ratio: 3 / 4;
+    text-decoration: none;
+    transition: border-color 0.2s var(--ease-out);
+}
+
+.styleThumbLink:hover,
+.styleThumbLink:focus-visible {
+    border-color: var(--red);
+}
+
+.styleThumbImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.styleConceptStageImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* ── Safety-Seal Measurement Widget Explorations (3 × 10 Icons) ── */
+.safetySealIntroRow {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-6);
+    align-items: center;
+    padding: var(--space-6);
+    border-radius: var(--radius);
+    border: 1px solid #ffffff1a;
+    background-color: var(--bg-card);
+}
+
+.safetySealRefBadge {
+    width: 112px;
+    height: 112px;
+    display: block;
+    flex: none;
+}
+
+.widgetGroupBlock {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.widgetGroupHeader {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.widgetGroupTitle {
+    margin: 0;
+    font-size: var(--text-2xl);
+    color: var(--fg);
+}
+
+.widgetGroupSub {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+    max-width: 72ch;
+}
+
+.widgetGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: var(--space-4);
+}
+
+.widgetCard {
+    padding: var(--space-4);
+    border-radius: var(--radius);
+    border: 1px solid #ffffff1a;
+    background-color: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    transition:
+        border-color 0.2s var(--ease-out),
+        transform 0.2s var(--ease-out);
+}
+
+.widgetCard:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+.widgetImgFrame {
+    display: block;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid #ffffff1a;
+    background-color: var(--sheet-paper, #ffffff);
+    aspect-ratio: 1 / 1;
+}
+
+.widgetImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.widgetCardTitle {
+    margin: 0;
+    font-size: var(--text-lg);
+    color: var(--fg);
+    line-height: 1.15;
+}
+
+.widgetCardDetail {
+    margin: 0;
+    font-size: var(--text-xs);
+    color: var(--fg-3);
+    line-height: 1.45;
+}
+
+.styleHeaderBar {
+    width: 100%;
+    max-width: 12in;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-inline: var(--space-4);
+}
+
+.styleStageHeading {
+    margin: 0;
+    font-size: var(--text-3xl);
+    color: var(--fg);
+}
+
+.styleStageSub {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+}
+
+.cardBody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    flex: 1 1 auto;
+}
+
+.cardCutLabel {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.cardTitle {
+    margin: 0;
+    font-size: var(--text-2xl);
+    color: var(--fg);
+}
+
+.cardSpecs {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+}
+
+.cardCutBuy {
+    margin: 0;
+    font-size: var(--text-xs);
+    color: var(--fg-3);
+}
+
+.cardActions {
+    margin-top: auto;
+    padding-top: var(--space-2);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.cardPrimaryBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3) var(--space-5);
+    background-color: var(--red);
+    color: var(--fg);
+    border: 1px solid var(--red);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition:
+        background-color 0.2s var(--ease-out),
+        border-color 0.2s var(--ease-out);
+}
+
+.cardPrimaryBtn:hover,
+.cardPrimaryBtn:focus-visible {
+    background-color: var(--red-dark);
+    border-color: var(--red-dark);
+}
+
+.cardSecondaryLink {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    border: 1px solid #ffffff1a;
+    transition:
+        color 0.2s var(--ease-out),
+        border-color 0.2s var(--ease-out);
+}
+
+.cardSecondaryLink:hover,
+.cardSecondaryLink:focus-visible {
+    color: var(--fg);
+    border-color: var(--gold);
+}
+
+/* ── Skipped (Not Parcel-Friendly) Transparency Section ── */
+.skippedGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: var(--space-4);
+}
+
+.skippedGroup {
+    padding: var(--space-6);
+    border-radius: var(--radius);
+    border: 1px solid #ffffff1a;
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.skippedGroupTitle {
+    margin: 0;
+    font-size: var(--text-xl);
+    color: var(--gold);
+}
+
+.skippedList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.skippedItem {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-05);
+    padding-top: var(--space-2);
+    border-top: 1px solid #ffffff1a;
+}
+
+.skippedItemLink {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--fg);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+}
+
+.skippedItemLink:hover,
+.skippedItemLink:focus-visible {
+    color: var(--red);
+}
+
+.skippedReason {
+    margin: 0;
+    font-size: var(--text-xs);
+    color: var(--fg-3);
+    line-height: 1.45;
+}
+
+/* ── Printed Mandatory Oven Safety Warning Banner (Screen + Print) ── */
+.sheetSafetyBanner {
+    margin: 0;
+    padding: 4px var(--space-3);
+    border-bottom: 1.5px solid #111111;
+    font-size: var(--text-xs);
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-align: center;
+    color: #111111;
+    background: transparent;
+}
+
+.styleSheetSafetyStrip {
+    position: absolute;
+    left: 2.5%;
+    right: 2.5%;
+    bottom: 0.55%;
+    padding: 2px var(--space-2);
+    background-color: var(--sheet-paper, #ffffff);
+    border: 1px solid #111111;
+    font-size: var(--text-xs);
+    font-weight: 800;
+    text-align: center;
+    color: #111111;
+    line-height: 1.25;
+    pointer-events: none;
+}
+
+/* ── Crisp Readable Recipe Box Inside Index Cards ── */
+.cardRecipeBox {
+    margin-top: var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    border: 1px solid #ffffff1a;
+    background: rgba(255, 255, 255, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.cardRecipeSpecBar {
+    margin: 0;
+    font-size: var(--text-xs);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding-bottom: var(--space-1);
+    border-bottom: 1px solid #ffffff1a;
+}
+
+.cardRecipeCols {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: var(--space-3);
+}
+
+.cardRecipeColTitle {
+    display: block;
+    margin-bottom: var(--space-1);
+    font-size: var(--text-xs);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg);
+}
+
+.cardRecipeList {
+    margin: 0;
+    padding-left: var(--space-4);
+    font-size: var(--text-xs);
+    color: var(--fg-2);
+    line-height: 1.45;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cardSafetyFoot {
+    margin: 0;
+    padding-top: var(--space-1);
+    border-top: 1px solid #ffffff1a;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--fg-3);
+}
+
+@media screen and (max-width: 900px) {
+    .cardRecipeCols {
+        grid-template-columns: 1fr;
+    }
+    .indexHeroGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .howGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .specsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .sheetsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .safetySealIntroRow {
+        grid-template-columns: 1fr;
+    }
+
+    .safetySheetsFullGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Print Media: Exact 12 x 16 in Half-Sheet Liner with 0.25 in Safe Margin ── */
+@media print {
+    @page {
+        size: 12in 16in;
+        margin: 0.25in;
+    }
+
+    .sheetRouteMain {
+        padding: 0 !important;
+        margin: 0 !important;
+        gap: 0 !important;
+        display: block !important;
+    }
+
+    .toolbarSection {
+        display: none !important;
+    }
+
+    .sheetStageSection {
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+    }
+
+    .sheetPaper {
+        width: 11.5in !important;
+        height: 15.5in !important;
+        max-width: none !important;
+        aspect-ratio: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        background-image: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .sheetPaper *,
+    .sheetPaper *::before,
+    .sheetPaper *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .sheetSafeFrame {
+        border: 1pt solid #1c1614 !important;
+    }
+
+    .headerBand {
+        grid-template-columns: 1fr auto !important;
+        border-bottom: 1pt solid #1c1614 !important;
+    }
+
+    .specBox {
+        border-left: 1pt solid #1c1614 !important;
+    }
+
+    .footerBand {
+        grid-template-columns: 1.2fr auto 1fr !important;
+        border-top: 1pt solid #1c1614 !important;
+    }
+
+    .foldSummaryBlock {
+        display: flex !important;
+        border-left: 1pt solid #1c1614 !important;
+        border-right: 1pt solid #1c1614 !important;
+    }
+
+    .qrBox {
+        border: 1pt solid #1c1614 !important;
+    }
+
+    .cutOrderLink {
+        text-decoration: none;
+    }
+}
+

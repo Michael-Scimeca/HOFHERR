@@ -197,6 +197,7 @@ export default async function EmailPreviewPage({ searchParams }: { searchParams:
 
     return (
         <div style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: 800, margin: '0 auto' }}>
+            {/* heading-size-ok: isolated dev email harness */}
             <h1 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>📧 Email Template Preview</h1>
 
             <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>

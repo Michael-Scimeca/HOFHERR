@@ -44,11 +44,10 @@ const SITE_MAP: SiteSection[] = [
         ],
     },
     {
-        title: 'Catering & Events',
+        title: 'BBQ & Catering',
         icon: '🎉',
         pages: [
-            { name: 'Catering Overview', path: '/catering', icon: '🍽️' },
-            { name: 'BBQ Catering', path: '/bbq', icon: '🔥' },
+            { name: 'BBQ & Catering', path: '/catering', icon: '🔥' },
         ],
     },
     {
@@ -60,7 +59,7 @@ const SITE_MAP: SiteSection[] = [
             { name: 'Cut Guide', path: '/cut-guide', icon: '🔪' },
             { name: 'Recipes', path: '/recipes', icon: '🍳' },
             { name: 'FAQ', path: '/faq', icon: '❓' },
-            { name: 'Press', path: '/press', icon: '📰' },
+            { name: 'Press & Media', path: '/our-story#press', icon: '📰' },
             { name: 'Jobs & Careers', path: '/jobs', icon: '💼' },
         ],
     },

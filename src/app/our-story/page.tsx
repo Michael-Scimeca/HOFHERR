@@ -4,9 +4,10 @@ import HoverVideo from '@/components/HoverVideo';
 import Link from 'next/link';
 import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
-import { TEAM_MEMBERS_QUERY, TIMELINE_QUERY, ACCOLADES_QUERY } from '@/sanity/queries';
+import { TEAM_MEMBERS_QUERY, TIMELINE_QUERY } from '@/sanity/queries';
 import InteractiveTimeline from '@/components/InteractiveTimeline';
-import AccoladesVariants from '@/components/AccoladesVariants';
+import AccoladesSection from '@/components/AccoladesSection';
+import PressSection from '@/components/PressSection';
 import TeamBentoGrid from '@/components/TeamBentoGrid';
 import TestimonialWall from '@/components/TestimonialWall';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
@@ -100,20 +101,8 @@ const FALLBACK_TEAM = [
     },
 ];
 
-const FALLBACK_ACCOLADES = [
-    '🏆 2009 North Shore Chili Cookoff — Winner',
-    '🏆 2010 Lake Bluff Ribfest — Winner',
-    '🥈 2008 Northfield Ribfest — Top 3',
-    '🥈 2010 North Shore Chili Cookoff — Top 3',
-    '🥈 2011 Des Plaines Rib, Chicken & Sausage Winter Burn Off — Top 3',
-    '🔪 Member, Butcher\'s Guild',
-    '🔥 Member, Illinois Barbecue Association',
-    '🎙️ As Featured on America\'s Test Kitchen "Proof" Podcast',
-];
-
 type TeamMember = { name: string; role: string; photo?: string | null; bio?: string | null };
 type TimelineItem = { era: string; title: string; body?: string | null };
-type Accolade = { text: string };
 
 export default async function OurStoryPage() {
     // 5-star Google reviews + overall rating (null until GOOGLE_PLACES_API_KEY is set — then Yelp-only).
@@ -124,13 +113,11 @@ export default async function OurStoryPage() {
 
     let team: TeamMember[] = FALLBACK_TEAM;
     let timeline: TimelineItem[] = FALLBACK_TIMELINE;
-    let accolades: string[] = FALLBACK_ACCOLADES;
 
     try {
-        const [rawTeam, rawTimeline, rawAccolades] = await Promise.all([
+        const [rawTeam, rawTimeline] = await Promise.all([
             sanityClient.fetch(TEAM_MEMBERS_QUERY),
             sanityClient.fetch(TIMELINE_QUERY),
-            sanityClient.fetch(ACCOLADES_QUERY),
         ]);
         if (rawTeam?.length) {
             /* Merge local fallback photos for members missing a Sanity photo */
@@ -144,7 +131,6 @@ export default async function OurStoryPage() {
             }));
         }
         if (rawTimeline?.length) timeline = rawTimeline;
-        if (rawAccolades?.length) accolades = rawAccolades.map((a: Accolade) => a.text);
 
         /* Always ensure The Depot entry exists in the timeline */
         const hasDepot = timeline.some((t) => /depot/i.test(t.title));
@@ -265,8 +251,11 @@ export default async function OurStoryPage() {
                             {/* ── Timeline ── */}
                             <InteractiveTimeline events={timeline} />
 
-                            {/* ── Accolades — current version ── */}
-                            <AccoladesVariants accolades={accolades} />
+                            {/* ── Accolades ── */}
+                            <AccoladesSection />
+
+                            {/* ── Press & Media ── */}
+                            <PressSection />
 
 
                             {/* ── Reviews wall — live 5-star Google reviews + Yelp reviews supplied by the owner (REVIEWS above). ── */}

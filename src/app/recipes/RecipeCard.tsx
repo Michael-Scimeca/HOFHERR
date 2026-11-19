@@ -1,9 +1,11 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { useCartCount } from '@/context/CartContext';
 import { OCCASIONS, PRICES_AS_OF, type MenuPick, type OccasionId, type Recipe } from './recipes';
 import { formatEstimate, pickupWindow, planBuy, scaleIngredient } from './scale';
+import { hasCookingSheet } from './sheets-data';
 import styles from './page.module.css';
 
 const OCCASION_LABEL = Object.fromEntries(OCCASIONS.map(o => [o.id, o.label])) as Record<OccasionId, string>;
@@ -30,6 +32,7 @@ export default function RecipeCard({ recipe: r, today, onPickOccasion, open, onT
     const plans = r.buy.map(item => planBuy(item, factor));
     const total = plans.reduce((sum, p) => sum + p.cost, 0);
     const pickup = pickupWindow(today, r.leadDays);
+    const parcelSheetAvailable = r.parcelFriendly && hasCookingSheet(r.slug);
 
     const flash = (
         key: string,
@@ -121,9 +124,16 @@ export default function RecipeCard({ recipe: r, today, onPickOccasion, open, onT
                         {r.perfectFor}
                     </p>
                     {!open && (
-                        <p className={styles.closedMeta}>
-                            {r.total} · {r.difficulty} · Hands-on {r.handsOn}
-                        </p>
+                        <div className={styles.closedMetaRow}>
+                            <p className={styles.closedMeta}>
+                                {r.total} · {r.difficulty} · Hands-on {r.handsOn}
+                            </p>
+                            {parcelSheetAvailable && (
+                                <Link href={`/recipes/${r.slug}/sheet`} className={styles.printSheetInlineLink}>
+                                    Print cooking sheet
+                                </Link>
+                            )}
+                        </div>
                     )}
                     {open && (
                         <>
@@ -245,6 +255,11 @@ export default function RecipeCard({ recipe: r, today, onPickOccasion, open, onT
                             <button type="button" className={styles.viewCartBtn} onClick={openCart}>
                                 View cart
                             </button>
+                        )}
+                        {parcelSheetAvailable && (
+                            <Link href={`/recipes/${r.slug}/sheet`} className={styles.printSheetBtn}>
+                                Print cooking sheet
+                            </Link>
                         )}
                     </section>
 

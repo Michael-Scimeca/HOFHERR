@@ -113,42 +113,42 @@ export default function DesignSystemPage() {
                                     <code>&lt;h1&gt;</code>
                                     <span>clamp(2.4rem, 6vw, 4.5rem)</span>
                                 </div>
-                                <h1 style={{ fontSize: 'clamp(2.4rem, 6vw, 4.5rem)' }}>Premium Craft Butchery</h1>
+                                <h1 className={styles.specimenH1}>Premium Craft Butchery</h1>
                             </div>
                             <div className={styles.typeRow}>
                                 <div className={styles.typeMeta}>
                                     <code>&lt;h2&gt;</code>
                                     <span>clamp(1.8rem, 4vw, 3rem)</span>
                                 </div>
-                                <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}>Dry-Aged USDA Prime</h2>
+                                <h2 className={styles.specimenH2}>Dry-Aged USDA Prime</h2>
                             </div>
                             <div className={styles.typeRow}>
                                 <div className={styles.typeMeta}>
                                     <code>&lt;h3&gt;</code>
                                     <span>clamp(1.4rem, 3vw, 2rem)</span>
                                 </div>
-                                <h3 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)' }}>Custom Cuts To Order</h3>
+                                <h3 className={styles.specimenH3}>Custom Cuts To Order</h3>
                             </div>
                             <div className={styles.typeRow}>
                                 <div className={styles.typeMeta}>
                                     <code>&lt;h4&gt;</code>
                                     <span>clamp(1.1rem, 2vw, 1.5rem)</span>
                                 </div>
-                                <h4 style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)' }}>Northfield &amp; Winnetka</h4>
+                                <h4 className={styles.specimenH4}>Northfield &amp; Winnetka</h4>
                             </div>
                             <div className={styles.typeRow}>
                                 <div className={styles.typeMeta}>
                                     <code>&lt;h5&gt;</code>
                                     <span>1rem / 700</span>
                                 </div>
-                                <h5 style={{ fontSize: '1rem', fontWeight: 700, fontFamily: '"Inter", sans-serif', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Section Heading Five</h5>
+                                <h5 className={styles.specimenH5}>Section Heading Five</h5>
                             </div>
                             <div className={styles.typeRow}>
                                 <div className={styles.typeMeta}>
                                     <code>&lt;h6&gt;</code>
                                     <span>0.85rem / 700</span>
                                 </div>
-                                <h6 style={{ fontSize: '0.85rem', fontWeight: 700, fontFamily: '"Inter", sans-serif', letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--fg-muted)' }}>Section Heading Six</h6>
+                                <h6 className={styles.specimenH6}>Section Heading Six</h6>
                             </div>
                         </div>
                     </div>

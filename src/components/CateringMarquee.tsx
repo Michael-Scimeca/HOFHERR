@@ -106,7 +106,7 @@ export default function CateringMarquee({ id = 'catering-marquee' }: { id?: stri
                                                         <span
                                                             data-fire-kind="logo"
                                                             data-fire-id={`${copyIdx}:${rowIndex}:${logoIdx}:logo`}
-                                                            className={`${styles.phraseHost} ${styles.torchHoverTarget}`}
+                                                            className={styles.phraseHost}
                                                         >
                                                             <span
                                                                 data-fire-visual="true"
@@ -119,7 +119,7 @@ export default function CateringMarquee({ id = 'catering-marquee' }: { id?: stri
                                                         <span
                                                             data-fire-kind="icon"
                                                             data-fire-id={`${copyIdx}:${rowIndex}:${iconIdx}:icon`}
-                                                            className={`${styles.bulletHost} ${styles.torchHoverTarget}`}
+                                                            className={styles.bulletHost}
                                                         >
                                                             {/* eslint-disable-next-line @next/next/no-img-element */}
                                                             <img

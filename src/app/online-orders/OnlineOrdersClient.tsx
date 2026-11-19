@@ -902,7 +902,7 @@ export default function CustomOrdersPage({
     const [activeCategory, setActiveCategory] = useState(
         activeStore === 'butcher' ? (butcherCategories[0]?.id ?? 'beef') : (depotCategories[0]?.id ?? 'beef')
     );
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') ?? '');
     const [searchFocused, setSearchFocused] = useState(false);
     const [hideOutOfStock, setHideOutOfStock] = useState(false);
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
@@ -2960,7 +2960,7 @@ export default function CustomOrdersPage({
                         {checkoutStep === 'choice' ? (
                             <div className={styles.choiceView}>
                                 <div className={styles.choiceSocialHeader} style={{ textAlign: 'center', marginBottom: '4px' }}>
-                                    <h3 style={{ fontFamily: 'var(--font-heading)', color: 'var(--red)', fontSize: '20px', marginBottom: '0px' }}>
+                                    <h3 className={styles.choiceAuthHeading}>
                                         {authMode === 'forgot' ? 'Reset Password' : authMode === 'register' ? 'Create An Account' : 'Welcome Back'}
                                     </h3>
                                     <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '2px 0 6px' }}>

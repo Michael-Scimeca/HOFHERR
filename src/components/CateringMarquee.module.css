@@ -34,6 +34,7 @@
     padding: 64px 0 24px;
     transform: rotate(-2deg);
     transform-origin: center center;
+    cursor: default;
 }
 
 .crispLayer {
@@ -71,10 +72,6 @@
 
 .marqueeRow4 {
     animation: marqueeRight 40s linear infinite;
-}
-
-.marqueeWrap:hover .marqueeTrack {
-    animation-play-state: paused;
 }
 
 @keyframes marqueeLeft {
@@ -152,24 +149,6 @@
     filter: brightness(0.88) saturate(0.92);
     user-select: none;
     -webkit-user-drag: none;
-    transition:
-        opacity 0.24s var(--ease-out),
-        filter 0.24s var(--ease-out);
-}
-
-/* Torch-On-Hover Ignite interactive target (matches PressTicker) */
-.torchHoverTarget {
-    cursor: pointer;
-    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.torchHoverTarget:hover {
-    transform: translateY(-2px) scale(1.03);
-}
-
-.torchHoverTarget:hover .marqueeBullet {
-    opacity: 1;
-    filter: brightness(1.04) saturate(1.02);
 }
 
 @media (max-width: 600px) {
@@ -198,10 +177,5 @@
     .marqueeRow3,
     .marqueeRow4 {
         animation: none;
-    }
-
-    .torchHoverTarget,
-    .marqueeBullet {
-        transition: none;
     }
 }

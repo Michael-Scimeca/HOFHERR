@@ -23,7 +23,6 @@ import ParallaxImages from "@/components/ParallaxImages";
 
 // ── Lazy-loaded heavy components (code-split from initial JS bundle) ──
 const EmbersBackground = dynamic(() => import("@/components/EmbersBackground"));
-const EmberFlare = dynamic(() => import("@/components/EmberFlare"));
 const ChatWidgetWrapper = dynamic(() => import("@/components/ChatWidgetWrapper"));
 const DevNav = dynamic(() => import("@/components/DevNav"));
 const AddToOrderAnimStudio = dynamic(() => import("@/components/AddToOrderAnimStudio"));
@@ -151,7 +150,6 @@ export default async function RootLayout({
         )}
 
         <EmbersBackground />
-        <EmberFlare />
         <SiteSettingsProvider settings={settings}>
           <ClientProviders session={session}>
             <CartProvider>

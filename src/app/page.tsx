@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Hero from '@/components/home/Hero';
 import SeasonalBanner from '@/components/home/SeasonalBanner';
-import Specials from '@/components/home/Specials';
-import Process from '@/components/home/Process';
+import SignatureDishesSection from '@/components/SignatureDishesSection';
+import ParcelSheetsTeaser from '@/components/home/ParcelSheetsTeaser';
 
 import Newsletter from '@/components/home/Newsletter';
 import dynamic from 'next/dynamic';
@@ -36,8 +36,8 @@ export default function HomePage() {
     <main>
       <Hero />
       <SeasonalBanner />
-      <Specials />
-      <Process />
+      <SignatureDishesSection />
+      <ParcelSheetsTeaser />
 
       <Newsletter />
     </main>

@@ -31,12 +31,14 @@ export default defineConfig({
   use: {
     baseURL: BASE_URL,
     trace: 'on-first-retry',
-    ...(localChrome ? { launchOptions: { executablePath: localChrome } } : {}),
   },
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        ...(localChrome ? { launchOptions: { executablePath: localChrome } } : {}),
+      },
     },
     {
       name: 'webkit',

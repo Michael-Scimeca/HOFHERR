@@ -7,8 +7,8 @@ import { PressCanvasStage } from './PressTickerFire';
 /**
  * PressTicker — "As featured in" marquee in the same tilted, two-direction
  * style as the catering ticker, separated by Hofherr circular SVG emblem icons.
- * Butcher emblems ignite with <canvas> torch flames + sparks on hover; press
- * logos emit <canvas> embers behind them.
+ * Butcher emblems and press logos emit <canvas> embers automatically while they
+ * pass through an invisible circle in the centre of the ticker (no hover needed).
  */
 type Outlet = {
     name: string;
@@ -80,7 +80,7 @@ function Row({ outlets, direction, rowIndex }: RowProps) {
                                         data-fire-kind="logo"
                                         data-fire-plaque={outlet.plaque ? 'true' : undefined}
                                         data-fire-id={`${copyIdx}:${rowIndex}:${logoIdx}:logo`}
-                                        className={`${styles.logoHost} ${styles.torchHoverTarget}`}
+                                        className={styles.logoHost}
                                     >
                                         {outlet.plaqueBackdrop && (
                                             <span className={styles.plaqueBackdrop} aria-hidden="true" />
@@ -105,7 +105,7 @@ function Row({ outlets, direction, rowIndex }: RowProps) {
                                     <span
                                         data-fire-kind="icon"
                                         data-fire-id={`${copyIdx}:${rowIndex}:${iconIdx}:icon`}
-                                        className={`${styles.bulletHost} ${styles.torchHoverTarget}`}
+                                        className={styles.bulletHost}
                                     >
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img
@@ -147,7 +147,7 @@ export default function PressTicker({ heading = 'As Featured In' }: PressTickerP
             )}
 
             <div ref={wrapRef} className={styles.wrap}>
-                <PressCanvasStage containerRef={wrapRef} />
+                <PressCanvasStage containerRef={wrapRef} flames={false} />
 
                 <div className={styles.crispLayer}>
                     <Row outlets={ROW_ONE} direction="left" rowIndex={0} />

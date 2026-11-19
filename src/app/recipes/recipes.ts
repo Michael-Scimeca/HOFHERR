@@ -156,6 +156,8 @@ export const BUNDLES: Bundle[] = [
 
 export type Recipe = {
     slug: string;
+    /** Set by hand from inspecting the recipe's cooking method: true ONLY for 100% oven-baked (<= 425°F) sealed parchment parcel recipes with zero searing, grilling, broiling, smoking, braising, or mixed methods. */
+    parcelFriendly: boolean;
     baseServings: number;
     servingOptions?: number[];
     difficulty: 'Easy' | 'Medium';
@@ -191,6 +193,7 @@ export const TEMPERATURE_NOTE =
 const BASE_RECIPES: Recipe[] = [
     {
         slug: 'head',
+        parcelFriendly: false,
         baseServings: 6,
         difficulty: 'Easy',
         handsOn: '30 min',
@@ -248,6 +251,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'chuck',
+        parcelFriendly: false,
         baseServings: 6,
         difficulty: 'Easy',
         handsOn: '20 min',
@@ -305,6 +309,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'rib',
+        parcelFriendly: false,
         baseServings: 2,
         difficulty: 'Medium',
         handsOn: '15 min',
@@ -359,6 +364,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'short-loin',
+        parcelFriendly: false,
         baseServings: 2,
         difficulty: 'Easy',
         handsOn: '15 min',
@@ -415,6 +421,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'sirloin',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Medium',
         handsOn: '25 min',
@@ -479,6 +486,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'round',
+        parcelFriendly: false,
         baseServings: 8,
         difficulty: 'Easy',
         handsOn: '15 min',
@@ -533,6 +541,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'brisket',
+        parcelFriendly: false,
         baseServings: 8,
         difficulty: 'Easy',
         handsOn: '30 min',
@@ -594,6 +603,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'plate',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '25 min',
@@ -651,6 +661,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'flank',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Easy',
         handsOn: '20 min',
@@ -707,6 +718,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'shank',
+        parcelFriendly: false,
         baseServings: 4,
         difficulty: 'Medium',
         handsOn: '30 min',
@@ -766,6 +778,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'turkey',
+        parcelFriendly: false,
         baseServings: 12,
         servingOptions: [8, 12, 16],
         difficulty: 'Medium',
@@ -830,6 +843,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'prime-rib',
+        parcelFriendly: false,
         baseServings: 6,
         difficulty: 'Medium',
         handsOn: '20 min',
@@ -889,6 +903,7 @@ const BASE_RECIPES: Recipe[] = [
     },
     {
         slug: 'lamb',
+        parcelFriendly: false,
         baseServings: 8,
         difficulty: 'Medium',
         handsOn: '25 min',

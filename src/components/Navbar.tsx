@@ -34,14 +34,13 @@ function AvatarImage({ src, name }: { src: string; name: string }) {
 
 const NAV_ITEMS = [
     { label: 'Specials', href: '/specials' },
-    { label: 'BBQ', href: '/bbq' },
-    { label: 'Catering', href: '/catering' },
+    { label: 'BBQ & Catering', href: '/catering' },
     { label: 'Selections', href: '/selections' },
     { label: 'Cut Guide', href: '/cut-guide' },
     { label: 'Recipes', href: '/recipes' },
+    { label: 'Parcel Sheets', href: '/recipes/sheets' },
     { label: 'Visit Us', href: '/visit' },
     { label: 'Our Story', href: '/our-story' },
-    { label: 'Press', href: '/press' },
     { label: 'Gift Cards', href: '/gift-cards' },
 ];
 
@@ -328,6 +327,9 @@ export default function Navbar() {
                 {/* Right side group */}
                 <div className={styles.right}>
                     <div className={styles.rightActions}>
+                        <a href="tel:8474416328" className={styles.phone} aria-label="Call Hofherr Meat Co. at (847) 441-6328">
+                            📞 (847) 441-MEAT
+                        </a>
                         {!user ? (
                             <div className={styles.authPill}>
                                 <Link href="/online-orders?login=true" prefetch={false} data-no-transition className={styles.signInLink} onClick={(e) => openAuthFromLink(e, 'login')}>Sign In</Link>
@@ -479,10 +481,10 @@ export default function Navbar() {
                                 </div>
                             ) : (
                                 <div className={styles.mobileAuthGrid}>
-                                    <TransitionLink href={user.isAdmin ? '/admin-dashboard/admin' : '/dashboard'} className={`btn btn-secondary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Dashboard</TransitionLink>
+                                    <TransitionLink href={user.isAdmin ? '/admin-dashboard/admin' : '/dashboard'} className={`btn btn-primary ${styles.authGridBtn}`} onClick={() => setMobileOpen(false)}>Dashboard</TransitionLink>
                                     <button
                                         type="button"
-                                        className={`btn btn-secondary ${styles.authGridBtn}`}
+                                        className={`btn btn-primary ${styles.authGridBtn}`}
                                         onClick={() => {
                                             setMobileOpen(false);
                                             signOut();

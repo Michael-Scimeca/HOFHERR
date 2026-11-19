@@ -26,6 +26,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
                 }}>
                     <div style={{ maxWidth: 480 }}>
                         <div style={{ fontSize: 48, marginBottom: 16 }}>🥩</div>
+                        {/* heading-size-ok: root layout fallback cannot rely on globals.css */}
                         <h1 style={{
                             fontFamily: '"Yanone Kaffeesatz", sans-serif',
                             fontSize: 'clamp(2rem, 5vw, 3.5rem)',
