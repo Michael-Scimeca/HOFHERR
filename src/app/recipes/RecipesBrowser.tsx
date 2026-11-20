@@ -115,6 +115,8 @@ export default function RecipesBrowser({ featuredCollectionId, today }: Props) {
                                 className={styles.featuredImg}
                                 src={featuredHeroRecipe.image}
                                 alt={`${featuredHeroRecipe.title} illustration`}
+                                fetchPriority="high"
+                                decoding="sync"
                             />
                         </div>
                     )}

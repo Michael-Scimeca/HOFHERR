@@ -3,9 +3,11 @@ import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
 import { CATEGORIES_QUERY } from '@/sanity/queries';
 import CustomOrdersPage from './OnlineOrdersClient';
+import { BUTCHER_SHOP_CATEGORIES } from './butcherCatalogData';
 import { toProductSlug } from './storefrontData';
 
 const DESIGN_SYSTEM_ICONS: Record<string, string> = {
+    specials: '/icons/onsale.svg',
     beef: '/icons/cow.svg',
     pork: '/icons/pig.svg',
     chicken: '/icons/chicken.svg',
@@ -57,8 +59,27 @@ export default async function OnlineOrdersPage() {
         console.warn('Sanity fetch failed, using fallback data:', e);
     }
 
-    const allCategories = [...(Array.isArray(sanityButcher) ? sanityButcher : []), ...(Array.isArray(sanityDepot) ? sanityDepot : [])];
-    const productSchemaItems = allCategories.flatMap((cat: { items?: { name?: string; price?: string; desc?: string; stockStatus?: string }[] }) =>
+    // Preserve any product images already uploaded in Sanity while keeping the
+    // freshly synced live catalog from hofherrmeatco.com/order/hofherr-meat-co authoritative.
+    const sanityImageByName = new Map<string, string>();
+    for (const cat of Array.isArray(sanityButcher) ? sanityButcher : []) {
+        for (const item of cat?.items ?? []) {
+            if (item?.name && item?.image) {
+                sanityImageByName.set(String(item.name).trim().toLowerCase(), String(item.image));
+            }
+        }
+    }
+
+    const syncedButcher = BUTCHER_SHOP_CATEGORIES.map((cat) => ({
+        ...cat,
+        items: cat.items.map((item) => {
+            const matchedImage = sanityImageByName.get(item.name.trim().toLowerCase());
+            return matchedImage ? { ...item, image: matchedImage } : item;
+        }),
+    }));
+
+    const allCategories = [...syncedButcher, ...(Array.isArray(sanityDepot) ? sanityDepot : [])];
+    const productSchemaItems = allCategories.flatMap((cat: { items?: { name?: string; price?: string; desc?: string; image?: string; stockStatus?: string }[] }) =>
         (cat.items ?? []).map((item) => {
             const priceMatch = typeof item.price === 'string' ? item.price.match(/(\d+(?:\.\d+)?)/) : null;
             const slug = item.name ? toProductSlug(item.name) : '';
@@ -66,6 +87,7 @@ export default async function OnlineOrdersPage() {
                 '@type': 'Product',
                 name: item.name,
                 description: item.desc || `${item.name} — cut to order at Hofherr Meat Co., Northfield IL.`,
+                ...(item.image ? { image: item.image.startsWith('http') ? item.image : `https://hofherrmeatco.com${item.image}` } : {}),
                 url: `https://hofherrmeatco.com/online-orders?item=${slug}`,
                 offers: {
                     '@type': 'Offer',
@@ -103,7 +125,7 @@ export default async function OnlineOrdersPage() {
             )}
             <Suspense fallback={<div className="route-loading" aria-busy="true" />}>
                 <CustomOrdersPage
-                    sanityButcher={applyDesignSystemIcons(sanityButcher)}
+                    sanityButcher={applyDesignSystemIcons(syncedButcher)}
                     sanityDepot={applyDesignSystemIcons(sanityDepot)}
                 />
             </Suspense>

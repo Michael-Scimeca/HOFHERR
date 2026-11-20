@@ -82,15 +82,21 @@ function preloadCssBackgroundUrl(url: string): Promise<void> {
 
 function waitForVideo(video: HTMLVideoElement): Promise<void> {
     return new Promise(resolve => {
-        if (video.readyState >= 2) {
+        // Videos with preload="none" or "metadata" (e.g. HoverVideo) won't fire loadeddata until played
+        if (video.readyState >= 2 || video.preload === 'none' || video.preload === 'metadata') {
             resolve();
             return;
         }
+        let done = false;
         const onDone = () => {
+            if (done) return;
+            done = true;
+            clearTimeout(cap);
             video.removeEventListener('loadeddata', onDone);
             video.removeEventListener('error', onDone);
             resolve();
         };
+        const cap = setTimeout(onDone, 800);
         video.addEventListener('loadeddata', onDone, { once: true });
         video.addEventListener('error', onDone, { once: true });
     });
@@ -176,8 +182,10 @@ export function waitForPageAssets(
                 tasks.push(track(preloadCssBackgroundUrl(url)));
             });
 
-            // 5. Any <video> elements
-            const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('video'));
+            // 5. Only wait on above-the-fold autoplaying <video> elements (never hover/metadata/offscreen videos)
+            const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('video')).filter(
+                video => video.autoplay && isNearViewport(video) && video.preload !== 'none' && video.preload !== 'metadata'
+            );
             videos.forEach(video => {
                 tasks.push(track(waitForVideo(video)));
             });

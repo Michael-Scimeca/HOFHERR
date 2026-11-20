@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Hero from '@/components/home/Hero';
 import SeasonalBanner from '@/components/home/SeasonalBanner';
 import SignatureDishesSection from '@/components/SignatureDishesSection';
+import HolidayCateringTeaser from '@/components/home/HolidayCateringTeaser';
 import RecipesTeaser from '@/components/home/RecipesTeaser';
 import StoryTeaser from '@/components/home/StoryTeaser';
 
@@ -10,7 +11,19 @@ import Newsletter from '@/components/home/Newsletter';
 export const metadata: Metadata = {
   title: 'Hofherr Meat Co. | Premium Butcher Shop — Northfield, IL',
   description:
-    'Craft butchery since 1903. Order online for custom cuts, dry-aged USDA prime beef, rotisserie chicken, and world-class BBQ catering. 300 Happ Rd, Northfield & Winnetka Depot.',
+    'Craft butchery since 1903. Order custom cuts, dry-aged USDA Prime beef, rotisserie chicken & BBQ catering in Northfield & Winnetka, IL.',
+  keywords: [
+    'Hofherr Meat Co',
+    'butcher shop Northfield IL',
+    'craft butcher North Shore',
+    'dry-aged USDA Prime beef',
+    'Winnetka Depot butcher',
+    'Italian beef Winnetka',
+    'rotisserie chicken Northfield',
+    'BBQ catering North Shore IL',
+    'whole pig roast Chicago',
+    'custom meat cuts',
+  ],
   alternates: { canonical: 'https://hofherrmeatco.com' },
   openGraph: {
     siteName: 'Hofherr Meat Co.',
@@ -36,6 +49,7 @@ export default function HomePage() {
       <Hero />
       <SeasonalBanner />
       <SignatureDishesSection />
+      <HolidayCateringTeaser />
       <RecipesTeaser />
       <StoryTeaser />
       <Newsletter />

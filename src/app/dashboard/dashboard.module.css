@@ -357,7 +357,7 @@
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: 20px;
-    padding: 24px;
+    padding: 24px 0;
     box-shadow: var(--card-shadow);
     transition: all 0.3s ease;
     cursor: default;

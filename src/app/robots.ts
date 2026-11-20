@@ -31,7 +31,6 @@ export default function robots(): MetadataRoute.Robots {
                     '/showcase',
                     '/pitch-deck',
                     '/roadmap',
-                    '/seo-checklist',
                     '/product-identity',
                 ],
             },

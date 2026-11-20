@@ -825,14 +825,14 @@ const PLACEHOLDER_TEXTS: Record<string, string[]> = {
     ],
 };
 
-const emptySubscribe = () => () => {};
+const emptySubscribe = () => () => { };
 
 const emptyFavoritesSet = new Set<string>();
 let cachedFavoritesRaw: string | null = null;
 let cachedFavoritesSet: Set<string> = emptyFavoritesSet;
 
 function subscribeFavorites(callback: () => void) {
-    if (typeof window === 'undefined') return () => {};
+    if (typeof window === 'undefined') return () => { };
     window.addEventListener('storage', callback);
     window.addEventListener('hofherr_favorites_sync', callback);
     return () => {
@@ -1010,15 +1010,15 @@ export default function CustomOrdersPage({
                     prev.length > 0
                         ? prev
                         : [
-                              { name: 'New York Strip', price: '$42.99/lb', qty: 2, note: '' },
-                              { name: 'Al Pastor Sausage', price: '$13.99/lb', qty: 1, note: '' },
-                              { name: 'Smoked Pork Chops', price: '$16.99/lb', qty: 1, note: '' },
-                              { name: 'Bacon', price: '$14.99/lb', qty: 1, note: '' },
-                              { name: 'Porchetta', price: '$28.99/lb', qty: 2, note: '' },
-                              { name: 'Boneless Country Style Ribs', price: '$4.99/lb', qty: 1, note: '' },
-                              { name: 'Bone-In Pork Shoulder', price: '$7.99/lb', qty: 1, note: '' },
-                              { name: 'Boneless Pork Shoulder', price: '$8.99/lb', qty: 2, note: '' },
-                          ]
+                            { name: 'New York Strip', price: '$42.99/lb', qty: 2, note: '' },
+                            { name: 'Al Pastor Sausage', price: '$13.99/lb', qty: 1, note: '' },
+                            { name: 'Smoked Pork Chops', price: '$16.99/lb', qty: 1, note: '' },
+                            { name: 'Bacon', price: '$14.99/lb', qty: 1, note: '' },
+                            { name: 'Porchetta', price: '$28.99/lb', qty: 2, note: '' },
+                            { name: 'Boneless Country Style Ribs', price: '$4.99/lb', qty: 1, note: '' },
+                            { name: 'Bone-In Pork Shoulder', price: '$7.99/lb', qty: 1, note: '' },
+                            { name: 'Boneless Pork Shoulder', price: '$8.99/lb', qty: 2, note: '' },
+                        ]
                 );
                 setDrawerClosing(false);
                 setDrawerOpen(true);
@@ -1295,7 +1295,7 @@ export default function CustomOrdersPage({
     // ── Session Sync ─────────────────────────────────────────────────────────
     const { data: session } = useSession();
     const isGodModeClient = useSyncExternalStore(
-        () => () => {},
+        () => () => { },
         () => document.cookie.includes('hofherr_god_mode=true'),
         () => false
     );
@@ -1368,15 +1368,15 @@ export default function CustomOrdersPage({
                 prev.length > 0
                     ? prev
                     : [
-                          { name: 'New York Strip', price: '$42.99/lb', qty: 2, note: '' },
-                          { name: 'Al Pastor Sausage', price: '$13.99/lb', qty: 1, note: '' },
-                          { name: 'Smoked Pork Chops', price: '$16.99/lb', qty: 1, note: '' },
-                          { name: 'Bacon', price: '$14.99/lb', qty: 1, note: '' },
-                          { name: 'Porchetta', price: '$28.99/lb', qty: 2, note: '' },
-                          { name: 'Boneless Country Style Ribs', price: '$4.99/lb', qty: 1, note: '' },
-                          { name: 'Bone-In Pork Shoulder', price: '$7.99/lb', qty: 1, note: '' },
-                          { name: 'Boneless Pork Shoulder', price: '$8.99/lb', qty: 2, note: '' },
-                      ]
+                        { name: 'New York Strip', price: '$42.99/lb', qty: 2, note: '' },
+                        { name: 'Al Pastor Sausage', price: '$13.99/lb', qty: 1, note: '' },
+                        { name: 'Smoked Pork Chops', price: '$16.99/lb', qty: 1, note: '' },
+                        { name: 'Bacon', price: '$14.99/lb', qty: 1, note: '' },
+                        { name: 'Porchetta', price: '$28.99/lb', qty: 2, note: '' },
+                        { name: 'Boneless Country Style Ribs', price: '$4.99/lb', qty: 1, note: '' },
+                        { name: 'Bone-In Pork Shoulder', price: '$7.99/lb', qty: 1, note: '' },
+                        { name: 'Boneless Pork Shoulder', price: '$8.99/lb', qty: 2, note: '' },
+                    ]
             );
             setDrawerClosing(false);
             setDrawerOpen(true);
@@ -1839,7 +1839,7 @@ export default function CustomOrdersPage({
     const handleShareCut = useCallback((itemName: string) => {
         if (typeof window === 'undefined') return;
         const url = `${window.location.origin}/online-orders?item=${toProductSlug(itemName)}`;
-        navigator.clipboard?.writeText(url).catch(() => {});
+        navigator.clipboard?.writeText(url).catch(() => { });
         setShareCopied(true);
         setTimeout(() => setShareCopied(false), 1800);
     }, []);
@@ -1868,11 +1868,13 @@ export default function CustomOrdersPage({
         });
     }, []);
 
+    const [expandedNoteItem, setExpandedNoteItem] = useState<string | null>(null);
+
+    const updateItemNote = useCallback((name: string, note: string) => {
+        setCart(prev => prev.map(i => (i.name === name ? { ...i, note } : i)));
+    }, []);
+
     const handleRowAddClick = useCallback((item: Item, e: React.MouseEvent<HTMLButtonElement>) => {
-        if (!animCfg.quickAddDirect) {
-            openModal(item);
-            return;
-        }
         const existingItem = cart.find(i => i.name === item.name);
         const currentQty = existingItem ? existingItem.qty : 0;
         if (currentQty + 1 >= ITEM_MAX_QTY) {
@@ -1903,7 +1905,7 @@ export default function CustomOrdersPage({
             categoryIcon: categoryIconByItemName.get(item.name),
             arrivingQty: addedDelta,
         });
-    }, [animCfg.quickAddDirect, openModal, cart, showMaxStockToast, triggerFlyAnimation, categoryIconByItemName]);
+    }, [cart, showMaxStockToast, triggerFlyAnimation, categoryIconByItemName]);
 
     const confirmAdd = useCallback((e?: React.MouseEvent) => {
         if (!modal || modalClosing) return;
@@ -1956,9 +1958,11 @@ export default function CustomOrdersPage({
             return;
         }
         setCart(prev =>
-            prev.map(i => {
-                if (i.name !== name) return i;
-                return { ...i, qty: Math.max(1, Math.min(ITEM_MAX_QTY, i.qty + delta)) };
+            prev.flatMap(i => {
+                if (i.name !== name) return [i];
+                const nextQty = i.qty + delta;
+                if (nextQty <= 0) return [];
+                return [{ ...i, qty: Math.min(ITEM_MAX_QTY, nextQty) }];
             })
         );
     };
@@ -2236,251 +2240,269 @@ export default function CustomOrdersPage({
             {/* ── Online Ordering Hours Banner ── */}
             <div className={styles.hoursNotice}>
                 <div className={`container ${styles.hoursNoticeInner}`}>
-                {activeStore === 'butcher' ? (
-                    <>
-                        <div className={styles.hoursNoticeLeft}>
-                            <span className={styles.hoursNoticeIcon}>🕙</span>
-                            <div>
-                                <div className={styles.hoursNoticeTitle}>Today's Online Ordering Hours</div>
-                                <div className={styles.hoursNoticeTime}>10:00am – 6:00pm</div>
-                            </div>
-                        </div>
-                        <div className={styles.hoursNoticeDivider} />
-                        <div className={styles.hoursNoticeRight}>
-                            <span className={styles.hoursNoticeBadge}>Online Ordering Currently Closed</span>
-                            <span className={styles.hoursNoticeSchedule}>You may schedule your order in advance</span>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <div className={styles.hoursNoticeLeft}>
-                            <span className={styles.hoursNoticeIcon}>🕙</span>
-                            <div>
-                                <div className={styles.hoursNoticeTitle}>Depot Pickup Hours</div>
-                                <div className={styles.hoursNoticeTime}>Pickup: 3:30pm – 6:30pm</div>
-                            </div>
-                        </div>
-                        <div className={styles.hoursNoticeDivider} />
-                        <div className={styles.hoursNoticeRight}>
-                            <span className={styles.hoursNoticeBadge}>Order by 1:30pm for same-day pickup</span>
-                            <span className={styles.hoursNoticeSchedule}>Indicate weight in item's special instructions · Final total may vary by weight</span>
-                        </div>
-                    </>
-                )}
-            </div>
-        </div >
-
-        <div className={`container ${styles.layout}`}>
-
-            {/* Sidebar */}
-            <aside className={styles.sidebar}>
-                <div ref={catSentinelRef} style={{ height: 0 }} />
-                <div ref={mobileHeaderRef} className={`${styles.mobileHeader} ${isCatSticky ? styles.stickyHeader : ''}`} style={{ top: navbarHeight + 10 }}>
-
-
-                    <div className={styles.storeSwitch}>
-                        <span className={`${styles.storeSwitchLabel} ${activeStore === 'butcher' ? styles.storeSwitchLabelActive : ''}`}>🥩 Butcher</span>
-                        <button
-                            className={`${styles.storeSwitchTrack} ${activeStore === 'depot' ? styles.storeSwitchTrackOn : ''}`}
-                            onClick={() => switchStore(activeStore === 'butcher' ? 'depot' : 'butcher')}
-                            aria-label="Toggle store"
-                        >
-                            <span className={styles.storeSwitchKnob} />
-                        </button>
-                        <span className={`${styles.storeSwitchLabel} ${activeStore === 'depot' ? styles.storeSwitchLabelActive : ''}`}>Depot 🏪</span>
-                    </div>
-
-                    {/* Unified Search Row */}
-                    <div className={styles.searchRow} ref={searchRowRef}>
-                        <div className={`${styles.searchWrap} ${searchFocused ? styles.searchWrapFocused : ''}`}>
-                            <svg className={styles.searchIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-                            <input
-                                ref={searchRef}
-                                type="text"
-                                placeholder={PLACEHOLDER_TEXTS[activeStore][placeholderIdx % PLACEHOLDER_TEXTS[activeStore].length]}
-                                value={searchQuery}
-                                onChange={e => setSearchQuery(e.target.value)}
-                                onFocus={() => setSearchFocused(true)}
-                                onBlur={() => { setTimeout(() => setSearchFocused(false), 200); saveRecentSearch(searchQuery); }}
-                                onKeyDown={e => {
-                                    if ((e.key === 'Tab' || e.key === 'ArrowRight') && suggestions[0] && searchQuery) {
-                                        const s = suggestions[0];
-                                        if (s.toLowerCase().startsWith(searchQuery.toLowerCase())) {
-                                            e.preventDefault();
-                                            setSearchQuery(s);
-                                        }
-                                    }
-                                }}
-                                className={styles.searchInput}
-                            />
-                            {/* Inline ghost autocomplete */}
-                            {searchQuery && suggestions[0] && suggestions[0].toLowerCase().startsWith(searchQuery.toLowerCase()) && (
-                                <span className={styles.searchGhost} aria-hidden="true">
-                                    <span className={styles.searchGhostHidden}>{searchQuery}</span>{suggestions[0].slice(searchQuery.length)}
-                                </span>
-                            )}
-                            {!searchQuery && !searchFocused && (
-                                <span className={styles.searchKbd}>⌘K</span>
-                            )}
-                            {searchQuery && (
-                                <>
-                                    <span className={styles.searchCount}>{totalResults}</span>
-                                    <button className={styles.searchClear} onClick={() => { saveRecentSearch(searchQuery); setSearchQuery(''); setActiveCategory(baseCategories[0].id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} type="button" aria-label="Clear search">
-                                        ✕
-                                    </button>
-                                </>
-                            )}
-                            {/* Dropdown */}
-                            {searchFocused && (suggestions.length > 0 || (!searchQuery && recentSearches.length > 0)) && (
-                                <div className={styles.searchDropdown}>
-                                    {!searchQuery && recentSearches.length > 0 && (
-                                        <>
-                                            <div className={styles.searchDropLabel}>Recent</div>
-                                            {recentSearches.map(s => (
-                                                <button key={s} className={styles.searchDropItem} onMouseDown={() => setSearchQuery(s)}>
-                                                    <span className={styles.searchDropRecent}>🕑</span> {s}
-                                                </button>
-                                            ))}
-                                        </>
-                                    )}
-                                    {searchQuery && suggestions.length > 0 && (
-                                        <>
-                                            <div className={styles.searchDropLabel}>Suggestions</div>
-                                            {suggestions.map(s => (
-                                                <button key={s} className={styles.searchDropItem} onMouseDown={() => setSearchQuery(s)}>
-                                                    <HighlightText text={s} query={searchQuery} />
-                                                </button>
-                                            ))}
-                                        </>
-                                    )}
+                    {activeStore === 'butcher' ? (
+                        <>
+                            <div className={styles.hoursNoticeLeft}>
+                                <span className={styles.hoursNoticeIcon}>🕙</span>
+                                <div>
+                                    <div className={styles.hoursNoticeTitle}>Today's Online Ordering Hours</div>
+                                    <div className={styles.hoursNoticeTime}>10:00am – 6:00pm</div>
                                 </div>
-                            )}
-                        </div>
-                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                            <button
-                                className={`${styles.favFilterBtn} ${showFavoritesOnly ? styles.favFilterBtnActive : ''}`}
-                                onClick={() => setShowFavoritesOnly(f => !f)}
-                                type="button"
-                            >
-                                {showFavoritesOnly ? '🔥 SHOWING FAVORITES' : `🔥 FAVORITES (${favorites.size})`}
-                            </button>
-                            <button
-                                className={`${styles.hideOosBtn} ${hideOutOfStock ? styles.hideOosBtnActive : ''}`}
-                                onClick={() => setHideOutOfStock(h => !h)}
-                                type="button"
-                            >
-                                {hideOutOfStock ? `SHOW ALL (${hiddenCount})` : 'HIDE OUT OF STOCK'}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Horizontal custom scrollbar (mobile) */}
-                    <div className={styles.hScrollTrack}>
-                        {hThumbWidth > 0 && (
-                            <div
-                                className={styles.hScrollThumb}
-                                style={{ width: hThumbWidth, left: hThumbLeft }}
-                            />
-                        )}
-                    </div>
-                    <div className={styles.sidebarScrollWrap} ref={hScrollRef} onScroll={updateHThumb}>
-                        <div
-                            className={styles.sidebarInner}
-                            ref={sidebarScrollRef}
-                            onScroll={updateSideThumb}
-                        >
-                            {baseCategories.map(cat => (
-                                <button key={cat.id} className={`${styles.sideLink} ${activeCategory === cat.id ? styles.sideLinkActive : ''}`} onClick={() => scrollTo(cat.id)}>
-                                    {cat.icon
-                                        ? <img src={cat.icon} alt={cat.label} className={styles.sideIcon} />
-                                        : <span>{cat.emoji}</span>
-                                    } {cat.label}
-                                </button>
-                            ))}
-                        </div>
-                        <div className={styles.customScrollTrack}>
-                            <div
-                                ref={sideThumbRef}
-                                className={styles.customScrollThumb}
-                                style={{ display: 'none' }}
-                            />
-                        </div>
-                    </div>
+                            </div>
+                            <div className={styles.hoursNoticeDivider} />
+                            <div className={styles.hoursNoticeRight}>
+                                <span className={styles.hoursNoticeBadge}>Online Ordering Currently Closed</span>
+                                <span className={styles.hoursNoticeSchedule}>You may schedule your order in advance</span>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className={styles.hoursNoticeLeft}>
+                                <span className={styles.hoursNoticeIcon}>🕙</span>
+                                <div>
+                                    <div className={styles.hoursNoticeTitle}>Depot Pickup Hours</div>
+                                    <div className={styles.hoursNoticeTime}>Pickup: 3:30pm – 6:30pm</div>
+                                </div>
+                            </div>
+                            <div className={styles.hoursNoticeDivider} />
+                            <div className={styles.hoursNoticeRight}>
+                                <span className={styles.hoursNoticeBadge}>Order by 1:30pm for same-day pickup</span>
+                                <span className={styles.hoursNoticeSchedule}>Indicate weight in item's special instructions · Final total may vary by weight</span>
+                            </div>
+                        </>
+                    )}
                 </div>
-            </aside>
+            </div >
 
-            {/* Main */}
-            <main className={styles.main}>
+            <div className={`container ${styles.layout} ${cart.length > 0 ? styles.layoutWithRail : ''}`}>
 
-                {/* ── Depot Ordering Info ── */}
-                {activeStore === 'depot' && (
-                    <div className={styles.depotInfoNotice}>
-                        <div className={styles.depotInfoIcon}>🏪</div>
-                        <div className={styles.depotInfoBody}>
-                            <div className={styles.depotInfoTitle}>Depot Ordering Instructions</div>
-                            <p className={styles.depotInfoText}>
-                                Order by <strong>1:30pm</strong> for pick up between <strong>3:30pm – 6:30pm</strong>. Please indicate the quantity of each item desired. If you have a specific weight you would like, please indicate the amount in the item&apos;s special instructions. The total amount given at the end of checkout may not reflect the actual total due because it does not factor in the weight of the products. Thank you!
-                            </p>
+                {/* Sidebar */}
+                <aside className={styles.sidebar}>
+                    <div ref={catSentinelRef} style={{ height: 0 }} />
+                    <div ref={mobileHeaderRef} className={`${styles.mobileHeader} ${isCatSticky ? styles.stickyHeader : ''}`} style={{ top: navbarHeight + 10 }}>
+
+
+                        <div className={styles.storeSwitch}>
+                            <span className={`${styles.storeSwitchLabel} ${activeStore === 'butcher' ? styles.storeSwitchLabelActive : ''}`}>🥩 Butcher</span>
+                            <button
+                                type="button"
+                                role="switch"
+                                aria-checked={activeStore === 'depot'}
+                                className={`${styles.storeSwitchTrack} ${activeStore === 'depot' ? styles.storeSwitchTrackOn : ''}`}
+                                onClick={() => switchStore(activeStore === 'butcher' ? 'depot' : 'butcher')}
+                                aria-label={activeStore === 'depot' ? 'Switch to The Butcher Shop' : 'Switch to The Depot'}
+                            >
+                                <span className={styles.storeSwitchKnob} aria-hidden="true">
+                                    {activeStore === 'depot' ? (
+                                        <svg className={styles.storeSwitchIcon} viewBox="0 0 24 24" fill="none">
+                                            <path d="M3 10.5L12 4l9 6.5" stroke="#0c2340" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M5.5 10.5V19h13v-8.5" fill="#0c2340" />
+                                            <path d="M10 19v-4.5a2 2 0 0 1 4 0V19" fill="#e0f2fe" />
+                                            <circle cx="12" cy="8.5" r="1.2" fill="#e0f2fe" />
+                                        </svg>
+                                    ) : (
+                                        <svg className={styles.storeSwitchIcon} viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M4 5h12v10H8l-4-4V5z" fill="#ffffff" fillOpacity="0.92" />
+                                            <circle cx="7.5" cy="8.5" r="1" fill="#7f1d1d" stroke="none" />
+                                            <path d="M16 12l4.5 4.5a1.5 1.5 0 0 1-2.1 2.1L14 14.2" />
+                                        </svg>
+                                    )}
+                                </span>
+                            </button>
+                            <span className={`${styles.storeSwitchLabel} ${activeStore === 'depot' ? styles.storeSwitchLabelActive : ''}`}>Depot 🏪</span>
                         </div>
-                    </div>
-                )}
 
-                {/* ── Butcher Ordering Info ── */}
-                {activeStore === 'butcher' && (
-                    <div className={styles.butcherInfoNotice}>
-                        <div className={styles.depotInfoIcon}>🥩</div>
-                        <div className={styles.depotInfoBody}>
-                            <div className={styles.butcherInfoTitle}>Ordering Instructions</div>
-                            <p className={styles.depotInfoText}>
-                                Indicate <strong>quantity</strong>, not weight. For a specific weight, note it in the item&apos;s <strong>special instructions</strong> — checkout totals may not reflect final weight-based pricing.
-                            </p>
-                        </div>
-                    </div>
-                )}
-
-                {/* ── 1-Click Buy Again & Curated Butcher Bundles ── */}
-                {activeStore === 'butcher' && !searchQuery.trim() && !showFavoritesOnly && (
-                    <StorefrontEnhancements isLoggedIn={isLoggedIn} onAddItems={handleBulkAddItems} />
-                )}
-
-                {/* ── Recently Ordered Section ── */}
-                {recentlyOrdered.length > 0 && !searchQuery.trim() && !showFavoritesOnly && showRecentlyOrdered && (
-                    <div className={styles.recentlyOrdered}>
-                        <div className={styles.recentlyOrderedHeader}>
-                            <div className={styles.recentlyOrderedTitle}>
-                                🔄 Order Again
-                            </div>
-                            <button className={styles.recentlyOrderedToggle} onClick={() => setShowRecentlyOrdered(false)}>Hide</button>
-                        </div>
-                        <div className={styles.recentlyOrderedItems}>
-                            {recentlyOrdered.map(item => (
-                                <div key={item.name} className={styles.recentlyOrderedItem}>
-                                    <div className={styles.recentlyOrderedItemInfo}>
-                                        <div className={styles.recentlyOrderedItemName}>{item.name}</div>
-                                        <div className={styles.recentlyOrderedItemPrice}>{item.price}</div>
+                        {/* Unified Search Row */}
+                        <div className={styles.searchRow} ref={searchRowRef}>
+                            <div className={`${styles.searchWrap} ${searchFocused ? styles.searchWrapFocused : ''}`}>
+                                <svg className={styles.searchIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                                <input
+                                    ref={searchRef}
+                                    type="text"
+                                    placeholder={PLACEHOLDER_TEXTS[activeStore][placeholderIdx % PLACEHOLDER_TEXTS[activeStore].length]}
+                                    value={searchQuery}
+                                    onChange={e => setSearchQuery(e.target.value)}
+                                    onFocus={() => setSearchFocused(true)}
+                                    onBlur={() => { setTimeout(() => setSearchFocused(false), 200); saveRecentSearch(searchQuery); }}
+                                    onKeyDown={e => {
+                                        if ((e.key === 'Tab' || e.key === 'ArrowRight') && suggestions[0] && searchQuery) {
+                                            const s = suggestions[0];
+                                            if (s.toLowerCase().startsWith(searchQuery.toLowerCase())) {
+                                                e.preventDefault();
+                                                setSearchQuery(s);
+                                            }
+                                        }
+                                    }}
+                                    className={styles.searchInput}
+                                />
+                                {/* Inline ghost autocomplete */}
+                                {searchQuery && suggestions[0] && suggestions[0].toLowerCase().startsWith(searchQuery.toLowerCase()) && (
+                                    <span className={styles.searchGhost} aria-hidden="true">
+                                        <span className={styles.searchGhostHidden}>{searchQuery}</span>{suggestions[0].slice(searchQuery.length)}
+                                    </span>
+                                )}
+                                {!searchQuery && !searchFocused && (
+                                    <span className={styles.searchKbd}>⌘K</span>
+                                )}
+                                {searchQuery && (
+                                    <>
+                                        <span className={styles.searchCount}>{totalResults}</span>
+                                        <button className={styles.searchClear} onClick={() => { saveRecentSearch(searchQuery); setSearchQuery(''); setActiveCategory(baseCategories[0].id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} type="button" aria-label="Clear search">
+                                            ✕
+                                        </button>
+                                    </>
+                                )}
+                                {/* Dropdown */}
+                                {searchFocused && (suggestions.length > 0 || (!searchQuery && recentSearches.length > 0)) && (
+                                    <div className={styles.searchDropdown}>
+                                        {!searchQuery && recentSearches.length > 0 && (
+                                            <>
+                                                <div className={styles.searchDropLabel}>Recent</div>
+                                                {recentSearches.map(s => (
+                                                    <button key={s} className={styles.searchDropItem} onMouseDown={() => setSearchQuery(s)}>
+                                                        <span className={styles.searchDropRecent}>🕑</span> {s}
+                                                    </button>
+                                                ))}
+                                            </>
+                                        )}
+                                        {searchQuery && suggestions.length > 0 && (
+                                            <>
+                                                <div className={styles.searchDropLabel}>Suggestions</div>
+                                                {suggestions.map(s => (
+                                                    <button key={s} className={styles.searchDropItem} onMouseDown={() => setSearchQuery(s)}>
+                                                        <HighlightText text={s} query={searchQuery} />
+                                                    </button>
+                                                ))}
+                                            </>
+                                        )}
                                     </div>
-                                    <button
-                                        className={styles.recentlyOrderedAddBtn}
-                                        onClick={() => openModal({ name: item.name, price: item.price })}
-                                    >
-                                        + Add
+                                )}
+                            </div>
+                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                <button
+                                    className={`${styles.favFilterBtn} ${showFavoritesOnly ? styles.favFilterBtnActive : ''}`}
+                                    onClick={() => setShowFavoritesOnly(f => !f)}
+                                    type="button"
+                                >
+                                    {showFavoritesOnly ? '🔥 SHOWING FAVORITES' : `🔥 FAVORITES (${favorites.size})`}
+                                </button>
+                                <button
+                                    className={`${styles.hideOosBtn} ${hideOutOfStock ? styles.hideOosBtnActive : ''}`}
+                                    onClick={() => setHideOutOfStock(h => !h)}
+                                    type="button"
+                                >
+                                    {hideOutOfStock ? `SHOW ALL (${hiddenCount})` : 'HIDE OUT OF STOCK'}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Horizontal custom scrollbar (mobile) */}
+                        <div className={styles.hScrollTrack}>
+                            {hThumbWidth > 0 && (
+                                <div
+                                    className={styles.hScrollThumb}
+                                    style={{ width: hThumbWidth, left: hThumbLeft }}
+                                />
+                            )}
+                        </div>
+                        <div className={styles.sidebarScrollWrap} ref={hScrollRef} onScroll={updateHThumb}>
+                            <div
+                                className={styles.sidebarInner}
+                                ref={sidebarScrollRef}
+                                onScroll={updateSideThumb}
+                            >
+                                {baseCategories.map(cat => (
+                                    <button key={cat.id} className={`${styles.sideLink} ${activeCategory === cat.id ? styles.sideLinkActive : ''}`} onClick={() => scrollTo(cat.id)}>
+                                        {cat.icon
+                                            ? <img src={cat.icon} alt={cat.label} className={styles.sideIcon} />
+                                            : <span>{cat.emoji}</span>
+                                        } {cat.label}
                                     </button>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
+                            <div className={styles.customScrollTrack}>
+                                <div
+                                    ref={sideThumbRef}
+                                    className={styles.customScrollThumb}
+                                    style={{ display: 'none' }}
+                                />
+                            </div>
                         </div>
                     </div>
-                )}
+                </aside>
 
-                <div className={styles.productsWrap}>
-                    {searchQuery.trim() && visibleCategories.length === 0 && (
-                        <div className={styles.noResults}>
-                            <span className={styles.noResultsIcon}>🥩</span>
-                            <p className={styles.noResultsTitle}>No meat found. Not even the mystery cuts.</p>
-                            <p className={styles.noResultsHint}>Try searching something else!</p>
-                            <button className={styles.noResultsClear} onClick={() => { setSearchQuery(''); setActiveCategory(baseCategories[0].id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Clear Search</button>
+                {/* Main */}
+                <main className={styles.main}>
+
+                    {/* ── Depot Ordering Info ── */}
+                    {activeStore === 'depot' && (
+                        <div className={styles.depotInfoNotice}>
+                            <div className={styles.depotInfoIcon}>🏪</div>
+                            <div className={styles.depotInfoBody}>
+                                <div className={styles.depotInfoTitle}>Depot Ordering Instructions</div>
+                                <p className={styles.depotInfoText}>
+                                    Order by <strong>1:30pm</strong> for pick up between <strong>3:30pm – 6:30pm</strong>. Please indicate the quantity of each item desired. If you have a specific weight you would like, please indicate the amount in the item&apos;s special instructions. The total amount given at the end of checkout may not reflect the actual total due because it does not factor in the weight of the products. Thank you!
+                                </p>
+                            </div>
                         </div>
                     )}
-                    {visibleCategories.map(cat => (
+
+                    {/* ── Butcher Ordering Info ── */}
+                    {activeStore === 'butcher' && (
+                        <div className={styles.butcherInfoNotice}>
+                            <div className={styles.depotInfoIcon}>🥩</div>
+                            <div className={styles.depotInfoBody}>
+                                <div className={styles.butcherInfoTitle}>Ordering Instructions</div>
+                                <p className={styles.depotInfoText}>
+                                    Indicate <strong>quantity</strong>, not weight. For a specific weight, note it in the item&apos;s <strong>special instructions</strong> — checkout totals may not reflect final weight-based pricing.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── 1-Click Buy Again & Curated Butcher Bundles ── */}
+                    {activeStore === 'butcher' && !searchQuery.trim() && !showFavoritesOnly && (
+                        <StorefrontEnhancements isLoggedIn={isLoggedIn} onAddItems={handleBulkAddItems} />
+                    )}
+
+                    {/* ── Recently Ordered Section ── */}
+                    {recentlyOrdered.length > 0 && !searchQuery.trim() && !showFavoritesOnly && showRecentlyOrdered && (
+                        <div className={styles.recentlyOrdered}>
+                            <div className={styles.recentlyOrderedHeader}>
+                                <div className={styles.recentlyOrderedTitle}>
+                                    🔄 Order Again
+                                </div>
+                                <button className={styles.recentlyOrderedToggle} onClick={() => setShowRecentlyOrdered(false)}>Hide</button>
+                            </div>
+                            <div className={styles.recentlyOrderedItems}>
+                                {recentlyOrdered.map(item => (
+                                    <div key={item.name} className={styles.recentlyOrderedItem}>
+                                        <div className={styles.recentlyOrderedItemInfo}>
+                                            <div className={styles.recentlyOrderedItemName}>{item.name}</div>
+                                            <div className={styles.recentlyOrderedItemPrice}>{item.price}</div>
+                                        </div>
+                                        <button
+                                            className={styles.recentlyOrderedAddBtn}
+                                            onClick={() => openModal({ name: item.name, price: item.price })}
+                                        >
+                                            + Add
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <div className={styles.productsWrap}>
+                        {searchQuery.trim() && visibleCategories.length === 0 && (
+                            <div className={styles.noResults}>
+                                <span className={styles.noResultsIcon}>🥩</span>
+                                <p className={styles.noResultsTitle}>No meat found. Not even the mystery cuts.</p>
+                                <p className={styles.noResultsHint}>Try searching something else!</p>
+                                <button className={styles.noResultsClear} onClick={() => { setSearchQuery(''); setActiveCategory(baseCategories[0].id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Clear Search</button>
+                            </div>
+                        )}
+                        {visibleCategories.map(cat => (
                             <section key={cat.id} id={cat.id} aria-labelledby={`${cat.id}-heading`} className={styles.catSection}>
                                 <div className={styles.catHeader}>
                                     {cat.icon
@@ -2495,26 +2517,38 @@ export default function CustomOrdersPage({
                                 <div className={styles.itemList}>
                                     {cat.items.map(item => (
                                         <div key={item.name} className={`${styles.item} ${item.inStock === false ? styles.itemOut : ''}`}>
-                                            {/* Favorite Flame */}
-                                            <button
-                                                className={`${styles.favBtn} ${favorites.has(item.name) ? styles.favBtnActive : ''}`}
-                                                onClick={() => toggleFavorite(item.name)}
-                                                aria-label={favorites.has(item.name) ? 'Remove from favorites' : 'Add to favorites'}
-                                                type="button"
-                                            >
-                                                {favorites.has(item.name) ? '🔥' : '🔥'}
-                                            </button>
-                                            {item.image && <img src={item.image} alt={item.name} className={styles.itemThumb} />}
-                                            <div className={styles.itemInfo}>
-                                                <div className={styles.itemName}>
-                                                    <HighlightText text={item.name} query={searchQuery} />
-                                                    {item.isNew && <span className={styles.stockBadge} data-status="new">✨ NEW</span>}
-                                                    {item.stockStatus === 'low-stock' && <span className={styles.stockBadge} data-status="low">🔥 Almost Gone</span>}
-                                                    {item.stockStatus === 'pre-order' && <span className={styles.stockBadge} data-status="preorder">📦 Pre-Order</span>}
-                                                    {item.stockStatus === 'seasonal' && <span className={styles.stockBadge} data-status="seasonal">🌿 Seasonal</span>}
+                                            <div className={styles.itemMain}>
+                                                {/* Favorite Flame */}
+                                                <button
+                                                    className={`${styles.favBtn} ${favorites.has(item.name) ? styles.favBtnActive : ''}`}
+                                                    onClick={() => toggleFavorite(item.name)}
+                                                    aria-label={favorites.has(item.name) ? 'Remove from favorites' : 'Add to favorites'}
+                                                    type="button"
+                                                >
+                                                    {favorites.has(item.name) ? '🔥' : '🔥'}
+                                                </button>
+                                                {item.image && (
+                                                    <img
+                                                        src={item.image}
+                                                        alt={
+                                                            item.desc
+                                                                ? `${item.name} — ${item.desc} at Hofherr Meat Co.`
+                                                                : `${item.name} craft butcher cut — Hofherr Meat Co., Northfield IL`
+                                                        }
+                                                        className={styles.itemThumb}
+                                                    />
+                                                )}
+                                                <div className={styles.itemInfo}>
+                                                    <div className={styles.itemName}>
+                                                        <HighlightText text={item.name} query={searchQuery} />
+                                                        {item.isNew && <span className={styles.stockBadge} data-status="new">✨ NEW</span>}
+                                                        {item.stockStatus === 'low-stock' && <span className={styles.stockBadge} data-status="low">🔥 Almost Gone</span>}
+                                                        {item.stockStatus === 'pre-order' && <span className={styles.stockBadge} data-status="preorder">📦 Pre-Order</span>}
+                                                        {item.stockStatus === 'seasonal' && <span className={styles.stockBadge} data-status="seasonal">🌿 Seasonal</span>}
+                                                    </div>
+                                                    {item.desc && <div className={styles.itemDesc}><HighlightText text={item.desc} query={searchQuery} /></div>}
+                                                    {item.origin && <div className={styles.itemOrigin}>{item.origin}</div>}
                                                 </div>
-                                                {item.desc && <div className={styles.itemDesc}><HighlightText text={item.desc} query={searchQuery} /></div>}
-                                                {item.origin && <div className={styles.itemOrigin}>{item.origin}</div>}
                                             </div>
                                             <div className={styles.itemRight}>
                                                 {item.salePrice ? (
@@ -2636,454 +2670,697 @@ export default function CustomOrdersPage({
                                                             </button>
                                                         )}
                                                     </div>
-                                                ) : (
-                                                    <button className={styles.addBtn} onClick={(e) => handleRowAddClick(item, e)}>
-                                                        Add to Cart
-                                                    </button>
-                                                )}
+                                                ) : (() => {
+                                                    const inCartItem = cart.find(i => i.name === item.name);
+                                                    if (!inCartItem) {
+                                                        return (
+                                                            <button
+                                                                type="button"
+                                                                className={styles.addBtn}
+                                                                onClick={(e) => handleRowAddClick(item, e)}
+                                                            >
+                                                                Add to Cart
+                                                            </button>
+                                                        );
+                                                    }
+                                                    const isNoteOpen = expandedNoteItem === item.name;
+                                                    return (
+                                                        <div className={styles.inlineCartCtrl}>
+                                                            <div className={styles.inlineStepper}>
+                                                                <button
+                                                                    type="button"
+                                                                    className={styles.inlineStepBtn}
+                                                                    onClick={() => {
+                                                                        if (inCartItem.qty <= 1 && isNoteOpen) {
+                                                                            setExpandedNoteItem(null);
+                                                                        }
+                                                                        changeQty(item.name, -1);
+                                                                    }}
+                                                                    aria-label={`Decrease ${item.name} quantity`}
+                                                                >
+                                                                    −
+                                                                </button>
+                                                                <span className={styles.inlineStepVal}>{inCartItem.qty}</span>
+                                                                <button
+                                                                    type="button"
+                                                                    className={styles.inlineStepBtn}
+                                                                    onClick={(e) => handleRowAddClick(item, e)}
+                                                                    aria-label={`Increase ${item.name} quantity`}
+                                                                >
+                                                                    +
+                                                                </button>
+                                                            </div>
+                                                            <button
+                                                                type="button"
+                                                                className={`${styles.inlineNoteBtn} ${inCartItem.note ? styles.inlineNoteBtnSaved : ''}`}
+                                                                onClick={() => setExpandedNoteItem(isNoteOpen ? null : item.name)}
+                                                                aria-expanded={isNoteOpen}
+                                                            >
+                                                                {inCartItem.note ? '✓ Note' : '+ Note'}
+                                                            </button>
+                                                        </div>
+                                                    );
+                                                })()}
                                             </div>
+                                            {expandedNoteItem === item.name && (() => {
+                                                const inCartItem = cart.find(i => i.name === item.name);
+                                                if (!inCartItem) return null;
+                                                return (
+                                                    <div className={styles.inlineNoteRow}>
+                                                        <input
+                                                            type="text"
+                                                            className={styles.inlineNoteInput}
+                                                            placeholder="Special instructions (e.g. 1.5&quot; thick, 2 lbs, trimmed)…"
+                                                            value={inCartItem.note}
+                                                            onChange={(e) => updateItemNote(item.name, e.target.value)}
+                                                            maxLength={250}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            className={styles.inlineNoteDone}
+                                                            onClick={() => setExpandedNoteItem(null)}
+                                                        >
+                                                            Done
+                                                        </button>
+                                                    </div>
+                                                );
+                                            })()}
                                         </div>
                                     ))}
                                 </div>
                             </section>
-                    ))}
-                        </div>
-            </main>
-        </div>
-
-    {/* ── Add to Cart Modal ── */ }
-    {
-        mounted && modal && createPortal((
-            <div
-                className={`${styles.overlay} ${modalClosing ? styles.overlayClosing : ''}`}
-                style={
-                    {
-                        '--pt-enter-ms': `${animCfg.overlayFadeMs}ms`,
-                        '--pt-overlay-blur': `${animCfg.overlayBlurPx}px`,
-                    } as React.CSSProperties
-                }
-                data-pt-portal
-                data-lenis-prevent={modalClosing ? undefined : true}
-                onClick={requestCloseModal}
-            >
-                <BurnModalShell
-                    className={styles.modal}
-                    maxWidth={460}
-                    closing={modalClosing}
-                    onCloseComplete={handleModalBurnOutComplete}
-                    onClick={e => e.stopPropagation()}
-                >
-                    <div className={styles.modalHeaderRow}>
-                        <div className={styles.modalHeaderText}>
-                            <div className={styles.modalTitle}>{modal.name}</div>
-                            <div className={styles.modalPriceRow}>
-                                <span className={styles.modalPrice}>{modal.price}</span>
-                                <button
-                                    type="button"
-                                    className={styles.shareCutBtn}
-                                    onClick={() => handleShareCut(modal.name)}
-                                >
-                                    {shareCopied ? '✓ Link Copied' : 'Share Cut'}
-                                </button>
-                            </div>
-                        </div>
-                        {animCfg.flyShowModalPreview && (
-                            <div className={styles.modalPreviewBadge} title="Product Flying Into Cart">
-                                <img
-                                    src={resolveProductFlyImage(
-                                        {
-                                            itemName: modal.name,
-                                            imageSrc: modal.image,
-                                            categoryIcon: categoryIconByItemName.get(modal.name),
-                                        },
-                                        animCfg
-                                    )}
-                                    alt=""
-                                    width={48}
-                                    height={48}
-                                    className={styles.modalPreviewImg}
-                                />
-                            </div>
-                        )}
+                        ))}
                     </div>
-                    {modal.desc && <p className={styles.modalDesc}>{modal.desc}</p>}
-
-                    {(() => {
-                        const proof = getSocialProof(modal.name);
-                        if (!proof) return null;
-                        return (
-                            <div className={styles.modalSocialProof}>
-                                <div className={styles.modalProofTop}>
-                                    <span className={styles.modalProofBadge}>{proof.badge}</span>
-                                    <span className={styles.modalProofRating}>★ {proof.rating} · {proof.weeklyOrders} ordered this week</span>
-                                </div>
-                                <p className={styles.modalProofQuote}>&ldquo;{proof.quote}&rdquo; — {proof.reviewer}</p>
-                            </div>
-                        );
-                    })()}
-
-                    {(() => {
-                        const pairing = getRecipePairing(modal.name);
-                        if (!pairing) return null;
-                        return (
-                            <div className={styles.modalRecipePairing}>
-                                <div className={styles.modalRecipeLabel}>Butcher&apos;s Cook Tip &amp; Parcel Sheet</div>
-                                <p className={styles.modalRecipeTip}>{pairing.tip}</p>
-                                <Link href={pairing.href} className={styles.modalRecipeLink}>
-                                    {pairing.title} →
-                                </Link>
-                            </div>
-                        );
-                    })()}
-
-                    <div className={styles.qtyRow}>
-                        <button className={styles.qtyBtn} onClick={() => setModalQty(q => Math.max(1, q - 1))}>−</button>
-                        <span className={styles.qtyNum}>{modalQty}</span>
-                        <button className={styles.qtyBtn} onClick={() => setModalQty(q => q + 1)}>+</button>
-                    </div>
-
-                    <textarea
-                        className={styles.noteInput}
-                        placeholder="Special instructions (e.g. thickness, quantity in lbs, trim preferences)…"
-                        value={modalNote}
-                        onChange={e => setModalNote(e.target.value)}
-                        maxLength={250}
-                        rows={3}
-                    />
-
-                    <div className={styles.modalActions}>
-                        <button className={styles.cancelBtn} onClick={requestCloseModal}>Cancel</button>
-                        <button className={styles.confirmBtn} onClick={(e) => confirmAdd(e)}>Add to Order</button>
-                    </div>
-                </BurnModalShell>
+                </main>
             </div>
-        ), document.body)
-    }
 
-    {/* ── Cart Drawer ── */ }
-    {
-        mounted && drawerOpen && createPortal((
-            <div
-                className={`${styles.overlay} ${drawerClosing ? styles.overlayClosing : ''}`}
-                data-pt-portal
-                data-lenis-prevent={drawerClosing ? undefined : true}
-                onClick={() => requestCloseDrawer()}
-            >
-                <BurnPanel
-                    className={styles.drawer}
-                    direction="right-to-left"
-                    closing={drawerClosing}
-                    onCloseComplete={handleDrawerBurnOutComplete}
-                    onClick={e => e.stopPropagation()}
+            {/* ── Fixed Right-Edge Mini Cart List (Desktop >= 1200px, shown when cart has items) ── */}
+            {mounted && cart.length > 0 && !drawerOpen && createPortal((
+                <aside
+                    className={`${styles.cartRail} ${activeStore === 'depot' ? styles.depotTheme : styles.butcherTheme}`}
+                    aria-label="Live cart summary"
                 >
-                    <div className={styles.drawerPickupBanner}>
-                        📍 Pickup at {activeStore === 'butcher' ? 'The Butcher Shop' : 'The Depot'}
-                    </div>
-                    <div className={styles.drawerHead}>
-                        <div className={styles.drawerHeadLeft}>
-                            <img src={animCfg.flyImageSrc || '/assets/item.png?v=2'} alt="" width={160} height={160} className={styles.drawerParcelImg} />
-                            <div>
-                                <h3>Your Order</h3>
-                                {user && (
-                                    <div className={styles.drawerUser}>
-                                        <span>Logged in as <strong>{user.name}</strong></span>
-                                        <div className={styles.drawerUserLinks}>
-                                            <Link
-                                                href="/dashboard"
-                                                onClick={e => {
-                                                    e.preventDefault();
-                                                    requestCloseDrawer(() => navigateTo('/dashboard'));
-                                                }}
-                                            >
-                                                My Dashboard
-                                            </Link>
-                                            <button onClick={handleLogout}>Log Out</button>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                    <div className={styles.cartRailHeader}>
+                        <div className={styles.cartRailTitleRow}>
+                            <span className={styles.cartRailTitle}>Your Order</span>
+                            <span className={styles.cartRailCount}>{totalItems(cart)}</span>
                         </div>
-                        <button className={styles.closeBtn} onClick={() => requestCloseDrawer()}>✕</button>
+                        <span className={styles.cartRailStore}>
+                            {activeStore === 'butcher' ? '300 Happ Rd · Northfield' : '754 Elm St · Winnetka Depot'}
+                        </span>
                     </div>
 
-                    {cart.length === 0 ? (
-                        <p className={styles.emptyCart}>Your cart is empty.</p>
-                    ) : (
-                        <>
-                            {/* ── Scrollable body ── */}
-                            <div className={styles.drawerBody}>
-                                {/* Items */}
-                                <div className={styles.cartItems}>
-                                    <div className={styles.drawerSectionLabel} style={{ marginTop: '12px' }}>Your Basket</div>
-                                    {cart.map(item => {
-                                        const unit = parseItemPrice(item.price);
-                                        const priceStr = String(item.price ?? '');
-                                        const isPerLb = priceStr.includes('/lb');
-                                        const lineEst = unit * item.qty;
-                                        return (
-                                            <div key={item.name} className={styles.cartItem}>
-                                                <div className={styles.cartItemInfo}>
-                                                    <div className={styles.cartItemName}>{item.name}</div>
-                                                    <div className={styles.cartItemPrice}>
-                                                        {item.price} × {item.qty}
-                                                        {unit > 0 && (
-                                                            <span style={{ color: '#aaa', marginLeft: 6, fontSize: 11 }}>
-                                                                = {fmtTotal(lineEst)}{isPerLb ? '/lb est.' : ''}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    {item.note && <div className={styles.cartItemNote}>📝 {item.note}</div>}
-                                                </div>
-                                                <div className={styles.cartItemControls}>
-                                                    <button className={styles.qtyBtn} onClick={() => changeQty(item.name, -1)}>−</button>
-                                                    <span className={styles.qtyNum}>{item.qty}</span>
-                                                    <button className={styles.qtyBtn} onClick={() => changeQty(item.name, 1)}>+</button>
-                                                    <button
-                                                        type="button"
-                                                        className={styles.removeBtn}
-                                                        onClick={() => removeItem(item.name)}
-                                                        aria-label={`Remove ${item.name}`}
-                                                        title={`Remove ${item.name}`}
-                                                    >
-                                                        <svg
-                                                            width="14"
-                                                            height="14"
-                                                            viewBox="0 0 24 24"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            strokeWidth="1.9"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            aria-hidden="true"
-                                                        >
-                                                            <path d="M3 6h18" />
-                                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                                                            <line x1="10" y1="11" x2="10" y2="17" />
-                                                            <line x1="14" y1="11" x2="14" y2="17" />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                    <ul className={styles.cartRailList} data-lenis-prevent>
+                        {cart.map(item => (
+                            <li key={item.name} className={styles.cartRailItem}>
+                                <div className={styles.cartRailItemTop}>
+                                    <span className={styles.cartRailItemName}>{item.name}</span>
+                                    <button
+                                        type="button"
+                                        className={styles.cartRailRemove}
+                                        onClick={() => removeItem(item.name)}
+                                        aria-label={`Remove ${item.name}`}
+                                    >
+                                        ×
+                                    </button>
                                 </div>
-
-                                {/* Order Note */}
-                                <div className={styles.drawerSection}>
-                                    <div className={styles.drawerSectionLabel}>📝 Order Note</div>
-                                    <textarea
-                                        className={styles.drawerNote_input}
-                                        placeholder="Any instructions for the whole order? (e.g. call before cutting, vacuum seal, etc.)"
-                                        value={orderNote}
-                                        onChange={e => setOrderNote(e.target.value)}
-                                        rows={2}
-                                        maxLength={300}
-                                    />
-                                </div>
-
-                                {/* Tip Selector in Drawer */}
-                                <div className={styles.drawerSection}>
-                                    <div className={styles.tipLabel}>💝 Add a Tip for Our Team</div>
-                                    <div className={styles.tipGrid}>
-                                        {[0, 10, 15, 20].map(pct => (
-                                            <button
-                                                key={pct}
-                                                type="button"
-                                                className={`${styles.tipBtn} ${!showTipCustom && tipPercent === pct ? styles.tipBtnActive : ''}`}
-                                                onClick={() => {
-                                                    setTipPercent(pct);
-                                                    setShowTipCustom(false);
-                                                    setTipCustom('');
-                                                }}
-                                            >
-                                                {pct === 0 ? 'None' : `${pct}%`}
-                                            </button>
-                                        ))}
+                                {item.note && (
+                                    <div className={styles.cartRailItemNote}>{item.note}</div>
+                                )}
+                                <div className={styles.cartRailItemBottom}>
+                                    <span className={styles.cartRailItemPrice}>{item.price}</span>
+                                    <div className={styles.cartRailQty}>
                                         <button
                                             type="button"
-                                            className={`${styles.tipBtn} ${showTipCustom ? styles.tipBtnActive : ''}`}
-                                            onClick={() => {
-                                                setShowTipCustom(true);
-                                                setTipPercent(null);
-                                            }}
+                                            className={styles.cartRailQtyBtn}
+                                            onClick={() => changeQty(item.name, -1)}
+                                            aria-label={`Decrease ${item.name} quantity`}
                                         >
-                                            Custom
+                                            −
+                                        </button>
+                                        <span className={styles.cartRailQtyVal}>{item.qty}</span>
+                                        <button
+                                            type="button"
+                                            className={styles.cartRailQtyBtn}
+                                            onClick={() => changeQty(item.name, 1)}
+                                            aria-label={`Increase ${item.name} quantity`}
+                                        >
+                                            +
                                         </button>
                                     </div>
-                                    {showTipCustom && (
-                                        <div className={styles.tipCustomRow}>
-                                            <span style={{ color: 'var(--fg)', fontWeight: 700 }}>$</span>
-                                            <input
-                                                type="number"
-                                                min="0"
-                                                step="0.50"
-                                                placeholder="0.00"
-                                                className={styles.tipCustomInput}
-                                                value={tipCustom}
-                                                onChange={e => setTipCustom(e.target.value)}
-                                            />
-                                        </div>
-                                    )}
-                                    {tipAmount > 0 && (
-                                        <div className={styles.tipAmount}>Tip: {fmtTotal(tipAmount)}</div>
-                                    )}
                                 </div>
+                            </li>
+                        ))}
+                    </ul>
 
-                                {/* Upsell strip */}
-                                {(() => {
-                                    const cartNames = new Set(cart.map(i => i.name));
-                                    const popular = [
-                                        { name: 'Dry-Aged Ribeye', price: '$44.99/lb' },
-                                        { name: 'House Bratwurst', price: '$8.99/lb' },
-                                        { name: 'Beef Tallow', price: '$6.99/lb' },
-                                        { name: 'Wagyu Beef Patties', price: '$18.99/lb' },
-                                        { name: 'Pork Belly', price: '$9.99/lb' },
-                                    ].filter(p => !cartNames.has(p.name)).slice(0, 3);
-                                    if (popular.length === 0) return null;
-                                    return (
-                                        <div className={styles.drawerSection}>
-                                            <div className={styles.drawerSectionLabel} style={{ color: '#800020', borderTop: '1px solid var(--border)', paddingTop: '20px', marginTop: '10px' }}>✨ Recommended Add-ons</div>
-                                            <div className={styles.upsellList}>
-                                                {popular.map(p => (
-                                                    <div key={p.name} className={styles.upsellItem}>
-                                                        <div>
-                                                            <div className={styles.upsellName}>{p.name}</div>
-                                                            <div className={styles.upsellPrice}>{p.price}</div>
-                                                        </div>
-                                                        <button
-                                                            className={styles.upsellAdd}
-                                                            onClick={(e) => {
-                                                                const btn = e.currentTarget;
-                                                                const rect = btn.getBoundingClientRect();
-                                                                triggerFlyAnimation({
-                                                                    x: rect.left + rect.width / 2,
-                                                                    y: rect.top + rect.height / 2,
-                                                                    itemName: p.name,
-                                                                    categoryIcon: categoryIconByItemName.get(p.name),
-                                                                    arrivingQty: 1,
-                                                                });
-                                                                setCart(prev => {
-                                                                    const exists = prev.find(i => i.name === p.name);
-                                                                    if (exists) return prev.map(i => i.name === p.name ? { ...i, qty: i.qty + 1 } : i);
-                                                                    return [...prev, { name: p.name, price: p.price, qty: 1, note: '' }];
-                                                                });
-                                                            }}
-                                                        >+ Add</button>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    );
-                                })()}
-                            </div>
+                    <div className={styles.cartRailFooter}>
+                        <div className={styles.cartRailTotalRow}>
+                            <span className={styles.cartRailTotalLabel}>Est. Subtotal</span>
+                            <span className={styles.cartRailTotalVal}>
+                                ${cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0).toFixed(2)}
+                            </span>
+                        </div>
+                        <div className={styles.cartRailActions}>
+                            <button
+                                type="button"
+                                className={styles.cartRailCheckoutBtn}
+                                onClick={() => navigateTo('/checkout')}
+                            >
+                                Checkout →
+                            </button>
+                            <button
+                                type="button"
+                                className={styles.cartRailExpandBtn}
+                                onClick={() => setDrawerOpen(true)}
+                            >
+                                Notes &amp; Tip
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+            ), document.body)}
 
-                            {/* ── Pinned Footer ── */}
-                            <div className={styles.drawerFoot}>
-                                <div className={styles.drawerStats}>
-                                    <span>🥩 {cart.reduce((s, i) => s + i.qty, 0)} item{cart.reduce((s, i) => s + i.qty, 0) !== 1 ? 's' : ''}</span>
-                                    <span>⚖️ ~{cart.filter(i => String(i.price ?? '').includes('/lb')).reduce((s, i) => s + i.qty, 0)} lbs est.</span>
-                                    {(() => {
-                                        const servings = estimateCartServings(cart);
-                                        return servings ? <span>👥 {servings.label}</span> : null;
-                                    })()}
+            {/* ── Add to Cart Modal ── */}
+            {
+                mounted && modal && createPortal((
+                    <div
+                        className={`${styles.overlay} ${modalClosing ? styles.overlayClosing : ''}`}
+                        style={
+                            {
+                                '--pt-enter-ms': `${animCfg.overlayFadeMs}ms`,
+                                '--pt-overlay-blur': `${animCfg.overlayBlurPx}px`,
+                            } as React.CSSProperties
+                        }
+                        data-pt-portal
+                        data-lenis-prevent={modalClosing ? undefined : true}
+                        onClick={requestCloseModal}
+                    >
+                        <BurnModalShell
+                            className={styles.modal}
+                            maxWidth={460}
+                            closing={modalClosing}
+                            onCloseComplete={handleModalBurnOutComplete}
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className={styles.modalHeaderRow}>
+                                <div className={styles.modalHeaderText}>
+                                    <div className={styles.modalTitle}>{modal.name}</div>
+                                    <div className={styles.modalPriceRow}>
+                                        <span className={styles.modalPrice}>{modal.price}</span>
+                                        <button
+                                            type="button"
+                                            className={styles.shareCutBtn}
+                                            onClick={() => handleShareCut(modal.name)}
+                                        >
+                                            {shareCopied ? '✓ Link Copied' : 'Share Cut'}
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className={styles.drawerTotalRow}>
-                                    <span>Estimated Subtotal</span>
-                                    <strong>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0))}</strong>
-                                </div>
-                                <div className={styles.drawerTotalRow}>
-                                    <span>Estimated Tax</span>
-                                    <strong>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0) * TAX_RATE)}</strong>
-                                </div>
-                                {tipAmount > 0 && (
-                                    <div className={styles.drawerTotalRow}>
-                                        <span>Tip</span>
-                                        <strong>{fmtTotal(tipAmount)}</strong>
+                                {animCfg.flyShowModalPreview && (
+                                    <div className={styles.modalPreviewBadge} title="Product Flying Into Cart">
+                                        <img
+                                            src={resolveProductFlyImage(
+                                                {
+                                                    itemName: modal.name,
+                                                    imageSrc: modal.image,
+                                                    categoryIcon: categoryIconByItemName.get(modal.name),
+                                                },
+                                                animCfg
+                                            )}
+                                            alt=""
+                                            width={48}
+                                            height={48}
+                                            className={styles.modalPreviewImg}
+                                        />
                                     </div>
                                 )}
-                                <div className={`${styles.drawerTotalRow} ${styles.drawerFinalTotal}`}>
-                                    <span>Estimated Total</span>
-                                    <strong>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0) * (1 + TAX_RATE) + tipAmount)}</strong>
-                                </div>
-                                <p className={styles.drawerPriceNote}>
-                                    *Final total is determined by exact scale weight at pickup.<br />
-                                    Prices are estimates. Final adjustment may occur based on actual weight.
-                                </p>
-                                <p className={styles.drawerNote}>Secure checkout · Visa, Apple Pay, Google Pay, PayPal</p>
-                                <button className={styles.checkoutBtn} onClick={() => {
-                                    // Save active store so /checkout page can read it
-                                    try { localStorage.setItem('hofherr_active_store', activeStore); } catch { }
-                                    requestCloseDrawer(() => navigateTo('/checkout'));
-                                }}>
-                                    Proceed to Checkout
-                                </button>
                             </div>
-                        </>
-                    )}
-                </BurnPanel>
-            </div>
-        ), document.body)
-    }
+                            {modal.desc && <p className={styles.modalDesc}>{modal.desc}</p>}
 
-    {/* ── Checkout Modal ── */ }
-    {
-        mounted && checkoutOpen && createPortal((
-            <div
-                className={`${styles.overlay} ${checkoutClosing ? styles.overlayClosing : ''}`}
-                data-pt-portal
-                data-lenis-prevent={checkoutClosing ? undefined : true}
-                onClick={requestCloseCheckout}
-            >
-                <BurnModalShell
-                    className={`${styles.modal} ${checkoutStep === 'form' ? styles.checkoutFormModal : styles.checkoutAuthModal}`}
-                    maxWidth={checkoutStep === 'form' ? 760 : 480}
-                    closing={checkoutClosing}
-                    onCloseComplete={handleCheckoutBurnOutComplete}
-                    onClick={e => e.stopPropagation()}
-                >
+                            {(() => {
+                                const proof = getSocialProof(modal.name);
+                                if (!proof) return null;
+                                return (
+                                    <div className={styles.modalSocialProof}>
+                                        <div className={styles.modalProofTop}>
+                                            <span className={styles.modalProofBadge}>{proof.badge}</span>
+                                            <span className={styles.modalProofRating}>★ {proof.rating} · {proof.weeklyOrders} ordered this week</span>
+                                        </div>
+                                        <p className={styles.modalProofQuote}>&ldquo;{proof.quote}&rdquo; — {proof.reviewer}</p>
+                                    </div>
+                                );
+                            })()}
 
-                    <>
-                        {checkoutStep === 'choice' ? (
-                            <div className={styles.choiceView}>
-                                <div className={styles.choiceSocialHeader} style={{ textAlign: 'center', marginBottom: '4px' }}>
-                                    <h3 className={styles.choiceAuthHeading}>
-                                        {authMode === 'forgot' ? 'Reset Password' : authMode === 'register' ? 'Create An Account' : 'Welcome Back'}
-                                    </h3>
-                                    <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '2px 0 6px' }}>
-                                        {authMode === 'forgot'
-                                            ? 'We will send you a reset link'
-                                            : authMode === 'register'
-                                                ? (authIntent === 'restock' ? 'Create an account to request restock alerts' : 'Join for faster checkout & rewards')
-                                                : (authIntent === 'restock' ? 'Sign in to request restock alerts for this item' : 'Sign in to continue to checkout')}
-                                    </p>
+                            {(() => {
+                                const pairing = getRecipePairing(modal.name);
+                                if (!pairing) return null;
+                                return (
+                                    <div className={styles.modalRecipePairing}>
+                                        <div className={styles.modalRecipeLabel}>Butcher&apos;s Cook Tip &amp; Parcel Sheet</div>
+                                        <p className={styles.modalRecipeTip}>{pairing.tip}</p>
+                                        <Link href={pairing.href} className={styles.modalRecipeLink}>
+                                            {pairing.title} →
+                                        </Link>
+                                    </div>
+                                );
+                            })()}
+
+                            <div className={styles.qtyRow}>
+                                <button className={styles.qtyBtn} onClick={() => setModalQty(q => Math.max(1, q - 1))}>−</button>
+                                <span className={styles.qtyNum}>{modalQty}</span>
+                                <button className={styles.qtyBtn} onClick={() => setModalQty(q => q + 1)}>+</button>
+                            </div>
+
+                            <textarea
+                                className={styles.noteInput}
+                                placeholder="Special instructions (e.g. thickness, quantity in lbs, trim preferences)…"
+                                value={modalNote}
+                                onChange={e => setModalNote(e.target.value)}
+                                maxLength={250}
+                                rows={3}
+                            />
+
+                            <div className={styles.modalActions}>
+                                <button className={styles.cancelBtn} onClick={requestCloseModal}>Cancel</button>
+                                <button className={styles.confirmBtn} onClick={(e) => confirmAdd(e)}>Add to Order</button>
+                            </div>
+                        </BurnModalShell>
+                    </div>
+                ), document.body)
+            }
+
+            {/* ── Cart Drawer ── */}
+            {
+                mounted && drawerOpen && createPortal((
+                    <div
+                        className={`${styles.overlay} ${drawerClosing ? styles.overlayClosing : ''}`}
+                        data-pt-portal
+                        data-lenis-prevent={drawerClosing ? undefined : true}
+                        onClick={() => requestCloseDrawer()}
+                    >
+                        <BurnPanel
+                            className={styles.drawer}
+                            direction="right-to-left"
+                            closing={drawerClosing}
+                            onCloseComplete={handleDrawerBurnOutComplete}
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className={styles.drawerPickupBanner}>
+                                📍 Pickup at {activeStore === 'butcher' ? 'The Butcher Shop' : 'The Depot'}
+                            </div>
+                            <div className={styles.drawerHead}>
+                                <div className={styles.drawerHeadLeft}>
+                                    <img src={animCfg.flyImageSrc || '/assets/item.png?v=2'} alt="" width={160} height={160} className={styles.drawerParcelImg} />
+                                    <div>
+                                        <h3>Your Order</h3>
+                                        {user && (
+                                            <div className={styles.drawerUser}>
+                                                <span>Logged in as <strong>{user.name}</strong></span>
+                                                <div className={styles.drawerUserLinks}>
+                                                    <Link
+                                                        href="/dashboard"
+                                                        onClick={e => {
+                                                            e.preventDefault();
+                                                            requestCloseDrawer(() => navigateTo('/dashboard'));
+                                                        }}
+                                                    >
+                                                        My Dashboard
+                                                    </Link>
+                                                    <button onClick={handleLogout}>Log Out</button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
+                                <button className={styles.closeBtn} onClick={() => requestCloseDrawer()}>✕</button>
+                            </div>
 
-                                <div className={`${styles.choiceLayout} ${styles.choiceFocused}`}>
-                                    {(authMode === 'register') && (
-                                        <div className={styles.choiceColGuest}>
-                                            {authMode === 'register' ? (
-                                                <div className={styles.guestContent}>
-                                                    <form className={styles.loginFields} onSubmit={handleRegister}>
-                                                        <div className={styles.authRow}>
-                                                            <div className={styles.authField}><label htmlFor="reg-name">Full Name</label><input required type="text" id="reg-name" name="name" autoComplete="name" className={styles.authInput} placeholder="John Doe" value={registerData.name} onChange={e => setRegisterData(d => ({ ...d, name: e.target.value }))} /></div>
-                                                            <div className={styles.authField}><label htmlFor="reg-phone">Phone</label><input required type="tel" id="reg-phone" name="tel" autoComplete="tel" className={styles.authInput} placeholder="555-555-5555" value={registerData.phone} onChange={e => setRegisterData(d => ({ ...d, phone: formatPhoneNumber(e.target.value) }))} /></div>
+                            {cart.length === 0 ? (
+                                <p className={styles.emptyCart}>Your cart is empty.</p>
+                            ) : (
+                                <>
+                                    {/* ── Scrollable body ── */}
+                                    <div className={styles.drawerBody}>
+                                        {/* Items */}
+                                        <div className={styles.cartItems}>
+                                            <div className={styles.drawerSectionLabel} style={{ marginTop: '12px' }}>Your Basket</div>
+                                            {cart.map(item => {
+                                                const unit = parseItemPrice(item.price);
+                                                const priceStr = String(item.price ?? '');
+                                                const isPerLb = priceStr.includes('/lb');
+                                                const lineEst = unit * item.qty;
+                                                return (
+                                                    <div key={item.name} className={styles.cartItem}>
+                                                        <div className={styles.cartItemInfo}>
+                                                            <div className={styles.cartItemName}>{item.name}</div>
+                                                            <div className={styles.cartItemPrice}>
+                                                                {item.price} × {item.qty}
+                                                                {unit > 0 && (
+                                                                    <span style={{ color: '#aaa', marginLeft: 6, fontSize: 11 }}>
+                                                                        = {fmtTotal(lineEst)}{isPerLb ? '/lb est.' : ''}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            {item.note && <div className={styles.cartItemNote}>📝 {item.note}</div>}
                                                         </div>
-                                                        <div className={styles.authRow}>
-                                                            <div className={styles.authField}><label htmlFor="reg-email">Email</label><input required type="email" id="reg-email" name="email" autoComplete="email" className={styles.authInput} placeholder="your@email.com" value={registerData.email} onChange={e => setRegisterData(d => ({ ...d, email: e.target.value }))} /></div>
-                                                            <div className={styles.authField}><label htmlFor="reg-password">Password</label><input required type="password" id="reg-password" name="new-password" autoComplete="new-password" className={styles.authInput} placeholder="••••••••" value={registerData.password} onChange={e => setRegisterData(d => ({ ...d, password: e.target.value }))} /></div>
+                                                        <div className={styles.cartItemControls}>
+                                                            <button className={styles.qtyBtn} onClick={() => changeQty(item.name, -1)}>−</button>
+                                                            <span className={styles.qtyNum}>{item.qty}</span>
+                                                            <button className={styles.qtyBtn} onClick={() => changeQty(item.name, 1)}>+</button>
+                                                            <button
+                                                                type="button"
+                                                                className={styles.removeBtn}
+                                                                onClick={() => removeItem(item.name)}
+                                                                aria-label={`Remove ${item.name}`}
+                                                                title={`Remove ${item.name}`}
+                                                            >
+                                                                <svg
+                                                                    width="14"
+                                                                    height="14"
+                                                                    viewBox="0 0 24 24"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="1.9"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    aria-hidden="true"
+                                                                >
+                                                                    <path d="M3 6h18" />
+                                                                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                                    <line x1="10" y1="11" x2="10" y2="17" />
+                                                                    <line x1="14" y1="11" x2="14" y2="17" />
+                                                                </svg>
+                                                            </button>
                                                         </div>
-                                                        <div className={styles.authField}><label htmlFor="reg-address">Address</label><input required type="text" id="reg-address" name="address" autoComplete="street-address" className={styles.authInput} placeholder="123 Meat St, Northfield, IL" value={registerData.address} onChange={e => setRegisterData(d => ({ ...d, address: e.target.value }))} /></div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
 
-                                                        {authError && authMode === 'register' && <p className={styles.authErrorLine}>⚠️ {authError}</p>}
-                                                        <button type="submit" className={styles.loginBtn} style={{ marginTop: '4px', padding: '12px' }} disabled={authLoading}>{authLoading ? 'Creating...' : 'Create Account'}</button>
+                                        {/* Order Note */}
+                                        <div className={styles.drawerSection}>
+                                            <div className={styles.drawerSectionLabel}>📝 Order Note</div>
+                                            <textarea
+                                                className={styles.drawerNote_input}
+                                                placeholder="Any instructions for the whole order? (e.g. call before cutting, vacuum seal, etc.)"
+                                                value={orderNote}
+                                                onChange={e => setOrderNote(e.target.value)}
+                                                rows={2}
+                                                maxLength={300}
+                                            />
+                                        </div>
+
+                                        {/* Tip Selector in Drawer */}
+                                        <div className={styles.drawerSection}>
+                                            <div className={styles.tipLabel}>💝 Add a Tip for Our Team</div>
+                                            <div className={styles.tipGrid}>
+                                                {[0, 10, 15, 20].map(pct => (
+                                                    <button
+                                                        key={pct}
+                                                        type="button"
+                                                        className={`${styles.tipBtn} ${!showTipCustom && tipPercent === pct ? styles.tipBtnActive : ''}`}
+                                                        onClick={() => {
+                                                            setTipPercent(pct);
+                                                            setShowTipCustom(false);
+                                                            setTipCustom('');
+                                                        }}
+                                                    >
+                                                        {pct === 0 ? 'None' : `${pct}%`}
+                                                    </button>
+                                                ))}
+                                                <button
+                                                    type="button"
+                                                    className={`${styles.tipBtn} ${showTipCustom ? styles.tipBtnActive : ''}`}
+                                                    onClick={() => {
+                                                        setShowTipCustom(true);
+                                                        setTipPercent(null);
+                                                    }}
+                                                >
+                                                    Custom
+                                                </button>
+                                            </div>
+                                            {showTipCustom && (
+                                                <div className={styles.tipCustomRow}>
+                                                    <span style={{ color: 'var(--fg)', fontWeight: 700 }}>$</span>
+                                                    <input
+                                                        type="number"
+                                                        min="0"
+                                                        step="0.50"
+                                                        placeholder="0.00"
+                                                        className={styles.tipCustomInput}
+                                                        value={tipCustom}
+                                                        onChange={e => setTipCustom(e.target.value)}
+                                                    />
+                                                </div>
+                                            )}
+                                            {tipAmount > 0 && (
+                                                <div className={styles.tipAmount}>Tip: {fmtTotal(tipAmount)}</div>
+                                            )}
+                                        </div>
+
+                                        {/* Upsell strip */}
+                                        {(() => {
+                                            const cartNames = new Set(cart.map(i => i.name));
+                                            const popular = [
+                                                { name: 'Dry-Aged Ribeye', price: '$44.99/lb' },
+                                                { name: 'House Bratwurst', price: '$8.99/lb' },
+                                                { name: 'Beef Tallow', price: '$6.99/lb' },
+                                                { name: 'Wagyu Beef Patties', price: '$18.99/lb' },
+                                                { name: 'Pork Belly', price: '$9.99/lb' },
+                                            ].filter(p => !cartNames.has(p.name)).slice(0, 3);
+                                            if (popular.length === 0) return null;
+                                            return (
+                                                <div className={styles.drawerSection}>
+                                                    <div className={styles.drawerSectionLabel} style={{ color: '#800020', borderTop: '1px solid var(--border)', paddingTop: '20px', marginTop: '10px' }}>✨ Recommended Add-ons</div>
+                                                    <div className={styles.upsellList}>
+                                                        {popular.map(p => (
+                                                            <div key={p.name} className={styles.upsellItem}>
+                                                                <div>
+                                                                    <div className={styles.upsellName}>{p.name}</div>
+                                                                    <div className={styles.upsellPrice}>{p.price}</div>
+                                                                </div>
+                                                                <button
+                                                                    className={styles.upsellAdd}
+                                                                    onClick={(e) => {
+                                                                        const btn = e.currentTarget;
+                                                                        const rect = btn.getBoundingClientRect();
+                                                                        triggerFlyAnimation({
+                                                                            x: rect.left + rect.width / 2,
+                                                                            y: rect.top + rect.height / 2,
+                                                                            itemName: p.name,
+                                                                            categoryIcon: categoryIconByItemName.get(p.name),
+                                                                            arrivingQty: 1,
+                                                                        });
+                                                                        setCart(prev => {
+                                                                            const exists = prev.find(i => i.name === p.name);
+                                                                            if (exists) return prev.map(i => i.name === p.name ? { ...i, qty: i.qty + 1 } : i);
+                                                                            return [...prev, { name: p.name, price: p.price, qty: 1, note: '' }];
+                                                                        });
+                                                                    }}
+                                                                >+ Add</button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })()}
+                                    </div>
+
+                                    {/* ── Pinned Footer ── */}
+                                    <div className={styles.drawerFoot}>
+                                        <div className={styles.drawerStats}>
+                                            <span>🥩 {cart.reduce((s, i) => s + i.qty, 0)} item{cart.reduce((s, i) => s + i.qty, 0) !== 1 ? 's' : ''}</span>
+                                            <span>⚖️ ~{cart.filter(i => String(i.price ?? '').includes('/lb')).reduce((s, i) => s + i.qty, 0)} lbs est.</span>
+                                            {(() => {
+                                                const servings = estimateCartServings(cart);
+                                                return servings ? <span>👥 {servings.label}</span> : null;
+                                            })()}
+                                        </div>
+                                        <div className={styles.drawerTotalRow}>
+                                            <span>Estimated Subtotal</span>
+                                            <strong>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0))}</strong>
+                                        </div>
+                                        <div className={styles.drawerTotalRow}>
+                                            <span>Estimated Tax</span>
+                                            <strong>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0) * TAX_RATE)}</strong>
+                                        </div>
+                                        {tipAmount > 0 && (
+                                            <div className={styles.drawerTotalRow}>
+                                                <span>Tip</span>
+                                                <strong>{fmtTotal(tipAmount)}</strong>
+                                            </div>
+                                        )}
+                                        <div className={`${styles.drawerTotalRow} ${styles.drawerFinalTotal}`}>
+                                            <span>Estimated Total</span>
+                                            <strong>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0) * (1 + TAX_RATE) + tipAmount)}</strong>
+                                        </div>
+                                        <p className={styles.drawerPriceNote}>
+                                            *Final total is determined by exact scale weight at pickup.<br />
+                                            Prices are estimates. Final adjustment may occur based on actual weight.
+                                        </p>
+                                        <p className={styles.drawerNote}>Secure checkout · Visa, Apple Pay, Google Pay, PayPal</p>
+                                        <button className={styles.checkoutBtn} onClick={() => {
+                                            // Save active store so /checkout page can read it
+                                            try { localStorage.setItem('hofherr_active_store', activeStore); } catch { }
+                                            requestCloseDrawer(() => navigateTo('/checkout'));
+                                        }}>
+                                            Proceed to Checkout
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                        </BurnPanel>
+                    </div>
+                ), document.body)
+            }
+
+            {/* ── Checkout Modal ── */}
+            {
+                mounted && checkoutOpen && createPortal((
+                    <div
+                        className={`${styles.overlay} ${checkoutClosing ? styles.overlayClosing : ''}`}
+                        data-pt-portal
+                        data-lenis-prevent={checkoutClosing ? undefined : true}
+                        onClick={requestCloseCheckout}
+                    >
+                        <BurnModalShell
+                            className={`${styles.modal} ${checkoutStep === 'form' ? styles.checkoutFormModal : styles.checkoutAuthModal}`}
+                            maxWidth={checkoutStep === 'form' ? 760 : 480}
+                            closing={checkoutClosing}
+                            onCloseComplete={handleCheckoutBurnOutComplete}
+                            onClick={e => e.stopPropagation()}
+                        >
+
+                            <>
+                                {checkoutStep === 'choice' ? (
+                                    <div className={styles.choiceView}>
+                                        <div className={styles.choiceSocialHeader} style={{ textAlign: 'center', marginBottom: '4px' }}>
+                                            <h3 className={styles.choiceAuthHeading}>
+                                                {authMode === 'forgot' ? 'Reset Password' : authMode === 'register' ? 'Create An Account' : 'Welcome Back'}
+                                            </h3>
+                                            <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '2px 0 6px' }}>
+                                                {authMode === 'forgot'
+                                                    ? 'We will send you a reset link'
+                                                    : authMode === 'register'
+                                                        ? (authIntent === 'restock' ? 'Create an account to request restock alerts' : 'Join for faster checkout & rewards')
+                                                        : (authIntent === 'restock' ? 'Sign in to request restock alerts for this item' : 'Sign in to continue to checkout')}
+                                            </p>
+                                        </div>
+
+                                        <div className={`${styles.choiceLayout} ${styles.choiceFocused}`}>
+                                            {(authMode === 'register') && (
+                                                <div className={styles.choiceColGuest}>
+                                                    {authMode === 'register' ? (
+                                                        <div className={styles.guestContent}>
+                                                            <form className={styles.loginFields} onSubmit={handleRegister}>
+                                                                <div className={styles.authRow}>
+                                                                    <div className={styles.authField}><label htmlFor="reg-name">Full Name</label><input required type="text" id="reg-name" name="name" autoComplete="name" className={styles.authInput} placeholder="John Doe" value={registerData.name} onChange={e => setRegisterData(d => ({ ...d, name: e.target.value }))} /></div>
+                                                                    <div className={styles.authField}><label htmlFor="reg-phone">Phone</label><input required type="tel" id="reg-phone" name="tel" autoComplete="tel" className={styles.authInput} placeholder="555-555-5555" value={registerData.phone} onChange={e => setRegisterData(d => ({ ...d, phone: formatPhoneNumber(e.target.value) }))} /></div>
+                                                                </div>
+                                                                <div className={styles.authRow}>
+                                                                    <div className={styles.authField}><label htmlFor="reg-email">Email</label><input required type="email" id="reg-email" name="email" autoComplete="email" className={styles.authInput} placeholder="your@email.com" value={registerData.email} onChange={e => setRegisterData(d => ({ ...d, email: e.target.value }))} /></div>
+                                                                    <div className={styles.authField}><label htmlFor="reg-password">Password</label><input required type="password" id="reg-password" name="new-password" autoComplete="new-password" className={styles.authInput} placeholder="••••••••" value={registerData.password} onChange={e => setRegisterData(d => ({ ...d, password: e.target.value }))} /></div>
+                                                                </div>
+                                                                <div className={styles.authField}><label htmlFor="reg-address">Address</label><input required type="text" id="reg-address" name="address" autoComplete="street-address" className={styles.authInput} placeholder="123 Meat St, Northfield, IL" value={registerData.address} onChange={e => setRegisterData(d => ({ ...d, address: e.target.value }))} /></div>
+
+                                                                {authError && authMode === 'register' && <p className={styles.authErrorLine}>⚠️ {authError}</p>}
+                                                                <button type="submit" className={styles.loginBtn} style={{ marginTop: '4px', padding: '12px' }} disabled={authLoading}>{authLoading ? 'Creating...' : 'Create Account'}</button>
+                                                            </form>
+
+                                                            <div className={styles.dividerOr}><span>or sign up with</span></div>
+
+                                                            <div className={styles.socialGrid}>
+                                                                <button type="button" className={styles.socialBtnFlat} onClick={() => signIn('google', { callbackUrl: '/online-orders' })}>
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" /></svg>
+                                                                    Google
+                                                                </button>
+                                                                <button type="button" className={styles.socialBtnFlat} onClick={() => signIn('apple', { callbackUrl: '/online-orders' })}>
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16.92 14c-.03-2.93 2.4-4.34 2.5-4.4-1.36-2-3.48-2.26-4.22-2.3-1.8-.18-3.52 1.05-4.44 1.05-.9 0-2.32-1-3.8-1-1.92 0-3.68 1.1-4.66 2.82C.3 13.62 1.55 19.38 3.5 22.18c1 1.44 2.18 3.03 3.75 3 1.5-.04 2.1-.96 3.9-.96 1.8 0 2.34.96 3.9.92 1.6-.04 2.6-1.46 3.56-2.88 1.12-1.62 1.58-3.2 1.6-3.28-.02-.02-2.3-1.02-2.3-3.98zm-3.3-8.8c.84-1 1.4-2.4 1.25-3.8-1.2.05-2.65.8-3.5 1.8-.75.86-1.4 2.3-1.2 3.66 1.34.1 2.6-.66 3.45-1.66z" /></svg>
+                                                                    Apple
+                                                                </button>
+                                                                <button type="button" className={styles.socialBtnFlat} onClick={() => signIn('azure-ad', { callbackUrl: '/online-orders' })}>
+                                                                    <svg width="18" height="18" viewBox="0 0 20 20"><rect x="1" y="1" width="8.5" height="8.5" fill="#f25022" /><rect x="10.5" y="1" width="8.5" height="8.5" fill="#7fbb00" /><rect x="1" y="10.5" width="8.5" height="8.5" fill="#00a1f1" /><rect x="10.5" y="10.5" width="8.5" height="8.5" fill="#ffbb00" /></svg>
+                                                                    Microsoft
+                                                                </button>
+                                                                <button type="button" className={styles.socialBtnFlat} onClick={() => signIn('facebook', { callbackUrl: '/online-orders' })}>
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
+                                                                    Facebook
+                                                                </button>
+                                                            </div>
+
+                                                            <div className={styles.switchAuth} style={{ textAlign: 'center' }}>
+                                                                Already have an account? <button type="button" onClick={() => setAuthMode('login')} style={{ background: 'none', border: 'none', padding: 0, color: 'inherit', textDecoration: 'underline', cursor: 'pointer', font: 'inherit' }}>Log In</button>
+                                                            </div>
+                                                            {!user && (
+                                                                <button
+                                                                    type="button"
+                                                                    className={styles.secondaryBtn}
+                                                                    onClick={() => { setCheckoutStep('form'); setAuthMode(null); }}
+                                                                >
+                                                                    Checkout as Guest instead
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    ) : (
+                                                        <div className={styles.guestContent}>
+                                                            <h3>Guest Checkout</h3>
+                                                            <p>Proceed without an account</p>
+                                                            <button type="button" className={styles.guestBtn} onClick={() => setCheckoutStep('form')}>Continue As Guest</button>
+                                                            <div className={styles.dividerOr}><span>or</span></div>
+                                                            <button type="button" className={styles.createBtn} onClick={() => { setAuthMode('register'); setAuthError(''); }}>Create An Account</button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+
+
+
+                                            {(authMode === 'forgot') && (
+                                                <div className={styles.choiceColLogin}>
+                                                    {forgotSuccess ? (
+                                                        <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                                                            <h4 style={{ color: 'var(--red)', marginBottom: '8px' }}>Check Your Email</h4>
+                                                            <p style={{ color: 'var(--text-muted)' }}>If an account exists for that email, we've sent a password reset link.</p>
+                                                            <button
+                                                                type="button"
+                                                                className={styles.loginBtn}
+                                                                onClick={() => setAuthMode('login')}
+                                                                style={{ marginTop: '24px' }}>
+                                                                Back to Login
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <form className={styles.loginFields} onSubmit={handleForgotSubmit}>
+                                                            <div className={styles.authField}>
+                                                                <label htmlFor="forgot-email">Email Address</label>
+                                                                <input type="email" id="forgot-email" className={styles.authInput} placeholder="your@email.com" value={forgotEmail} onChange={e => setForgotEmail(e.target.value)} required />
+                                                            </div>
+                                                            {authError && authMode === 'forgot' && <p className={styles.authErrorLine}>⚠️ {authError}</p>}
+                                                            <button type="submit" className={styles.loginBtn} disabled={authLoading}>{authLoading ? 'Sending...' : 'Send Reset Link'}</button>
+                                                            <div className={styles.forgotPass} style={{ marginTop: '12px', textAlign: 'center' }}>
+                                                                <button type="button" onClick={() => { setAuthMode('login'); setAuthError(''); }} style={{ background: 'none', border: 'none', padding: 0, color: 'inherit', textDecoration: 'underline', cursor: 'pointer', font: 'inherit' }}>Nevermind, I remember it</button>
+                                                            </div>
+                                                        </form>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {(authMode === 'login') && (
+                                                <div className={styles.choiceColLogin}>
+                                                    <form className={styles.loginFields} onSubmit={handleLogin}>
+                                                        <div className={styles.authField}><label htmlFor="login-email">Email Address</label><input type="email" id="login-email" name="email" autoComplete="email" className={styles.authInput} placeholder="your@email.com" value={loginData.email} onChange={e => setLoginData(d => ({ ...d, email: e.target.value }))} /></div>
+                                                        <div className={styles.authField}><label htmlFor="login-password">Password</label><input type="password" id="login-password" name="password" autoComplete="current-password" className={styles.authInput} placeholder="••••••••" value={loginData.password} onChange={e => setLoginData(d => ({ ...d, password: e.target.value }))} /></div>
+                                                        <div className={styles.forgotPass}><button type="button" onClick={() => { setAuthMode('forgot'); setAuthError(''); }} style={{ background: 'none', border: 'none', padding: 0, color: 'inherit', textDecoration: 'underline', cursor: 'pointer', font: 'inherit' }}>Forgot password?</button></div>
+                                                        {authError && authMode === 'login' && <p className={styles.authErrorLine}>⚠️ {authError}</p>}
+                                                        <button type="submit" className={styles.loginBtn} disabled={authLoading}>{authLoading ? 'Logging in...' : 'Log In'}</button>
                                                     </form>
 
-                                                    <div className={styles.dividerOr}><span>or sign up with</span></div>
+                                                    <div className={styles.dividerOr}><span>or sign in with</span></div>
 
                                                     <div className={styles.socialGrid}>
                                                         <button type="button" className={styles.socialBtnFlat} onClick={() => signIn('google', { callbackUrl: '/online-orders' })}>
-                                                            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" /></svg>
+                                                            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" /></svg>
                                                             Google
                                                         </button>
                                                         <button type="button" className={styles.socialBtnFlat} onClick={() => signIn('apple', { callbackUrl: '/online-orders' })}>
@@ -3101,9 +3378,9 @@ export default function CustomOrdersPage({
                                                     </div>
 
                                                     <div className={styles.switchAuth} style={{ textAlign: 'center' }}>
-                                                        Already have an account? <button type="button" onClick={() => setAuthMode('login')} style={{ background: 'none', border: 'none', padding: 0, color: 'inherit', textDecoration: 'underline', cursor: 'pointer', font: 'inherit' }}>Log In</button>
+                                                        Don&apos;t have an account? <button type="button" onClick={() => { setAuthMode('register'); setAuthError(''); }} style={{ background: 'none', border: 'none', padding: 0, color: 'inherit', textDecoration: 'underline', cursor: 'pointer', font: 'inherit' }}>Sign Up</button>
                                                     </div>
-                                                    {!user && (
+                                                    {!user && authIntent !== 'restock' && authIntent !== 'browse' && (
                                                         <button
                                                             type="button"
                                                             className={styles.secondaryBtn}
@@ -3113,469 +3390,381 @@ export default function CustomOrdersPage({
                                                         </button>
                                                     )}
                                                 </div>
-                                            ) : (
-                                                <div className={styles.guestContent}>
-                                                    <h3>Guest Checkout</h3>
-                                                    <p>Proceed without an account</p>
-                                                    <button type="button" className={styles.guestBtn} onClick={() => setCheckoutStep('form')}>Continue As Guest</button>
-                                                    <div className={styles.dividerOr}><span>or</span></div>
-                                                    <button type="button" className={styles.createBtn} onClick={() => { setAuthMode('register'); setAuthError(''); }}>Create An Account</button>
-                                                </div>
                                             )}
                                         </div>
-                                    )}
-
-
-
-                                    {(authMode === 'forgot') && (
-                                        <div className={styles.choiceColLogin}>
-                                            {forgotSuccess ? (
-                                                <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                                                    <h4 style={{ color: 'var(--red)', marginBottom: '8px' }}>Check Your Email</h4>
-                                                    <p style={{ color: 'var(--text-muted)' }}>If an account exists for that email, we've sent a password reset link.</p>
-                                                    <button
-                                                        type="button"
-                                                        className={styles.loginBtn}
-                                                        onClick={() => setAuthMode('login')}
-                                                        style={{ marginTop: '24px' }}>
-                                                        Back to Login
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <form className={styles.loginFields} onSubmit={handleForgotSubmit}>
-                                                    <div className={styles.authField}>
-                                                        <label htmlFor="forgot-email">Email Address</label>
-                                                        <input type="email" id="forgot-email" className={styles.authInput} placeholder="your@email.com" value={forgotEmail} onChange={e => setForgotEmail(e.target.value)} required />
-                                                    </div>
-                                                    {authError && authMode === 'forgot' && <p className={styles.authErrorLine}>⚠️ {authError}</p>}
-                                                    <button type="submit" className={styles.loginBtn} disabled={authLoading}>{authLoading ? 'Sending...' : 'Send Reset Link'}</button>
-                                                    <div className={styles.forgotPass} style={{ marginTop: '12px', textAlign: 'center' }}>
-                                                        <button type="button" onClick={() => { setAuthMode('login'); setAuthError(''); }} style={{ background: 'none', border: 'none', padding: 0, color: 'inherit', textDecoration: 'underline', cursor: 'pointer', font: 'inherit' }}>Nevermind, I remember it</button>
-                                                    </div>
-                                                </form>
-                                            )}
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleSubmit}>
+                                        <div className={styles.modalTitle} style={{ letterSpacing: '-0.02em', marginBottom: '8px' }}>
+                                            Complete Your Order
                                         </div>
-                                    )}
-
-                                    {(authMode === 'login') && (
-                                        <div className={styles.choiceColLogin}>
-                                            <form className={styles.loginFields} onSubmit={handleLogin}>
-                                                <div className={styles.authField}><label htmlFor="login-email">Email Address</label><input type="email" id="login-email" name="email" autoComplete="email" className={styles.authInput} placeholder="your@email.com" value={loginData.email} onChange={e => setLoginData(d => ({ ...d, email: e.target.value }))} /></div>
-                                                <div className={styles.authField}><label htmlFor="login-password">Password</label><input type="password" id="login-password" name="password" autoComplete="current-password" className={styles.authInput} placeholder="••••••••" value={loginData.password} onChange={e => setLoginData(d => ({ ...d, password: e.target.value }))} /></div>
-                                                <div className={styles.forgotPass}><button type="button" onClick={() => { setAuthMode('forgot'); setAuthError(''); }} style={{ background: 'none', border: 'none', padding: 0, color: 'inherit', textDecoration: 'underline', cursor: 'pointer', font: 'inherit' }}>Forgot password?</button></div>
-                                                {authError && authMode === 'login' && <p className={styles.authErrorLine}>⚠️ {authError}</p>}
-                                                <button type="submit" className={styles.loginBtn} disabled={authLoading}>{authLoading ? 'Logging in...' : 'Log In'}</button>
-                                            </form>
-
-                                            <div className={styles.dividerOr}><span>or sign in with</span></div>
-
-                                            <div className={styles.socialGrid}>
-                                                <button type="button" className={styles.socialBtnFlat} onClick={() => signIn('google', { callbackUrl: '/online-orders' })}>
-                                                    <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" /></svg>
-                                                    Google
-                                                </button>
-                                                <button type="button" className={styles.socialBtnFlat} onClick={() => signIn('apple', { callbackUrl: '/online-orders' })}>
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16.92 14c-.03-2.93 2.4-4.34 2.5-4.4-1.36-2-3.48-2.26-4.22-2.3-1.8-.18-3.52 1.05-4.44 1.05-.9 0-2.32-1-3.8-1-1.92 0-3.68 1.1-4.66 2.82C.3 13.62 1.55 19.38 3.5 22.18c1 1.44 2.18 3.03 3.75 3 1.5-.04 2.1-.96 3.9-.96 1.8 0 2.34.96 3.9.92 1.6-.04 2.6-1.46 3.56-2.88 1.12-1.62 1.58-3.2 1.6-3.28-.02-.02-2.3-1.02-2.3-3.98zm-3.3-8.8c.84-1 1.4-2.4 1.25-3.8-1.2.05-2.65.8-3.5 1.8-.75.86-1.4 2.3-1.2 3.66 1.34.1 2.6-.66 3.45-1.66z" /></svg>
-                                                    Apple
-                                                </button>
-                                                <button type="button" className={styles.socialBtnFlat} onClick={() => signIn('azure-ad', { callbackUrl: '/online-orders' })}>
-                                                    <svg width="18" height="18" viewBox="0 0 20 20"><rect x="1" y="1" width="8.5" height="8.5" fill="#f25022" /><rect x="10.5" y="1" width="8.5" height="8.5" fill="#7fbb00" /><rect x="1" y="10.5" width="8.5" height="8.5" fill="#00a1f1" /><rect x="10.5" y="10.5" width="8.5" height="8.5" fill="#ffbb00" /></svg>
-                                                    Microsoft
-                                                </button>
-                                                <button type="button" className={styles.socialBtnFlat} onClick={() => signIn('facebook', { callbackUrl: '/online-orders' })}>
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
-                                                    Facebook
-                                                </button>
-                                            </div>
-
-                                            <div className={styles.switchAuth} style={{ textAlign: 'center' }}>
-                                                Don&apos;t have an account? <button type="button" onClick={() => { setAuthMode('register'); setAuthError(''); }} style={{ background: 'none', border: 'none', padding: 0, color: 'inherit', textDecoration: 'underline', cursor: 'pointer', font: 'inherit' }}>Sign Up</button>
-                                            </div>
-                                            {!user && authIntent !== 'restock' && authIntent !== 'browse' && (
-                                                <button
-                                                    type="button"
-                                                    className={styles.secondaryBtn}
-                                                    onClick={() => { setCheckoutStep('form'); setAuthMode(null); }}
-                                                >
-                                                    Checkout as Guest instead
-                                                </button>
-                                            )}
+                                        <div style={{ fontSize: '18px', fontWeight: 700, backgroundColor: 'rgba(128,0,32,0.1)', color: 'var(--red)', padding: '12px 16px', borderRadius: '8px', marginBottom: '16px', border: '1px solid rgba(139, 10, 16,0.2)' }}>
+                                            {activeStore === 'butcher' ? '📍 Pickup at: The Butcher Shop (Northfield)' : '📍 Pickup at: The Depot (Winnetka)'}
                                         </div>
-                                    )}
-                                </div>
-                            </div>
-                        ) : (
-                            <form onSubmit={handleSubmit}>
-                                <div className={styles.modalTitle} style={{ letterSpacing: '-0.02em', marginBottom: '8px' }}>
-                                    Complete Your Order
-                                </div>
-                                <div style={{ fontSize: '18px', fontWeight: 700, backgroundColor: 'rgba(128,0,32,0.1)', color: 'var(--red)', padding: '12px 16px', borderRadius: '8px', marginBottom: '16px', border: '1px solid rgba(139, 10, 16,0.2)' }}>
-                                    {activeStore === 'butcher' ? '📍 Pickup at: The Butcher Shop (Northfield)' : '📍 Pickup at: The Depot (Winnetka)'}
-                                </div>
-                                <p className={styles.modalDesc}>
-                                    {activeStore === 'butcher'
-                                        ? "Just a few final details to get your prime cuts ready for pickup."
-                                        : "Just a few final details to get your order ready for pickup."}
-                                </p>
+                                        <p className={styles.modalDesc}>
+                                            {activeStore === 'butcher'
+                                                ? "Just a few final details to get your prime cuts ready for pickup."
+                                                : "Just a few final details to get your order ready for pickup."}
+                                        </p>
 
-                                <div className={styles.formGroup}>
-                                    <div className={styles.formFields}>
-                                        {isLoggedIn ? (
-                                            <div className={styles.signedInContactCard}>
-                                                <div className={styles.signedInContactInfo}>
-                                                    <span className={styles.signedInContactLabel}>Signed In Account</span>
-                                                    <span className={styles.signedInContactName}>{form.name || authUser?.name || 'Hofherr Customer'}</span>
-                                                    <span className={styles.signedInContactMeta}>
-                                                        {[form.email || authUser?.email, form.phone || authUser?.phone].filter(Boolean).join(' · ')}
-                                                    </span>
-                                                </div>
-                                                <div className={styles.contactPrefToggle}>
-                                                    <button
-                                                        type="button"
-                                                        className={`${styles.contactPrefBtn} ${contactPref === 'phone' ? styles.contactPrefBtnActive : ''}`}
-                                                        onClick={() => setContactPref('phone')}
-                                                    >📞 Call Me</button>
-                                                    <button
-                                                        type="button"
-                                                        className={`${styles.contactPrefBtn} ${contactPref === 'email' ? styles.contactPrefBtnActive : ''}`}
-                                                        onClick={() => setContactPref('email')}
-                                                    >✉️ Email Me</button>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            /* Two-column contact layout */
-                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', alignItems: 'start' }}>
-                                                {/* Left col: Name + phone/email input */}
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                                    <input
-                                                        required
-                                                        name="name"
-                                                        id="checkout-name"
-                                                        autoComplete="name"
-                                                        className={styles.formInput}
-                                                        placeholder="John Smith"
-                                                        value={form.name}
-                                                        onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                                                        style={{ margin: 0 }}
-                                                    />
-                                                    {contactPref === 'phone' ? (
-                                                        <input
-                                                            required
-                                                            name="tel"
-                                                            id="checkout-phone"
-                                                            autoComplete="tel"
-                                                            className={styles.formInput}
-                                                            placeholder="(847) 555-0100"
-                                                            type="tel"
-                                                            value={form.phone}
-                                                            onChange={e => {
-                                                                const formatted = formatPhoneNumber(e.target.value);
-                                                                setForm(f => ({ ...f, phone: formatted }));
-                                                            }}
-                                                            style={{ margin: 0 }}
-                                                        />
-                                                    ) : (
-                                                        <input
-                                                            required
-                                                            name="email"
-                                                            id="checkout-email"
-                                                            autoComplete="email"
-                                                            className={styles.formInput}
-                                                            placeholder="Email Address"
-                                                            type="email"
-                                                            value={form.email}
-                                                            onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                                                            style={{ margin: 0 }}
-                                                        />
-                                                    )}
-                                                </div>
-                                                {/* Right col: label + toggle */}
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                    <span className={styles.contactPrefLabel}>How should we reach you?</span>
-                                                    <div className={styles.contactPrefToggle}>
-                                                        <button
-                                                            type="button"
-                                                            className={`${styles.contactPrefBtn} ${contactPref === 'phone' ? styles.contactPrefBtnActive : ''}`}
-                                                            onClick={() => { setContactPref('phone'); setForm(f => ({ ...f, email: '' })); }}
-                                                        >📞 Call Me</button>
-                                                        <button
-                                                            type="button"
-                                                            className={`${styles.contactPrefBtn} ${contactPref === 'email' ? styles.contactPrefBtnActive : ''}`}
-                                                            onClick={() => { setContactPref('email'); setForm(f => ({ ...f, phone: '' })); }}
-                                                        >✉️ Email Me</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <div className={styles.pickupScheduler}>
-                                            <label className={styles.pickupLabel}>Select Pickup Day & Time</label>
-                                            <p className={styles.prepTimeNote}>⚡ Orders generally take 20-40 minutes to prepare.</p>
-                                            <div className={styles.dateSelectorContainer}>
-                                                <div className={styles.dateScrollTrack}>
-                                                    {dateThumbWidth > 0 && (
-                                                        <div
-                                                            ref={dateThumbRef}
-                                                            className={styles.dateScrollThumb}
-                                                            style={{ left: dateThumbLeft, width: dateThumbWidth }}
-                                                        />
-                                                    )}
-                                                </div>
-                                                {/* Scroll container — inlined to bypass CSS cache */}
-                                                <div
-                                                    ref={dateScrollRef}
-                                                    onScroll={updateDateThumb}
-                                                    style={{
-                                                        overflowX: 'auto',
-                                                        overflowY: 'visible',
-                                                        WebkitOverflowScrolling: 'touch' as any,
-                                                        touchAction: 'pan-x',
-                                                        paddingBottom: '8px',
-                                                        msOverflowStyle: 'none',
-                                                        scrollbarWidth: 'none' as any,
-                                                        minWidth: 0,
-                                                        width: '100%',
-                                                    }}
-                                                >
-                                                    <div style={{ display: 'flex', gap: '8px', width: 'max-content' }}>
-                                                        {availableDates.map((date, idx) => (
+                                        <div className={styles.formGroup}>
+                                            <div className={styles.formFields}>
+                                                {isLoggedIn ? (
+                                                    <div className={styles.signedInContactCard}>
+                                                        <div className={styles.signedInContactInfo}>
+                                                            <span className={styles.signedInContactLabel}>Signed In Account</span>
+                                                            <span className={styles.signedInContactName}>{form.name || authUser?.name || 'Hofherr Customer'}</span>
+                                                            <span className={styles.signedInContactMeta}>
+                                                                {[form.email || authUser?.email, form.phone || authUser?.phone].filter(Boolean).join(' · ')}
+                                                            </span>
+                                                        </div>
+                                                        <div className={styles.contactPrefToggle}>
                                                             <button
-                                                                key={date.toISOString()}
                                                                 type="button"
-                                                                className={`${styles.dateBtn} ${selectedDateIdx === idx ? styles.dateBtnActive : ''}`}
-                                                                onClick={() => setSelectedDateIdx(idx)}
-                                                            >
-                                                                <span className={styles.dateDay}>{['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()]}</span>
-                                                                <span className={styles.dateNum}>{date.getDate()}</span>
-                                                            </button>
+                                                                className={`${styles.contactPrefBtn} ${contactPref === 'phone' ? styles.contactPrefBtnActive : ''}`}
+                                                                onClick={() => setContactPref('phone')}
+                                                            >📞 Call Me</button>
+                                                            <button
+                                                                type="button"
+                                                                className={`${styles.contactPrefBtn} ${contactPref === 'email' ? styles.contactPrefBtnActive : ''}`}
+                                                                onClick={() => setContactPref('email')}
+                                                            >✉️ Email Me</button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    /* Two-column contact layout */
+                                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', alignItems: 'start' }}>
+                                                        {/* Left col: Name + phone/email input */}
+                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                            <input
+                                                                required
+                                                                name="name"
+                                                                id="checkout-name"
+                                                                autoComplete="name"
+                                                                className={styles.formInput}
+                                                                placeholder="John Smith"
+                                                                value={form.name}
+                                                                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                                                                style={{ margin: 0 }}
+                                                            />
+                                                            {contactPref === 'phone' ? (
+                                                                <input
+                                                                    required
+                                                                    name="tel"
+                                                                    id="checkout-phone"
+                                                                    autoComplete="tel"
+                                                                    className={styles.formInput}
+                                                                    placeholder="(847) 555-0100"
+                                                                    type="tel"
+                                                                    value={form.phone}
+                                                                    onChange={e => {
+                                                                        const formatted = formatPhoneNumber(e.target.value);
+                                                                        setForm(f => ({ ...f, phone: formatted }));
+                                                                    }}
+                                                                    style={{ margin: 0 }}
+                                                                />
+                                                            ) : (
+                                                                <input
+                                                                    required
+                                                                    name="email"
+                                                                    id="checkout-email"
+                                                                    autoComplete="email"
+                                                                    className={styles.formInput}
+                                                                    placeholder="Email Address"
+                                                                    type="email"
+                                                                    value={form.email}
+                                                                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                                                                    style={{ margin: 0 }}
+                                                                />
+                                                            )}
+                                                        </div>
+                                                        {/* Right col: label + toggle */}
+                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                            <span className={styles.contactPrefLabel}>How should we reach you?</span>
+                                                            <div className={styles.contactPrefToggle}>
+                                                                <button
+                                                                    type="button"
+                                                                    className={`${styles.contactPrefBtn} ${contactPref === 'phone' ? styles.contactPrefBtnActive : ''}`}
+                                                                    onClick={() => { setContactPref('phone'); setForm(f => ({ ...f, email: '' })); }}
+                                                                >📞 Call Me</button>
+                                                                <button
+                                                                    type="button"
+                                                                    className={`${styles.contactPrefBtn} ${contactPref === 'email' ? styles.contactPrefBtnActive : ''}`}
+                                                                    onClick={() => { setContactPref('email'); setForm(f => ({ ...f, phone: '' })); }}
+                                                                >✉️ Email Me</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                <div className={styles.pickupScheduler}>
+                                                    <label className={styles.pickupLabel}>Select Pickup Day & Time</label>
+                                                    <p className={styles.prepTimeNote}>⚡ Orders generally take 20-40 minutes to prepare.</p>
+                                                    <div className={styles.dateSelectorContainer}>
+                                                        <div className={styles.dateScrollTrack}>
+                                                            {dateThumbWidth > 0 && (
+                                                                <div
+                                                                    ref={dateThumbRef}
+                                                                    className={styles.dateScrollThumb}
+                                                                    style={{ left: dateThumbLeft, width: dateThumbWidth }}
+                                                                />
+                                                            )}
+                                                        </div>
+                                                        {/* Scroll container — inlined to bypass CSS cache */}
+                                                        <div
+                                                            ref={dateScrollRef}
+                                                            onScroll={updateDateThumb}
+                                                            style={{
+                                                                overflowX: 'auto',
+                                                                overflowY: 'visible',
+                                                                WebkitOverflowScrolling: 'touch' as any,
+                                                                touchAction: 'pan-x',
+                                                                paddingBottom: '8px',
+                                                                msOverflowStyle: 'none',
+                                                                scrollbarWidth: 'none' as any,
+                                                                minWidth: 0,
+                                                                width: '100%',
+                                                            }}
+                                                        >
+                                                            <div style={{ display: 'flex', gap: '8px', width: 'max-content' }}>
+                                                                {availableDates.map((date, idx) => (
+                                                                    <button
+                                                                        key={date.toISOString()}
+                                                                        type="button"
+                                                                        className={`${styles.dateBtn} ${selectedDateIdx === idx ? styles.dateBtnActive : ''}`}
+                                                                        onClick={() => setSelectedDateIdx(idx)}
+                                                                    >
+                                                                        <span className={styles.dateDay}>{['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()]}</span>
+                                                                        <span className={styles.dateNum}>{date.getDate()}</span>
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className={styles.timeSelector}>
+                                                        <div className={styles.timeGrid}>
+                                                            {(() => {
+                                                                const selDate = availableDates[selectedDateIdx];
+                                                                const currentDateStr = selDate
+                                                                    ? `${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][selDate.getDay()]}, ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][selDate.getMonth()]} ${selDate.getDate()}`
+                                                                    : '';
+                                                                return availableSlots.length > 0 ? (
+                                                                    availableSlots.map(slot => {
+                                                                        const fullSlotStr = `${currentDateStr} at ${slot.value}`;
+                                                                        const isActive = form.pickup === fullSlotStr;
+                                                                        return (
+                                                                            <button
+                                                                                key={slot.value}
+                                                                                type="button"
+                                                                                disabled={slot.disabled}
+                                                                                className={`${styles.timeSlotBtn} ${isActive ? styles.timeSlotBtnActive : ''} ${slot.disabled ? styles.timeSlotBtnDisabled : ''}`}
+                                                                                onClick={() => {
+                                                                                    if (slot.disabled) return;
+                                                                                    setForm(f => ({ ...f, pickup: fullSlotStr }));
+                                                                                }}
+                                                                            >
+                                                                                {slot.label === slot.value + ' (ASAP)' ? (
+                                                                                    <>
+                                                                                        <span style={{ display: 'block' }}>{slot.value}</span>
+                                                                                        <span style={{ display: 'block', fontSize: '11px', fontWeight: 700, opacity: 0.8 }}>(ASAP)</span>
+                                                                                    </>
+                                                                                ) : (
+                                                                                    slot.label
+                                                                                )}
+                                                                            </button>
+                                                                        );
+                                                                    })
+                                                                ) : (
+                                                                    <p className={styles.noSlots}>No pickup times available for this date. Please select another day.</p>
+                                                                );
+                                                            })()}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div className={styles.orderSummary}>
+                                                <div className={styles.summaryTitle}>Order Summary</div>
+                                                {/* Custom scrollbar wrapper */}
+                                                <div className={styles.summaryScrollWrap}>
+                                                    <div
+                                                        ref={el => {
+                                                            (summaryRowsRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+                                                            if (el) setTimeout(updateThumb, 50);
+                                                        }}
+                                                        className={styles.summaryRows}
+                                                        onScroll={updateThumb}
+                                                    >
+                                                        {cart.map(i => (
+                                                            <div key={i.name} className={styles.summaryRow}>
+                                                                <span>{i.name} ×{i.qty}{i.note ? ` · ${i.note}` : ''}</span>
+                                                                <span>{i.price}</span>
+                                                            </div>
                                                         ))}
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div className={styles.timeSelector}>
-                                                <div className={styles.timeGrid}>
-                                                    {(() => {
-                                                        const selDate = availableDates[selectedDateIdx];
-                                                        const currentDateStr = selDate
-                                                            ? `${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][selDate.getDay()]}, ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][selDate.getMonth()]} ${selDate.getDate()}`
-                                                            : '';
-                                                        return availableSlots.length > 0 ? (
-                                                            availableSlots.map(slot => {
-                                                                const fullSlotStr = `${currentDateStr} at ${slot.value}`;
-                                                                const isActive = form.pickup === fullSlotStr;
-                                                                return (
-                                                                    <button
-                                                                        key={slot.value}
-                                                                        type="button"
-                                                                        disabled={slot.disabled}
-                                                                        className={`${styles.timeSlotBtn} ${isActive ? styles.timeSlotBtnActive : ''} ${slot.disabled ? styles.timeSlotBtnDisabled : ''}`}
-                                                                        onClick={() => {
-                                                                            if (slot.disabled) return;
-                                                                            setForm(f => ({ ...f, pickup: fullSlotStr }));
-                                                                        }}
-                                                                    >
-                                                                        {slot.label === slot.value + ' (ASAP)' ? (
-                                                                            <>
-                                                                                <span style={{ display: 'block' }}>{slot.value}</span>
-                                                                                <span style={{ display: 'block', fontSize: '11px', fontWeight: 700, opacity: 0.8 }}>(ASAP)</span>
-                                                                            </>
-                                                                        ) : (
-                                                                            slot.label
-                                                                        )}
-                                                                    </button>
-                                                                );
-                                                            })
-                                                        ) : (
-                                                            <p className={styles.noSlots}>No pickup times available for this date. Please select another day.</p>
-                                                        );
-                                                    })()}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <div className={styles.orderSummary}>
-                                        <div className={styles.summaryTitle}>Order Summary</div>
-                                        {/* Custom scrollbar wrapper */}
-                                        <div className={styles.summaryScrollWrap}>
-                                            <div
-                                                ref={el => {
-                                                    (summaryRowsRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
-                                                    if (el) setTimeout(updateThumb, 50);
-                                                }}
-                                                className={styles.summaryRows}
-                                                onScroll={updateThumb}
-                                            >
-                                                {cart.map(i => (
-                                                    <div key={i.name} className={styles.summaryRow}>
-                                                        <span>{i.name} ×{i.qty}{i.note ? ` · ${i.note}` : ''}</span>
-                                                        <span>{i.price}</span>
+                                                    {/* Custom always-visible scrollbar track */}
+                                                    <div className={styles.customScrollTrack}>
+                                                        {thumbHeight > 0 && (
+                                                            <div
+                                                                className={styles.customScrollThumb}
+                                                                style={{ height: thumbHeight, top: thumbTop }}
+                                                            />
+                                                        )}
                                                     </div>
-                                                ))}
-                                            </div>
-                                            {/* Custom always-visible scrollbar track */}
-                                            <div className={styles.customScrollTrack}>
-                                                {thumbHeight > 0 && (
-                                                    <div
-                                                        className={styles.customScrollThumb}
-                                                        style={{ height: thumbHeight, top: thumbTop }}
-                                                    />
-                                                )}
+                                                </div>
+                                                {/* Pinned stats footer */}
+                                                <div className={styles.summaryStats}>
+                                                    <div className={styles.statRow}>
+                                                        <span>
+                                                            {cart.reduce((s, i) => s + i.qty, 0)} item{cart.reduce((s, i) => s + i.qty, 0) !== 1 ? 's' : ''}
+                                                        </span>
+                                                        <span>
+                                                            ~{cart.filter(i => String(i.price ?? '').includes('/lb')).reduce((s, i) => s + i.qty, 0)} lbs
+                                                        </span>
+                                                    </div>
+
+                                                    {form.pickup && (
+                                                        <div className={styles.pickupSummaryRow}>
+                                                            <span>Your Scheduled Pickup</span>
+                                                            <span>{form.pickup}</span>
+                                                        </div>
+                                                    )}
+
+                                                    <div className={styles.discountRow}>
+                                                        <span>Estimated Tax (2.25%)</span>
+                                                        <span>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0) * TAX_RATE)}</span>
+                                                    </div>
+
+                                                    <span className={styles.summaryEstTotal}>
+                                                        Est. Total {(() => {
+                                                            const subtotal = cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0);
+                                                            let discounted = subtotal;
+                                                            if (appliedCoupon) {
+                                                                if (appliedCoupon.type === 'percent') {
+                                                                    discounted = subtotal * (1 - appliedCoupon.value / 100);
+                                                                } else {
+                                                                    discounted = Math.max(0, subtotal - appliedCoupon.value);
+                                                                }
+                                                            }
+                                                            const total = discounted * (1 + TAX_RATE);
+                                                            return fmtTotal(total);
+                                                        })()}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-                                        {/* Pinned stats footer */}
-                                        <div className={styles.summaryStats}>
-                                            <div className={styles.statRow}>
-                                                <span>
-                                                    {cart.reduce((s, i) => s + i.qty, 0)} item{cart.reduce((s, i) => s + i.qty, 0) !== 1 ? 's' : ''}
-                                                </span>
-                                                <span>
-                                                    ~{cart.filter(i => String(i.price ?? '').includes('/lb')).reduce((s, i) => s + i.qty, 0)} lbs
-                                                </span>
-                                            </div>
 
-                                            {form.pickup && (
-                                                <div className={styles.pickupSummaryRow}>
-                                                    <span>Your Scheduled Pickup</span>
-                                                    <span>{form.pickup}</span>
+                                        {/* ── Tip Selector ── */}
+                                        <div className={styles.tipSection}>
+                                            <div className={styles.tipLabel}>💝 Add a Tip for Our Team</div>
+                                            <div className={styles.tipGrid}>
+                                                {[0, 10, 15, 20].map(pct => (
+                                                    <button
+                                                        key={pct}
+                                                        type="button"
+                                                        className={`${styles.tipBtn} ${!showTipCustom && tipPercent === pct ? styles.tipBtnActive : ''}`}
+                                                        onClick={() => {
+                                                            setTipPercent(pct);
+                                                            setShowTipCustom(false);
+                                                            setTipCustom('');
+                                                        }}
+                                                    >
+                                                        {pct === 0 ? 'None' : `${pct}%`}
+                                                    </button>
+                                                ))}
+                                                <button
+                                                    type="button"
+                                                    className={`${styles.tipBtn} ${showTipCustom ? styles.tipBtnActive : ''}`}
+                                                    onClick={() => {
+                                                        setShowTipCustom(true);
+                                                        setTipPercent(null);
+                                                    }}
+                                                >
+                                                    Custom
+                                                </button>
+                                            </div>
+                                            {showTipCustom && (
+                                                <div className={styles.tipCustomRow}>
+                                                    <span style={{ color: 'var(--fg)', fontWeight: 700 }}>$</span>
+                                                    <input
+                                                        type="number"
+                                                        min="0"
+                                                        step="0.50"
+                                                        placeholder="0.00"
+                                                        className={styles.tipCustomInput}
+                                                        value={tipCustom}
+                                                        onChange={e => setTipCustom(e.target.value)}
+                                                    />
                                                 </div>
                                             )}
+                                            {tipAmount > 0 && (
+                                                <div className={styles.tipAmount}>Tip: {fmtTotal(tipAmount)}</div>
+                                            )}
+                                        </div>
 
-                                            <div className={styles.discountRow}>
-                                                <span>Estimated Tax (2.25%)</span>
-                                                <span>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0) * TAX_RATE)}</span>
+                                        {stripeError && <p className={styles.stripeError}>⚠️ {stripeError}</p>}
+
+                                        <div className={styles.payBadgesWrap}>
+                                            <div className={styles.paymentMethodToggle}>
+                                                <label className={`${styles.payToggleBtn} ${paymentMethod === 'stripe' ? styles.payToggleBtnActive : ''}`}>
+                                                    <input
+                                                        type="radio"
+                                                        name="paymentMethod"
+                                                        value="stripe"
+                                                        checked={paymentMethod === 'stripe'}
+                                                        onChange={() => setPaymentMethod('stripe')}
+                                                        style={{ display: 'none' }}
+                                                    />
+                                                    <span className={styles.payToggleLabel}>💳 Pay Online</span>
+                                                </label>
+                                                <label className={`${styles.payToggleBtn} ${paymentMethod === 'instore' ? styles.payToggleBtnActive : ''}`}>
+                                                    <input
+                                                        type="radio"
+                                                        name="paymentMethod"
+                                                        value="instore"
+                                                        checked={paymentMethod === 'instore'}
+                                                        onChange={() => setPaymentMethod('instore')}
+                                                        style={{ display: 'none' }}
+                                                    />
+                                                    <span className={styles.payToggleLabel}>🏪 Pay In-Store</span>
+                                                </label>
                                             </div>
-
-                                            <span className={styles.summaryEstTotal}>
-                                                Est. Total {(() => {
-                                                    const subtotal = cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0);
-                                                    let discounted = subtotal;
-                                                    if (appliedCoupon) {
-                                                        if (appliedCoupon.type === 'percent') {
-                                                            discounted = subtotal * (1 - appliedCoupon.value / 100);
-                                                        } else {
-                                                            discounted = Math.max(0, subtotal - appliedCoupon.value);
-                                                        }
-                                                    }
-                                                    const total = discounted * (1 + TAX_RATE);
-                                                    return fmtTotal(total);
-                                                })()}
-                                            </span>
                                         </div>
-                                    </div>
-                                </div>
 
-                                {/* ── Tip Selector ── */}
-                                <div className={styles.tipSection}>
-                                    <div className={styles.tipLabel}>💝 Add a Tip for Our Team</div>
-                                    <div className={styles.tipGrid}>
-                                        {[0, 10, 15, 20].map(pct => (
-                                            <button
-                                                key={pct}
-                                                type="button"
-                                                className={`${styles.tipBtn} ${!showTipCustom && tipPercent === pct ? styles.tipBtnActive : ''}`}
-                                                onClick={() => {
-                                                    setTipPercent(pct);
-                                                    setShowTipCustom(false);
-                                                    setTipCustom('');
-                                                }}
-                                            >
-                                                {pct === 0 ? 'None' : `${pct}%`}
+                                        <div className={styles.modalActions}>
+                                            <button type="button" className={styles.cancelBtn} onClick={() => setCheckoutStep('choice')} disabled={isPending}>Back</button>
+                                            <button type="submit" className={styles.confirmBtn} disabled={isPending}>
+                                                {isPending ? 'Processing…' : (paymentMethod === 'stripe' ? 'Continue to Payment' : 'Place Order')}
                                             </button>
-                                        ))}
-                                        <button
-                                            type="button"
-                                            className={`${styles.tipBtn} ${showTipCustom ? styles.tipBtnActive : ''}`}
-                                            onClick={() => {
-                                                setShowTipCustom(true);
-                                                setTipPercent(null);
-                                            }}
-                                        >
-                                            Custom
-                                        </button>
-                                    </div>
-                                    {showTipCustom && (
-                                        <div className={styles.tipCustomRow}>
-                                            <span style={{ color: 'var(--fg)', fontWeight: 700 }}>$</span>
-                                            <input
-                                                type="number"
-                                                min="0"
-                                                step="0.50"
-                                                placeholder="0.00"
-                                                className={styles.tipCustomInput}
-                                                value={tipCustom}
-                                                onChange={e => setTipCustom(e.target.value)}
-                                            />
                                         </div>
-                                    )}
-                                    {tipAmount > 0 && (
-                                        <div className={styles.tipAmount}>Tip: {fmtTotal(tipAmount)}</div>
-                                    )}
-                                </div>
 
-                                {stripeError && <p className={styles.stripeError}>⚠️ {stripeError}</p>}
-
-                                <div className={styles.payBadgesWrap}>
-                                    <div className={styles.paymentMethodToggle}>
-                                        <label className={`${styles.payToggleBtn} ${paymentMethod === 'stripe' ? styles.payToggleBtnActive : ''}`}>
-                                            <input
-                                                type="radio"
-                                                name="paymentMethod"
-                                                value="stripe"
-                                                checked={paymentMethod === 'stripe'}
-                                                onChange={() => setPaymentMethod('stripe')}
-                                                style={{ display: 'none' }}
-                                            />
-                                            <span className={styles.payToggleLabel}>💳 Pay Online</span>
-                                        </label>
-                                        <label className={`${styles.payToggleBtn} ${paymentMethod === 'instore' ? styles.payToggleBtnActive : ''}`}>
-                                            <input
-                                                type="radio"
-                                                name="paymentMethod"
-                                                value="instore"
-                                                checked={paymentMethod === 'instore'}
-                                                onChange={() => setPaymentMethod('instore')}
-                                                style={{ display: 'none' }}
-                                            />
-                                            <span className={styles.payToggleLabel}>🏪 Pay In-Store</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div className={styles.modalActions}>
-                                    <button type="button" className={styles.cancelBtn} onClick={() => setCheckoutStep('choice')} disabled={isPending}>Back</button>
-                                    <button type="submit" className={styles.confirmBtn} disabled={isPending}>
-                                        {isPending ? 'Processing…' : (paymentMethod === 'stripe' ? 'Continue to Payment' : 'Place Order')}
-                                    </button>
-                                </div>
-
-                                <p className={styles.stripeNote}>🔒 Powered by Stripe · 256-bit SSL</p>
-                            </form>
-                        )}
-                    </>
-                </BurnModalShell>
-            </div>
-        ), document.body)
-    }
-    <HelpOrdering />
-    {/* Restock success toast */ }
-    {
-        mounted && createPortal(
-            <>
-                <div className={`${styles.restockToast} ${restockToast ? styles.restockToastShow : ''}`}>
-                    Restock request sent ✓
-                </div>
-                {maxStockToast && (
-                    <div className={styles.maxStockToast} role="alert">
-                        <span className={styles.maxStockToastIcon}>🥩</span>
-                        <span>{maxStockToast}</span>
+                                        <p className={styles.stripeNote}>🔒 Powered by Stripe · 256-bit SSL</p>
+                                    </form>
+                                )}
+                            </>
+                        </BurnModalShell>
                     </div>
-                )}
-            </>,
-            document.body
-        )
-    }
-    </div >
-);
+                ), document.body)
+            }
+            <HelpOrdering />
+            {/* Restock success toast */}
+            {
+                mounted && createPortal(
+                    <>
+                        <div className={`${styles.restockToast} ${restockToast ? styles.restockToastShow : ''}`}>
+                            Restock request sent ✓
+                        </div>
+                        {maxStockToast && (
+                            <div className={styles.maxStockToast} role="alert">
+                                <span className={styles.maxStockToastIcon}>🥩</span>
+                                <span>{maxStockToast}</span>
+                            </div>
+                        )}
+                    </>,
+                    document.body
+                )
+            }
+        </div >
+    );
 }

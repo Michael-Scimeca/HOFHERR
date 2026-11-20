@@ -105,20 +105,21 @@ type TeamMember = { name: string; role: string; photo?: string | null; bio?: str
 type TimelineItem = { era: string; title: string; body?: string | null };
 
 export default async function OurStoryPage() {
-    // 5-star Google reviews + overall rating (null until GOOGLE_PLACES_API_KEY is set — then Yelp-only).
-    const google = await getGoogleReviews({ minRating: 5 });
-    const wallReviews = [...(google?.reviews ?? []), ...REVIEWS];
     const { isEnabled: preview } = await draftMode();
     const sanityClient = getClient(preview);
+    const fetchOpts = preview ? { cache: 'no-store' as const } : { next: { revalidate: 60 } };
 
     let team: TeamMember[] = FALLBACK_TEAM;
     let timeline: TimelineItem[] = FALLBACK_TIMELINE;
+    let google: Awaited<ReturnType<typeof getGoogleReviews>> = null;
 
     try {
-        const [rawTeam, rawTimeline] = await Promise.all([
-            sanityClient.fetch(TEAM_MEMBERS_QUERY),
-            sanityClient.fetch(TIMELINE_QUERY),
+        const [googleRes, rawTeam, rawTimeline] = await Promise.all([
+            getGoogleReviews({ minRating: 5 }).catch(() => null),
+            sanityClient.fetch(TEAM_MEMBERS_QUERY, {}, fetchOpts),
+            sanityClient.fetch(TIMELINE_QUERY, {}, fetchOpts),
         ]);
+        google = googleRes;
         if (rawTeam?.length) {
             /* Merge local fallback photos for members missing a Sanity photo */
             const fallbackMap = new Map(FALLBACK_TEAM.map((m) => [m.name.toLowerCase(), m.photo]));
@@ -140,6 +141,8 @@ export default async function OurStoryPage() {
     } catch {
         // fallback to hardcoded
     }
+
+    const wallReviews = [...(google?.reviews ?? []), ...REVIEWS];
 
     return (
         <main className={styles.page}>

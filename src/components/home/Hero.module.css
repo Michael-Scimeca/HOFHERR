@@ -8,24 +8,27 @@
     border-bottom: 1px solid #ffffff1a;
 }
 
-/* ─── Background accents ─── */
+/* ─── Background accents (no tint) ─── */
 .bg {
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 0;
+    background: transparent;
 }
 
-/* ─── Full-bleed background video ─── */
+/* ─── Full-bleed background video (transparent black backdrop) ─── */
 .heroVideoCol {
     position: absolute;
     inset: 0;
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
+    background: transparent;
 }
 
-.heroVideoPlayer {
+.heroVideoPlayer,
+.heroMobileImg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -36,6 +39,21 @@
     border: none;
     box-shadow: none;
     aspect-ratio: auto;
+    mix-blend-mode: screen;
+}
+
+.heroMobileImg {
+    display: none;
+}
+
+@media (max-width: 1024px) {
+    .heroVideoPlayer {
+        display: none;
+    }
+
+    .heroMobileImg {
+        display: block;
+    }
 }
 
 /* ─── Content ─── */
@@ -52,40 +70,75 @@
 .headlineWrap {
     position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
 .floatingMedia {
     display: inline-flex;  /* Shrink-wrappings the container width to fit the HeroVideo precisely */
     align-items: center;
-    gap: 16px;
+    gap: 8px;
     margin-top: 0;
-    margin-bottom: 24px;
-    position: relative; 
+    margin-bottom: 0;
+    position: relative;
     z-index: 10;
+    flex-shrink: 0;
 }
 
 @media (min-width: 1201px) {
+    .headlineWrap {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 0;
+    }
+
+    .headline {
+        margin-bottom: 20px;
+    }
+
     .floatingMedia {
         position: absolute;
         right: 60px;
         top: 0;
         bottom: 0;
         margin: auto;
+        gap: 16px;
         height: fit-content;
         z-index: 5;
     }
 }
 
 .heroTrophy {
-    width: 140px !important;  
-    height: 140px !important; 
-    position: relative; /* Use native flexbox flow instead of floating math */
-    margin-left: -45px; /* Micro-tuned tighter */
-    transform: translateY(-70px); /* Exactly dialed in vertically */
+    width: 112px !important;
+    height: 112px !important;
+    position: relative;
+    margin-left: -38px;
+    transform: translateY(-34px);
     z-index: 5;
     flex-shrink: 0;
     pointer-events: none;
+}
+
+@media (max-width: 600px) {
+    .headlineWrap {
+        gap: 8px;
+    }
+
+    .floatingMedia {
+        transform: scale(0.76);
+        transform-origin: right center;
+        margin-left: -24px;
+    }
+
+    .heroTrophy {
+        width: 96px !important;
+        height: 96px !important;
+        margin-left: -34px;
+        transform: translateY(-28px);
+    }
 }
 
 @media (min-width: 1201px) {
@@ -163,7 +216,7 @@
     letter-spacing: 0.02em;
     text-transform: uppercase;
     color: #fff;
-    margin-bottom: 20px;
+    margin-bottom: 0;
     animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
 }
 
@@ -177,11 +230,124 @@
 
 .sub {
     font-size: clamp(0.95rem, 1.8vw, 1.05rem);
-    color: rgba(255, 255, 255, 0.72);
+    color: var(--fg-2);
     line-height: 1.7;
-    max-width: 520px;
+    max-width: 620px;
     margin-bottom: 24px;
     animation: fadeInUp 0.6s 0.2s var(--ease-out) both;
+}
+
+.sub strong {
+    color: var(--fg);
+    font-weight: 700;
+}
+
+/* ─── Open Two-Location Guide (No enclosing boxes) ─── */
+.locations {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 680px;
+    padding: 16px 0;
+    margin-bottom: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    animation: fadeInUp 0.6s 0.25s var(--ease-out) both;
+}
+
+.locationCol {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    padding-left: 16px;
+}
+
+.locationButcher {
+    border-left: 2px solid var(--red);
+}
+
+.locationDepot {
+    border-left: 2px solid var(--depot-blue-light);
+}
+
+.locationHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.locationName {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--fg);
+    line-height: 1.05;
+}
+
+.locationTown {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+.locationDesc {
+    margin: 0;
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    color: var(--fg-2);
+}
+
+.locationLinks {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 4px;
+}
+
+.locationAction,
+.locationActionDepot {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+.locationAction {
+    color: var(--red);
+}
+
+.locationActionDepot {
+    color: var(--depot-blue-text);
+}
+
+.locationAction:hover,
+.locationAction:focus-visible,
+.locationActionDepot:hover,
+.locationActionDepot:focus-visible {
+    color: var(--fg);
+    transform: translateX(2px);
+}
+
+.locationMapLink {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--fg-3);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.2s var(--ease-out);
+}
+
+.locationMapLink:hover,
+.locationMapLink:focus-visible {
+    color: var(--fg);
 }
 
 /* ─── Two-column grid ─── */
@@ -322,6 +488,13 @@
     }
 }
 
+@media (max-width: 680px) {
+    .locations {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
 @media (max-width: 600px) {
     .ctas {
         flex-direction: column;
@@ -334,12 +507,18 @@
 }
 
 @media (max-width: 768px) {
+    .hero {
+        min-height: auto;
+        align-items: flex-start;
+    }
+
     .content {
-        padding: 60px var(--container-px) 40px;
+        padding: 24px var(--container-px) 32px;
     }
 
     .stats {
         gap: 16px;
+        flex-wrap: wrap;
     }
 
     .statNum {

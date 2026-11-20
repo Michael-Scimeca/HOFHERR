@@ -349,7 +349,114 @@
     transform: scale(1.03);
 }
 
-/* ── Social Media Photo & Post Kit ── */
+/* ── Social Media Photo & Multi-Channel Selling Kit ── */
+.socialKitList {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.socialKitRow {
+    display: grid;
+    grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+    gap: 24px;
+    padding: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    align-items: start;
+    transition:
+        border-color 0.25s var(--ease-out),
+        background-color 0.25s var(--ease-out),
+        box-shadow 0.25s var(--ease-out);
+}
+
+.socialKitRow:hover {
+    background: var(--bg-card-hover);
+    border-color: rgba(var(--gold-rgb), 0.55);
+    box-shadow: var(--shadow-md);
+}
+
+.socialKitRow:hover .holidayImg {
+    transform: scale(1.03);
+}
+
+.socialKitVisual {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.channelsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.channelsSingle {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+}
+
+.channelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.channelLabelWrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.channelMeta {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--fg-3);
+    letter-spacing: 0.04em;
+}
+
+.inlineCopyBtn {
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    background: rgba(var(--red-rgb), 0.14);
+    border: 1px solid rgba(var(--red-rgb), 0.45);
+    color: var(--fg);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+        background-color 0.2s var(--ease-out),
+        border-color 0.2s var(--ease-out);
+}
+
+.inlineCopyBtn:hover {
+    background: var(--red);
+    border-color: var(--red);
+}
+
+.sellingBox {
+    border-left-color: var(--gold);
+}
+
+@media (max-width: 1024px) {
+    .socialKitRow {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 680px) {
+    .channelsGrid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
 .socialAssetsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));

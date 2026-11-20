@@ -78,7 +78,7 @@
     flex: 1 1 55%;
     background: var(--bg);
     min-width: 320px;
-    padding-right: max(var(--container-px), calc((100vw - var(--max-w, 1400px)) / 2 + var(--container-px)));
+    padding-right: max(var(--container-px), calc((100vw - var(--max-w, 1400px)) / 2));
     padding-left: 48px;
 }
 

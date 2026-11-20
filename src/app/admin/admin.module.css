@@ -2543,12 +2543,14 @@
 }
 
 .adminCutsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
 .adminCutCard {
+    width: 185px;
+    max-width: 100%;
     background: #14100d;
     border: 1px solid rgba(245, 155, 26, 0.32);
     border-radius: 10px;
@@ -2560,12 +2562,13 @@
 .adminCutStage {
     background: #f3ead8;
     border-bottom: 2px solid #8b0a10;
-    padding: 5px;
+    padding: 4px;
 }
 
 .adminCutSvg {
     width: 100%;
     height: auto;
+    max-height: 112px;
     aspect-ratio: 1200 / 896;
     display: block;
     border-radius: 5px;
@@ -2711,4 +2714,38 @@
         max-width: 100%;
         white-space: normal;
     }
+}
+
+/* ── Line-Item Pack Checklist (prevents missing pre-ordered sides) ── */
+.packItemLabel {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.packItemLabel input {
+    accent-color: #16a34a;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+.packItemChecked {
+    text-decoration: line-through;
+    opacity: 0.65;
+    color: #86efac;
+}
+
+.actionBtnLocked {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px dashed rgba(245, 158, 11, 0.55);
+    background: rgba(245, 158, 11, 0.12);
+    color: #fde68a;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: not-allowed;
+    font-family: inherit;
 }

@@ -622,6 +622,103 @@
     }
 }
 
+.cartBagSvg {
+    display: block;
+    transform-origin: center bottom;
+}
+
+.cartBagRemoving .cartBagSvg {
+    animation: bagDumpOut 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cartBagEmptied .cartBagSvg {
+    animation: bagEmptyShake 0.56s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cartRemoveFloat {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    pointer-events: none;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    padding: 3px 6px;
+    border-radius: 999px;
+    background: #1a1a1d;
+    color: #fca5a5;
+    border: 1px solid rgba(204, 14, 29, 0.65);
+    white-space: nowrap;
+    z-index: 5;
+    animation: itemPopOut 0.58s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cartRemoveFloatEmpty {
+    color: var(--fg-2);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+@keyframes bagDumpOut {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    28% {
+        transform: rotate(-18deg) translateY(2px) scale(0.94);
+    }
+    62% {
+        transform: rotate(7deg) translateY(-1px) scale(1.03);
+    }
+    100% {
+        transform: rotate(0deg) scale(1);
+    }
+}
+
+@keyframes bagEmptyShake {
+    0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    22% {
+        transform: rotate(-22deg) translateY(2px) scale(0.9);
+        opacity: 0.85;
+    }
+    46% {
+        transform: rotate(14deg) translateY(1px) scale(0.95);
+        opacity: 0.7;
+    }
+    70% {
+        transform: rotate(-8deg) scale(0.98);
+        opacity: 0.85;
+    }
+    100% {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes itemPopOut {
+    0% {
+        opacity: 0;
+        transform: translate(0, 4px) scale(0.75);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(3px, -8px) scale(1.08);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(10px, -24px) scale(0.85);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cartBagRemoving .cartBagSvg,
+    .cartBagEmptied .cartBagSvg,
+    .cartRemoveFloat {
+        animation: none;
+    }
+}
+
 /* ─── Cart Wrap & Dropdown ─── */
 .cartWrap {
     position: relative;

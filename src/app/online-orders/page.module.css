@@ -1,3 +1,99 @@
+/* ── Northfield Butcher Shop Red Theme Scope (active when ?store=butcher) ── */
+.butcherTheme .locationHero {
+    border-bottom: 3px solid var(--red);
+}
+
+.butcherTheme .locationHeroOverlay {
+    background: linear-gradient(
+        90deg,
+        rgba(42, 8, 12, 0.88) 0%,
+        rgba(78, 12, 18, 0.52) 55%,
+        rgba(28, 6, 8, 0.16) 100%
+    );
+}
+
+.butcherTheme .locationHeroSub {
+    color: color-mix(in srgb, var(--red-light) 35%, #ffffff);
+}
+
+.butcherTheme .hoursNotice {
+    background: #1f0c0e;
+    border-bottom: 1px solid rgba(204, 14, 29, 0.32);
+}
+
+.butcherTheme .hoursNoticeBadge {
+    background: rgba(204, 14, 29, 0.22);
+    color: color-mix(in srgb, var(--red-light) 35%, #ffffff);
+    border-color: var(--red);
+}
+
+.butcherTheme .storeSwitch {
+    border-color: rgba(204, 14, 29, 0.45);
+    box-shadow: 0 0 0 1px rgba(204, 14, 29, 0.18);
+}
+
+.butcherTheme .storeSwitchLabelActive {
+    color: color-mix(in srgb, var(--red-light) 35%, #ffffff);
+}
+
+.butcherTheme .storeSwitchTrack {
+    box-shadow: 0 1px 8px rgba(204, 14, 29, 0.45);
+}
+
+/* ── Winnetka Depot Blue Theme Scope (active when ?store=depot) ── */
+.depotTheme {
+    --red: var(--depot-blue-border, #2563eb);
+    --red-dark: var(--depot-blue-bg, #1e3a5f);
+    --red-light: var(--depot-blue-light, #3b82f6);
+    --red-rgb: 37, 99, 235;
+    --shadow-red: 0 4px 20px rgba(37, 99, 235, 0.4);
+}
+
+.depotTheme .locationHero {
+    border-bottom: 3px solid var(--depot-blue-light, #3b82f6);
+}
+
+.depotTheme .locationHeroOverlay {
+    background: linear-gradient(
+        90deg,
+        rgba(15, 31, 56, 0.88) 0%,
+        rgba(30, 58, 95, 0.56) 55%,
+        rgba(15, 31, 56, 0.16) 100%
+    );
+}
+
+.depotTheme .locationHeroSub {
+    color: var(--depot-blue-text, #93c5fd);
+}
+
+.depotTheme .hoursNotice {
+    background: #0d1829;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.28);
+}
+
+.depotTheme .hoursNoticeBadge {
+    background: var(--depot-blue-bg, #1e3a5f);
+    color: var(--depot-blue-text, #93c5fd);
+    border-color: var(--depot-blue-border, #2563eb);
+}
+
+.depotTheme .storeSwitch {
+    border-color: rgba(59, 130, 246, 0.45);
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.18);
+}
+
+.depotTheme .storeSwitchLabelActive {
+    color: var(--depot-blue-text, #93c5fd);
+}
+
+.depotTheme .storeSwitchTrackOn {
+    box-shadow: 0 1px 8px rgba(59, 130, 246, 0.45);
+}
+
+.depotTheme .sideDepotDivider {
+    color: var(--depot-blue-text, #93c5fd);
+}
+
 /* iOS-style Store Switch */
 .storeSwitch {
     display: flex;
@@ -28,39 +124,48 @@
 
 .storeSwitchTrack {
     position: relative;
-    width: 44px;
+    width: 46px;
     height: 24px;
-    border-radius: 24px;
-    background: url('/assets/toggle-bg.png') center / cover no-repeat;
-    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #3b0a0a, #7f1414 55%, #230606);
+    border: 1.5px solid #dc2626;
     cursor: pointer;
-    transition: background-position 0.3s ease, box-shadow 0.25s ease;
-    background-position: left center;
+    transition: background 0.28s var(--ease-out), border-color 0.28s var(--ease-out), box-shadow 0.28s var(--ease-out);
     flex-shrink: 0;
     padding: 0;
-    box-shadow: 0 1px 6px rgba(193, 57, 43, 0.3);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6), 0 0 8px rgba(204, 14, 29, 0.35);
 }
 
 .storeSwitchTrackOn {
-    background: url('/assets/toggle-bg.png') center / cover no-repeat;
-    background-position: right center;
-    box-shadow: 0 1px 6px rgba(139, 94, 60, 0.3);
+    background: linear-gradient(135deg, #0c2340, #1d4ed8 55%, #0a192f);
+    border-color: var(--depot-blue-text, #93c5fd);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6), 0 0 10px rgba(59, 130, 246, 0.45);
 }
 
 .storeSwitchKnob {
     position: absolute;
-    top: -1px;
-    left: 0px;
-    width: 25px;
-    height: 25px;
+    top: 1px;
+    left: 1px;
+    width: 19px;
+    height: 19px;
     border-radius: 50%;
-    background: url('/assets/toggle-knob.png') center / cover no-repeat;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.08);
-    transition: transform 0.25s ease;
+    background: radial-gradient(circle at 32% 28%, #fca5a5 0%, #dc2626 55%, #7f1d1d 100%);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.65), inset 0 1px 1.5px rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.28s var(--ease-out), background 0.25s var(--ease-out);
 }
 
 .storeSwitchTrackOn .storeSwitchKnob {
-    transform: translateX(20px);
+    transform: translateX(22px);
+    background: radial-gradient(circle at 32% 28%, #e0f2fe 0%, #38bdf8 58%, #0284c7 100%);
+}
+
+.storeSwitchIcon {
+    width: 11.5px;
+    height: 11.5px;
+    display: block;
 }
 
 .storeHours {
@@ -555,15 +660,295 @@
 
 .layout {
     display: grid;
-    grid-template-columns: 200px 1fr;
-    max-width: var(--max-w, 1400px);
+    grid-template-columns: 200px minmax(0, 1fr);
+    max-width: calc(var(--max-w, 1400px) + var(--container-px) * 2);
     margin: 0 auto;
     padding: var(--space-6) var(--container-px) 96px;
-    gap: clamp(var(--space-3), calc(5vw - var(--space-8)), var(--space-10));
-    gap: clamp(var(--space-3), calc(5dvw - var(--space-8)), var(--space-10));
+    gap: clamp(var(--space-4), 2.5vw, var(--space-10));
     align-items: start;
     position: relative;
     z-index: 105;
+}
+
+@media (min-width: 1200px) {
+    .layoutWithRail {
+        max-width: 100%;
+        padding-right: 292px;
+    }
+}
+
+/* ── Fixed Right-Edge Mini Cart List (Desktop >= 1200px, portaled to body) ── */
+.cartRail {
+    position: fixed;
+    top: calc(var(--nav-h, 68px) + 52px);
+    right: 16px;
+    width: 260px;
+    max-height: calc(100vh - var(--nav-h, 68px) - 72px);
+    z-index: 160;
+    display: flex;
+    flex-direction: column;
+    background: rgba(14, 14, 16, 0.94);
+    backdrop-filter: blur(12px);
+    border: 1px solid color-mix(in srgb, var(--red) 38%, var(--border));
+    border-top: 3px solid var(--red);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.cartRailHeader {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cartRailTitleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.cartRailTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--fg);
+    line-height: 1;
+}
+
+.cartRailCount {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: var(--red);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cartRailStore {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--fg-3);
+}
+
+.cartRailEmpty {
+    padding: 20px 16px;
+}
+
+.cartRailEmptyText {
+    margin: 0;
+    font-size: var(--text-xs);
+    line-height: 1.55;
+    color: var(--fg-3);
+}
+
+.cartRailEmptyText strong {
+    color: var(--fg);
+}
+
+.cartRailList {
+    list-style: none;
+    margin: 0;
+    padding: 8px 14px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cartRailItem {
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cartRailItem:last-child {
+    border-bottom: none;
+    padding-bottom: 2px;
+}
+
+.cartRailItemTop {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.cartRailItemName {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--fg);
+    line-height: 1.3;
+}
+
+.cartRailRemove {
+    background: transparent;
+    border: none;
+    color: var(--fg-3);
+    font-size: 15px;
+    line-height: 1;
+    padding: 0 2px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: color 0.15s;
+}
+
+.cartRailRemove:hover {
+    color: var(--red-light);
+}
+
+.cartRailItemNote {
+    font-size: 11px;
+    color: var(--fg-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cartRailItemBottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.cartRailItemPrice {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fg-2);
+}
+
+.cartRailQty {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 4px;
+}
+
+.cartRailQtyBtn {
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--fg);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cartRailQtyBtn:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.cartRailQtyVal {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--fg);
+    min-width: 14px;
+    text-align: center;
+}
+
+.cartRailFooter {
+    padding: 12px 14px 14px;
+    border-top: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cartRailTotalRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.cartRailTotalLabel {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-3);
+}
+
+.cartRailTotalVal {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--fg);
+}
+
+.cartRailActions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cartRailCheckoutBtn {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--red);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease-out), transform 0.15s var(--ease-out);
+}
+
+.cartRailCheckoutBtn:hover {
+    background: var(--red-light);
+    transform: translateY(-1px);
+}
+
+.cartRailExpandBtn {
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg-2);
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.cartRailExpandBtn:hover {
+    border-color: var(--red);
+    color: var(--fg);
+}
+
+@media (max-width: 1199px) {
+    .layout {
+        grid-template-columns: 200px minmax(0, 1fr);
+    }
+
+    .cartRail {
+        display: none;
+    }
 }
 
 /* Sidebar */
@@ -645,9 +1030,9 @@
 
 /* Depot section banner in main content */
 .depotBanner {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-left: 4px solid #8b5e3c;
+    background: color-mix(in srgb, var(--depot-blue-bg, #1e3a5f) 40%, var(--bg-2));
+    border: 1px solid color-mix(in srgb, var(--depot-blue-border, #2563eb) 38%, transparent);
+    border-left: 4px solid var(--depot-blue-light, #3b82f6);
     border-radius: 12px;
     padding: 20px 24px;
     margin: 8px 0;
@@ -677,7 +1062,7 @@
     font-weight: 700;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: #8b5e3c;
+    color: var(--depot-blue-text, #93c5fd);
 }
 
 /* Depot ordering info notice */
@@ -685,9 +1070,9 @@
     display: flex;
     align-items: flex-start;
     gap: 16px;
-    background: color-mix(in srgb, #8b5e3c 8%, var(--bg-2));
-    border: 1px solid color-mix(in srgb, #8b5e3c 30%, transparent);
-    border-left: 4px solid #8b5e3c;
+    background: color-mix(in srgb, var(--depot-blue-bg, #1e3a5f) 42%, var(--bg-2));
+    border: 1px solid color-mix(in srgb, var(--depot-blue-border, #2563eb) 42%, transparent);
+    border-left: 4px solid var(--depot-blue-light, #3b82f6);
     border-radius: 12px;
     padding: 18px 20px;
     margin-bottom: 4px;
@@ -710,7 +1095,7 @@
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #8b5e3c;
+    color: var(--depot-blue-text, #93c5fd);
     margin-bottom: 6px;
 }
 
@@ -731,8 +1116,8 @@
     display: flex;
     align-items: flex-start;
     gap: 16px;
-    background: color-mix(in srgb, var(--red) 6%, var(--bg-2));
-    border: 1px solid color-mix(in srgb, var(--red) 25%, transparent);
+    background: color-mix(in srgb, var(--red-dark, #a00b17) 26%, var(--bg-2));
+    border: 1px solid color-mix(in srgb, var(--red) 40%, transparent);
     border-left: 4px solid var(--red);
     border-radius: 12px;
     padding: 18px 20px;
@@ -901,9 +1286,10 @@
 
 .item {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 16px 20px;
     padding: 18px 24px;
     background: transparent;
     border: 1px solid var(--border);
@@ -918,6 +1304,14 @@
 
 .itemOut {
     opacity: 0.85;
+}
+
+.itemMain {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
 }
 
 .itemInfo {
@@ -973,6 +1367,115 @@
     display: flex;
     align-items: center;
     gap: 16px;
+    flex-shrink: 0;
+}
+
+/* ── Inline Cart Stepper & Butcher Note Controls (replaces popup modal) ── */
+.inlineCartCtrl {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.inlineStepper {
+    display: inline-flex;
+    align-items: center;
+    background: var(--red);
+    border-radius: 8px;
+    overflow: hidden;
+    height: 36px;
+}
+
+.inlineStepBtn {
+    width: 32px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s;
+}
+
+.inlineStepBtn:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.inlineStepVal {
+    min-width: 24px;
+    text-align: center;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.inlineNoteBtn {
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--fg-2);
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+}
+
+.inlineNoteBtn:hover {
+    border-color: var(--red);
+    color: var(--fg);
+}
+
+.inlineNoteBtnSaved {
+    border-color: rgba(var(--gold-rgb), 0.55);
+    color: var(--gold-light);
+    background: rgba(var(--gold-rgb), 0.12);
+}
+
+.inlineNoteRow {
+    flex: 1 0 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
+.inlineNoteInput {
+    flex: 1;
+    min-width: 0;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--fg);
+    font-size: 13px;
+    font-family: inherit;
+}
+
+.inlineNoteInput:focus {
+    outline: none;
+    border-color: var(--red);
+}
+
+.inlineNoteDone {
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: none;
+    background: var(--red);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
     flex-shrink: 0;
 }
 
@@ -2530,24 +3033,89 @@
     }
 }
 
-@media (max-width: 500px) {
+/* ── Tablet & Mobile Stacked-Footer Card Layout (<= 1024px) ── */
+@media (max-width: 1024px) {
+    .itemList {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
     .item {
         flex-direction: column;
+        align-items: stretch;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .item:nth-child(even) {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .itemMain {
         align-items: flex-start;
         gap: 12px;
+        width: 100%;
+    }
+
+    .itemMain .favBtn {
+        order: 3;
+        margin-left: auto;
+        align-self: flex-start;
+        flex-shrink: 0;
+    }
+
+    .itemMain .itemThumb {
+        order: 1;
+        width: 52px;
+        height: 52px;
+    }
+
+    .itemMain .itemInfo {
+        order: 2;
+    }
+
+    .itemName {
+        font-size: 15px;
+        line-height: 1.3;
+    }
+
+    .itemDesc {
+        font-size: 13px;
+        line-height: 1.5;
     }
 
     .itemRight {
         flex-direction: row;
         width: 100%;
         justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .itemPrice {
         text-align: left;
         min-width: 0;
+        font-size: 15px;
     }
 
+    .itemPriceWrap {
+        align-items: flex-start;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 680px) {
+    .itemList {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 500px) {
     .cartFloat {
         bottom: 16px;
         right: 16px;

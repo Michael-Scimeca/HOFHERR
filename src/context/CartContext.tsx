@@ -1,5 +1,6 @@
 'use client';
 import { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useSession } from 'next-auth/react';
 import {
     SYNC_LIVE_PRODUCT_EVENT,
     getAddToOrderAnimConfig,
@@ -544,10 +545,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const badgeCount = Math.max(0, count - inFlightQty);
+    const { status: sessionStatus } = useSession();
 
-    // Cross-device cloud cart sync (pull on mount if local cart empty, debounced push on updates)
+    // Cross-device cloud cart sync — only fire HTTP requests when signed in (zero guest API overhead)
     const cloudHydratedRef = useRef(false);
     useEffect(() => {
+        if (sessionStatus !== 'authenticated') {
+            cloudHydratedRef.current = false;
+            return;
+        }
         let cancelled = false;
         async function hydrateFromCloud() {
             try {
@@ -558,7 +564,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                     persistCart(data.items);
                 }
             } catch {
-                // ignore offline/unauthenticated
+                // ignore offline
             } finally {
                 cloudHydratedRef.current = true;
             }
@@ -567,10 +573,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         return () => {
             cancelled = true;
         };
-    }, [persistCart]);
+    }, [sessionStatus, persistCart]);
 
     useEffect(() => {
-        if (!cloudHydratedRef.current) return;
+        if (sessionStatus !== 'authenticated' || !cloudHydratedRef.current) return;
         const timer = window.setTimeout(() => {
             void fetch('/api/cart', {
                 method: 'PUT',
@@ -579,7 +585,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             }).catch(() => {});
         }, 900);
         return () => window.clearTimeout(timer);
-    }, [items]);
+    }, [sessionStatus, items]);
 
     const contextValue = useMemo(() => ({
         count,

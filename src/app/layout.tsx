@@ -40,11 +40,37 @@ const inter = Inter({
 });
 
 
+function resolveMetadataBase(): URL {
+  const candidate =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.URL ||
+    process.env.DEPLOY_PRIME_URL ||
+    "https://hofherrmeatco.com";
+  try {
+    return new URL(candidate);
+  } catch {
+    return new URL("https://hofherrmeatco.com");
+  }
+}
+
 export const metadata: Metadata = {
   title: "Hofherr Meat Co. | Northfield's Premier Craft Butcher",
-  description: "Experience the finest local meats and expert butchery at Hofherr Meat Co. in Northfield & Winnetka, IL. Hand-cut USDA Prime steaks, whole-hog roasts, Italian beef, and BBQ catering.",
-  metadataBase: new URL("https://hofherrmeatco.com"),
+  description: "Craft butchery in Northfield & Winnetka, IL. Order hand-cut USDA Prime steaks, whole-hog roasts, Italian beef, and BBQ catering online.",
+  keywords: [
+    "Hofherr Meat Co",
+    "butcher shop Northfield IL",
+    "craft butcher North Shore",
+    "USDA Prime steaks",
+    "Winnetka Depot",
+    "BBQ catering Chicago North Shore",
+    "whole pig roast",
+    "house-made sausages",
+  ],
+  metadataBase: resolveMetadataBase(),
   applicationName: "Hofherr Meat Co.",
+  authors: [{ name: "Hofherr Meat Co.", url: "https://hofherrmeatco.com" }],
+  creator: "Hofherr Meat Co.",
+  publisher: "Hofherr Meat Co.",
   robots: {
     index: true,
     follow: true,
@@ -168,8 +194,12 @@ export default async function RootLayout({
               </PageTransition>
               <Preloader />
               <ChatWidgetWrapper />
-              <DevNav />
-              <AddToOrderAnimStudio />
+              {process.env.NODE_ENV === "development" && (
+                <>
+                  <DevNav />
+                  <AddToOrderAnimStudio />
+                </>
+              )}
               <ParallaxImages />
               </TransitionProvider>
             </CartProvider>

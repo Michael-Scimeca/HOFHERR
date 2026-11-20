@@ -15,7 +15,7 @@ import {
     FLAME_STORAGE_KEY,
     type FlameSettings,
     type FlameSlot,
-} from '@/app/fire-test/FireTestClient';
+} from '@/app/fire-test/fireConfig';
 import {
     BurnTransitionOverlay,
     DEFAULT_SITE_BURN_DURATION_MS,

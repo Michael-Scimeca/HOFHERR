@@ -2,9 +2,17 @@ import type { Metadata } from 'next';
 import HolidayCateringClient from './HolidayCateringClient';
 
 export const metadata: Metadata = {
-    title: 'Holiday & Event Catering Guide | Hofherr Meat Co. — Northfield, IL',
+    title: 'Holiday & Event Catering Guide | Thanksgiving Turkeys & Prime Rib | Hofherr Meat Co.',
     description:
-        'Holiday selling points, signature cuts, lead times, and year-round North Shore catering occasions — from Thanksgiving turkeys and Prime rib roasts to graduations, Ravinia picnics, block parties, and corporate buffets.',
+        'Order fresh Thanksgiving turkeys, standing Prime rib roasts, and holiday catering in Northfield & Winnetka, IL. Signature cuts, lead times & event packages.',
+    keywords: [
+        'Thanksgiving turkey order Northfield',
+        'holiday roast pre-order North Shore',
+        'standing Prime rib roast Winnetka',
+        'Passover brisket butcher Chicago North Shore',
+        'holiday catering Northfield IL',
+        'Hofherr Meat Co holidays',
+    ],
     alternates: { canonical: 'https://hofherrmeatco.com/catering/holidays' },
     openGraph: {
         siteName: 'Hofherr Meat Co.',

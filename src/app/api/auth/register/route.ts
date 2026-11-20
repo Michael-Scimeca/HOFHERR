@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/sanity/adminClient';
+import { normalizePhone } from '@/lib/phone';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
@@ -116,6 +117,7 @@ export async function POST(req: Request) {
         const verifyTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
         // 5. Create customer in Sanity with emailVerified = false
+        const phoneNormalized = normalizePhone(phone);
         const customer = await adminClient.create({
             _type: 'customer',
             email: email.toLowerCase(),
@@ -125,6 +127,7 @@ export async function POST(req: Request) {
             bio: bio || '',
             favoriteCut: favoriteCut || '',
             phone: phone || '',
+            ...(phoneNormalized.length === 10 ? { phoneNormalized } : {}),
             address: address || '',
             avatar: randomAvatar,
             emailVerified: false,
@@ -132,6 +135,25 @@ export async function POST(req: Request) {
             verifyTokenExpiry,
             createdAt: new Date().toISOString(),
         });
+
+        // 5b. Retroactively attach any prior in-store walk-in orders placed with this phone number
+        if (phoneNormalized.length === 10) {
+            adminClient
+                .fetch<{ _id: string }[]>(
+                    `*[_type == "order" && !defined(customer) && (customerPhoneNormalized == $p || metadata.customer_phone_normalized == $p)]{ _id }`,
+                    { p: phoneNormalized }
+                )
+                .then((unlinked) => {
+                    for (const ord of unlinked ?? []) {
+                        adminClient
+                            .patch(ord._id)
+                            .set({ customer: { _type: 'reference', _ref: customer._id } })
+                            .commit()
+                            .catch(() => {});
+                    }
+                })
+                .catch(() => {});
+        }
 
         // 6. Send verification email (fire-and-forget)
         try {

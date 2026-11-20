@@ -34,6 +34,10 @@ const LOCATIONS = [
             { day: 'Monday', time: 'Closed', open: false },
         ],
         curbside: true,
+        parkingTip: 'The front Northfield Square lot fills fast during peak rushes. Use the south overflow row along Happ Rd or pull right up for Curbside Trunk Drop-Off.',
+        quietWindows: 'Tue–Thu 10:00am–11:30am & 2:00pm–4:00pm',
+        peakWindows: 'Fri 3:00pm–5:30pm · Sat 11:00am–2:00pm',
+        curbsideStep: 'Order online, select Curbside at checkout, and call (847) 441-MEAT when you pull up — we bring it straight to your trunk.',
         directions: [
             {
                 from: 'From the North',
@@ -70,6 +74,10 @@ const LOCATIONS = [
             { day: 'Sunday', time: 'Closed', open: false },
         ],
         curbside: false,
+        parkingTip: 'Free street parking along Elm St plus the adjacent Winnetka Metra commuter lot right outside the station doors.',
+        quietWindows: 'Mon–Fri 10:30am–11:30am & 2:00pm–4:00pm',
+        peakWindows: 'Mon–Fri 11:45am–1:15pm (Hot Lunch Rush)',
+        curbsideStep: 'Order ahead online by 1:30pm for express counter grab-and-go pickup inside the Metra station — no line required.',
         directions: [
             {
                 from: 'By Train',
@@ -271,6 +279,29 @@ export default function VisitClient() {
                                     </div>
 
                                     <div className={styles.card}>
+                                        <h2 className={styles.cardTitle}>Parking, Peak Rush &amp; Curbside</h2>
+                                        <p className={styles.parkingText}>{loc.parkingTip}</p>
+                                        <div className={styles.rushGrid}>
+                                            <div className={styles.rushRowQuiet}>
+                                                <span className={styles.rushLabel}>Best Quiet Windows</span>
+                                                <span className={styles.rushValue}>{loc.quietWindows}</span>
+                                            </div>
+                                            <div className={styles.rushRowPeak}>
+                                                <span className={styles.rushLabel}>Peak Rush (Tighter Lot)</span>
+                                                <span className={styles.rushValue}>{loc.peakWindows}</span>
+                                            </div>
+                                        </div>
+                                        <p className={styles.curbsideGuide}>{loc.curbsideStep}</p>
+                                        <ul className={styles.directionsList}>
+                                            {loc.directions.map(d => (
+                                                <li key={d.from} className={styles.directionItem}>
+                                                    <strong className={styles.directionFrom}>{d.from}:</strong> {d.steps}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <div className={styles.card}>
                                         <h2 className={styles.cardTitle}>Contact</h2>
                                         <div className={styles.contacts}>
                                             <a href={loc.phoneTel}>📞 {loc.phone}</a>
@@ -278,6 +309,67 @@ export default function VisitClient() {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* ── Which Location Do I Need? (Northfield vs. Winnetka Depot) ── */}
+                    <section id="which-location" aria-labelledby="which-location-heading" className={styles.compareSection}>
+                        <div className="container">
+                            <div className={styles.compareHeader}>
+                                <h2 id="which-location-heading" className={styles.compareTitle}>
+                                    Northfield Butcher Shop vs. Winnetka Depot
+                                </h2>
+                                <p className={styles.compareSub}>
+                                    First time visiting? Both shops share the same Midwest farms and family standards,
+                                    but each location is built for a different kind of stop.
+                                </p>
+                            </div>
+
+                            <div className={styles.compareGrid}>
+                                <article className={`${styles.compareCard} ${styles.compareCardButcher}`}>
+                                    <div className={styles.compareCardTop}>
+                                        <span className={styles.compareTagButcher}>Full-Service Butcher Block</span>
+                                        <h3 className={styles.compareCardName}>The Butcher Shop</h3>
+                                        <p className={styles.compareCardAddr}>300 Happ Rd · Northfield, IL · Tue–Sun</p>
+                                    </div>
+                                    <ul className={styles.compareList}>
+                                        <li><strong>Custom hand-cut steaks:</strong> USDA Prime, dry-aged ribeyes, strips, tenderloins &amp; bone-in chops cut to your exact thickness.</li>
+                                        <li><strong>Whole roasts &amp; holiday centerpieces:</strong> Standing rib roasts, heritage turkeys, crown roasts &amp; brisket.</li>
+                                        <li><strong>House sausages, charcuterie &amp; catering:</strong> 400+ cuts, whole pig roasts &amp; full-service BBQ catering.</li>
+                                        <li><strong>Skip the cramped lot:</strong> Select <strong>Curbside Trunk Drop-Off</strong> at checkout and we bring it right to your car.</li>
+                                    </ul>
+                                    <div className={styles.compareActions}>
+                                        <Link href="/online-orders?store=butcher" className="btn-hit">
+                                            <span className="btn btn-primary">Shop Butcher Shop →</span>
+                                        </Link>
+                                        <Link href="/catering" className={styles.compareSecondaryLink}>
+                                            BBQ &amp; Catering →
+                                        </Link>
+                                    </div>
+                                </article>
+
+                                <article className={`${styles.compareCard} ${styles.compareCardDepot}`}>
+                                    <div className={styles.compareCardTop}>
+                                        <span className={styles.compareTagDepot}>Hot Lunch &amp; Commuter Market</span>
+                                        <h3 className={styles.compareCardName}>The Depot</h3>
+                                        <p className={styles.compareCardAddr}>754 Elm St · Winnetka Metra Station · Mon–Fri + Sat Market</p>
+                                    </div>
+                                    <ul className={styles.compareList}>
+                                        <li><strong>Hot lunches &amp; daily specials:</strong> America&apos;s Test Kitchen–featured Italian Beef (10:30–2 &amp; 4–6), rotisserie chicken &amp; house soups.</li>
+                                        <li><strong>Morning coffee &amp; bakery:</strong> Chicago-roasted Sparrow Coffee, Rare Tea Cellar &amp; fresh pastries right at the Metra platform.</li>
+                                        <li><strong>Grab-and-go dinner staples:</strong> Pre-packed Prime steaks, sausages, stocks &amp; sides cut fresh from our Northfield block.</li>
+                                        <li><strong>Fastest in-and-out:</strong> Elm St street parking &amp; Metra lot steps from the door — zero butcher-counter wait.</li>
+                                    </ul>
+                                    <div className={styles.compareActions}>
+                                        <Link href="/online-orders?store=depot" className="btn-hit">
+                                            <span className="btn btn-depot">Shop The Depot →</span>
+                                        </Link>
+                                        <Link href="/how-ordering-works" className={styles.compareSecondaryLink}>
+                                            How Ordering Works →
+                                        </Link>
+                                    </div>
+                                </article>
                             </div>
                         </div>
                     </section>

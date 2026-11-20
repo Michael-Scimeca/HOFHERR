@@ -1,8 +1,12 @@
 'use client';
-import { useRef, Suspense, useState, useEffect, useMemo } from 'react';
+import { useRef, Suspense, useState, useEffect, useMemo, useSyncExternalStore } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, Environment, Float } from '@react-three/drei';
 import * as THREE from 'three';
+import { isWebGLSupported } from '@/lib/webglSupport';
+import WebGLErrorBoundary from '@/components/WebGLErrorBoundary';
+
+const emptySubscribe = () => () => {};
 
 // Suppress upstream @react-three/fiber internal THREE.Clock deprecation warning in Three.js r183
 if (typeof window !== 'undefined') {
@@ -123,6 +127,9 @@ function Trophy({ onLoaded }: { onLoaded: () => void }) {
 
 export default function TrophyCanvas({ className, style }: { className?: string, style?: React.CSSProperties }) {
     const [ready, setReady] = useState(false);
+    const webglOk = useSyncExternalStore(emptySubscribe, isWebGLSupported, () => false);
+
+    if (!webglOk) return null;
 
     return (
         <div
@@ -138,37 +145,38 @@ export default function TrophyCanvas({ className, style }: { className?: string,
                 ...style
             }}
         >
-                    <Canvas
-                        camera={{ position: [0, 0, 5], fov: 45 }}
-                        gl={{ alpha: true, antialias: true }}
-                        style={{ background: 'transparent' }}
-                    >
-                        {/* Ambient light for base visibility */}
-                        <ambientLight intensity={0.8} />
+            <WebGLErrorBoundary>
+                <Canvas
+                    camera={{ position: [0, 0, 5], fov: 45 }}
+                    gl={{ alpha: true, antialias: true }}
+                    style={{ background: 'transparent' }}
+                >
+                    {/* Ambient light for base visibility */}
+                    <ambientLight intensity={0.8} />
 
-                        {/* Dramatic top spotlight */}
-                        <spotLight
-                            position={[0, 10, 0]}
-                            angle={0.5}
-                            penumbra={1}
-                            intensity={3}
-                            castShadow
-                            color="#ffffff"
-                        />
+                    {/* Dramatic top spotlight */}
+                    <spotLight
+                        position={[0, 10, 0]}
+                        angle={0.5}
+                        penumbra={1}
+                        intensity={3}
+                        castShadow
+                        color="#ffffff"
+                    />
 
-                        {/* Sexy red rim light from the side/back to match the brand */}
-                        <directionalLight
-                            position={[5, 2, -5]}
-                            intensity={2.5}
-                            color="#cc0e1d"
-                        />
+                    {/* Sexy red rim light from the side/back to match the brand */}
+                    <directionalLight
+                        position={[5, 2, -5]}
+                        intensity={2.5}
+                        color="#cc0e1d"
+                    />
 
-                        {/* Main front fill light */}
-                        <directionalLight
-                            position={[-5, 5, 5]}
-                            intensity={1.5}
-                            color="#f5e1c8" // slightly warm gold tint
-                        />
+                    {/* Main front fill light */}
+                    <directionalLight
+                        position={[-5, 5, 5]}
+                        intensity={1.5}
+                        color="#f5e1c8" // slightly warm gold tint
+                    />
 
                     {/* Combine Environment and Trophy into ONE Suspense boundary!
                     This guarantees the model CANNOT fade in until the lighting map is compiled. */}
@@ -177,6 +185,7 @@ export default function TrophyCanvas({ className, style }: { className?: string,
                         <Trophy onLoaded={() => setReady(true)} />
                     </Suspense>
                 </Canvas>
+            </WebGLErrorBoundary>
         </div>
     );
 }

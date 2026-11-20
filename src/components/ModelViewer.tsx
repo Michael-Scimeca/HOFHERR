@@ -1,8 +1,12 @@
 "use client";
-import { useRef, Suspense, useEffect, useMemo, useState, useCallback } from 'react';
+import { useRef, Suspense, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, Float } from '@react-three/drei';
 import * as THREE from 'three';
+import { isWebGLSupported } from '@/lib/webglSupport';
+import WebGLErrorBoundary from '@/components/WebGLErrorBoundary';
+
+const emptySubscribe = () => () => {};
 
 // Suppress upstream @react-three/fiber internal THREE.Clock deprecation warning in Three.js r183
 if (typeof window !== 'undefined') {
@@ -94,6 +98,7 @@ export default function ModelViewer({ modelPath, className, style }: ModelViewer
   const [ready, setReady] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const webglOk = useSyncExternalStore(emptySubscribe, isWebGLSupported, () => false);
 
   // Only mount Canvas when the container scrolls into view
   useEffect(() => {
@@ -127,18 +132,20 @@ export default function ModelViewer({ modelPath, className, style }: ModelViewer
         transition: 'opacity 0.6s ease, visibility 0.6s ease',
       }}
     >
-      {isVisible && (
-        <Canvas camera={{ position: [0, 0, 5], fov: 45 }} gl={{ alpha: true, antialias: true }} style={{ background: 'transparent' }}>
-          <ambientLight intensity={0.8} />
-          <spotLight position={[0, 10, 0]} angle={0.5} penumbra={1} intensity={3} castShadow color="#ffffff" />
-          <directionalLight position={[5, 2, -5]} intensity={2.5} color="#cc0e1d" />
-          <directionalLight position={[-5, 5, 5]} intensity={1.5} color="#f5e1c8" />
-          <OrbitControls enableZoom={false} enablePan={false} />
-          <Suspense fallback={null}>
-            <Environment preset="city" />
-            <Model modelPath={modelPath} onLoaded={() => setReady(true)} />
-          </Suspense>
-        </Canvas>
+      {isVisible && webglOk && (
+        <WebGLErrorBoundary>
+          <Canvas camera={{ position: [0, 0, 5], fov: 45 }} gl={{ alpha: true, antialias: true }} style={{ background: 'transparent' }}>
+            <ambientLight intensity={0.8} />
+            <spotLight position={[0, 10, 0]} angle={0.5} penumbra={1} intensity={3} castShadow color="#ffffff" />
+            <directionalLight position={[5, 2, -5]} intensity={2.5} color="#cc0e1d" />
+            <directionalLight position={[-5, 5, 5]} intensity={1.5} color="#f5e1c8" />
+            <OrbitControls enableZoom={false} enablePan={false} />
+            <Suspense fallback={null}>
+              <Environment preset="city" />
+              <Model modelPath={modelPath} onLoaded={() => setReady(true)} />
+            </Suspense>
+          </Canvas>
+        </WebGLErrorBoundary>
       )}
     </div>
   );

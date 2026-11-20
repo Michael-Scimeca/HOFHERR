@@ -3,6 +3,7 @@ export type SeasonId = 'all' | 'winter' | 'spring' | 'summer' | 'fall';
 export interface HolidaySocialPosts {
     bestPostWindow: string;
     facebook: string;
+    twitter: string;
     instagram: string;
     story: string;
 }
@@ -74,6 +75,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post 10–14 days before kickoff + final call 4 days out',
             facebook:
                 "Skip the soggy delivery pizza this Super Bowl Sunday. We're smoking brisket over oak & cherry for 14 hours, glazing rib tips & hot links, and packing our world-famous Italian beef by the pound so you can actually watch the game. Order your spread for Northfield pickup at hofherrmeatco.com/catering or call (847) 441-MEAT.",
+            twitter:
+                "Skip the soggy pizza on Super Bowl Sunday. 14-hr oak-smoked brisket, glazed rib tips, hot links & Italian beef by the lb — ready for Northfield pickup. Lock in your spread: hofherrmeatco.com/catering or (847) 441-MEAT #ChicagoBBQ",
             instagram:
                 'Four quarters deserve real smoke. 🔥 Oak-smoked brisket, rib tips & hot links, Chicago Italian beef, and bacon-wrapped chorizo dates — hot, ready, and zero kitchen cleanup. Link in bio to lock in your Super Bowl tray before slots fill. #HofherrMeatCo #NorthShoreEats #SuperBowlBBQ #ChicagoBBQ #NorthfieldIL',
             story: 'SUPER BOWL PRE-ORDERS ARE LIVE 🏈🔥 Brisket · Rib Tips · Italian Beef · Chorizo Dates. Tap to lock in your pickup time before we sell out.',
@@ -100,6 +103,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post Feb 5–11 (capture couples skipping crowded restaurant reservations)',
             facebook:
                 "Why pay $250+ for a rushed Valentine's table turn when you can sear USDA Prime filet mignon or a dry-aged bone-in ribeye at home? Tell us how thick you want it cut, grab a ready-to-serve Butcher's Charcuterie Board for your first course, and we'll send you home with exact butter-basting tips. Reserve at hofherrmeatco.com/online-orders.",
+            twitter:
+                "Skip the rushed $250 Valentine's table turn. Hand-cut USDA Prime filets, dry-aged bone-in ribeyes & Butcher's Charcuterie Boards cut to your exact spec in Northfield. Reserve now: hofherrmeatco.com/online-orders",
             instagram:
                 "Steakhouse night, zero reservations required. 🕯️🥩 Hand-cut USDA Prime filets, dry-aged ribeyes, and artisan charcuterie boards ready for your cast-iron skillet. Order ahead at the link in bio. #HofherrMeatCo #ValentinesDinner #PrimeSteak #NorthfieldIL #WinnetkaIL",
             story: "VALENTINE'S STEAKHOUSE AT HOME 🥩🕯️ Hand-cut Prime Filets + Charcuterie Boards. Skip the crowded dining room — tap to reserve.",
@@ -126,6 +131,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post March 5–13 (highlight point-cut vs. flat-cut pre-orders)',
             facebook:
                 "There's grocery-store corned beef, and then there's Hofherr house-cured corned beef brisket. Brined in small batches right here in Northfield — choose point-cut for extra marbling or flat-cut for clean Reuben slices, plus house Irish bangers for the table. Reserve yours before St. Patrick's Day sells out: (847) 441-MEAT.",
+            twitter:
+                "House-cured in small batches, never cryovac. Reserve your St. Patrick's Day corned beef brisket (point-cut or flat-cut) + house Irish bangers before we sell out: (847) 441-MEAT #NorthfieldIL #CraftButcher",
             instagram:
                 "House-cured, never cryovac. ☘️🥩 Our small-batch corned beef briskets are brining now — pick point-cut or flat-cut, raw or ready for your St. Patrick's Day table. Call or order online at the link in bio. #HofherrMeatCo #CornedBeef #StPatricksDay #CraftButcher #NorthShoreIL",
             story: "HOUSE-CURED CORNED BEEF IS IN THE BRINE ☘️ Point-cut or flat-cut — reserve your St. Patrick's Day brisket before it's gone!",
@@ -152,6 +159,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post 2–3 weeks before Easter & Passover',
             facebook:
                 'Hosting Easter or Passover this spring? Let our butchers handle the hardest hour of prep. Pre-order frenched racks of lamb, tied bone-in leg of lamb, first-cut beef brisket, and heritage hams — trimmed to your exact guest count with pull-temp notes included. Reserve early at hofherrmeatco.com/online-orders or (847) 441-MEAT.',
+            twitter:
+                'Easter & Passover pre-orders are open: frenched lamb racks, tied legs of lamb, first-cut briskets & heritage hams — custom-trimmed with exact pull-temp notes. Reserve: hofherrmeatco.com/online-orders or (847) 441-MEAT',
             instagram:
                 'The centerpiece your spring table deserves. 🌿 Frenched rack of lamb, first-cut brisket, and heritage hams — custom-trimmed and tied by our Northfield butchers so all you do is roast and carve. Pre-order at the link in bio. #HofherrMeatCo #EasterDinner #PassoverBrisket #RackOfLamb #NorthfieldIL',
             story: 'EASTER & PASSOVER PRE-ORDERS OPEN 🌿 Lamb Racks · First-Cut Brisket · Heritage Ham. Custom-trimmed to your guest count.',
@@ -178,6 +187,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post 10 days before Mother’s Day',
             facebook:
                 "Skip the crowded hotel brunch buffet and host Mom at home without anyone stuck in the kitchen. Pair a custom-trimmed beef tenderloin roast or our pasture-raised rotisserie chickens with a ready-to-serve Butcher's Charcuterie Board and Seasonal Pasta Salad. Reserve your Mother's Day pickup at (847) 441-MEAT.",
+            twitter:
+                "Skip the crowded hotel brunch. Host Mother's Day at home with custom-trimmed beef tenderloin, pasture-raised rotisserie chickens & ready-to-serve charcuterie boards. Reserve pickup: (847) 441-MEAT",
             instagram:
                 "Let Mom sit back and actually enjoy the day. 💐 Roasted beef tenderloin, artisan charcuterie boards, and pasture-raised rotisserie chickens ready for effortless hosting at home. Tap the link in bio to pre-order. #HofherrMeatCo #MothersDayDinner #NorthShoreLiving #CharcuterieBoard",
             story: "HOST MOM WITHOUT THE KITCHEN STRESS 💐 Tenderloin Roasts · Charcuterie Boards · Rotisserie Chickens. Pre-order now.",
@@ -204,6 +215,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post 3 weeks out for Pig Roasts, 10 days out for BBQ catering & grill packs',
             facebook:
                 "Kick off summer the right way — without spending 6 hours babysitting a grill. Our Memorial Day BBQ catering starts at $16/person with oak-smoked brisket, pulled pork, baby back ribs, HMC sausages, and homemade sides (Pimento Mac n Cheese, HMCo.Slaw & Butchers Beans). Hosting 50+? Ask about our full-service Whole-Pig Roasts at hofherrmeatco.com/catering.",
+            twitter:
+                "Kick off summer without 6 hours over a grill. Memorial Day BBQ catering from $16/pp (brisket, ribs, pulled pork & house sides) + Whole-Pig Roasts for 50+. Quote online: hofherrmeatco.com/catering",
             instagram:
                 'Backyard season officially starts here. 🔥🍖 Smoked brisket, baby back ribs, pulled pork, craft sausages & Pimento Mac n Cheese — ready to drop off so you can enjoy the long weekend. Build your instant quote at the link in bio. #HofherrMeatCo #MemorialDayBBQ #NorthShoreCatering #ChicagoBBQ',
             story: 'MEMORIAL DAY BBQ & PIG ROASTS 🔥 From $16/pp · Brisket · Ribs · Pulled Pork · House Sides. Tap to build your quote!',
@@ -230,6 +243,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post 10–14 days before Father’s Day (steaks + BBQ trays + gift cards)',
             facebook:
                 "Does Dad love working the coals, or does he deserve the day off? Either way, we've got Father's Day covered: thick-cut USDA Prime Tomahawk & bone-in ribeyes for the grill, OR full smoked brisket & rib trays ready to serve. Add a Hofherr Gift Card and call it a win. Order at hofherrmeatco.com.",
+            twitter:
+                "If Dad loves the grill: thick-cut USDA Prime Tomahawks & bone-in ribeyes. If Dad wants the day off: hot oak-smoked brisket & rib trays. Father's Day sorted at hofherrmeatco.com or (847) 441-MEAT",
             instagram:
                 "Fire up a Prime Tomahawk — or let us handle the smoke so Dad can kick back. 🔥🥩 Thick-cut ribeyes, smoked brisket trays, and Hofherr gift cards ready for Father's Day. Link in bio to order ahead. #HofherrMeatCo #FathersDayGrill #TomahawkSteak #PrimeBeef #NorthfieldIL",
             story: "FATHER'S DAY AT THE BLOCK 🥩🔥 Prime Tomahawks if Dad grills · Hot BBQ Trays if Dad relaxes. Reserve today!",
@@ -256,6 +271,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post 3–4 weeks before July 4th (whole-pig roast slots book fast)',
             facebook:
                 'From the morning parade to the fireworks, feed 20 to 500+ without breaking a sweat. Book a full-service Hofherr Whole-Pig Roast (our team arrives with a fully roasted hog and carves live!) or build a drop-off BBQ catering package with smoked brisket, pulled pork, grilled corn, and Pimento Mac n Cheese at hofherrmeatco.com/catering.',
+            twitter:
+                'Feed 20 to 500+ this Fourth of July without breaking a sweat. Full-service Whole-Pig Roasts (live hog carving!) & drop-off BBQ catering packages across the North Shore: hofherrmeatco.com/catering',
             instagram:
                 'Make your Fourth of July the party the whole block talks about. 🎆🐷 Full-service Whole-Pig Roasts & drop-off BBQ buffets for 20–500+ across the North Shore. Lock in your July 4th date at the link in bio. #HofherrMeatCo #PigRoast #FourthOfJulyBBQ #NorthShoreEvents',
             story: 'JULY 4TH PIG ROAST & BBQ SLOTS FILLING FAST 🎆🐷 Live hog carving (50+) or drop-off BBQ trays (20+). Tap to book!',
@@ -282,6 +299,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post 10–12 days before Labor Day Weekend',
             facebook:
                 'One last summer blowout before school and fall sports take over every weekend. Grab our craft HMC sausages and prime burger packs for the grill, or let us drop off a complete smoked pulled pork & brisket buffet with Seasonal Pasta Salad and Butchers Beans. Reserve your Labor Day spread at hofherrmeatco.com/catering.',
+            twitter:
+                'One last summer blowout before fall schedules hit. Craft HMC sausages, Prime burger packs, Ravinia picnic baskets & drop-off smoked BBQ buffets for Labor Day Weekend: hofherrmeatco.com/catering',
             instagram:
                 'Send summer off properly. 🍔🌭 Craft butcher sausages, prime cheddar burgers, oak-smoked pulled pork, and closing-week Ravinia picnic baskets — ready for your Labor Day weekend. Order at the link in bio. #HofherrMeatCo #LaborDayGrill #NorthfieldIL #RaviniaPicnic',
             story: 'ONE LAST SUMMER BLOWOUT 🔥 Craft Sausages · Prime Burgers · Smoked Pulled Pork Trays. Order for Labor Day!',
@@ -308,6 +327,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post 2–3 weeks before Rosh Hashanah',
             facebook:
                 "Preparing for Rosh Hashanah and Yom Kippur? Our butchers trim every first-cut beef brisket evenly so it braises fork-tender and slices cleanly for the whole family — plus fresh pasture-raised whole chickens sized to your exact table. Tell us your headcount and we'll handle the math. Pre-order at (847) 441-MEAT.",
+            twitter:
+                "Rosh Hashanah & Yom Kippur pre-orders are open: evenly trimmed first-cut beef briskets & fresh pasture-raised chickens sized to your exact headcount. Call (847) 441-MEAT to reserve.",
             instagram:
                 'Trimmed for tender slices and full family tables. 🕯️ First-cut beef briskets and fresh pasture-raised chickens pre-ordered to your exact headcount for the High Holidays. Call or reserve online at the link in bio. #HofherrMeatCo #RoshHashanah #HolidayBrisket #NorthShoreIL',
             story: 'HIGH HOLIDAY PRE-ORDERS OPEN 🕯️ Custom-trimmed First-Cut Briskets & Pasture-Raised Chickens. Call (847) 441-MEAT.',
@@ -334,6 +355,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post Nov 1–12 (turkey allocation) + Nov 18 (Friendsgiving & Friday Italian Beef)',
             facebook:
                 "Fresh, never-frozen pasture-raised heritage turkeys are now open for Thanksgiving pre-order! Want it spatchcocked to cut your oven time by 30%? Just ask at the block. Pro tip: add a pound or two of our famous Italian Beef for Friday — because nobody wants turkey sandwiches four days in a row. Reserve at hofherrmeatco.com/online-orders.",
+            twitter:
+                "Fresh, never-frozen heritage Thanksgiving turkeys are open for pre-order (ask us to spatchcock it to cut roast time 30%!). Add Friday Italian Beef while you're at it: hofherrmeatco.com/online-orders",
             instagram:
                 'Fresh, never frozen — and we can spatchcock it for you at the block. 🦃✨ Pasture-raised heritage turkeys, smoked turkey breast, and day-after Italian Beef packs are open for Thanksgiving pre-order. Link in bio before allocation fills. #HofherrMeatCo #ThanksgivingTurkey #NorthShoreFoodie #NorthfieldIL',
             story: 'THANKSGIVING TURKEY PRE-ORDERS ARE LIVE 🦃 Fresh Heritage Birds · Smoked Turkey Breast · Friday Italian Beef. Tap to reserve!',
@@ -360,6 +383,8 @@ export const HOLIDAY_SELLING_GUIDES: HolidaySellingGuide[] = [
             bestPostWindow: 'Post late Nov for office buffets; Dec 1–14 for Prime Rib & Tenderloin pre-orders',
             facebook:
                 "Lock in your December centerpiece before USDA Prime allocation sells out. We cut every Standing Prime Rib Roast off the bone and tie it back on so carving at the table is effortless — alongside whole beef tenderloins, herb-roasted porchetta, and turnkey holiday office party buffets. Reserve at hofherrmeatco.com or (847) 441-MEAT.",
+            twitter:
+                "December USDA Prime allocation is open: Standing Prime Rib Roasts (cut off the bone & tied back on for effortless carving), tenderloins, porchetta & office buffets. Lock yours in: (847) 441-MEAT",
             instagram:
                 "Tied, seasoned, and ready to steal the show. ✨🥩 Standing USDA Prime Rib Roasts, herb-roasted porchetta, beef tenderloins, and holiday catering trays — pre-order now for Hanukkah, Christmas & New Year's Eve. Link in bio. #HofherrMeatCo #PrimeRib #HolidayCatering #ChristmasDinner #NorthShoreIL",
             story: 'DECEMBER CENTERPIECES & OFFICE BUFFETS ✨🥩 Standing Prime Rib · Porchetta · Tenderloin. Lock in your allocation now!',

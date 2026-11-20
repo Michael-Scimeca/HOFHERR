@@ -7,6 +7,8 @@ import styles from './admin.module.css';
 import Pagination from '@/components/shared/Pagination';
 import { usePageTransition } from '@/components/PageTransition';
 import { resolveOrderCutPieces } from '@/lib/cutCollector';
+import KitchenThrottleBar from '@/components/admin/KitchenThrottleBar';
+import InStorePosDrawer from '@/components/admin/InStorePosDrawer';
 
 interface OrderItem {
     name: string;
@@ -549,6 +551,17 @@ export default function AdminDashboard({
     const [users, setUsers] = useState<User[]>(() => initialData?.users ?? []);
     const [products, setProducts] = useState<ProductItem[]>(() => initialData?.products ?? []);
     const [restocks, setRestocks] = useState<RestockRequestItem[]>(() => initialData?.restocks ?? []);
+    const [packedByOrder, setPackedByOrder] = useState<Record<string, Record<number, boolean>>>({});
+
+    const togglePackedItem = (orderId: string, itemIdx: number) => {
+        setPackedByOrder((prev) => ({
+            ...prev,
+            [orderId]: {
+                ...(prev[orderId] ?? {}),
+                [itemIdx]: !prev[orderId]?.[itemIdx],
+            },
+        }));
+    };
     const [activeTab, setActiveTab] = useState<'orders' | 'users' | 'restocks'>('orders');
     const [orderFilter, setOrderFilter] = useState<string>('all');
     const [inProgressStageFilter, setInProgressStageFilter] = useState<'all' | 'behind' | 'placed' | 'cutting' | 'ready' | 'done'>('all');
@@ -1665,22 +1678,47 @@ export default function AdminDashboard({
                         </div>
                     </div>
                     <div>
-                        <div className={styles.trackerKicker}>ORDER ITEMS</div>
+                        <div className={styles.trackerKicker}>
+                            {order.status === 'processing'
+                                ? 'PACK CHECKLIST (CHECK EVERY CUT & SIDE BEFORE READY)'
+                                : 'ORDER ITEMS'}
+                        </div>
                         <ul className={styles.trackerItemsList}>
-                            {(order.items || []).map(item => (
-                                <li key={`${order._id}-${item.name}`}>
-                                    <span className={styles.trackerItemQty}>
-                                        {item.qty || item.quantity || 1}×
-                                    </span>{' '}
-                                    {item.name}
-                                    {item.note && (
-                                        <span className={styles.trackerItemNote}>
-                                            {' '}
-                                            — {item.note}
-                                        </span>
-                                    )}
-                                </li>
-                            ))}
+                            {(order.items || []).map((item, itemIdx) => {
+                                const isChecked = Boolean(packedByOrder[order._id]?.[itemIdx]);
+                                return (
+                                    <li key={`${order._id}-${item.name}-${itemIdx}`}>
+                                        {order.status === 'processing' ? (
+                                            <label className={`${styles.packItemLabel} ${isChecked ? styles.packItemChecked : ''}`}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isChecked}
+                                                    onChange={() => togglePackedItem(order._id, itemIdx)}
+                                                />
+                                                <span>
+                                                    <span className={styles.trackerItemQty}>
+                                                        {item.qty || item.quantity || 1}×
+                                                    </span>{' '}
+                                                    {item.name}
+                                                    {item.note && (
+                                                        <span className={styles.trackerItemNote}> — {item.note}</span>
+                                                    )}
+                                                </span>
+                                            </label>
+                                        ) : (
+                                            <>
+                                                <span className={styles.trackerItemQty}>
+                                                    {item.qty || item.quantity || 1}×
+                                                </span>{' '}
+                                                {item.name}
+                                                {item.note && (
+                                                    <span className={styles.trackerItemNote}> — {item.note}</span>
+                                                )}
+                                            </>
+                                        )}
+                                    </li>
+                                );
+                            })}
                         </ul>
                         {order.metadata?.order_note && (
                             <div className={styles.orderSpecialNote}>
@@ -1700,15 +1738,23 @@ export default function AdminDashboard({
                             🔪 Move to Block (Step 2 · Cutting)
                         </button>
                     )}
-                    {order.status === 'processing' && (
-                        <button
-                            type="button"
-                            className={styles.actionBtnPrimary}
-                            onClick={() => handleStatusChange(order._id, 'ready_paid', true)}
-                        >
-                            📦 Mark Ready for Pickup (Step 3 · Ready)
-                        </button>
-                    )}
+                    {order.status === 'processing' && (() => {
+                        const totalItems = (order.items || []).length;
+                        const packedCount = (order.items || []).filter((_, idx) => Boolean(packedByOrder[order._id]?.[idx])).length;
+                        const allPacked = totalItems === 0 || packedCount >= totalItems;
+                        return (
+                            <button
+                                type="button"
+                                disabled={!allPacked}
+                                className={allPacked ? styles.actionBtnPrimary : styles.actionBtnLocked}
+                                onClick={() => handleStatusChange(order._id, 'ready_paid', true)}
+                            >
+                                {allPacked
+                                    ? '📦 Mark Ready for Pickup (Step 3 · Ready)'
+                                    : `☑️ Check All Items First (${packedCount}/${totalItems} packed)`}
+                            </button>
+                        );
+                    })()}
                     {(order.status === 'ready_paid' || order.status === 'ready_pending') && (
                         <button
                             type="button"
@@ -1947,6 +1993,10 @@ export default function AdminDashboard({
 
             {activeTab === 'orders' && (
                 <>
+                    {/* ── 🔥 LIVE KITCHEN LOAD & HOLIDAY PICKUP SLOT THROTTLE ── */}
+                    <KitchenThrottleBar />
+                    <InStorePosDrawer />
+
                     {/* ── 🎛️ MASTER PROGRESS STAGE FILTER & SORT BAR ── */}
                     <section className={styles.progressControlBar} aria-label="Filter and sort orders by progress stage">
                         <div className={styles.progressControlHeaderRow}>

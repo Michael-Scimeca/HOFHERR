@@ -204,7 +204,17 @@ export default function EmberBackground() {
         }
         const smokes: S[] = Array.from({ length: 12 }, makeSmoke);
 
+        let lastDraw = 0;
+
         const draw = (now: number) => {
+            // Run at 60fps during active transition surges, throttle idle ambient embers to 30fps
+            const minInterval = surgeEnergy > 0.05 || surgeHolding ? 14 : 33;
+            if (now - lastDraw < minInterval) {
+                animationId = requestAnimationFrame(draw);
+                return;
+            }
+            lastDraw = now;
+
             if (!surgeHolding && surgeEnergy > 0) {
                 const elapsed = now - surgeDecayStart;
                 const t = Math.min(1, elapsed / TRANSITION_CONFIG.fadeOutMs);

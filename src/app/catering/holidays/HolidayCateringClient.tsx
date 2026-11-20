@@ -14,12 +14,15 @@ import {
 import styles from './page.module.css';
 
 type OccasionCategoryFilter = 'All' | OtherCateringOccasion['category'];
-type SocialPlatform = 'facebook' | 'instagram' | 'story';
+type SocialChannelId = 'facebook' | 'twitter' | 'instagram' | 'selling';
+type SocialPlatformFilter = 'all' | SocialChannelId;
 
-const SOCIAL_PLATFORMS: { id: SocialPlatform; label: string }[] = [
-    { id: 'facebook', label: 'Facebook Post' },
-    { id: 'instagram', label: 'Instagram Feed' },
-    { id: 'story', label: 'Story / Reel Hook' },
+const SOCIAL_PLATFORM_FILTERS: { id: SocialPlatformFilter; label: string }[] = [
+    { id: 'all', label: 'All Channels' },
+    { id: 'facebook', label: 'Facebook' },
+    { id: 'twitter', label: 'Twitter / X' },
+    { id: 'instagram', label: 'Instagram' },
+    { id: 'selling', label: 'Selling Message' },
 ];
 
 const OCCASION_FILTERS: OccasionCategoryFilter[] = [
@@ -51,15 +54,14 @@ export default function HolidayCateringClient() {
     const [activeSeason, setActiveSeason] = useState<SeasonId>('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [occasionFilter, setOccasionFilter] = useState<OccasionCategoryFilter>('All');
-    const [socialPlatform, setSocialPlatform] = useState<SocialPlatform>('facebook');
+    const [socialFilter, setSocialFilter] = useState<SocialPlatformFilter>('all');
     const [copiedKey, setCopiedKey] = useState<string | null>(null);
     const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const handleCopyCaption = async (holidayId: string, text: string) => {
+    const handleCopyCaption = async (copyId: string, text: string) => {
         try {
             await navigator.clipboard.writeText(text);
-            const key = `${holidayId}-${socialPlatform}`;
-            setCopiedKey(key);
+            setCopiedKey(copyId);
             if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
             copyTimerRef.current = setTimeout(() => setCopiedKey(null), 2000);
         } catch {
@@ -363,24 +365,24 @@ export default function HolidayCateringClient() {
                 </div>
             </section>
 
-            {/* ── Section 2: Holiday Social Media Photo & Caption Kit ── */}
+            {/* ── Section 2: Holiday Social Media Photo & Multi-Channel Copy Kit ── */}
             <section id="holiday-social-assets" aria-labelledby="holiday-social-assets-heading" className="section">
                 <div className="container">
                     <div className={styles.sectionStack}>
                         <div className={styles.sectionHeaderRow}>
                             <div className={styles.sectionHeader}>
                                 <h2 id="holiday-social-assets-heading" className={styles.sectionHeading}>
-                                    Social Media Photo &amp; Post Kit
+                                    Social Media &amp; Selling Kit
                                 </h2>
                                 <p className={styles.sectionSub}>
-                                    Download high-resolution 1200×900 holiday photos and copy ready-to-post captions
-                                    tailored for Facebook, Instagram, and Stories — zero watermarks, ready to schedule.
+                                    Ready-to-post Facebook, Twitter / X, Instagram captions, downloadable 1200×900
+                                    holiday photos, and the core selling message for every holiday.
                                 </p>
                             </div>
 
-                            <div className={styles.filterGroup} role="group" aria-label="Choose social media platform copy">
-                                {SOCIAL_PLATFORMS.map(platform => {
-                                    const active = socialPlatform === platform.id;
+                            <div className={styles.filterGroup} role="group" aria-label="Filter social channels">
+                                {SOCIAL_PLATFORM_FILTERS.map(platform => {
+                                    const active = socialFilter === platform.id;
                                     return (
                                         <button
                                             key={platform.id}
@@ -389,7 +391,7 @@ export default function HolidayCateringClient() {
                                             className={
                                                 active ? `${styles.filterBtn} ${styles.filterBtnActive}` : styles.filterBtn
                                             }
-                                            onClick={() => setSocialPlatform(platform.id)}
+                                            onClick={() => setSocialFilter(platform.id)}
                                         >
                                             {platform.label}
                                         </button>
@@ -398,57 +400,115 @@ export default function HolidayCateringClient() {
                             </div>
                         </div>
 
-                        <div className={styles.socialAssetsGrid}>
+                        <div className={styles.socialKitList}>
                             {HOLIDAY_SELLING_GUIDES.map(holiday => {
-                                const caption = holiday.socialPosts[socialPlatform];
-                                const key = `${holiday.id}-${socialPlatform}`;
-                                const isCopied = copiedKey === key;
                                 const downloadName = `hofherr-${holiday.id}-social.jpg`;
+                                const sellingMessage = `${holiday.butcherPitch} ${holiday.sellingPoints[0] ?? ''}`.trim();
+                                const channels: {
+                                    id: SocialChannelId;
+                                    label: string;
+                                    meta?: string;
+                                    text: string;
+                                }[] = [
+                                    {
+                                        id: 'facebook',
+                                        label: 'Facebook Message',
+                                        text: holiday.socialPosts.facebook,
+                                    },
+                                    {
+                                        id: 'twitter',
+                                        label: 'Twitter / X',
+                                        meta: `${holiday.socialPosts.twitter.length} / 280`,
+                                        text: holiday.socialPosts.twitter,
+                                    },
+                                    {
+                                        id: 'instagram',
+                                        label: 'Instagram Caption',
+                                        text: holiday.socialPosts.instagram,
+                                    },
+                                    {
+                                        id: 'selling',
+                                        label: 'Selling Message',
+                                        meta: holiday.leadTime,
+                                        text: sellingMessage,
+                                    },
+                                ];
+                                const visibleChannels =
+                                    socialFilter === 'all'
+                                        ? channels
+                                        : channels.filter(ch => ch.id === socialFilter);
+
                                 return (
-                                    <article key={holiday.id} className={styles.socialAssetCard}>
-                                        <div className={styles.socialMediaWrap}>
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img
-                                                src={holiday.image}
-                                                alt={holiday.imageAlt}
-                                                className={styles.holidayImg}
-                                                loading="lazy"
-                                            />
-                                        </div>
+                                    <article key={holiday.id} className={styles.socialKitRow}>
+                                        <div className={styles.socialKitVisual}>
+                                            <div className={styles.socialMediaWrap}>
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img
+                                                    src={holiday.image}
+                                                    alt={holiday.imageAlt}
+                                                    className={styles.holidayImg}
+                                                    loading="lazy"
+                                                />
+                                            </div>
 
-                                        <div className={styles.cardTopRow}>
-                                            <span className={styles.cardTiming}>{holiday.timing}</span>
-                                            <span className={styles.categoryTag}>1200 × 900 JPG</span>
-                                        </div>
+                                            <div className={styles.cardTopRow}>
+                                                <span className={styles.cardTiming}>{holiday.timing}</span>
+                                                <span className={styles.categoryTag}>FB · X · IG · 1200×900</span>
+                                            </div>
 
-                                        <h3 className={styles.cardTitle}>{holiday.name}</h3>
+                                            <h3 className={styles.cardTitle}>{holiday.name}</h3>
 
-                                        <p className={styles.postWindowLine}>
-                                            <strong>Best Time to Post:</strong> {holiday.socialPosts.bestPostWindow}
-                                        </p>
+                                            <p className={styles.postWindowLine}>
+                                                <strong>Best Time to Post:</strong> {holiday.socialPosts.bestPostWindow}
+                                            </p>
 
-                                        <div className={styles.captionBox}>
-                                            <span className={styles.pitchLabel}>
-                                                {SOCIAL_PLATFORMS.find(p => p.id === socialPlatform)?.label}
-                                            </span>
-                                            <p className={styles.captionText}>{caption}</p>
-                                        </div>
-
-                                        <div className={styles.socialActionRow}>
-                                            <button
-                                                type="button"
-                                                className={styles.copyBtn}
-                                                onClick={() => handleCopyCaption(holiday.id, caption)}
-                                            >
-                                                {isCopied ? 'Copied Caption ✓' : 'Copy Caption'}
-                                            </button>
                                             <a
                                                 href={holiday.image}
                                                 download={downloadName}
                                                 className={styles.downloadBtn}
                                             >
-                                                Download Photo ↓
+                                                Download Holiday Photo ↓
                                             </a>
+                                        </div>
+
+                                        <div
+                                            className={
+                                                socialFilter === 'all'
+                                                    ? styles.channelsGrid
+                                                    : styles.channelsSingle
+                                            }
+                                        >
+                                            {visibleChannels.map(channel => {
+                                                const copyId = `${holiday.id}-${channel.id}`;
+                                                const isCopied = copiedKey === copyId;
+                                                return (
+                                                    <div
+                                                        key={channel.id}
+                                                        className={
+                                                            channel.id === 'selling'
+                                                                ? `${styles.captionBox} ${styles.sellingBox}`
+                                                                : styles.captionBox
+                                                        }
+                                                    >
+                                                        <div className={styles.channelHeader}>
+                                                            <div className={styles.channelLabelWrap}>
+                                                                <span className={styles.pitchLabel}>{channel.label}</span>
+                                                                {channel.meta && (
+                                                                    <span className={styles.channelMeta}>{channel.meta}</span>
+                                                                )}
+                                                            </div>
+                                                            <button
+                                                                type="button"
+                                                                className={styles.inlineCopyBtn}
+                                                                onClick={() => handleCopyCaption(copyId, channel.text)}
+                                                            >
+                                                                {isCopied ? 'Copied ✓' : 'Copy'}
+                                                            </button>
+                                                        </div>
+                                                        <p className={styles.captionText}>{channel.text}</p>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     </article>
                                 );

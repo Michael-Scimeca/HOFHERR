@@ -38,6 +38,15 @@ const nextConfig: NextConfig = {
     '/admin/social/**': ['public/assets/*.{jpg,png,svg}', 'src/lib/social/fonts/**/*', 'node_modules/dictionary-en/index.{aff,dic}'],
   },
 
+  // Merge shared CSS chunks in production builds only so dev HMR always reloads CSS Modules cleanly
+  ...(process.env.NODE_ENV === 'production'
+    ? {
+        experimental: {
+          cssChunking: 'loose' as const,
+        },
+      }
+    : {}),
+
   // Compress all static assets
   compress: true,
 
@@ -78,7 +87,7 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Security headers
+  // Security & bfcache headers
   async headers() {
     return [
       {
@@ -90,6 +99,13 @@ const nextConfig: NextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+        ],
+      },
+      // Allow browser back/forward cache (bfcache) on public marketing pages while still preventing shared CDN caching
+      {
+        source: '/((?!api|admin|dashboard|checkout|login|register|reset-password|verify-email|studio|_next).*)',
+        headers: [
+          { key: 'Cache-Control', value: 'private, no-cache, max-age=0, must-revalidate' },
         ],
       },
     ];

@@ -13,10 +13,8 @@ import { HOFHERR_MAP_STYLE } from '@/lib/mapTheme';
 
 const GOOGLE_MAPS_SANDBOX = 'allow-scripts allow-same-origin allow-popups';
 
-/* Preload the brand-themed Google Map well ahead of the footer so tiles and custom pins
-   are already rendered on the #0b0b0b canvas by the time the user scrolls down — without
-   showing any legacy Google Maps preloader screenshot or artificial delay. */
-const NEAR_MARGIN = '250% 0px';
+/* Load the footer map only once the user scrolls close to the footer (saves ~630ms Google Maps JS on initial load). */
+const NEAR_MARGIN = '300px 0px';
 
 /* ─── Location data ─── */
 const LOCATIONS = [
@@ -163,13 +161,13 @@ export default function FooterMap() {
 
     useEffect(() => onGoogleMapsAuthFailure(() => setUseThemedMap(false)), []);
 
-    // Start loading the live themed map once the footer approaches, and warm both locations.
+    // Only mount the active location's map once the footer approaches (load the second tab on demand)
     useEffect(() => {
         if (!near) return;
-        setRequestedMaps((prev) =>
-            prev.butcher && prev.depot ? prev : { ...prev, butcher: true, depot: true }
-        );
-    }, [near]);
+        const activeId = LOCATIONS[active]?.id;
+        if (!activeId) return;
+        setRequestedMaps((prev) => (prev[activeId] ? prev : { ...prev, [activeId]: true }));
+    }, [near, active]);
 
     const handleMapLoad = useCallback((locationId: string, isFirst: boolean) => {
         setLoadedMaps((prev) => (prev[locationId] ? prev : { ...prev, [locationId]: true }));
@@ -235,7 +233,7 @@ export default function FooterMap() {
                                     src={`https://www.google.com/maps?q=${encodeURIComponent(item.address)}&output=embed`}
                                     className={`${styles.mapIframe} ${isLoaded ? styles.mapIframeLoaded : styles.mapIframeLoading}`}
                                     allowFullScreen
-                                    loading="eager"
+                                    loading="lazy"
                                     referrerPolicy="no-referrer-when-downgrade"
                                     sandbox={GOOGLE_MAPS_SANDBOX}
                                     title={`Map of ${item.label}`}

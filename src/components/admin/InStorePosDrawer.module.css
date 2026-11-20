@@ -1,0 +1,170 @@
+.wrap {
+    margin-bottom: 20px;
+    border-radius: var(--radius, 12px);
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 20px;
+    cursor: pointer;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    color: var(--fg);
+    font-family: inherit;
+}
+
+.headerTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.headerSub {
+    font-size: 12px;
+    color: var(--fg-muted);
+    margin-left: 10px;
+}
+
+.body {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 16px;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.input {
+    flex: 1 1 180px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm, 6px);
+    border: 1px solid var(--border);
+    background: #080808;
+    color: var(--fg);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+}
+
+.input:focus {
+    border-color: var(--gold);
+}
+
+.matchBadge {
+    padding: 8px 12px;
+    border-radius: var(--radius-sm, 6px);
+    border: 1px solid rgba(22, 163, 74, 0.45);
+    background: rgba(22, 163, 74, 0.12);
+    color: #bbf7d0;
+    font-size: 12.5px;
+}
+
+.guestBadge {
+    padding: 8px 12px;
+    border-radius: var(--radius-sm, 6px);
+    border: 1px solid rgba(200, 164, 126, 0.4);
+    background: rgba(200, 164, 126, 0.1);
+    color: #fde68a;
+    font-size: 12.5px;
+}
+
+.quickGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.quickBtn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #0a0a0a;
+    color: var(--fg-2);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.quickBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.pillActive {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+}
+
+.ticketList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ticketItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: #0a0a0a;
+    border: 1px solid var(--border);
+    font-size: 12.5px;
+}
+
+.removeBtn {
+    background: none;
+    border: none;
+    color: var(--fg-muted);
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.submitBtn {
+    padding: 10px 18px;
+    border-radius: var(--radius-sm, 6px);
+    border: none;
+    background: var(--red);
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.submitBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.errorMsg {
+    font-size: 12.5px;
+    color: #fca5a5;
+}
+
+.successMsg {
+    font-size: 12.5px;
+    color: #86efac;
+}

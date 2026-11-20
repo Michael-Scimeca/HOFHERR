@@ -170,9 +170,28 @@ ${noiseBlock}
         });
         ro.observe(host);
 
-        let t = Math.random() * 1000, last = performance.now(), raf = 0;
+        let t = Math.random() * 1000, last = performance.now(), lastPaint = 0, raf = 0;
+        let inView = true;
+
+        const io = new IntersectionObserver(
+            ([entry]) => {
+                inView = Boolean(entry?.isIntersecting);
+            },
+            { rootMargin: '120px' }
+        );
+        io.observe(host);
+
         const tick = (now: number) => {
-            const dt = Math.min(50, now - last); last = now;
+            raf = requestAnimationFrame(tick);
+            if (!inView || document.hidden) {
+                last = now;
+                return;
+            }
+            // Cap SVG filter DOM mutations to ~24fps to slash main-thread rasterization work
+            if (now - lastPaint < 42) return;
+            lastPaint = now;
+
+            const dt = Math.min(80, now - last); last = now;
             if (!reduce) t += dt * 0.06 * s.speed;
             const d = t % TH;
             if (s.tileMode === 'dual' && offsDual.length >= 2) {
@@ -195,12 +214,12 @@ ${noiseBlock}
                     }
                 });
             }
-            raf = requestAnimationFrame(tick);
         };
         raf = requestAnimationFrame(tick);
         return () => {
             cancelAnimationFrame(raf);
             ro.disconnect();
+            io.disconnect();
         };
     }, [isActive, radius]);
 

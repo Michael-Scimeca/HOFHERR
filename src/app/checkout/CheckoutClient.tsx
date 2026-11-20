@@ -391,11 +391,38 @@ export default function CheckoutClient() {
     const [contactPref, setContactPref] = useState<'phone' | 'email'>('phone');
     const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'instore'>('stripe');
     const [orderNote, setOrderNote] = useState('');
+    const [pickupHandoff, setPickupHandoff] = useState<'counter' | 'curbside'>('counter');
+    const [vehicleInfo, setVehicleInfo] = useState('');
     const [stripeError, setStripeError] = useState('');
     const [giftCardInput, setGiftCardInput] = useState('');
     const [appliedGiftCard, setAppliedGiftCard] = useState<{ code: string; balanceFormatted: string; balanceCents: number } | null>(null);
     const [giftCardError, setGiftCardError] = useState('');
     const [giftCardChecking, setGiftCardChecking] = useState(false);
+    const [kitchenStatus, setKitchenStatus] = useState<{
+        kitchenLoad: 'normal' | 'busy' | 'paused';
+        prepMinutes: number;
+        maxOrdersPerSlot: number;
+        slotCounts: Record<string, number>;
+    }>({ kitchenLoad: 'normal', prepMinutes: 15, maxOrdersPerSlot: 8, slotCounts: {} });
+
+    useEffect(() => {
+        const controller = new AbortController();
+        fetch(`/api/kitchen-status?store=${activeStore}`, { signal: controller.signal })
+            .then((res) => (res.ok ? res.json() : null))
+            .then((data) => {
+                if (controller.signal.aborted || !data?.kitchenLoad) return;
+                setKitchenStatus({
+                    kitchenLoad: data.kitchenLoad,
+                    prepMinutes: typeof data.prepMinutes === 'number' ? data.prepMinutes : 15,
+                    maxOrdersPerSlot: typeof data.maxOrdersPerSlot === 'number' ? data.maxOrdersPerSlot : 8,
+                    slotCounts: data.slotCounts ?? {},
+                });
+            })
+            .catch(() => {
+                // non-fatal or aborted
+            });
+        return () => controller.abort();
+    }, [activeStore]);
 
     const handleApplyGiftCard = async () => {
         if (!giftCardInput.trim()) return;
@@ -615,6 +642,12 @@ export default function CheckoutClient() {
             postalCode: postalCodeInput,
             pickup: pickupString,
         };
+        const curbsidePrefix =
+            activeStore === 'butcher' && pickupHandoff === 'curbside'
+                ? `[CURBSIDE TRUNK DROP-OFF${vehicleInfo.trim() ? ` — Vehicle: ${vehicleInfo.trim()}` : ''}]`
+                : '';
+        const combinedOrderNote = [curbsidePrefix, orderNote.trim()].filter(Boolean).join(' ');
+
         startTransition(async () => {
             try {
                 const res = await fetch('/api/checkout', {
@@ -623,7 +656,7 @@ export default function CheckoutClient() {
                     body: JSON.stringify({
                         items: cart,
                         contact: contactPayload,
-                        orderNote,
+                        orderNote: combinedOrderNote,
                         customerId: sessionUser?.id,
                         coupon: null,
                         giftCardCode: appliedGiftCard?.code ?? null,
@@ -927,6 +960,46 @@ export default function CheckoutClient() {
                                 )}
                             </div>
 
+                            {/* Pickup handoff (Northfield Curbside Express to beat the cramped lot) */}
+                            {activeStore === 'butcher' && (
+                                <div className={styles.section}>
+                                    <h2 className={styles.sectionLabel}>PICKUP HANDOFF — 300 HAPP RD</h2>
+                                    <div className={styles.handoffRow}>
+                                        <button
+                                            type="button"
+                                            className={`${styles.handoffBtn} ${pickupHandoff === 'counter' ? styles.handoffBtnActive : ''}`}
+                                            onClick={() => setPickupHandoff('counter')}
+                                        >
+                                            <strong>Walk-In Counter</strong>
+                                            <span>Pick up inside at the butcher counter</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`${styles.handoffBtn} ${pickupHandoff === 'curbside' ? styles.handoffBtnActive : ''}`}
+                                            onClick={() => setPickupHandoff('curbside')}
+                                        >
+                                            <strong>🚗 Curbside Trunk Drop-Off</strong>
+                                            <span>Skip the tight lot &amp; rush — call (847) 441-MEAT on arrival</span>
+                                        </button>
+                                    </div>
+                                    {pickupHandoff === 'curbside' && (
+                                        <div className={styles.curbsideVehicleWrap}>
+                                            <label htmlFor="curbside-vehicle" className={styles.curbsideLabel}>
+                                                Vehicle Make &amp; Color (optional)
+                                            </label>
+                                            <input
+                                                id="curbside-vehicle"
+                                                type="text"
+                                                className={styles.input}
+                                                placeholder="e.g. Silver Subaru Outback — we'll bring it straight to your trunk"
+                                                value={vehicleInfo}
+                                                onChange={(e) => setVehicleInfo(e.target.value)}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             {/* Date & time picker */}
                             <div className={styles.section}>
                                 <h2 className={styles.sectionLabel}>SELECT PICKUP DAY &amp; TIME</h2>
@@ -939,6 +1012,22 @@ export default function CheckoutClient() {
                                         📅 <strong>Scheduled for Next Business Day:</strong> Because today&apos;s {CUTOFF_BUFFER_HOURS}-hour closing cutoff has passed (or the store is closed), your earliest pickup is <strong>{cutoffInfo.nextDateLabel} starting at {cutoffInfo.nextOpenLabel}</strong>.
                                     </div>
                                 )}
+
+                                <div
+                                    className={
+                                        kitchenStatus.kitchenLoad === 'paused'
+                                            ? styles.kitchenBannerPaused
+                                            : kitchenStatus.kitchenLoad === 'busy'
+                                              ? styles.kitchenBannerBusy
+                                              : styles.kitchenBannerNormal
+                                    }
+                                >
+                                    {kitchenStatus.kitchenLoad === 'paused'
+                                        ? `🔴 Hot Orders Temporarily Paused · ~${kitchenStatus.prepMinutes} min buffer · Max ${kitchenStatus.maxOrdersPerSlot} pickups per 15-min slot`
+                                        : kitchenStatus.kitchenLoad === 'busy'
+                                          ? `🟡 Lunch / Counter Rush Active · Est. ~${kitchenStatus.prepMinutes} min prep · Max ${kitchenStatus.maxOrdersPerSlot} pickups per 15-min slot`
+                                          : `🟢 Kitchen Normal · Est. ~${kitchenStatus.prepMinutes} min prep · Capped at ${kitchenStatus.maxOrdersPerSlot} pickups per 15-min slot`}
+                                </div>
 
                                 {/* Date scroll */}
                                 <div className={styles.dateSelectorContainer}>
@@ -981,13 +1070,27 @@ export default function CheckoutClient() {
 
                                 {/* Time slots */}
                                 <div className={styles.timeGrid}>
-                                    {availableSlots.length > 0 ? availableSlots.map(slot => {
+                                    {availableSlots.length > 0 ? availableSlots.map((slot, slotIdx) => {
                                         const isActive = effectiveSlotValue === slot.value;
-                                        if (slot.disabled) return (
-                                            <button key={slot.value} type="button" disabled className={styles.timeSlotBtnDisabled}>
-                                                {slot.label || slot.value}
-                                            </button>
-                                        );
+                                        const slotKey = `${activeDateLabel} at ${slot.value}`;
+                                        const booked = kitchenStatus.slotCounts[slotKey] ?? 0;
+                                        const remaining = Math.max(0, kitchenStatus.maxOrdersPerSlot - booked);
+                                        const isActiveDateToday = activeDate?.toDateString() === now.toDateString();
+                                        const isRushDelayed =
+                                            isActiveDateToday &&
+                                            ((kitchenStatus.kitchenLoad === 'busy' && slotIdx === 0) ||
+                                                (kitchenStatus.kitchenLoad === 'paused' && slotIdx < 2));
+                                        const isFull = remaining === 0;
+
+                                        if (slot.disabled || isFull || isRushDelayed) {
+                                            return (
+                                                <button key={slot.value} type="button" disabled className={styles.timeSlotBtnDisabled}>
+                                                    <span>{slot.label || slot.value}</span>
+                                                    {isFull && <span className={styles.slotCapTag}>Full</span>}
+                                                    {!isFull && isRushDelayed && <span className={styles.slotCapTag}>Rush</span>}
+                                                </button>
+                                            );
+                                        }
                                         return (
                                             <button
                                                 key={slot.value}
@@ -995,7 +1098,10 @@ export default function CheckoutClient() {
                                                 className={`${styles.timeSlotBtn} ${isActive ? styles.timeSlotBtnActive : ''}`}
                                                 onClick={() => setSelectedSlotValue(slot.value)}
                                             >
-                                                {slot.label || slot.value}
+                                                <span>{slot.label || slot.value}</span>
+                                                {remaining <= 3 && (
+                                                    <span className={styles.slotCapTag}>{remaining} left</span>
+                                                )}
                                             </button>
                                         );
                                     }) : (

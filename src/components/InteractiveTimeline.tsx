@@ -1,6 +1,12 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+    TIMELINE_FLAME_OPTIONS,
+    TimelineFlameRenderer,
+    type PathSample,
+    type TimelineFlameStyle,
+} from './TimelineFlameEngine';
 import styles from './InteractiveTimeline.module.css';
 
 type TimelineEvent = { era: string; title: string; body?: string | null; video?: string | null };
@@ -17,9 +23,22 @@ export default function InteractiveTimeline({ events }: Props) {
     const canvasRef = useRef<HTMLDivElement>(null);
     const svgRef = useRef<SVGSVGElement>(null);
     const pathRef = useRef<SVGPathElement>(null);
+    const flameCanvasRef = useRef<HTMLCanvasElement>(null);
     const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
     const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+    const [flameStyle, setFlameStyle] = useState<TimelineFlameStyle>('preloader');
+    const flameStyleRef = useRef<TimelineFlameStyle>('preloader');
+    const drawnPxRef = useRef(0);
+    const pathSamplesRef = useRef<PathSample[]>([]);
+    const flameRendererRef = useRef<TimelineFlameRenderer | null>(null);
+
+    const handleSelectFlameStyle = (next: TimelineFlameStyle) => {
+        flameStyleRef.current = next;
+        flameRendererRef.current?.reset();
+        setFlameStyle(next);
+    };
 
     const totalH = events.length * STEP_H + 60;
 
@@ -98,6 +117,16 @@ export default function InteractiveTimeline({ events }: Props) {
                     contactLengths[0] = 2;
 
                     let cumLen = 0;
+                    const samples: PathSample[] = [];
+                    if (nodes.length > 0) {
+                        samples.push({
+                            x: nodes[0].x * scaleX,
+                            y: nodes[0].y * scaleY,
+                            len: 0,
+                            tx: 0,
+                            ty: 1,
+                        });
+                    }
 
                     for (let seg = 1; seg < nodes.length; seg++) {
                         const p0 = nodes[seg - 1];
@@ -132,7 +161,19 @@ export default function InteractiveTimeline({ events }: Props) {
 
                             const sx = bx * scaleX;
                             const sy = by * scaleY;
-                            cumLen += Math.hypot(sx - prevSx, sy - prevSy);
+                            const dx = sx - prevSx;
+                            const dyy = sy - prevSy;
+                            const stepLen = Math.hypot(dx, dyy);
+                            cumLen += stepLen;
+                            if (stepLen > 0.001) {
+                                samples.push({
+                                    x: sx,
+                                    y: sy,
+                                    len: cumLen,
+                                    tx: dx / stepLen,
+                                    ty: dyy / stepLen,
+                                });
+                            }
                             prevSx = sx;
                             prevSy = sy;
 
@@ -148,12 +189,14 @@ export default function InteractiveTimeline({ events }: Props) {
                     }
 
                     const dashLen = Math.ceil(cumLen) + 4;
+                    pathSamplesRef.current = samples;
                     metrics = { dashLen, contactLengths };
                     return metrics;
                 };
 
                 const syncLitNodes = (progress: number) => {
                     const drawnPx = progress * metrics.dashLen;
+                    drawnPxRef.current = drawnPx;
 
                     for (let i = 0; i < nodes.length; i++) {
                         const shouldLight = drawnPx >= metrics.contactLengths[i];
@@ -280,6 +323,65 @@ export default function InteractiveTimeline({ events }: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [events.length]);
 
+    // 60fps Canvas flame overlay locked to the exact SVG path tip & lit ribbon
+    useEffect(() => {
+        const canvas = flameCanvasRef.current;
+        const container = canvasRef.current;
+        const section = sectionRef.current;
+        if (!canvas || !container || !section) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const renderer = new TimelineFlameRenderer();
+        flameRendererRef.current = renderer;
+
+        let raf = 0;
+        let visible = true;
+
+        const syncSize = () => {
+            const w = Math.max(300, Math.round(container.clientWidth));
+            const h = Math.max(300, Math.round(container.clientHeight));
+            if (canvas.width !== w || canvas.height !== h) {
+                canvas.width = w;
+                canvas.height = h;
+            }
+        };
+        syncSize();
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                visible = Boolean(entries[0]?.isIntersecting);
+            },
+            { rootMargin: '200px 0px' }
+        );
+        observer.observe(section);
+
+        const loop = (now: number) => {
+            if (visible) {
+                syncSize();
+                renderer.render(
+                    ctx,
+                    canvas.width,
+                    canvas.height,
+                    pathSamplesRef.current,
+                    drawnPxRef.current,
+                    flameStyleRef.current,
+                    now / 1000
+                );
+            }
+            raf = requestAnimationFrame(loop);
+        };
+        raf = requestAnimationFrame(loop);
+
+        return () => {
+            cancelAnimationFrame(raf);
+            observer.disconnect();
+            flameRendererRef.current = null;
+        };
+    }, []);
+
     return (
         <section id="timeline" aria-labelledby="timeline-heading" className={styles.root} ref={sectionRef}>
             <div className="container">
@@ -287,6 +389,22 @@ export default function InteractiveTimeline({ events }: Props) {
                 <div className={styles.header}>
                     <span className={styles.eyebrow}><span>—</span> Our History <span>—</span></span>
                     <h2 id="timeline-heading" className={styles.title}>A Century of Craft</h2>
+                    <div className={styles.flameSwitcher} role="tablist" aria-label="Choose timeline line flame style">
+                        {TIMELINE_FLAME_OPTIONS.map((opt) => (
+                            <button
+                                key={opt.id}
+                                type="button"
+                                role="tab"
+                                aria-selected={flameStyle === opt.id}
+                                className={`${styles.flameBtn} ${flameStyle === opt.id ? styles.flameBtnActive : ''}`}
+                                onClick={() => handleSelectFlameStyle(opt.id)}
+                                title={opt.desc}
+                            >
+                                <span className={styles.flameNum}>{opt.num}</span>
+                                <span>{opt.label}</span>
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* ── Canvas ── */}
@@ -351,6 +469,9 @@ export default function InteractiveTimeline({ events }: Props) {
                             filter="url(#tlGlow)"
                         />
                     </svg>
+
+                    {/* Real-time 60fps Canvas Flame Overlay locked to the burning line tip */}
+                    <canvas ref={flameCanvasRef} className={styles.flameCanvas} aria-hidden="true" />
 
                     {/* HTML cards — positioned at each node */}
                     {nodes.map((node, i) => {
