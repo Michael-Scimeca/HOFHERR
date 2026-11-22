@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import ProductIdentityClient from '../ProductIdentityClient';
+import SocialKit from './SocialKit';
 
 export const metadata: Metadata = {
-    title: 'Product Identity, Packaging & Social Media Kit | Hofherr Meat Co.',
+    title: 'Social Media Profiles & Kit (IG · FB · X) | Hofherr Meat Co.',
     robots: { index: false, follow: false },
 };
 
 export default function Page() {
-    return <ProductIdentityClient />;
+    return <SocialKit />;
 }

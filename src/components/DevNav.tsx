@@ -112,9 +112,10 @@ const SECTIONS: DevSection[] = [
             { href: '/specials', icon: '🔥', label: 'Specials' },
             { href: '/catering', icon: '🍖', label: 'BBQ & Catering' },
             { href: '/catering/holidays', icon: '📅', label: 'Holiday & Event Catering' },
-            { href: '/how-ordering-works', icon: '🧾', label: 'Online & In-Store Guide' },
             { href: '/cut-guide', icon: '🥩', label: 'Cut Guide' },
             { href: '/recipes', icon: '🍳', label: 'Recipes' },
+            { href: '/recipes/sheets', icon: '📋', label: 'Recipe Sheets' },
+            { href: '/press', icon: '📰', label: 'Press' },
             { href: '/burn-transitions', icon: '🔥', label: '20 Burn Transitions' },
             { href: '/newsletter', icon: '✉️', label: 'Newsletter' },
         ],
@@ -140,9 +141,14 @@ const SECTIONS: DevSection[] = [
         label: 'Admin, Identity & Dev',
         category: 'pages',
         links: [
+            { href: '/launch-checklist', icon: '🚀', label: 'All Features & What’s Left' },
             { href: '/admin-dashboard/admin', icon: '📊', label: 'Admin Dashboard' },
+            { href: '/admin-dashboard/admin?tab=subscribers', icon: '✉️', label: 'Email Builder & Subscribers' },
+            { href: '/admin/social', icon: '📣', label: 'Social Studio (IG · FB · X)' },
+            { href: '/product-identity/social', icon: '📱', label: 'Social Profiles (IG · FB · X)' },
+            { href: '/google-preview', icon: '🔍', label: 'Google Profile & SERP Preview' },
+            { href: '/sales-psychology', icon: '🧠', label: 'Sales Psychology' },
             { href: '/admin/inventory', icon: '🗃️', label: 'Admin Inventory' },
-            { href: '/admin/social', icon: '📣', label: 'Admin Social' },
             { href: '/admin/login', icon: '🔒', label: 'Admin Login' },
             { href: '/inventory', icon: '📦', label: 'Inventory Manager' },
             { href: '/studio', icon: '🎨', label: 'Sanity Studio' },
@@ -150,15 +156,14 @@ const SECTIONS: DevSection[] = [
             { href: '/product-identity/print', icon: '🖨️', label: 'Print Kit' },
             { href: '/product-identity/sizes', icon: '📐', label: 'Sizes' },
             { href: '/product-identity/sizes/print', icon: '🖨️', label: 'Sizes · Print' },
-            { href: '/product-identity/social', icon: '📱', label: 'Social Kit' },
             { href: '/product-identity/social/admin', icon: '⚙️', label: 'Social · Admin' },
             { href: '/greens-and-emblems', icon: '🟢', label: 'Greens & Emblems' },
             { href: '/design-system', icon: '🧩', label: 'Design System' },
             { href: '/showcase', icon: '🎯', label: 'Showcase' },
-            { href: '/google-preview', icon: '🔍', label: 'Google SERP Preview' },
             { href: '/roadmap', icon: '🧭', label: 'Roadmap' },
-            { href: '/pitch-deck', icon: '📈', label: 'Pitch Deck' },
             { href: '/fire-test', icon: '🔥', label: 'Fire Test' },
+            { href: '/burn-transition', icon: '🔥', label: 'Burn Transition Lab' },
+            { href: '/press-test', icon: '📰', label: 'Press Ticker Test' },
             { href: '/map-test', icon: '📍', label: 'Map Test' },
             { href: '/order-tracker-test', icon: '🚚', label: 'Order Tracker Test' },
             { href: '/test-cut-collection', icon: '🔪', label: 'Cut Collection Bench' },
@@ -456,7 +461,10 @@ const DevNav = () => {
                                         onClick={e => handleLinkClick(e, link)}
                                     >
                                         <span className={styles.navIcon}>{link.icon}</span>
-                                        <span className={styles.navLabel}>{link.label}</span>
+                                        <span className={styles.navText}>
+                                            <span className={styles.navLabel}>{link.label}</span>
+                                            <span className={styles.navPath}>{link.href}</span>
+                                        </span>
                                     </Link>
                                 )
                             )}

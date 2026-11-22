@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { toPng } from 'html-to-image';
+import { Toggle } from '@/components/Toggle';
 import { ANIMALS } from '@/app/product-identity/social/animals';
 import { buildStarterWeeks } from '@/lib/social/plan';
 import {
@@ -21,8 +22,7 @@ type Issue = { field: string; word: string; suggestions: string[] };
 type Post = SocialPost & { issues?: Issue[] };
 type Week = Omit<SocialWeek, 'posts'> & { posts: Post[] };
 type Bank = { total: number; active: number; fresh: number };
-type Connected = Record<Platform | 'email', boolean>;
-type Horizon = 'day' | 'week' | 'month';
+type Connected = Record<Platform | 'email', boolean> & { cronSecret?: boolean; siteUrl?: boolean };
 
 const STORAGE_KEY = 'hofherr-social-admin-v1';
 const PLATFORM_LABEL: Record<Platform, string> = { instagram: 'Instagram', facebook: 'Facebook', x: 'X' };
@@ -198,7 +198,7 @@ function PostCard({
     const [busy, setBusy] = useState<string | null>(null);
     const [msg, setMsg] = useState<string | null>(null);
     const [slide, setSlide] = useState(0);
-    const [tab, setTab] = useState<'feed' | 'x'>('feed');
+    const [tab, setTab] = useState<'facebook' | 'instagram' | 'x'>('facebook');
     const previewRef = React.useRef<HTMLDivElement>(null);
 
     const issues = findClientIssues(editing ? draft : post);
@@ -352,8 +352,11 @@ function PostCard({
             )}
 
             <div className={s.tabs}>
-                <button type="button" className={tab === 'feed' ? s.tabOn : s.tab} onClick={() => setTab('feed')}>
-                    Instagram · Facebook (4:5)
+                <button type="button" className={tab === 'facebook' ? s.tabOn : s.tab} onClick={() => setTab('facebook')}>
+                    Facebook Feed
+                </button>
+                <button type="button" className={tab === 'instagram' ? s.tabOn : s.tab} onClick={() => setTab('instagram')}>
+                    Instagram (4:5)
                 </button>
                 <button type="button" className={tab === 'x' ? s.tabOn : s.tab} onClick={() => setTab('x')}>
                     X / Twitter (16:9)
@@ -361,22 +364,106 @@ function PostCard({
             </div>
 
             <div className={s.preview}>
-                <div ref={previewRef}>
-                    {currentSlide && (
-                        <SlidePreview
-                            slide={currentSlide}
-                            format={format}
-                            editable
-                            onFieldChange={(field, val) => {
-                                const nextSlides = activePost.slides.map((sl, idx) =>
-                                    idx === slide ? { ...sl, [field]: val } : sl
-                                );
-                                setDraft((d) => ({ ...d, slides: nextSlides }));
-                                void onUpdatePost(week._id, post._key, { slides: nextSlides });
-                            }}
-                        />
-                    )}
-                </div>
+                {tab === 'facebook' ? (
+                    <div className={s.fbCard}>
+                        <div className={s.fbHead}>
+                            <div className={s.fbAvatar}>
+                                <img src="/assets/logo.svg" alt="Hofherr Meat Co." className={s.fbAvatarImg} />
+                            </div>
+                            <div className={s.fbMeta}>
+                                <div className={s.fbNameRow}>
+                                    <strong className={s.fbPageName}>Hofherr Meat Co.</strong>
+                                    <span className={s.fbVerifiedDot} aria-label="Verified Page">✓</span>
+                                </div>
+                                <span className={s.fbTime}>
+                                    {fmtWhen(activePost.scheduledFor)} · Northfield, IL · 🌐
+                                </span>
+                            </div>
+                            <span className={s.fbDots} aria-hidden="true">•••</span>
+                        </div>
+
+                        <div className={s.fbCopy}>
+                            <p
+                                className={s.fbCaptionText}
+                                contentEditable
+                                suppressContentEditableWarning
+                                spellCheck
+                                title="Click to edit Facebook caption"
+                                onBlur={(e) => {
+                                    const nextCaption = e.currentTarget.innerText.trim();
+                                    if (nextCaption !== activePost.caption) {
+                                        setDraft((d) => ({ ...d, caption: nextCaption }));
+                                        void onUpdatePost(week._id, post._key, { caption: nextCaption });
+                                    }
+                                }}
+                            >
+                                {activePost.caption}
+                            </p>
+                            {activePost.hashtags && (
+                                <p
+                                    className={s.fbHashtags}
+                                    contentEditable
+                                    suppressContentEditableWarning
+                                    spellCheck={false}
+                                    title="Click to edit hashtags"
+                                    onBlur={(e) => {
+                                        const nextTags = e.currentTarget.innerText.trim();
+                                        if (nextTags !== activePost.hashtags) {
+                                            setDraft((d) => ({ ...d, hashtags: nextTags }));
+                                            void onUpdatePost(week._id, post._key, { hashtags: nextTags });
+                                        }
+                                    }}
+                                >
+                                    {activePost.hashtags}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className={s.fbMediaWrap} ref={previewRef}>
+                            {currentSlide && (
+                                <SlidePreview
+                                    slide={currentSlide}
+                                    format="portrait"
+                                    editable
+                                    onFieldChange={(field, val) => {
+                                        const nextSlides = activePost.slides.map((sl, idx) =>
+                                            idx === slide ? { ...sl, [field]: val } : sl
+                                        );
+                                        setDraft((d) => ({ ...d, slides: nextSlides }));
+                                        void onUpdatePost(week._id, post._key, { slides: nextSlides });
+                                    }}
+                                />
+                            )}
+                        </div>
+
+                        <div className={s.fbStats}>
+                            <span>👍 ❤️ 42</span>
+                            <span>8 comments · 5 shares</span>
+                        </div>
+                        <div className={s.fbActions} aria-hidden="true">
+                            <span>👍 Like</span>
+                            <span>💬 Comment</span>
+                            <span>↗ Share</span>
+                        </div>
+                    </div>
+                ) : (
+                    <div ref={previewRef}>
+                        {currentSlide && (
+                            <SlidePreview
+                                slide={currentSlide}
+                                format={format}
+                                editable
+                                onFieldChange={(field, val) => {
+                                    const nextSlides = activePost.slides.map((sl, idx) =>
+                                        idx === slide ? { ...sl, [field]: val } : sl
+                                    );
+                                    setDraft((d) => ({ ...d, slides: nextSlides }));
+                                    void onUpdatePost(week._id, post._key, { slides: nextSlides });
+                                }}
+                            />
+                        )}
+                    </div>
+                )}
                 {activePost.slides.length > 1 && (
                     <div className={s.dots}>
                             {
@@ -854,9 +941,7 @@ function PostCard({
                     const [bank, setBank] = useState<Bank>({total: 36, active: 36, fresh: 24 });
                         const [settings, setSettings] = useState<SocialSettings>(DEFAULT_SETTINGS);
                             const [connected, setConnected] = useState<Connected | null>(null);
-                            const [horizon, setHorizon] = useState<Horizon>('week');
                                 const [currentWeekId, setCurrentWeekId] = useState<string>(() => buildStarterWeeks(DEFAULT_SETTINGS, 4)[0]?._id ?? '');
-                                    const [selectedDayIdx, setSelectedDayIdx] = useState<number>(0);
                                         const [verifier, setVerifier] = useState<string>('Sean Hofherr');
                                             const [busy, setBusy] = useState<string | null>(null);
                                             const [bannerMsg, setBannerMsg] = useState<string | null>(null);
@@ -964,25 +1049,6 @@ function PostCard({
                                                 return true;
     };
 
-    const verifyDayPost = async () => {
-        if (!activeWeek) return;
-                                                const post = activeWeek.posts[selectedDayIdx] ?? activeWeek.posts[0];
-                                                if (!post) return;
-                                                const issues = findClientIssues(post);
-        if (issues.length > 0) {
-                                                    setBannerMsg(`Please fix ${issues.length} issue(s) on ${post.day}'s post before verifying.`);
-                                                return;
-        }
-                                                const nowIso = new Date().toISOString();
-                                                await updatePost(activeWeek._id, post._key, {
-                                                    approved: true,
-                                                verifiedBy: verifier || 'Sean Hofherr',
-                                                verifiedAt: nowIso,
-                                                status: 'approved',
-        });
-                                                setBannerMsg(`✓ Verified ${post.day}'s post (${post.label}) by ${verifier || 'Sean Hofherr'}!`);
-    };
-
     const verifyWeekPosts = async (targetWeekId = activeWeek?._id) => {
         if (!targetWeekId) return;
                                                 setBusy('verify-week');
@@ -1017,29 +1083,6 @@ function PostCard({
                                                 }
                                                 setBusy(null);
                                                 setBannerMsg(`✓ Verified all clean posts for Week of ${fmtWeek(targetWeekId.replace('socialWeek-', ''))} by ${verifier || 'Sean Hofherr'}!`);
-    };
-
-    const verifyEntireMonth = async () => {
-                                                    setBusy('verify-month');
-                                                const nowIso = new Date().toISOString();
-        const nextWeeks = weeks.map((w) => ({
-                                                    ...w,
-                                                    posts: w.posts.map((p) => {
-                if (p.status === 'posted' || findClientIssues(p).length > 0) return p;
-                                                return {
-                                                    ...p,
-                                                    approved: true,
-                                                verifiedBy: verifier || 'Sean Hofherr',
-                                                verifiedAt: nowIso,
-                                                status: 'approved' as const,
-                };
-            }),
-        }));
-                                                setWeeks(nextWeeks);
-                                                persistLocal(nextWeeks, settings, verifier);
-                                                setBusy(null);
-        const totalVerified = nextWeeks.reduce((acc, w) => acc + w.posts.filter((p) => p.approved).length, 0);
-                                                setBannerMsg(`✓ Verified entire month (${totalVerified} posts across ${nextWeeks.length} weeks) by ${verifier || 'Sean Hofherr'}!`);
     };
 
     const addAnimalCutsPost = (animalSlug: string) => {
@@ -1093,7 +1136,6 @@ function PostCard({
                                                 );
                                                 setWeeks(nextWeeks);
                                                 persistLocal(nextWeeks, settings, verifier);
-                                                setSelectedDayIdx(0);
                                                 setBannerMsg(`+ Added "${newPost.label}" (Chart + Guide + Facts) to Week of ${fmtWeek(activeWeek.weekOf)}`);
     };
 
@@ -1129,7 +1171,7 @@ function PostCard({
     const totalMonthPosts = weeks.reduce((acc, w) => acc + w.posts.length, 0);
     const totalMonthVerified = weeks.reduce((acc, w) => acc + w.posts.filter((p) => p.approved).length, 0);
     const weekApproved = activeWeek?.posts.filter((p) => p.approved).length ?? 0;
-                                                    const dayPost = activeWeek?.posts[selectedDayIdx] ?? activeWeek?.posts[0] ?? null;
+    const autoPostEnabled = settings.requireApproval === false;
 
                                                     return (
                                                     <main className={s.page}>
@@ -1175,19 +1217,36 @@ function PostCard({
                                                                 </div>
                                                     </header>
 
-                                                    {/* ── Person Verification & Horizon Command Bar ── */}
-                                                        <section id="verification-controls" className={s.verifyBanner} aria-label="Verification and Schedule Horizon Controls">
+                                                    {/* ── Weekly Auto-Post Command Bar ── */}
+                                                        <section id="verification-controls" className={s.verifyBanner} aria-label="Weekly Auto-Post Controls">
                                                             <div className={s.verifyBannerLeft}>
                                                                 <span className={s.verifyTitle}>
-                                                                    🛡️ Human Verification Gate · Auto-Post Schedule ({horizon.toUpperCase()} VIEW)
+                                                                    {autoPostEnabled
+                                                                        ? '⚡ Auto-Post Automatically ON · This Week'
+                                                                        : '🛡️ Manual Verification Gate · This Week'}
                                                                 </span>
                                                                 <span className={s.verifySub}>
-                                                                    Automatic posts are held until verified by a person. Switch between <b>By Day</b>,{' '}
-                                                                    <b>Weekly</b>, or <b>Month</b> to edit, print, and verify.
+                                                                    {autoPostEnabled
+                                                                        ? 'Clean posts for this week publish automatically at their scheduled Chicago time (IG · FB · X).'
+                                                                        : 'Posts wait for approval before publishing. Toggle Auto-Post ON to publish automatically on schedule.'}
                                                                 </span>
                                                             </div>
 
                                                             <div className={s.verifyControls}>
+                                                                <Toggle
+                                                                    size="md"
+                                                                    variant="gold"
+                                                                    checked={autoPostEnabled}
+                                                                    onChange={(checked) => {
+                                                                        void saveSettings({ requireApproval: !checked });
+                                                                        setBannerMsg(
+                                                                            checked
+                                                                                ? '⚡ Auto-Post Automatically enabled — clean posts will publish automatically on schedule.'
+                                                                                : '🛡️ Manual verification enabled — posts will wait for approval before publishing.'
+                                                                        );
+                                                                    }}
+                                                                    label="Auto-Post Automatically"
+                                                                />
                                                                 <label className={s.verifierField}>
                                                                     Verified By:
                                                                     <input
@@ -1201,117 +1260,39 @@ function PostCard({
                                                                         }}
                                                                     />
                                                                 </label>
-
-                                                                <div className={s.horizonTabs} role="tablist" aria-label="Verification Horizon">
-                                                                    <button
-                                                                        type="button"
-                                                                        role="tab"
-                                                                        aria-selected={horizon === 'day'}
-                                                                        className={horizon === 'day' ? s.horizonBtnOn : s.horizonBtn}
-                                                                        onClick={() => setHorizon('day')}
-                                                                    >
-                                                                        📅 By Day
-                                                                    </button>
-                                                                    <button
-                                                                        type="button"
-                                                                        role="tab"
-                                                                        aria-selected={horizon === 'week'}
-                                                                        className={horizon === 'week' ? s.horizonBtnOn : s.horizonBtn}
-                                                                        onClick={() => setHorizon('week')}
-                                                                    >
-                                                                        🗓 Weekly
-                                                                    </button>
-                                                                    <button
-                                                                        type="button"
-                                                                        role="tab"
-                                                                        aria-selected={horizon === 'month'}
-                                                                        className={horizon === 'month' ? s.horizonBtnOn : s.horizonBtn}
-                                                                        onClick={() => setHorizon('month')}
-                                                                    >
-                                                                        📆 Monthly
-                                                                    </button>
-                                                                </div>
                                                             </div>
                                                         </section>
 
                                                         {bannerMsg && <p className={s.msg}>{bannerMsg}</p>}
 
-                                                        <HowItWorks connected={connected} bankTotal={bank.total} hasWeek={weeks.length > 0} />
+                                                        <HowItWorks connected={connected} bankTotal={bank.total} hasWeek={weeks.length > 0} reviewerCount={settings.notifyEmails.length} />
                                                         <SettingsPanel key={JSON.stringify(settings)} settings={settings} connected={connected} onSave={saveSettings} />
 
-                                                        {/* ── Sticky Action Toolbar ── */}
+                                                        {/* ── Sticky Weekly Action Toolbar ── */}
                                                         <div className={s.toolbar}>
-                                                            {horizon !== 'month' && (
-                                                                <select
-                                                                    value={activeWeek?._id ?? ''}
-                                                                    onChange={(e) => {
-                                                                        setCurrentWeekId(e.target.value);
-                                                                        setSelectedDayIdx(0);
-                                                                    }}
-                                                                    className={s.select}
-                                                                >
-                                                                    {weeks.map((w, idx) => (
-                                                                        <option key={w._id} value={w._id}>
-                                                                            Week {idx + 1}: {fmtWeek(w.weekOf)} ({w.posts.filter((p) => p.approved).length}/
-                                                                            {w.posts.length} verified)
-                                                                        </option>
-                                                                    ))}
-                                                                </select>
-                                                            )}
-
-                                                            {horizon === 'day' && activeWeek && (
-                                                                <>
-                                                                    <button
-                                                                        type="button"
-                                                                        className={s.btn}
-                                                                        onClick={() =>
-                                                                            setSelectedDayIdx((i) => (i - 1 + activeWeek.posts.length) % activeWeek.posts.length)
-                                                                        }
-                                                                    >
-                                                                        ← Prev Day
-                                                                    </button>
-                                                                    <select
-                                                                        value={selectedDayIdx}
-                                                                        onChange={(e) => setSelectedDayIdx(Number(e.target.value))}
-                                                                        className={s.select}
-                                                                    >
-                                                                        {activeWeek.posts.map((p, idx) => (
-                                                                            <option key={p._key} value={idx}>
-                                                                                {p.day} — {p.label} {p.approved ? '✓' : '⏳'}
-                                                                            </option>
-                                                                        ))}
-                                                                    </select>
-                                                                    <button
-                                                                        type="button"
-                                                                        className={s.btn}
-                                                                        onClick={() => setSelectedDayIdx((i) => (i + 1) % activeWeek.posts.length)}
-                                                                    >
-                                                                        Next Day →
-                                                                    </button>
-                                                                </>
-                                                            )}
+                                                            <select
+                                                                value={activeWeek?._id ?? ''}
+                                                                onChange={(e) => setCurrentWeekId(e.target.value)}
+                                                                className={s.select}
+                                                            >
+                                                                {weeks.map((w, idx) => (
+                                                                    <option key={w._id} value={w._id}>
+                                                                        Week {idx + 1}: {fmtWeek(w.weekOf)} ({w.posts.filter((p) => p.approved).length}/
+                                                                        {w.posts.length} verified)
+                                                                    </option>
+                                                                ))}
+                                                            </select>
 
                                                             <button type="button" className={s.btn} onClick={regenerateSchedule}>
-                                                                ↻ Regenerate Schedule
+                                                                ↻ Regenerate Week
                                                             </button>
                                                             <button type="button" className={s.btn} onClick={() => window.print()}>
-                                                                🖨 Print {horizon === 'day' ? 'Day Proof' : horizon === 'week' ? 'Weekly Proofs' : 'Monthly Proofs'}
+                                                                🖨 Print Weekly Proofs
                                                             </button>
 
                                                             <span className={s.spacer} />
 
-                                                            {horizon === 'day' && dayPost && (
-                                                                <>
-                                                                    <span className={s.progress}>
-                                                                        Day Status: <b>{dayPost.approved ? `Verified by ${dayPost.verifiedBy || verifier}` : 'Needs Verification'}</b>
-                                                                    </span>
-                                                                    <button type="button" className={s.btnSuccess} onClick={verifyDayPost}>
-                                                                        ✓ Verify This Day&apos;s Post
-                                                                    </button>
-                                                                </>
-                                                            )}
-
-                                                            {horizon === 'week' && activeWeek && (
+                                                            {activeWeek && (
                                                                 <>
                                                                     <span className={s.progress}>
                                                                         <b>
@@ -1329,52 +1310,10 @@ function PostCard({
                                                                     </button>
                                                                 </>
                                                             )}
-
-                                                            {horizon === 'month' && (
-                                                                <>
-                                                                    <span className={s.progress}>
-                                                                        <b>
-                                                                            {totalMonthVerified}/{totalMonthPosts}
-                                                                        </b>{' '}
-                                                                        verified across all {weeks.length} weeks
-                                                                    </span>
-                                                                    <button
-                                                                        type="button"
-                                                                        className={s.btnSuccess}
-                                                                        disabled={!!busy}
-                                                                        onClick={verifyEntireMonth}
-                                                                    >
-                                                                        ✓ Verify Entire Month ({totalMonthPosts} Posts)
-                                                                    </button>
-                                                                </>
-                                                            )}
                                                         </div>
 
-                                                        {/* ── 1. DAY VIEW (Single-day deep inspection, live editor & verification) ── */}
-                                                        {horizon === 'day' && activeWeek && dayPost && (
-                                                            <div className={s.dayViewGrid}>
-                                                                <PostCard
-                                                                    key={`${dayPost._key}-preview`}
-                                                                    week={activeWeek}
-                                                                    post={dayPost}
-                                                                    verifier={verifier}
-                                                                    onUpdatePost={updatePost}
-                                                                    onAddWord={(w) => saveSettings({ addWord: w })}
-                                                                />
-                                                                <PostCard
-                                                                    key={`${dayPost._key}-editor`}
-                                                                    week={activeWeek}
-                                                                    post={dayPost}
-                                                                    verifier={verifier}
-                                                                    defaultEditing
-                                                                    onUpdatePost={updatePost}
-                                                                    onAddWord={(w) => saveSettings({ addWord: w })}
-                                                                />
-                                                            </div>
-                                                        )}
-
-                                                        {/* ── 2. WEEKLY VIEW (All posts in the selected week) ── */}
-                                                        {horizon === 'week' && activeWeek && (
+                                                        {/* ── WEEKLY VIEW (This week's scheduled posts) ── */}
+                                                        {activeWeek && (
                                                             <div className={s.grid}>
                                                                 {activeWeek.posts.map((p) => (
                                                                     <PostCard
@@ -1388,56 +1327,6 @@ function PostCard({
                                                                 ))}
                                                             </div>
                                                         )}
-
-                                                        {/* ── 3. MONTHLY VIEW (All 4 weeks of the month stacked with batch verification) ── */}
-                                                        {horizon === 'month' && (
-                                                            <div className={s.monthSection}>
-                                                                {weeks.map((w, wIdx) => {
-                                                                    const wVer = w.posts.filter((p) => p.approved).length;
-                                                                    return (
-                                                                            <section
-                                                                                key={w._id}
-                                                                                id={`month-week-${w._id}`}
-                                                                                aria-labelledby={`month-week-${w._id}-heading`}
-                                                                                className={s.monthWeekBlock}
-                                                                            >
-                                                                                <header className={s.monthWeekHead}>
-                                                                                    <div>
-                                                                                            <h2 id={`month-week-${w._id}-heading`} className={s.monthWeekTitle}>
-                                                                                                Week {wIdx + 1} · Week of {fmtWeek(w.weekOf)}
-                                                                                            </h2>
-                                                                                            <span className={s.when}>
-                                                                                                {wVer}/{w.posts.length} posts verified for automatic publishing
-                                                                                            </span>
-                                                                                    </div>
-                                                                                    <div className={s.row}>
-                                                                                        <button
-                                                                                            type="button"
-                                                                                            className={s.btnSuccess}
-                                                                                            onClick={() => verifyWeekPosts(w._id)}
-                                                                                        >
-                                                                                            ✓ Verify Week {wIdx + 1}
-                                                                                        </button>
-                                                                                    </div>
-                                                                                </header>
-                                                                                <div className={s.grid}>
-                                                                                    {w.posts.map((p) => (
-                                                                                        <PostCard
-                                                                                            key={p._key}
-                                                                                            week={w}
-                                                                                            post={p}
-                                                                                            verifier={verifier}
-                                                                                            onUpdatePost={updatePost}
-                                                                                            onAddWord={(w) => saveSettings({ addWord: w })}
-                                                                                        />
-                                                                                    ))}
-                                                                                </div>
-                                                                            </section>
-                                                                            );
-                    })}
-                                                                        </div>
-                                                                    )
-                                                                }
         </main>
                                                         );
 }

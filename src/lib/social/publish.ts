@@ -178,13 +178,17 @@ export async function executeScheduledPublish(client: SanityClient) {
     for (const week of weeks) {
         for (const post of week.posts) {
             const due = post.scheduledFor && new Date(post.scheduledFor).getTime() <= nowMs;
-            if (due && post.status === 'approved' && post.approved) {
+            const autoPilot = settings.requireApproval === false;
+            const readyToPublish = autoPilot
+                ? post.status !== 'posted'
+                : post.status === 'approved' && post.approved;
+            if (due && readyToPublish) {
                 if (!checkPost(post, settings.customWords).length) {
                     dueItems.push({ week, post });
                 }
             }
             const soon = post.scheduledFor && new Date(post.scheduledFor).getTime() - nowMs < 24 * 3600e3 && !due;
-            if (soon && !post.approved && !post.notifiedAt) reminders.push({ week, post });
+            if (!autoPilot && soon && !post.approved && !post.notifiedAt) reminders.push({ week, post });
         }
     }
 

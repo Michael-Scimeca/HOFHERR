@@ -130,6 +130,50 @@ export default function SlidePreview({
                 case 'specials':
                 case 'recipe-cover':
                 case 'howto-cover':
+                if (slide.template === 'recipe-cover' && !slide.photo) {
+                    return (
+                    <div className={`${s.slidePortrait} ${s.bgRecipePoster}`}>
+                        <div className={s.slideFrameAmber} />
+                        <div className={s.recipePosterInnerFrame} />
+                        <div className={s.slideTopBar}>
+                            <span
+                                className={s.slideKicker}
+                                contentEditable={editable}
+                                suppressContentEditableWarning
+                                onBlur={(e) => onFieldChange?.('kicker', e.currentTarget.textContent ?? '')}
+                            >
+                                {slide.kicker || 'BUTCHER RECIPE'}
+                            </span>
+                            <span className={s.recipePosterStamp}>HOFHERR KITCHEN</span>
+                        </div>
+                        <div className={s.recipePosterCrest}>
+                            <img src={getStickerSrc(slide.iconId)} alt="" className={s.recipePosterCrestImg} />
+                        </div>
+                        <div className={s.slideHeroBottom}>
+                            <div
+                                className={s.slideHeadlineLg}
+                                contentEditable={editable}
+                                suppressContentEditableWarning
+                                onBlur={(e) => onFieldChange?.('headline', e.currentTarget.textContent ?? '')}
+                            >
+                                {slide.headline}
+                            </div>
+                            {slide.body && (
+                                <div
+                                    className={s.recipePosterMeta}
+                                    contentEditable={editable}
+                                    suppressContentEditableWarning
+                                    onBlur={(e) => onFieldChange?.('body', e.currentTarget.textContent ?? '')}
+                                >
+                                    {slide.body}
+                                </div>
+                            )}
+                            <div className={s.recipePosterSwipe}>SWIPE FOR INGREDIENTS &amp; METHOD →</div>
+                        </div>
+                        <SlideFooter />
+                    </div>
+                    );
+                }
                 return (
                 <div className={`${s.slidePortrait} ${s.bgCharcoal}`}>
                     {slide.photo && <img src={slide.photo} alt="" className={s.slidePhotoBg} />}

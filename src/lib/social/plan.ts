@@ -142,7 +142,7 @@ export async function buildWeek(client: SanityClient, weekOf = mondayOf()): Prom
             return {
                 kind: 'recipe', label: `Recipe: ${r.title}`, contentIds: [r._id],
                 slides: [
-                    { _key: key(), template: 'recipe-cover', kicker: 'Recipe', headline: r.title, body: r.body ?? '', photo: r.photo || photo(2), iconId: r.iconId },
+                    { _key: key(), template: 'recipe-cover', kicker: 'Recipe', headline: r.title, body: r.body ?? '', photo: r.photo || undefined, iconId: r.iconId },
                     { _key: key(), template: 'recipe-ingredients', kicker: 'You will need', headline: r.title, items: r.ingredients ?? [], iconId: r.iconId },
                     { _key: key(), template: 'howto-steps', headline: 'Method', items: r.items ?? [], iconId: r.iconId },
                 ],
@@ -323,7 +323,7 @@ export function buildStarterWeeks(settings: SocialSettings = DEFAULT_SETTINGS, n
                     draft = {
                         kind: 'recipe', label: `Recipe: ${r.title}`, contentIds: [r._id],
                         slides: [
-                            { _key: key(), template: 'recipe-cover', kicker: 'Recipe', headline: r.title, body: r.body ?? '', photo: r.photo || PHOTOS[2], iconId: r.iconId },
+                            { _key: key(), template: 'recipe-cover', kicker: 'Recipe', headline: r.title, body: r.body ?? '', photo: r.photo || undefined, iconId: r.iconId },
                             { _key: key(), template: 'recipe-ingredients', kicker: 'You will need', headline: r.title, items: r.ingredients ?? [], iconId: r.iconId },
                             { _key: key(), template: 'howto-steps', headline: 'Method', items: r.items ?? [], iconId: r.iconId },
                         ],

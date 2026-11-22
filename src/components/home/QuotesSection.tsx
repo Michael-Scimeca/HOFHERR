@@ -57,7 +57,7 @@ export default function QuotesSection() {
                         <a href="tel:8474416328" className={styles.contactBox}>
                             <div className={styles.contactIcon}>📞</div>
                             <div className={styles.contactInfo}>
-                                <h4>Call or Text</h4>
+                                <h4>Call the Shop</h4>
                                 <div className={styles.contactValue}>(847) 441-6328</div>
                             </div>
                         </a>

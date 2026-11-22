@@ -186,7 +186,47 @@ export default async function SignatureDishesSection({
 
                 const isChicken =
                     product._id === 'fb-2' || product.title?.toLowerCase().includes('rotisserie');
+                const isBeef =
+                    product._id === 'fb-1' || product.title?.toLowerCase().includes('italian beef');
                 const rStatus = isChicken ? rotisserie : null;
+
+                // Time-aware scarcity badge for The World's Greatest Italian Beef (served at The Depot until sold out)
+                const getBeefScarcityBadge = (): { emoji: string; message: string; bg: string; border: string } | null => {
+                    if (!isBeef) return null;
+                    const nowChicago = new Date(
+                        new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })
+                    );
+                    const day = nowChicago.getDay(); // 0=Sun, 6=Sat
+                    const mins = nowChicago.getHours() * 60 + nowChicago.getMinutes();
+
+                    const isWeekday = day >= 1 && day <= 5;
+                    const isSat = day === 6;
+
+                    if ((isWeekday && ((mins >= 630 && mins < 840) || (mins >= 960 && mins < 1080))) || (isSat && mins >= 630 && mins < 780)) {
+                        return {
+                            emoji: '🟡',
+                            message: 'Serving hot now at The Depot — limited daily roast until sold out!',
+                            bg: '#d97706',
+                            border: '#e85222',
+                        };
+                    }
+                    if (isWeekday && mins >= 840 && mins < 960) {
+                        return {
+                            emoji: '🟡',
+                            message: 'Next hot batch at The Depot at 4:00pm — sells out fast!',
+                            bg: '#d97706',
+                            border: '#e85222',
+                        };
+                    }
+                    return {
+                        emoji: '🟡',
+                        message: 'Limited daily roast at The Depot — sells out fast, no pre-orders!',
+                        bg: '#d97706',
+                        border: '#e85222',
+                    };
+                };
+                const beefBadge = getBeefScarcityBadge();
+
                 const stockBadgeColor =
                     rStatus?.status === 'available'
                         ? { bg: '#16a34a', border: '#15803d' }
@@ -271,6 +311,20 @@ export default async function SignatureDishesSection({
                                 <span>{stockMessage}</span>
                             </div>
                         )}
+                        {beefBadge && (
+                            <div
+                                className={styles.stockBadgeLive}
+                                style={
+                                    {
+                                        '--badge-bg': beefBadge.bg,
+                                        '--badge-border': beefBadge.border,
+                                    } as React.CSSProperties
+                                }
+                            >
+                                <span className={styles.stockBadgeEmoji}>{beefBadge.emoji}</span>
+                                <span>{beefBadge.message}</span>
+                            </div>
+                        )}
                         {(product.links || []).length > 0 && (
                             <div className={styles.btnRow}>
                                 {[
@@ -335,7 +389,7 @@ export default async function SignatureDishesSection({
                         key={product._id}
                         id={sectionId}
                         aria-labelledby={headingId}
-                        className={`section ${idx % 2 === 0 ? styles.mainSection : styles.altSection}`}
+                        className={`section-sm ${idx % 2 === 0 ? styles.mainSection : styles.altSection}`}
                     >
                         <div className="container">
                             <div className={styles.featureGrid}>

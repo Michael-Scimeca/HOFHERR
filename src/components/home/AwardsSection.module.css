@@ -6,7 +6,7 @@
 }
 
 .container {
-    max-width: var(--max-w, 1400px);
+    max-width: calc(var(--max-w, 1400px) + var(--container-px) * 2);
     margin: 0 auto;
     padding-inline: var(--container-px);
 }

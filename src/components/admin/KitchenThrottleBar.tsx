@@ -1,13 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { KitchenLoadMode } from '@/app/api/kitchen-status/route';
 import styles from './KitchenThrottleBar.module.css';
 
 const SLOT_CAP_OPTIONS = [4, 6, 8, 12] as const;
 
 export default function KitchenThrottleBar() {
-    const [load, setLoad] = useState<KitchenLoadMode>('normal');
     const [maxCap, setMaxCap] = useState<number>(8);
     const [saving, setSaving] = useState(false);
 
@@ -18,9 +16,8 @@ export default function KitchenThrottleBar() {
                 const res = await fetch('/api/kitchen-status');
                 if (!res.ok) return;
                 const data = await res.json();
-                if (!cancelled) {
-                    if (data.kitchenLoad) setLoad(data.kitchenLoad);
-                    if (typeof data.maxOrdersPerSlot === 'number') setMaxCap(data.maxOrdersPerSlot);
+                if (!cancelled && typeof data.maxOrdersPerSlot === 'number') {
+                    setMaxCap(data.maxOrdersPerSlot);
                 }
             } catch {
                 // non-fatal
@@ -32,15 +29,14 @@ export default function KitchenThrottleBar() {
         };
     }, []);
 
-    const updateStatus = async (nextLoad: KitchenLoadMode, nextCap: number) => {
+    const updateCap = async (nextCap: number) => {
         setSaving(true);
-        setLoad(nextLoad);
         setMaxCap(nextCap);
         try {
             await fetch('/api/kitchen-status', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ kitchenLoad: nextLoad, maxOrdersPerSlot: nextCap }),
+                body: JSON.stringify({ maxOrdersPerSlot: nextCap }),
             });
         } catch {
             // non-fatal
@@ -50,37 +46,7 @@ export default function KitchenThrottleBar() {
     };
 
     return (
-        <section className={styles.bar} aria-label="Live Kitchen Load and Holiday Pickup Slot Controls">
-            <div className={styles.group}>
-                <span className={styles.label}>Kitchen Load:</span>
-                <div className={styles.pills}>
-                    <button
-                        type="button"
-                        disabled={saving}
-                        className={`${styles.btn} ${load === 'normal' ? styles.activeNormal : ''}`}
-                        onClick={() => void updateStatus('normal', maxCap)}
-                    >
-                        🟢 Normal (15m)
-                    </button>
-                    <button
-                        type="button"
-                        disabled={saving}
-                        className={`${styles.btn} ${load === 'busy' ? styles.activeBusy : ''}`}
-                        onClick={() => void updateStatus('busy', maxCap)}
-                    >
-                        🟡 Lunch Rush (30m)
-                    </button>
-                    <button
-                        type="button"
-                        disabled={saving}
-                        className={`${styles.btn} ${load === 'paused' ? styles.activePaused : ''}`}
-                        onClick={() => void updateStatus('paused', maxCap)}
-                    >
-                        🔴 Pause Hot Orders (20m)
-                    </button>
-                </div>
-            </div>
-
+        <section className={styles.bar} aria-label="Pickup Slot Capacity Controls">
             <div className={styles.group}>
                 <span className={styles.label}>Max Pickups / 15-Min Slot:</span>
                 <div className={styles.pills}>
@@ -90,7 +56,7 @@ export default function KitchenThrottleBar() {
                             type="button"
                             disabled={saving}
                             className={`${styles.btn} ${maxCap === cap ? styles.activeCap : ''}`}
-                            onClick={() => void updateStatus(load, cap)}
+                            onClick={() => void updateCap(cap)}
                         >
                             {cap}
                         </button>
@@ -100,4 +66,3 @@ export default function KitchenThrottleBar() {
         </section>
     );
 }
-

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './HolidayCateringTeaser.module.css';
 
 export default function HolidayCateringTeaser() {
@@ -41,8 +42,11 @@ export default function HolidayCateringTeaser() {
                         <Link href="/catering/holidays" className="btn-hit">
                             <span className="btn btn-primary">Explore Holiday Guide →</span>
                         </Link>
-                        <Link href="/catering" className="btn-hit">
-                            <span className="btn btn-secondary">Build a Package</span>
+                        <Link href="/catering#build-your-package" className="btn-hit">
+                            <span className="btn btn-secondary">
+                                <FireBorder active={true} radius={6} />
+                                Build a Package
+                            </span>
                         </Link>
                     </div>
                 </div>

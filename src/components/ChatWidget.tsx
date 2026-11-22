@@ -42,7 +42,6 @@ const QUICK_REPLIES = [
     { emoji: '📦', label: 'Place an Order', starter: "Hi! I'd like to place an order — " },
     { emoji: '🎉', label: 'Catering Quote', starter: "Hi! I'm interested in a catering quote. We're expecting about " },
     { emoji: '📞', label: 'Call Shop', url: 'tel:8474416328' },
-    { emoji: '💬', label: 'Text Shop', url: 'sms:8474416328&body=Hi%20Hofherr!%20' },
 ];
 
 const CTA_PHRASES = [

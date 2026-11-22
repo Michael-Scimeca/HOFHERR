@@ -2,7 +2,7 @@
 
 .page {
     width: 100%;
-    max-width: var(--max-w);
+    max-width: calc(var(--max-w) + var(--container-px) * 2);
     margin: 0 auto;
     padding: 96px var(--container-px);
     color: var(--text);

@@ -1,7 +1,7 @@
 .page {
-    max-width: var(--max-w, 1400px);
+    max-width: calc(var(--max-w, 1400px) + var(--container-px) * 2);
     margin: 0 auto;
-    padding: calc(var(--nav-h, 80px) + 24px) 24px 80px;
+    padding: calc(var(--nav-h, 80px) + 24px) var(--container-px) 80px;
     color: var(--fg, #f3ead8);
     font-family: var(--font-body), system-ui, sans-serif;
 }
@@ -1383,4 +1383,224 @@
         background: #fff;
         color: #1c1614;
     }
+}
+
+
+/* ── Pure HTML/CSS Butcher Recipe Poster Cover (zero AI / zero photo required) ── */
+.bgRecipePoster {
+    background: radial-gradient(circle at 50% 24%, #4e0a0e 0%, #1C1614 68%);
+}
+
+.recipePosterInnerFrame {
+    position: absolute;
+    inset: 16px 16px 56px 16px;
+    border: 1px solid rgba(245, 155, 26, 0.32);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.recipePosterStamp {
+    margin-left: auto;
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #D5B88F;
+    text-transform: uppercase;
+}
+
+.recipePosterCrest {
+    position: absolute;
+    left: 24px;
+    top: 62px;
+    width: 68px;
+    height: 68px;
+    border-radius: 999px;
+    background: rgba(243, 234, 216, 0.08);
+    border: 1.5px solid #F59B1A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.recipePosterCrestImg {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+}
+
+.recipePosterMeta {
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1.5px solid #8B0A10;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #F59B1A;
+}
+
+.recipePosterSwipe {
+    margin-top: 6px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #D5B88F;
+}
+
+
+/* ── Realistic Facebook Page Feed Preview ── */
+.fbCard {
+    background: #242526;
+    border: 1px solid #3a3b3c;
+    border-radius: 12px;
+    overflow: hidden;
+    color: #e4e6eb;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.fbHead {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px 8px;
+}
+
+.fbAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: #8B0A10;
+    border: 2px solid #F59B1A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: 5px;
+}
+
+.fbAvatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.fbMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.fbNameRow {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.fbPageName {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e4e6eb;
+}
+
+.fbVerifiedDot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: #2374e1;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.fbTime {
+    font-size: 11.5px;
+    color: #b0b3b8;
+}
+
+.fbDots {
+    margin-left: auto;
+    color: #b0b3b8;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.fbCopy {
+    padding: 4px 14px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fbCaptionText {
+    margin: 0;
+    padding: 4px 6px;
+    margin-inline: -6px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: #e4e6eb;
+    white-space: pre-wrap;
+    cursor: text;
+    outline: 1px dashed transparent;
+    transition: background 0.15s ease, outline-color 0.15s ease;
+}
+
+.fbCaptionText:hover,
+.fbHashtags:hover {
+    background: rgba(255, 255, 255, 0.05);
+    outline-color: rgba(245, 155, 26, 0.45);
+}
+
+.fbCaptionText:focus,
+.fbHashtags:focus {
+    background: rgba(255, 255, 255, 0.08);
+    outline: 1px solid #F59B1A;
+}
+
+.fbHashtags {
+    margin: 0;
+    padding: 4px 6px;
+    margin-inline: -6px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: #4599ff;
+    word-break: break-word;
+    cursor: text;
+    outline: 1px dashed transparent;
+    transition: background 0.15s ease, outline-color 0.15s ease;
+}
+
+.fbMediaWrap {
+    width: 100%;
+    background: #18191a;
+}
+
+.fbStats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: #b0b3b8;
+    border-bottom: 1px solid #3a3b3c;
+}
+
+.fbActions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #b0b3b8;
 }

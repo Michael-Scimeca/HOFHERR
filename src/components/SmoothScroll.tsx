@@ -18,7 +18,7 @@ export default function SmoothScroll() {
         } as ConstructorParameters<typeof Lenis>[0]);
 
         const clampLimitToFooter = () => {
-            const footer = document.querySelector('footer');
+            const footer = document.querySelector('footer[data-site-footer="true"]');
             if (!footer) return;
             const footerBottom = Math.round(footer.getBoundingClientRect().bottom + window.scrollY);
             const maxScroll = Math.max(0, footerBottom - window.innerHeight);

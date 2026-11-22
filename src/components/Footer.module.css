@@ -67,17 +67,52 @@
 
 .social {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-muted);
     border: 1px solid var(--border-soft);
     padding: 5px 12px;
     border-radius: 20px;
-    transition: color 0.2s, border-color 0.2s;
+    transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.15s;
 }
 
 .social:hover {
-    color: var(--accent-2);
-    border-color: var(--border);
+    transform: translateY(-1px);
+}
+
+.socialInstagram {
+    color: #f9a8d4;
+    border-color: rgba(225, 48, 108, 0.55);
+    background: linear-gradient(135deg, rgba(225, 48, 108, 0.18), rgba(245, 133, 41, 0.14));
+}
+
+.socialInstagram:hover {
+    color: #fff;
+    border-color: #E1306C;
+    background: linear-gradient(135deg, #E1306C, #F58529);
+}
+
+.socialFacebook {
+    color: #93c5fd;
+    border-color: rgba(24, 119, 242, 0.55);
+    background: rgba(24, 119, 242, 0.18);
+}
+
+.socialFacebook:hover {
+    color: #fff;
+    border-color: #1877F2;
+    background: #1877F2;
+}
+
+.socialYelp {
+    color: #fca5a5;
+    border-color: rgba(211, 35, 35, 0.55);
+    background: rgba(211, 35, 35, 0.18);
+}
+
+.socialYelp:hover {
+    color: #fff;
+    border-color: #D32323;
+    background: #D32323;
 }
 
 .cols {

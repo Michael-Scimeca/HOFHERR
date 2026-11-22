@@ -78,6 +78,80 @@ export default async function SpecialsPage() {
             {/* ── Specials (dynamic from Sanity) ── */}
             <SignatureDishesSection signatures={signatures} rotisserie={rotisserie} />
 
+            {/* ── Seasonal Allocations & Value-Add Butcher Bonuses ── */}
+            <section id="holiday-allocations" aria-labelledby="holiday-allocations-heading" className="section-sm">
+                <div className="container">
+                    <div className={styles.allocHeader}>
+                        <h2 id="holiday-allocations-heading" className={styles.allocTitle}>
+                            Seasonal Allocations &amp; Butcher Bonuses
+                        </h2>
+                        <p className={styles.allocSub}>
+                            We never slash prices on USDA Prime or dry-aged beef. Instead, every seasonal release pairs
+                            honest small-batch household limits with complimentary house-made accompaniments.
+                        </p>
+                    </div>
+
+                    <div className={styles.allocGrid}>
+                        <article className={styles.allocCard}>
+                            <div className={styles.allocTopRow}>
+                                <span className={styles.allocLimit}>Limit 2 per household</span>
+                                <span className={styles.allocAnchor}>~$20/guest · 1 rib feeds 2</span>
+                            </div>
+                            <h3 className={styles.allocCardTitle}>Prime Standing Rib Roast</h3>
+                            <p className={styles.allocCardDesc}>
+                                Midwestern USDA Prime bone-in prime rib—hand-trimmed, hinged off the bone, and butcher-tied
+                                for effortless carving at the holiday table.
+                            </p>
+                            <div className={styles.allocBonus}>
+                                <span className={styles.allocBonusLabel}>Included Free</span>
+                                <span className={styles.allocBonusValue}>Free $14 House Jus &amp; Herb Butter included</span>
+                            </div>
+                            <Link href="/online-orders" className={`btn btn-primary ${styles.allocCta}`}>
+                                Reserve on Online Orders →
+                            </Link>
+                        </article>
+
+                        <article className={styles.allocCard}>
+                            <div className={styles.allocTopRow}>
+                                <span className={styles.allocLimit}>Limit 2 per household</span>
+                                <span className={styles.allocAnchor}>$100 · ~$10/guest</span>
+                            </div>
+                            <h3 className={styles.allocCardTitle}>Glazed Spiral-Sliced Ham</h3>
+                            <p className={styles.allocCardDesc}>
+                                10–12 lb heritage spiral-sliced ham that serves 10+ adults. Ready to heat and glaze with zero
+                                water-weight shrinkage.
+                            </p>
+                            <div className={styles.allocBonus}>
+                                <span className={styles.allocBonusLabel}>Included Free</span>
+                                <span className={styles.allocBonusValue}>Free House Glaze Packet &amp; Heating Guide</span>
+                            </div>
+                            <Link href="/online-orders" className={`btn btn-secondary ${styles.allocCta}`}>
+                                Order Holiday Ham →
+                            </Link>
+                        </article>
+
+                        <article className={styles.allocCard}>
+                            <div className={styles.allocTopRow}>
+                                <span className={styles.allocLimit}>Small-Batch Tuesday Cut</span>
+                                <span className={styles.allocAnchor}>~$17/serving vs. $68 steakhouse</span>
+                            </div>
+                            <h3 className={styles.allocCardTitle}>45-Day Dry-Aged Prime Ribeye</h3>
+                            <p className={styles.allocCardDesc}>
+                                Cut to your exact thickness on the block from Midwestern family-farm cattle—aged on the bone
+                                for deep nutty marbling.
+                            </p>
+                            <div className={styles.allocBonus}>
+                                <span className={styles.allocBonusLabel}>Included Free</span>
+                                <span className={styles.allocBonusValue}>Free Custom Trim + Parcel Sheet Sear Guide</span>
+                            </div>
+                            <Link href="/online-orders" className={`btn btn-secondary ${styles.allocCta}`}>
+                                Shop Prime Beef →
+                            </Link>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
             {/* ── Pig roasts teaser (full section lives on /catering) ── */}
             <section id="pig-roasts" aria-labelledby="pig-roasts-heading" className="section-sm">
                 <div className="container">

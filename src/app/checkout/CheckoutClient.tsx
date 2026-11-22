@@ -357,7 +357,7 @@ export default function CheckoutClient() {
     const [cart, setCart] = useState<CartItem[]>(() => readInitialCheckoutState().items);
 
     const isGodModeClient = useSyncExternalStore(
-        () => () => {},
+        () => () => { },
         () => document.cookie.includes('hofherr_god_mode=true'),
         () => false
     );
@@ -642,11 +642,12 @@ export default function CheckoutClient() {
             postalCode: postalCodeInput,
             pickup: pickupString,
         };
+        const contactPrefPrefix = `[Reach via: ${contactPref === 'phone' ? 'Phone Call' : 'Email'}]`;
         const curbsidePrefix =
             activeStore === 'butcher' && pickupHandoff === 'curbside'
                 ? `[CURBSIDE TRUNK DROP-OFF${vehicleInfo.trim() ? ` — Vehicle: ${vehicleInfo.trim()}` : ''}]`
                 : '';
-        const combinedOrderNote = [curbsidePrefix, orderNote.trim()].filter(Boolean).join(' ');
+        const combinedOrderNote = [contactPrefPrefix, curbsidePrefix, orderNote.trim()].filter(Boolean).join(' ');
 
         startTransition(async () => {
             try {
@@ -656,7 +657,7 @@ export default function CheckoutClient() {
                     body: JSON.stringify({
                         items: cart,
                         contact: contactPayload,
-                        orderNote: combinedOrderNote,
+                        orderNote,
                         customerId: sessionUser?.id,
                         coupon: null,
                         giftCardCode: appliedGiftCard?.code ?? null,
@@ -706,15 +707,15 @@ export default function CheckoutClient() {
         cutoffInfo.state === 'open'
             ? `${styles.hoursCutoffCard} ${styles.hoursCutoffCardOpen}`
             : cutoffInfo.state === 'buffer'
-              ? `${styles.hoursCutoffCard} ${styles.hoursCutoffCardBuffer}`
-              : `${styles.hoursCutoffCard} ${styles.hoursCutoffCardClosed}`;
+                ? `${styles.hoursCutoffCard} ${styles.hoursCutoffCardBuffer}`
+                : `${styles.hoursCutoffCard} ${styles.hoursCutoffCardClosed}`;
 
     const badgeClass =
         cutoffInfo.state === 'open'
             ? `${styles.statusBadge} ${styles.statusBadgeOpen}`
             : cutoffInfo.state === 'buffer'
-              ? `${styles.statusBadge} ${styles.statusBadgeBuffer}`
-              : `${styles.statusBadge} ${styles.statusBadgeClosed}`;
+                ? `${styles.statusBadge} ${styles.statusBadgeBuffer}`
+                : `${styles.statusBadge} ${styles.statusBadgeClosed}`;
 
     return (
         <main className={styles.page}>
@@ -884,9 +885,28 @@ export default function CheckoutClient() {
                                         <div className={styles.contactRight}>
                                             <p className={styles.reachLabel}>HOW SHOULD WE REACH YOU?</p>
                                             <div className={styles.prefRow}>
-                                                <button type="button" className={`${styles.prefBtn} ${contactPref === 'phone' ? styles.prefBtnActive : ''}`} onClick={() => setContactPref('phone')}>📞 Call Me</button>
-                                                <button type="button" className={`${styles.prefBtn} ${contactPref === 'email' ? styles.prefBtnActive : ''}`} onClick={() => setContactPref('email')}>✉️ Email Me</button>
+                                                <button
+                                                    type="button"
+                                                    aria-pressed={contactPref === 'phone'}
+                                                    className={`${styles.prefBtn} ${contactPref === 'phone' ? styles.prefBtnActive : ''}`}
+                                                    onClick={() => setContactPref('phone')}
+                                                >
+                                                    📞 Call Me
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    aria-pressed={contactPref === 'email'}
+                                                    className={`${styles.prefBtn} ${contactPref === 'email' ? styles.prefBtnActive : ''}`}
+                                                    onClick={() => setContactPref('email')}
+                                                >
+                                                    ✉️ Email Me
+                                                </button>
                                             </div>
+                                            <p className={styles.prefHint}>
+                                                {contactPref === 'phone'
+                                                    ? `We'll call ${resolvedPhone || 'your phone'} with order updates.`
+                                                    : `We'll email ${resolvedEmail || 'your inbox'} with order updates.`}
+                                            </p>
                                         </div>
                                     </div>
                                 ) : (
@@ -904,24 +924,24 @@ export default function CheckoutClient() {
                                             />
                                             <div className={styles.inputRow}>
                                                 <input
-                                                    required
+                                                    required={contactPref === 'phone'}
                                                     name="tel"
                                                     id="checkout-phone"
                                                     autoComplete="tel"
                                                     type="tel"
-                                                    className={styles.input}
-                                                    placeholder="(847) 555-0100"
+                                                    className={`${styles.input} ${contactPref === 'phone' ? styles.inputPreferred : ''}`}
+                                                    placeholder={contactPref === 'phone' ? '(847) 555-0100 (Required)' : '(847) 555-0100 (Optional)'}
                                                     value={resolvedPhone}
                                                     onChange={e => setPhoneInput(formatPhoneNumber(e.target.value))}
                                                 />
                                                 <input
-                                                    required
+                                                    required={contactPref === 'email'}
                                                     name="email"
                                                     id="checkout-email"
                                                     autoComplete="email"
                                                     type="email"
-                                                    className={styles.input}
-                                                    placeholder="Email Address"
+                                                    className={`${styles.input} ${contactPref === 'email' ? styles.inputPreferred : ''}`}
+                                                    placeholder={contactPref === 'email' ? 'Email Address (Required)' : 'Email Address (Optional)'}
                                                     value={resolvedEmail}
                                                     onChange={e => setEmailInput(e.target.value)}
                                                 />
@@ -952,9 +972,28 @@ export default function CheckoutClient() {
                                         <div className={styles.contactRight}>
                                             <p className={styles.reachLabel}>HOW SHOULD WE REACH YOU?</p>
                                             <div className={styles.prefRow}>
-                                                <button type="button" className={`${styles.prefBtn} ${contactPref === 'phone' ? styles.prefBtnActive : ''}`} onClick={() => setContactPref('phone')}>📞 Call Me</button>
-                                                <button type="button" className={`${styles.prefBtn} ${contactPref === 'email' ? styles.prefBtnActive : ''}`} onClick={() => setContactPref('email')}>✉️ Email Me</button>
+                                                <button
+                                                    type="button"
+                                                    aria-pressed={contactPref === 'phone'}
+                                                    className={`${styles.prefBtn} ${contactPref === 'phone' ? styles.prefBtnActive : ''}`}
+                                                    onClick={() => setContactPref('phone')}
+                                                >
+                                                    📞 Call Me
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    aria-pressed={contactPref === 'email'}
+                                                    className={`${styles.prefBtn} ${contactPref === 'email' ? styles.prefBtnActive : ''}`}
+                                                    onClick={() => setContactPref('email')}
+                                                >
+                                                    ✉️ Email Me
+                                                </button>
                                             </div>
+                                            <p className={styles.prefHint}>
+                                                {contactPref === 'phone'
+                                                    ? "We'll call your phone when your cuts are ready."
+                                                    : "We'll email your inbox when your cuts are ready."}
+                                            </p>
                                         </div>
                                     </div>
                                 )}
@@ -1018,15 +1057,15 @@ export default function CheckoutClient() {
                                         kitchenStatus.kitchenLoad === 'paused'
                                             ? styles.kitchenBannerPaused
                                             : kitchenStatus.kitchenLoad === 'busy'
-                                              ? styles.kitchenBannerBusy
-                                              : styles.kitchenBannerNormal
+                                                ? styles.kitchenBannerBusy
+                                                : styles.kitchenBannerNormal
                                     }
                                 >
                                     {kitchenStatus.kitchenLoad === 'paused'
                                         ? `🔴 Hot Orders Temporarily Paused · ~${kitchenStatus.prepMinutes} min buffer · Max ${kitchenStatus.maxOrdersPerSlot} pickups per 15-min slot`
                                         : kitchenStatus.kitchenLoad === 'busy'
-                                          ? `🟡 Lunch / Counter Rush Active · Est. ~${kitchenStatus.prepMinutes} min prep · Max ${kitchenStatus.maxOrdersPerSlot} pickups per 15-min slot`
-                                          : `🟢 Kitchen Normal · Est. ~${kitchenStatus.prepMinutes} min prep · Capped at ${kitchenStatus.maxOrdersPerSlot} pickups per 15-min slot`}
+                                            ? `🟡 Lunch / Counter Rush Active · Est. ~${kitchenStatus.prepMinutes} min prep · Max ${kitchenStatus.maxOrdersPerSlot} pickups per 15-min slot`
+                                            : `🟢 Kitchen Normal · Est. ~${kitchenStatus.prepMinutes} min prep · Capped at ${kitchenStatus.maxOrdersPerSlot} pickups per 15-min slot`}
                                 </div>
 
                                 {/* Date scroll */}
@@ -1070,44 +1109,75 @@ export default function CheckoutClient() {
 
                                 {/* Time slots */}
                                 <div className={styles.timeGrid}>
-                                    {availableSlots.length > 0 ? availableSlots.map((slot, slotIdx) => {
-                                        const isActive = effectiveSlotValue === slot.value;
-                                        const slotKey = `${activeDateLabel} at ${slot.value}`;
-                                        const booked = kitchenStatus.slotCounts[slotKey] ?? 0;
-                                        const remaining = Math.max(0, kitchenStatus.maxOrdersPerSlot - booked);
-                                        const isActiveDateToday = activeDate?.toDateString() === now.toDateString();
-                                        const isRushDelayed =
-                                            isActiveDateToday &&
-                                            ((kitchenStatus.kitchenLoad === 'busy' && slotIdx === 0) ||
-                                                (kitchenStatus.kitchenLoad === 'paused' && slotIdx < 2));
-                                        const isFull = remaining === 0;
+                                    {availableSlots.length > 0 ? (
+                                        availableSlots.map((slot, slotIdx) => {
+                                            const isActive = effectiveSlotValue === slot.value;
+                                            const slotKey = `${activeDateLabel} at ${slot.value}`;
+                                            const booked = kitchenStatus.slotCounts[slotKey] ?? 0;
+                                            const remaining = Math.max(0, kitchenStatus.maxOrdersPerSlot - booked);
+                                            const isActiveDateToday = activeDate?.toDateString() === now.toDateString();
+                                            const isRushDelayed =
+                                                isActiveDateToday &&
+                                                ((kitchenStatus.kitchenLoad === 'busy' && slotIdx === 0) ||
+                                                    (kitchenStatus.kitchenLoad === 'paused' && slotIdx < 2));
+                                            const isFull = remaining === 0;
 
-                                        if (slot.disabled || isFull || isRushDelayed) {
+                                            if (slot.disabled || isFull || isRushDelayed) {
+                                                return (
+                                                    <button key={slot.value} type="button" disabled className={styles.timeSlotBtnDisabled}>
+                                                        <span>{slot.label || slot.value}</span>
+                                                        {isFull && <span className={styles.slotCapTag}>Full</span>}
+                                                        {!isFull && isRushDelayed && <span className={styles.slotCapTag}>Rush</span>}
+                                                    </button>
+                                                );
+                                            }
                                             return (
-                                                <button key={slot.value} type="button" disabled className={styles.timeSlotBtnDisabled}>
+                                                <button
+                                                    key={slot.value}
+                                                    type="button"
+                                                    className={`${styles.timeSlotBtn} ${isActive ? styles.timeSlotBtnActive : ''}`}
+                                                    onClick={() => setSelectedSlotValue(slot.value)}
+                                                >
                                                     <span>{slot.label || slot.value}</span>
-                                                    {isFull && <span className={styles.slotCapTag}>Full</span>}
-                                                    {!isFull && isRushDelayed && <span className={styles.slotCapTag}>Rush</span>}
+                                                    {remaining <= 3 && (
+                                                        <span className={styles.slotCapTag}>{remaining} left</span>
+                                                    )}
                                                 </button>
                                             );
-                                        }
-                                        return (
-                                            <button
-                                                key={slot.value}
-                                                type="button"
-                                                className={`${styles.timeSlotBtn} ${isActive ? styles.timeSlotBtnActive : ''}`}
-                                                onClick={() => setSelectedSlotValue(slot.value)}
-                                            >
-                                                <span>{slot.label || slot.value}</span>
-                                                {remaining <= 3 && (
-                                                    <span className={styles.slotCapTag}>{remaining} left</span>
-                                                )}
-                                            </button>
-                                        );
-                                    }) : (
+                                        })
+                                    ) : (
                                         <p className={styles.noSlots}>No slots available for this day.</p>
                                     )}
                                 </div>
+
+                                {pickupString && (
+                                    <div className={styles.pickupSummaryBar} role="status" aria-live="polite">
+                                        <div className={styles.pickupSummaryHeader}>
+                                            <span className={styles.pickupSummaryCheck} aria-hidden="true">✓</span>
+                                            <span className={styles.pickupSummaryEyebrow}>Your Pickup Window Is Set</span>
+                                        </div>
+                                        <div className={styles.pickupSummaryGrid}>
+                                            <div className={styles.pickupSummaryCell}>
+                                                <span className={styles.pickupSummaryField}>Date</span>
+                                                <strong className={styles.pickupSummaryValue}>{activeDateLabel}</strong>
+                                            </div>
+                                            <div className={styles.pickupSummaryCell}>
+                                                <span className={styles.pickupSummaryField}>Time</span>
+                                                <strong className={styles.pickupSummaryTimeVal}>{effectiveSlotValue}</strong>
+                                            </div>
+                                            <div className={styles.pickupSummaryCell}>
+                                                <span className={styles.pickupSummaryField}>Where</span>
+                                                <strong className={styles.pickupSummaryValue}>
+                                                    {activeStore === 'butcher'
+                                                        ? pickupHandoff === 'curbside'
+                                                            ? 'Northfield · Curbside'
+                                                            : 'Northfield · Counter'
+                                                        : 'Winnetka · The Depot'}
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Order note */}

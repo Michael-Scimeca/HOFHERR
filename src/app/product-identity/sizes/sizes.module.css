@@ -1,8 +1,8 @@
 /* Print Sizes editor — site tokens (globals.css) */
 .page {
-    max-width: var(--max-w, 1400px);
+    max-width: calc(var(--max-w, 1400px) + var(--container-px) * 2);
     margin: 0 auto;
-    padding: calc(var(--nav-h, 68px) + 24px) 24px 80px;
+    padding: calc(var(--nav-h, 68px) + 24px) var(--container-px) 80px;
     color: var(--fg);
 }
 

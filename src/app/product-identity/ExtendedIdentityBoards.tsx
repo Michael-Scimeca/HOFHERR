@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import MasterVectorLibrary from './MasterVectorLibrary';
-import { ALL_SITE_COLORS, type SiteColorFamily } from './siteColorsData';
 import styles from './extended.module.css';
 
 /**
@@ -364,17 +363,6 @@ const BRAND_COLORS: BrandColor[] = [
     { name: 'Muted Metadata Grey', hex: '#888888', token: '--fg-muted', role: 'Timestamps · secondary icons · placeholders', pantone: '≈ Cool Gray 8 C', cmyk: '0 / 0 / 0 / 47' },
 ];
 
-const COLOR_FAMILY_FILTERS: { id: 'all' | SiteColorFamily; label: string }[] = [
-    { id: 'all', label: `All Site Hexes (${ALL_SITE_COLORS.length})` },
-    { id: 'reds', label: `Reds (${ALL_SITE_COLORS.filter((c) => c.family === 'reds').length})` },
-    { id: 'golds', label: `Golds & Oranges (${ALL_SITE_COLORS.filter((c) => c.family === 'golds').length})` },
-    { id: 'greens', label: `Greens (${ALL_SITE_COLORS.filter((c) => c.family === 'greens').length})` },
-    { id: 'blues', label: `Blues (${ALL_SITE_COLORS.filter((c) => c.family === 'blues').length})` },
-    { id: 'browns', label: `Creams & Browns (${ALL_SITE_COLORS.filter((c) => c.family === 'browns').length})` },
-    { id: 'purples', label: `Purples (${ALL_SITE_COLORS.filter((c) => c.family === 'purples').length})` },
-    { id: 'neutrals', label: `Neutrals & Surfaces (${ALL_SITE_COLORS.filter((c) => c.family === 'neutrals').length})` },
-];
-
 const FONTS = [
     { name: 'Yanone Kaffeesatz', role: 'Headlines · labels · stamps · signage', weights: '400 · 500 · 600 · 700', cssVar: 'var(--font-heading)', sample: 'HOFHERR MEAT CO. · CUT TO ORDER', upper: true },
     { name: 'Inter', role: 'Body copy · specs · prices · legal / safe-handling', weights: 'Variable 100–900', cssVar: 'var(--font-body)', sample: 'Pasture-raised Midwest beef, dry-aged 45 days and cut by hand in Northfield.', upper: false },
@@ -695,7 +683,6 @@ function ItemCard({ item, folder }: { item: IdentityItem; folder: string }) {
 }
 
 export function BrandColorTokensSection() {
-    const [colorFilter, setColorFilter] = useState<'all' | SiteColorFamily>('all');
     const [copiedHex, setCopiedHex] = useState<string | null>(null);
 
     useEffect(() => {
@@ -712,11 +699,6 @@ export function BrandColorTokensSection() {
             setCopiedHex(key);
         }
     };
-
-    const visibleSiteColors =
-        colorFilter === 'all'
-            ? ALL_SITE_COLORS
-            : ALL_SITE_COLORS.filter((c) => c.family === colorFilter);
 
     return (
         <section id="color-tokens" aria-labelledby="color-tokens-heading" className="section">
@@ -773,76 +755,6 @@ export function BrandColorTokensSection() {
                             </button>
                         );
                     })}
-                </div>
-
-                <div className={styles.colorSectionBlock}>
-                    <div className={styles.colorSectionHeader}>
-                        <div>
-                            <h3 className={styles.emblemBlockTitle}>
-                                Every Active Color Across the Entire Site ({ALL_SITE_COLORS.length} Hexes)
-                            </h3>
-                            <p className={styles.emblemBlockSub}>
-                                Live codebase inventory of every unique web UI hex color across <code>src/</code> (excluding print-sheet calibration marks) — filter by hue family or click any swatch to copy
-                            </p>
-                        </div>
-                        <div className={styles.colorFilterBar} role="group" aria-label="Filter site colors by family">
-                            {COLOR_FAMILY_FILTERS.map((f) => (
-                                <button
-                                    key={f.id}
-                                    type="button"
-                                    onClick={() => setColorFilter(f.id)}
-                                    className={`${styles.colorFilterBtn} ${colorFilter === f.id ? styles.colorFilterBtnActive : ''}`}
-                                >
-                                    {f.label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className={styles.colorGrid}>
-                        {visibleSiteColors.map((entry) => {
-                            const cardKey = `site-${entry.hex}`;
-                            return (
-                                <div key={cardKey} className={styles.colorCard}>
-                                    <button
-                                        type="button"
-                                        onClick={() => copyColor(entry.hex, cardKey)}
-                                        className={styles.colorSwatchBtn}
-                                    >
-                                        <div
-                                            className={styles.colorChip}
-                                            style={{ '--chip-bg': entry.hex } as React.CSSProperties}
-                                        />
-                                        <div className={styles.colorBody}>
-                                            <span className={styles.colorName}>
-                                                {copiedHex === cardKey ? `✓ Copied ${entry.hex}` : entry.hex}
-                                            </span>
-                                            <span className={styles.colorRole}>{entry.files}</span>
-                                            <dl className={styles.colorSpecs}>
-                                                <dt>HEX</dt><dd>{entry.hex}</dd>
-                                                <dt>USED</dt><dd>{entry.count}× in src/</dd>
-                                                <dt>GROUP</dt><dd>{entry.family.toUpperCase()}</dd>
-                                                {entry.token && (
-                                                    <>
-                                                        <dt>TOKEN</dt><dd>{entry.token}</dd>
-                                                    </>
-                                                )}
-                                            </dl>
-                                        </div>
-                                    </button>
-                                    {entry.routes.length > 0 && (
-                                        <div className={styles.colorRouteRow}>
-                                            {entry.routes.map((route) => (
-                                                <Link key={route} href={route} className={styles.colorRouteLink}>
-                                                    ↗ {route}
-                                                </Link>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
                 </div>
             </div>
         </section>

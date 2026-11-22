@@ -1,7 +1,10 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
+import { ALL_HOLIDAY_HEROES, getActiveHolidayHero } from '@/lib/holidayHero';
 import {
     HOLIDAY_SELLING_GUIDES,
     OTHER_CATERING_OCCASIONS,
@@ -51,6 +54,10 @@ function filterHolidaysByQuery(items: HolidaySellingGuide[], normalizedQuery: st
 }
 
 export default function HolidayCateringClient() {
+    const liveTodayHero = useMemo(() => getActiveHolidayHero(), []);
+    const [previewHeroId, setPreviewHeroId] = useState<string>(
+        liveTodayHero?.id ?? ALL_HOLIDAY_HEROES[0].id
+    );
     const [activeSeason, setActiveSeason] = useState<SeasonId>('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [occasionFilter, setOccasionFilter] = useState<OccasionCategoryFilter>('All');
@@ -181,6 +188,115 @@ export default function HolidayCateringClient() {
                     </div>
                 </div>
             </header>
+
+            {/* ── Section 0: Automatic Home Hero Holiday Examples (All 12) ── */}
+            <section id="home-hero-holiday-examples" aria-labelledby="home-hero-holiday-examples-heading" className="section-sm">
+                <div className="container">
+                    <div className={styles.sectionStack}>
+                        <div className={styles.sectionHeader}>
+                            <h2 id="home-hero-holiday-examples-heading" className={styles.sectionHeading}>
+                                Home Page Hero · Holiday Auto-Spotlight (All {ALL_HOLIDAY_HEROES.length})
+                            </h2>
+                            <p className={styles.sectionSub}>
+                                The Home page Hero automatically switches based on today&apos;s Chicago calendar date.
+                                Click any holiday below to preview how it renders in the Home Hero, or launch it live on{' '}
+                                <code>/</code>.
+                            </p>
+                        </div>
+
+                        <div className={styles.heroExamplePills} role="tablist" aria-label="Preview Home Hero by holiday">
+                            {ALL_HOLIDAY_HEROES.map(h => {
+                                const isSelected = h.id === previewHeroId;
+                                const isLiveToday = liveTodayHero?.id === h.id;
+                                return (
+                                    <button
+                                        key={h.id}
+                                        type="button"
+                                        role="tab"
+                                        aria-selected={isSelected}
+                                        className={`${styles.heroExamplePill} ${isSelected ? styles.heroExamplePillActive : ''}`}
+                                        onClick={() => setPreviewHeroId(h.id)}
+                                    >
+                                        {isLiveToday && <span className={styles.heroLiveDot} aria-hidden="true" />}
+                                        <span>{h.guide.name}</span>
+                                        <span className={styles.heroPillDates}>{h.windowLabel}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {(() => {
+                            const selectedHero =
+                                ALL_HOLIDAY_HEROES.find(h => h.id === previewHeroId) ?? ALL_HOLIDAY_HEROES[0];
+                            const isLiveNow = liveTodayHero?.id === selectedHero.id;
+                            return (
+                                <div className={styles.heroStage}>
+                                    <div className={styles.heroStageTopBar}>
+                                        <div className={styles.heroStageMeta}>
+                                            <span className={isLiveNow ? styles.heroStageLive : styles.heroStageWindow}>
+                                                {isLiveNow
+                                                    ? `● LIVE ON HOME PAGE TODAY (${selectedHero.windowLabel})`
+                                                    : `Auto-shows on Home: ${selectedHero.windowLabel}`}
+                                            </span>
+                                            <span className={styles.heroStageDemand}>{selectedHero.guide.demandLevel}</span>
+                                        </div>
+                                        <Link
+                                            href={`/?holiday=${selectedHero.id}`}
+                                            className={styles.heroStageLaunch}
+                                        >
+                                            Preview Live on Home Page ↗
+                                        </Link>
+                                    </div>
+
+                                    <div className={styles.heroMockBody}>
+                                        <div className={styles.heroMockHeadline}>
+                                            <span>QUALITY MEATS.</span>
+                                            <span className={styles.heroMockAccent}>NO COMPROMISE.</span>
+                                        </div>
+                                        <p className={styles.heroMockSub}>
+                                            Craft butchery across two North Shore locations — every animal traceable to a named
+                                            family farm.
+                                        </p>
+
+                                        <div
+                                            className={`${styles.heroMockStrip} ${selectedHero.accent === 'red' ? styles.heroMockStripRed : styles.heroMockStripGold}`}
+                                        >
+                                            <div className={styles.heroMockThumb}>
+                                                <Image
+                                                    src={selectedHero.guide.image}
+                                                    alt={selectedHero.guide.imageAlt}
+                                                    width={80}
+                                                    height={80}
+                                                    className={styles.heroMockThumbImg}
+                                                />
+                                            </div>
+                                            <div className={styles.heroMockCopy}>
+                                                <div className={styles.heroMockRow}>
+                                                    <strong className={styles.heroMockTitle}>
+                                                        Now Booking · {selectedHero.guide.name}
+                                                    </strong>
+                                                    <span className={styles.heroMockLead}>
+                                                        Order {selectedHero.guide.leadTime}
+                                                    </span>
+                                                </div>
+                                                <p className={styles.heroMockOfferings}>
+                                                    {selectedHero.guide.heroOfferings.join(' · ')}
+                                                </p>
+                                                <div className={styles.heroMockLinks}>
+                                                    <Link href={selectedHero.ctaHref} className={styles.heroMockCta}>
+                                                        {selectedHero.ctaLabel}
+                                                    </Link>
+                                                    <span className={styles.heroMockAll}>ALL HOLIDAY MENUS →</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })()}
+                    </div>
+                </div>
+            </section>
 
             {/* ── Section 1: Holiday Selling Points by Season ── */}
             <section id="holiday-selling-points" aria-labelledby="holiday-selling-points-heading" className="section">
@@ -661,8 +777,11 @@ export default function HolidayCateringClient() {
                             through the counter, or call our Northfield team for custom menus.
                         </p>
                         <div className={styles.ctaBtns}>
-                            <Link href="/catering#build-your-package" className={styles.primaryBtn}>
-                                Build a Catering Package →
+                            <Link href="/catering#build-your-package" className="btn-hit">
+                                <span className="btn btn-primary">
+                                    <FireBorder active={true} radius={6} />
+                                    Build a Catering Package →
+                                </span>
                             </Link>
                             <Link href="/online-orders" className={styles.secondaryBtn}>
                                 Order Cuts Online

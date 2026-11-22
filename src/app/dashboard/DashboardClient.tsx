@@ -543,44 +543,6 @@ export default function DashboardClient({
         };
     }, [email, userName, initialRestockRequests]);
 
-    const handleSimulateRestockFilled = async (reqItem: RestockRequestData) => {
-        const notifiedAt = new Date().toISOString();
-        const updatedList = restockRequests.map(r =>
-            r._id === reqItem._id || (r.item === reqItem.item && r.store === reqItem.store)
-                ? { ...r, status: 'notified', notifiedAt }
-                : r
-        );
-        setRestockRequests(updatedList);
-        try {
-            window.localStorage.setItem('hofherr_restock_requests', JSON.stringify(updatedList));
-        } catch {}
-
-        setRestockNoticeBanner(
-            `🔔 "${reqItem.item}" marked Back in Stock! Restock confirmation email sent to ${email} and profile notification activated.`
-        );
-        setTimeout(() => setRestockNoticeBanner(null), 6000);
-
-        try {
-            const res = await fetch('/api/restock-request', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id: reqItem._id,
-                    item: reqItem.item,
-                    customerName: displayName || userName,
-                    customerEmail: email,
-                    qty: reqItem.qty,
-                    store: reqItem.store,
-                }),
-            });
-            if (!res.ok) {
-                console.error('Failed to trigger restock filled email');
-            }
-        } catch {
-            // keep optimistic state
-        }
-    };
-
     const handleDismissRestockRequest = async (reqItem: RestockRequestData) => {
         const nextList = restockRequests.filter(
             r => !(r._id === reqItem._id || (r.item === reqItem.item && r.store === reqItem.store))
@@ -1742,27 +1704,15 @@ export default function DashboardClient({
                                                             </button>
                                                         </>
                                                     ) : (
-                                                        <>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    handleSimulateRestockFilled(reqItem)
-                                                                }
-                                                                className={styles.restockSimulateFillBtn}
-                                                                title="Simulate the butcher filling this restock request (sends email & activates notification)"
-                                                            >
-                                                                ⚡ Mark Filled (Test Alert &amp; Email)
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    handleDismissRestockRequest(reqItem)
-                                                                }
-                                                                className={styles.restockDismissBtn}
-                                                            >
-                                                                Cancel Request
-                                                            </button>
-                                                        </>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                handleDismissRestockRequest(reqItem)
+                                                            }
+                                                            className={styles.restockDismissBtn}
+                                                        >
+                                                            Cancel Request
+                                                        </button>
                                                     )}
                                                 </div>
                                             </div>
@@ -2083,7 +2033,8 @@ export default function DashboardClient({
                                 )}
                             </div>
 
-                            {/* ── Test Controls ── */}
+                            {/* ── Test Controls (Admin Only) ── */}
+                            {isAdmin && (
                             <div className={styles.liveTrackerControls}>
                                 <div className={styles.liveTrackerControlsHeader}>
                                     <span className={styles.liveTrackerTestBadge}>Test Mode</span>
@@ -2134,6 +2085,7 @@ export default function DashboardClient({
                                     </button>
                                 </div>
                             </div>
+                            )}
                         </section>
 
                         {/* ── Member Specials (Placed High Up on Profile) ── */}

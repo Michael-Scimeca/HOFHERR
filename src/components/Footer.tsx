@@ -16,7 +16,7 @@ export default function Footer() {
     const isAdmin = pathname?.startsWith('/admin') || pathname?.startsWith('/dashboard');
 
     return (
-        <footer className={styles.footer}>
+        <footer className={styles.footer} data-site-footer="true">
             <div className="line-accent" />
 
             {/* Interactive map with location toggle */}
@@ -36,9 +36,9 @@ export default function Footer() {
                     </div>
                     <p className={styles.tagline}>Premium, traceable meats. Custom cuts, rotisserie chicken, seasonal specials, and world-class catering — all from our shop in Northfield, IL.</p>
                     <div className={styles.socials}>
-                        <a href={s.instagram} target="_blank" rel="noreferrer" className={styles.social}>Instagram</a>
-                        <a href={s.facebook} target="_blank" rel="noreferrer" className={styles.social}>Facebook</a>
-                        <a href={s.yelp} target="_blank" rel="noreferrer" className={styles.social}>Yelp</a>
+                        <a href={s.instagram} target="_blank" rel="noreferrer" className={`${styles.social} ${styles.socialInstagram}`}>Instagram</a>
+                        <a href={s.facebook} target="_blank" rel="noreferrer" className={`${styles.social} ${styles.socialFacebook}`}>Facebook</a>
+                        <a href={s.yelp} target="_blank" rel="noreferrer" className={`${styles.social} ${styles.socialYelp}`}>Yelp</a>
                     </div>
                 </div>
 

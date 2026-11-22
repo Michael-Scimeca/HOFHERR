@@ -1,13 +1,17 @@
 'use client';
 
 import React from 'react';
+import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './page.module.css';
 
 export default function CateringHeroButtons() {
     return (
         <div className={styles.heroBtns}>
             <a href="#build-your-package" className="btn-hit">
-                <span className="btn btn-primary">Build Your Package</span>
+                <span className="btn btn-primary">
+                    <FireBorder active={true} radius={6} />
+                    Build Your Package
+                </span>
             </a>
             <a href="#pig-roasts" className="btn-hit">
                 <span className="btn btn-secondary">Pig Roasts</span>

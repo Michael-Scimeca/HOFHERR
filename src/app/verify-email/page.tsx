@@ -178,7 +178,7 @@ function VerifyEmailContent() {
                     </div>
 
                     <div className={styles.actionsRow}>
-                        <Link href="/auth/signin" className={`btn btn-primary ${styles.primaryBtn}`}>
+                        <Link href="/online-orders?login=true" className={`btn btn-primary ${styles.primaryBtn}`}>
                             Back to Sign In
                         </Link>
                         <Link href="/" className={`btn btn-secondary ${styles.secondaryBtn}`}>

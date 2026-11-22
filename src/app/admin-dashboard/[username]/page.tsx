@@ -55,13 +55,16 @@ export default async function AdminDashboardUserPage({ params }: Props) {
             .catch(() => []),
         adminClient
             .fetch<AdminInitialData['users']>(
-                `*[_type == "customer"] | order(_createdAt desc) [0..49] {
+                `*[_type == "customer"] | order(_createdAt desc) [0..99] {
                     _id,
                     name,
                     email,
                     phone,
                     "isAdmin": coalesce(isAdmin, false),
                     "hasPassword": defined(password),
+                    "newsletter": coalesce(newsletter, false),
+                    favoriteCut,
+                    "orderCount": count(*[_type == "order" && customer._ref == ^._id]),
                     "createdAt": _createdAt,
                     address
                 }`

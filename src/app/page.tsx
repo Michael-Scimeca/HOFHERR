@@ -2,9 +2,7 @@ import type { Metadata } from 'next';
 import Hero from '@/components/home/Hero';
 import SeasonalBanner from '@/components/home/SeasonalBanner';
 import SignatureDishesSection from '@/components/SignatureDishesSection';
-import HolidayCateringTeaser from '@/components/home/HolidayCateringTeaser';
-import RecipesTeaser from '@/components/home/RecipesTeaser';
-import StoryTeaser from '@/components/home/StoryTeaser';
+import HomeTeaserBento from '@/components/home/HomeTeaserBento';
 
 import Newsletter from '@/components/home/Newsletter';
 
@@ -49,9 +47,7 @@ export default function HomePage() {
       <Hero />
       <SeasonalBanner />
       <SignatureDishesSection />
-      <HolidayCateringTeaser />
-      <RecipesTeaser />
-      <StoryTeaser />
+      <HomeTeaserBento />
       <Newsletter />
     </main>
   );

@@ -39,7 +39,7 @@
 }
 
 .heroInner {
-    max-width: var(--max-w);
+    max-width: calc(var(--max-w) + var(--container-px) * 2);
     margin-inline: auto;
     padding-inline: var(--container-px);
     display: flex;
@@ -115,7 +115,7 @@
 }
 
 .showcaseWrap {
-    max-width: var(--max-w);
+    max-width: calc(var(--max-w) + var(--container-px) * 2);
     margin-inline: auto;
     padding-inline: var(--container-px);
     display: flex;
@@ -641,7 +641,7 @@
 }
 
 .matrixWrap {
-    max-width: var(--max-w);
+    max-width: calc(var(--max-w) + var(--container-px) * 2);
     margin-inline: auto;
     padding-inline: var(--container-px);
     display: flex;

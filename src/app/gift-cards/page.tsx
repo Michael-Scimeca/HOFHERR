@@ -116,8 +116,37 @@ export default function GiftCardsPage() {
                                 <p className={styles.cardDesc}>
                                     Buy online in seconds and send it directly to the recipient&apos;s inbox. Powered by Square.
                                 </p>
+                                <div className={styles.denomRow} aria-label="Popular gift card denominations">
+                                    <a
+                                        href="https://squareup.com/gift/D4T9XAQSCNMKT/order"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={styles.denomChip}
+                                    >
+                                        <span className={styles.denomAmount}>$100</span>
+                                        <span className={styles.denomLabel}>Steak Night</span>
+                                    </a>
+                                    <a
+                                        href="https://squareup.com/gift/D4T9XAQSCNMKT/order"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`${styles.denomChip} ${styles.denomChipFeatured}`}
+                                    >
+                                        <span className={styles.denomAmount}>$150</span>
+                                        <span className={styles.denomLabel}>Most Popular · +$15 Bonus</span>
+                                    </a>
+                                    <a
+                                        href="https://squareup.com/gift/D4T9XAQSCNMKT/order"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={styles.denomChip}
+                                    >
+                                        <span className={styles.denomAmount}>$250</span>
+                                        <span className={styles.denomLabel}>Holiday Feast</span>
+                                    </a>
+                                </div>
                                 <ul className={styles.perks}>
-                                    <li>✓ Sent instantly via email or text</li>
+                                    <li>✓ Sent instantly via email</li>
                                     <li>✓ Any custom amount you choose</li>
                                     <li>✓ Redeemable in-store &amp; online</li>
                                 </ul>

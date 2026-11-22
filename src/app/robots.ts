@@ -29,7 +29,7 @@ export default function robots(): MetadataRoute.Robots {
                     '/test-cut-collection',
                     '/greens-and-emblems',
                     '/showcase',
-                    '/pitch-deck',
+                    '/launch-checklist',
                     '/roadmap',
                     '/product-identity',
                 ],

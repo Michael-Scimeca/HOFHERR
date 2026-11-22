@@ -21,7 +21,17 @@ import BurnModalShell, { BurnPanel } from '@/components/BurnModalShell';
 import { lockScroll } from '@/lib/scrollLock';
 import { estimateCartServings } from '@/lib/servings';
 import StorefrontEnhancements, { type ReorderItem } from './StorefrontEnhancements';
-import { getRecipePairing, getSocialProof, toProductSlug } from './storefrontData';
+import {
+    FREE_GIFT_NAME,
+    FREE_GIFT_THRESHOLD,
+    MINI_CART_UPSELLS,
+    formatDisplayPrice,
+    getRecipePairing,
+    getSocialProof,
+    getSteakhouseAnchor,
+    toProductSlug,
+    type MiniCartUpsell,
+} from './storefrontData';
 const TAX_RATE = 0.0225; // 2.25% based on reference image
 
 /* ─── Payment Brand Badges ───────────────────────────────────────────── */
@@ -886,6 +896,8 @@ export default function CustomOrdersPage({
     const { navigateTo } = usePageTransition();
     const searchParams = useSearchParams();
     const storeParam = searchParams.get('store');
+    const quickOrderParam = searchParams.get('quickOrder') ?? '';
+    const [dismissQuickOrder, setDismissQuickOrder] = useState(false);
 
     const [activeStore, setActiveStore] = useState<'butcher' | 'depot'>(
         storeParam === 'depot' ? 'depot' : 'butcher'
@@ -904,6 +916,29 @@ export default function CustomOrdersPage({
     const [activeCategory, setActiveCategory] = useState(
         activeStore === 'butcher' ? (butcherCategories[0]?.id ?? 'beef') : (depotCategories[0]?.id ?? 'beef')
     );
+
+    const quickOrderItems = useMemo(() => {
+        if (!quickOrderParam.trim()) return [] as Item[];
+        const queries = quickOrderParam
+            .split(',')
+            .map(s => s.trim().toLowerCase())
+            .filter(Boolean);
+        if (queries.length === 0) return [] as Item[];
+        const storeCats = activeStore === 'depot' ? depotCategories : butcherCategories;
+        const allItems = storeCats.flatMap(cat => cat.items);
+        const matched: Item[] = [];
+        const seen = new Set<string>();
+        for (const q of queries) {
+            const hit =
+                allItems.find(it => it.inStock !== false && it.name.toLowerCase() === q) ??
+                allItems.find(it => it.inStock !== false && it.name.toLowerCase().includes(q));
+            if (hit && !seen.has(hit.name)) {
+                seen.add(hit.name);
+                matched.push(hit);
+            }
+        }
+        return matched;
+    }, [quickOrderParam, activeStore, butcherCategories, depotCategories]);
     const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') ?? '');
     const [searchFocused, setSearchFocused] = useState(false);
     const [hideOutOfStock, setHideOutOfStock] = useState(false);
@@ -1874,6 +1909,21 @@ export default function CustomOrdersPage({
         setCart(prev => prev.map(i => (i.name === name ? { ...i, note } : i)));
     }, []);
 
+    const handleQuickUpsellAdd = useCallback((upsell: MiniCartUpsell) => {
+        setCart(prev => {
+            const existingIndex = prev.findIndex(i => i.name === upsell.name);
+            if (existingIndex >= 0) {
+                const updated = [...prev];
+                updated[existingIndex] = {
+                    ...updated[existingIndex],
+                    qty: Math.min(ITEM_MAX_QTY, updated[existingIndex].qty + 1),
+                };
+                return updated;
+            }
+            return [...prev, { name: upsell.name, price: upsell.price, qty: 1, note: '' }];
+        });
+    }, []);
+
     const handleRowAddClick = useCallback((item: Item, e: React.MouseEvent<HTMLButtonElement>) => {
         const existingItem = cart.find(i => i.name === item.name);
         const currentQty = existingItem ? existingItem.qty : 0;
@@ -2038,6 +2088,27 @@ export default function CustomOrdersPage({
     };
 
     const baseCategories = activeStore === 'butcher' ? butcherCategories : depotCategories;
+
+    // Pull 2 real, existing in-stock companion items from the active store's catalog (zero invented items or price changes)
+    const cartRailUpsells = useMemo(() => {
+        const inCartNames = new Set(cart.map(c => c.name));
+        const preferredIds = ['pantry', 'soups-stocks', 'prepared', 'bread', 'beverages'];
+        const preferred = baseCategories.filter(c => preferredIds.includes(c.id));
+        const pool = preferred.length > 0 ? preferred : baseCategories;
+        const picks: Item[] = [];
+        for (const cat of pool) {
+            for (const it of cat.items) {
+                if (it.inStock === false || inCartNames.has(it.name)) continue;
+                const p = parseItemPrice(it.price);
+                if (p > 0 && p <= 24) {
+                    picks.push(it);
+                    break; // 1 per companion category for variety
+                }
+            }
+            if (picks.length >= 2) break;
+        }
+        return picks;
+    }, [baseCategories, cart]);
     const filteredBySearch = searchQuery.trim()
         ? baseCategories
             .map(cat => ({
@@ -2434,6 +2505,86 @@ export default function CustomOrdersPage({
                 {/* Main */}
                 <main className={styles.main}>
 
+                    {/* ── Email QR Quick-Order Strip ── */}
+                    {!dismissQuickOrder && quickOrderItems.length > 0 && (
+                        <section className={styles.emailQuickOrderCard} aria-label="Featured items from your email">
+                            <div className={styles.emailQuickOrderHead}>
+                                <div>
+                                    <span className={styles.emailQuickOrderKicker}>⚡ FROM YOUR EMAIL · 1-TAP PICKUP</span>
+                                    <h2 className={styles.emailQuickOrderTitle}>Quick-Order Featured Cuts</h2>
+                                </div>
+                                <div className={styles.emailQuickOrderActions}>
+                                    <button
+                                        type="button"
+                                        className={styles.emailQuickOrderAllBtn}
+                                        onClick={() =>
+                                            handleBulkAddItems(
+                                                quickOrderItems.map(it => ({
+                                                    name: it.name,
+                                                    price: it.price,
+                                                    qty: 1,
+                                                    note: '',
+                                                }))
+                                            )
+                                        }
+                                    >
+                                        + Add All ({quickOrderItems.length})
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={styles.emailQuickOrderClose}
+                                        onClick={() => setDismissQuickOrder(true)}
+                                        aria-label="Dismiss quick-order strip"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            </div>
+                            <div className={styles.emailQuickOrderGrid}>
+                                {quickOrderItems.map(it => {
+                                    const inCart = cart.find(c => c.name === it.name);
+                                    return (
+                                        <div key={it.name} className={styles.emailQuickOrderItem}>
+                                            <div className={styles.emailQuickOrderItemInfo}>
+                                                <span className={styles.emailQuickOrderItemName}>{it.name}</span>
+                                                <span className={styles.emailQuickOrderItemPrice}>{it.price}</span>
+                                            </div>
+                                            {inCart ? (
+                                                <div className={styles.emailQuickOrderStepper}>
+                                                    <button
+                                                        type="button"
+                                                        className={styles.emailQuickOrderStepBtn}
+                                                        onClick={() => changeQty(it.name, -1)}
+                                                        aria-label={`Remove one ${it.name}`}
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <span className={styles.emailQuickOrderStepQty}>{inCart.qty}</span>
+                                                    <button
+                                                        type="button"
+                                                        className={styles.emailQuickOrderStepBtn}
+                                                        onClick={e => handleRowAddClick(it, e)}
+                                                        aria-label={`Add one more ${it.name}`}
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    className={styles.emailQuickOrderAddBtn}
+                                                    onClick={e => handleRowAddClick(it, e)}
+                                                >
+                                                    + Add
+                                                </button>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </section>
+                    )}
+
                     {/* ── Depot Ordering Info ── */}
                     {activeStore === 'depot' && (
                         <div className={styles.depotInfoNotice}>
@@ -2514,9 +2665,30 @@ export default function CustomOrdersPage({
                                         {cat.sub && <p className={styles.catSub}>{cat.sub}</p>}
                                     </div>
                                 </div>
+                                {cat.id === 'beef' && (
+                                    <div className={styles.beefValueBanner}>
+                                        <strong>Why Craft Butcher Beef ≠ Supermarket Beef:</strong>{' '}
+                                        100% USDA Prime &amp; named Midwest family farms, dry-aged &amp; hand-trimmed to
+                                        order — zero water-weight shrinkage, at a fraction of North Shore steakhouse
+                                        prices.
+                                    </div>
+                                )}
                                 <div className={styles.itemList}>
-                                    {cat.items.map(item => (
-                                        <div key={item.name} className={`${styles.item} ${item.inStock === false ? styles.itemOut : ''}`}>
+                                    {(() => {
+                                        let flagshipBeefName: string | null = null;
+                                        if (cat.id === 'beef') {
+                                            let maxPrice = 0;
+                                            for (const candidate of cat.items) {
+                                                if (candidate.inStock === false) continue;
+                                                const val = parseItemPrice(candidate.price);
+                                                if (val > maxPrice) {
+                                                    maxPrice = val;
+                                                    flagshipBeefName = candidate.name;
+                                                }
+                                            }
+                                        }
+                                        return cat.items.map(item => (
+                                        <div key={item.name} className={`${styles.item} ${item.inStock === false ? styles.itemOut : ''} ${flagshipBeefName === item.name ? styles.itemFlagship : ''}`}>
                                             <div className={styles.itemMain}>
                                                 {/* Favorite Flame */}
                                                 <button
@@ -2541,6 +2713,7 @@ export default function CustomOrdersPage({
                                                 <div className={styles.itemInfo}>
                                                     <div className={styles.itemName}>
                                                         <HighlightText text={item.name} query={searchQuery} />
+                                                        {flagshipBeefName === item.name && <span className={styles.flagshipBadge}>★ Butcher&apos;s Reserve</span>}
                                                         {item.isNew && <span className={styles.stockBadge} data-status="new">✨ NEW</span>}
                                                         {item.stockStatus === 'low-stock' && <span className={styles.stockBadge} data-status="low">🔥 Almost Gone</span>}
                                                         {item.stockStatus === 'pre-order' && <span className={styles.stockBadge} data-status="preorder">📦 Pre-Order</span>}
@@ -2548,16 +2721,22 @@ export default function CustomOrdersPage({
                                                     </div>
                                                     {item.desc && <div className={styles.itemDesc}><HighlightText text={item.desc} query={searchQuery} /></div>}
                                                     {item.origin && <div className={styles.itemOrigin}>{item.origin}</div>}
+                                                    {(() => {
+                                                        const anchor = getSteakhouseAnchor(item.name);
+                                                        return anchor ? (
+                                                            <div className={styles.itemAnchor}>{anchor}</div>
+                                                        ) : null;
+                                                    })()}
                                                 </div>
                                             </div>
                                             <div className={styles.itemRight}>
                                                 {item.salePrice ? (
                                                     <div className={styles.itemPriceWrap}>
-                                                        <span className={styles.itemPriceOld}>{item.price}</span>
-                                                        <span className={styles.itemPriceSale}>{item.salePrice}</span>
+                                                        <span className={styles.itemPriceOld}>{formatDisplayPrice(item.price)}</span>
+                                                        <span className={styles.itemPriceSale}>{formatDisplayPrice(item.salePrice)}</span>
                                                     </div>
                                                 ) : (
-                                                    <span className={styles.itemPrice}>{item.price}</span>
+                                                    <span className={styles.itemPrice}>{formatDisplayPrice(item.price)}</span>
                                                 )}
                                                 {item.inStock === false ? (
                                                     <div className={styles.restockWrap}>
@@ -2746,7 +2925,8 @@ export default function CustomOrdersPage({
                                                 );
                                             })()}
                                         </div>
-                                    ))}
+                                        ));
+                                    })()}
                                 </div>
                             </section>
                         ))}
@@ -2755,7 +2935,15 @@ export default function CustomOrdersPage({
             </div>
 
             {/* ── Fixed Right-Edge Mini Cart List (Desktop >= 1200px, shown when cart has items) ── */}
-            {mounted && cart.length > 0 && !drawerOpen && createPortal((
+            {mounted && cart.length > 0 && !drawerOpen && createPortal((() => {
+                const railSubtotal = cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0);
+                const freeRemaining = Math.max(0, Math.ceil(FREE_GIFT_THRESHOLD - railSubtotal));
+                const freeProgressPct = Math.min(100, Math.round((railSubtotal / FREE_GIFT_THRESHOLD) * 100));
+                const freeUnlocked = freeRemaining === 0;
+                const cartNames = new Set(cart.map(i => i.name));
+                const availableUpsells = MINI_CART_UPSELLS.filter(u => !cartNames.has(u.name)).slice(0, 3);
+
+                return (
                 <aside
                     className={`${styles.cartRail} ${activeStore === 'depot' ? styles.depotTheme : styles.butcherTheme}`}
                     aria-label="Live cart summary"
@@ -2768,6 +2956,23 @@ export default function CustomOrdersPage({
                         <span className={styles.cartRailStore}>
                             {activeStore === 'butcher' ? '300 Happ Rd · Northfield' : '754 Elm St · Winnetka Depot'}
                         </span>
+                    </div>
+
+                    {/* Zero-Price Free Gift Threshold Progress */}
+                    <div className={`${styles.cartRailPerk} ${freeUnlocked ? styles.cartRailPerkUnlocked : ''}`}>
+                        <div className={styles.cartRailPerkText}>
+                            {freeUnlocked ? (
+                                <>✓ <strong>{FREE_GIFT_NAME}</strong> unlocked!</>
+                            ) : (
+                                <>Add <strong>${freeRemaining}</strong> more for <strong>{FREE_GIFT_NAME}</strong></>
+                            )}
+                        </div>
+                        <div className={styles.cartRailPerkTrack} aria-hidden="true">
+                            <div
+                                className={styles.cartRailPerkFill}
+                                style={{ '--free-pct': `${freeProgressPct}%` } as React.CSSProperties}
+                            />
+                        </div>
                     </div>
 
                     <ul className={styles.cartRailList} data-lenis-prevent>
@@ -2788,7 +2993,7 @@ export default function CustomOrdersPage({
                                     <div className={styles.cartRailItemNote}>{item.note}</div>
                                 )}
                                 <div className={styles.cartRailItemBottom}>
-                                    <span className={styles.cartRailItemPrice}>{item.price}</span>
+                                    <span className={styles.cartRailItemPrice}>{formatDisplayPrice(item.price)}</span>
                                     <div className={styles.cartRailQty}>
                                         <button
                                             type="button"
@@ -2813,11 +3018,59 @@ export default function CustomOrdersPage({
                         ))}
                     </ul>
 
+                    {/* McDonald's "Complete the Plate" 1-Tap Cross-Sell */}
+                    {availableUpsells.length > 0 && (
+                        <div className={styles.cartRailUpsell}>
+                            <div className={styles.cartRailUpsellLabel}>Complete the Plate</div>
+                            <div className={styles.cartRailUpsellList}>
+                                {availableUpsells.map(upsell => (
+                                    <div key={upsell.name} className={styles.cartRailUpsellRow}>
+                                        <div className={styles.cartRailUpsellInfo}>
+                                            <span className={styles.cartRailUpsellName}>{upsell.name}</span>
+                                            <span className={styles.cartRailUpsellPrice}>
+                                                {formatDisplayPrice(upsell.price)} · {upsell.tag}
+                                            </span>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            className={styles.cartRailUpsellBtn}
+                                            onClick={() => handleQuickUpsellAdd(upsell)}
+                                            aria-label={`Add ${upsell.name} to cart`}
+                                        >
+                                            + Add
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {cartRailUpsells.length > 0 && (
+                        <div className={styles.cartRailUpsellBox}>
+                            <span className={styles.cartRailUpsellTitle}>Complete the Plate</span>
+                            {cartRailUpsells.map(up => (
+                                <div key={up.name} className={styles.cartRailUpsellRow}>
+                                    <div className={styles.cartRailUpsellInfo}>
+                                        <span className={styles.cartRailUpsellName}>{up.name}</span>
+                                        <span className={styles.cartRailUpsellPrice}>{up.price}</span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className={styles.cartRailUpsellAdd}
+                                        onClick={(e) => handleRowAddClick(up, e)}
+                                    >
+                                        + Add
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                     <div className={styles.cartRailFooter}>
                         <div className={styles.cartRailTotalRow}>
                             <span className={styles.cartRailTotalLabel}>Est. Subtotal</span>
                             <span className={styles.cartRailTotalVal}>
-                                ${cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0).toFixed(2)}
+                                {formatDisplayPrice(`$${railSubtotal.toFixed(2)}`)}
                             </span>
                         </div>
                         <div className={styles.cartRailActions}>
@@ -2838,7 +3091,8 @@ export default function CustomOrdersPage({
                         </div>
                     </div>
                 </aside>
-            ), document.body)}
+                );
+            })(), document.body)}
 
             {/* ── Add to Cart Modal ── */}
             {

@@ -249,10 +249,30 @@
     flex-shrink: 0;
 }
 
+.navText {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 1px;
+}
+
 .navLabel {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.navPath {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10px;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.navItem:hover .navPath {
+    color: #9ca3af;
 }
 
 /* Phones: keep only the two measuring toggles (gaps and border colours), small, bottom-left. */

@@ -15,7 +15,7 @@
     color: #888;
     text-decoration: none;
     width: 100%;
-    max-width: calc(var(--max-w, 1400px) - (2 * var(--container-px)));
+    max-width: var(--max-w, 1400px);
     margin: 0 auto 28px;
     transition: color 0.2s;
 }
@@ -26,7 +26,7 @@
     grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
     gap: 48px;
     width: 100%;
-    max-width: calc(var(--max-w, 1400px) - (2 * var(--container-px)));
+    max-width: var(--max-w, 1400px);
     margin: 0 auto;
     align-items: start;
 }
@@ -503,6 +503,17 @@
     text-align: center;
 }
 .prefBtnActive { background: var(--red, #800020); border-color: var(--red, #800020); color: #fff; }
+
+.prefHint {
+    margin: 0;
+    font-size: var(--text-xs);
+    line-height: 1.45;
+    color: var(--fg-3);
+}
+
+.inputPreferred {
+    border-color: rgba(var(--red-rgb), 0.65);
+}
 
 /* ── Date selector ────────────────────────────────────────────────────── */
 .dateSelectorContainer {
@@ -985,5 +996,90 @@
 @media (max-width: 600px) {
     .handoffRow {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ── Clear 3-Column Pickup Confirmation Card ── */
+.pickupSummaryBar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-4);
+    margin-top: var(--space-4);
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, rgba(var(--red-rgb), 0.16) 0%, rgba(16, 16, 18, 0.92) 100%);
+    border: 1px solid rgba(var(--red-rgb), 0.5);
+    border-left: 4px solid var(--red);
+}
+
+.pickupSummaryHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.pickupSummaryCheck {
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    background: var(--red);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.pickupSummaryEyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+}
+
+.pickupSummaryGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    padding-top: var(--space-2);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pickupSummaryCell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.pickupSummaryField {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+.pickupSummaryValue {
+    font-size: var(--text-base);
+    font-weight: 800;
+    color: var(--fg);
+    line-height: 1.25;
+}
+
+.pickupSummaryTimeVal {
+    font-size: var(--text-lg);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.2;
+}
+
+@media (max-width: 600px) {
+    .pickupSummaryGrid {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
     }
 }

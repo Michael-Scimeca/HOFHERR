@@ -90,6 +90,35 @@ async function SlideView({ s }: { s: Slide }) {
         case 'specials':
         case 'recipe-cover':
         case 'howto-cover':
+            if (s.template === 'recipe-cover' && !photo) {
+                return (
+                    <div style={{ ...base, background: C.charcoal, backgroundImage: 'radial-gradient(circle at 50% 24%, #4e0a0e 0%, #1C1614 68%)' }}>
+                        <Frame color={C.amber} />
+                        <div style={{ position: 'absolute', left: 48, top: 48, right: 48, bottom: 208, border: '1px solid rgba(245,155,26,0.35)', display: 'flex' }} />
+                        <div style={{ position: 'absolute', left: 80, right: 80, top: 96, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Kicker text={s.kicker || 'BUTCHER RECIPE'} />
+                            <div style={{ display: 'flex', ...head(28, C.tan, { letterSpacing: 4 }) }}>HOFHERR KITCHEN</div>
+                        </div>
+                        {icon && (
+                            <div style={{ position: 'absolute', left: 80, top: 200, width: 220, height: 220, borderRadius: 110, background: 'rgba(243,234,216,0.08)', border: `3px solid ${C.amber}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <img src={icon} alt="" width={168} height={168} style={{ width: 168, height: 168, objectFit: 'contain' }} />
+                            </div>
+                        )}
+                        <div style={{ position: 'absolute', left: 80, right: 80, bottom: 248, display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ display: 'flex', ...head(132, C.cream, { lineHeight: 0.9 }) }}>{s.headline}</div>
+                            {s.body && (
+                                <div style={{ display: 'flex', marginTop: 26, paddingTop: 20, borderTop: `2px solid ${C.crimson}`, ...head(44, C.amber, { letterSpacing: 3 }) }}>
+                                    {s.body}
+                                </div>
+                            )}
+                            <div style={{ display: 'flex', marginTop: 18, fontSize: 24, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.tan }}>
+                                SWIPE FOR INGREDIENTS &amp; METHOD →
+                            </div>
+                        </div>
+                        <Footer logo={logo} />
+                    </div>
+                );
+            }
             return (
                 <div style={{ ...base, background: C.charcoal }}>
                     {photo && <img src={photo} alt={s.headline || 'Hofherr Meat Co.'} width={W} height={H - 160} style={{ position: 'absolute', left: 0, top: 0, width: W, height: H - 160, objectFit: 'cover' }} />}

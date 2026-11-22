@@ -9,11 +9,6 @@
     flex-direction: column;
 }
 
-.pageWrap ::selection {
-    background: rgba(var(--red-rgb), 0.32);
-    color: var(--fg);
-}
-
 /* ── Open Hero Header (No Content-Boxing) ── */
 .hero {
     position: relative;
@@ -34,7 +29,7 @@
     align-items: center;
     gap: var(--space-4);
     width: 100%;
-    max-width: var(--max-w);
+    max-width: calc(var(--max-w) + var(--container-px) * 2);
     margin-inline: auto;
     padding-inline: var(--container-px);
 }
@@ -357,7 +352,7 @@
 .page {
     position: relative;
     width: 100%;
-    max-width: var(--max-w);
+    max-width: calc(var(--max-w) + var(--container-px) * 2);
     margin-inline: auto;
     padding: var(--space-12) var(--container-px);
     color: var(--fg);

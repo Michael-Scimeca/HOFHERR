@@ -3,6 +3,7 @@ import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './Hero.module.css';
 import HeroVideo from './HeroVideo';
 import LazyTrophy from './LazyTrophy';
+import HolidayHeroStrip from './HolidayHeroStrip';
 
 export default function Hero() {
     return (
@@ -110,6 +111,9 @@ export default function Hero() {
                             </div>
                         </div>
 
+                        {/* Automatic Holiday-Aware Spotlight (switches by Chicago calendar date or ?holiday=<id>) */}
+                        <HolidayHeroStrip />
+
                         {/* CTAs */}
                         <div className={styles.ctas}>
                             <Link href="/online-orders" className="btn-hit">
@@ -119,7 +123,10 @@ export default function Hero() {
                                 </span>
                             </Link>
                             <Link href="/catering#build-your-package" className="btn-hit">
-                                <span className="btn btn-secondary">Build a Catering Package</span>
+                                <span className="btn btn-secondary">
+                                    <FireBorder active={true} radius={6} />
+                                    Build a Catering Package
+                                </span>
                             </Link>
                             <Link href="/newsletter" className={`btn-hit ${styles.subscribeHit}`}>
                                 <span className={`btn ${styles.subscribeBtn}`}>✉️ Subscribe</span>

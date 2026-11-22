@@ -1,0 +1,743 @@
+.wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding: var(--space-6);
+}
+
+.headerRow {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.title {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--fg);
+    margin: 0 0 4px;
+    line-height: 1;
+}
+
+.sub {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+}
+
+.sub strong {
+    color: var(--fg);
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.copyBtn {
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--red);
+    color: #fff;
+    font-size: var(--text-xs);
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease-out);
+}
+
+.copyBtn:hover:not(:disabled) {
+    background: var(--red-light);
+}
+
+.copyBtn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.secondaryBtn {
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--fg-2);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.secondaryBtn:hover {
+    border-color: var(--red);
+    color: var(--fg);
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.searchInput {
+    flex: 1 1 260px;
+    height: 40px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.45);
+    color: var(--fg);
+    font-size: var(--text-sm);
+    font-family: inherit;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--red);
+}
+
+.segPills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.segBtn {
+    padding: 7px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--fg-2);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.segBtnActive {
+    background: rgba(var(--red-rgb), 0.18);
+    border-color: var(--red);
+    color: var(--fg);
+}
+
+.emptyBox {
+    padding: var(--space-8);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.emptyTitle {
+    margin: 0 0 6px;
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--fg);
+}
+
+.emptySub {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--fg-3);
+}
+
+.emptySub a {
+    color: var(--red-light);
+}
+
+.emptyTestRow {
+    margin-top: var(--space-4);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    max-width: 460px;
+    width: 100%;
+}
+
+.addTestBtn {
+    height: 38px;
+    padding: 0 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(var(--gold-rgb), 0.45);
+    background: rgba(var(--gold-rgb), 0.14);
+    color: var(--gold-light);
+    font-size: var(--text-xs);
+    font-weight: 800;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.addTestBtn:hover {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+}
+
+.removeTestBtn {
+    margin-left: 8px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg-3);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.removeTestBtn:hover {
+    border-color: var(--red);
+    color: var(--red-light);
+}
+
+.tableWrap {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+}
+
+.table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    border-bottom: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.cellName {
+    font-weight: 700;
+    color: var(--fg);
+}
+
+.cellEmail a {
+    color: var(--fg-2);
+    text-decoration: none;
+}
+
+.cellEmail a:hover {
+    color: var(--red-light);
+    text-decoration: underline;
+}
+
+.cellGold {
+    color: var(--gold-light);
+    font-weight: 600;
+}
+
+.cellNum {
+    font-weight: 800;
+    color: var(--fg);
+}
+
+.cellMuted {
+    color: var(--fg-3);
+}
+
+/* ── Email Builder & Live Preview ── */
+.builderCard {
+    padding: var(--space-6);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--red);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.builderTop {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.builderTitle {
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin: 0 0 2px;
+    line-height: 1.05;
+}
+
+.builderSub {
+    margin: 0;
+    font-size: var(--text-xs);
+    color: var(--fg-3);
+}
+
+.themePills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.segBtnDepot {
+    background: var(--depot-blue-bg);
+    border-color: var(--depot-blue-light);
+    color: var(--depot-blue-text);
+}
+
+.segBtnGold {
+    background: rgba(var(--gold-rgb), 0.18);
+    border-color: var(--gold);
+    color: var(--gold-light);
+}
+
+.templateRow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+}
+
+.templateLabel {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-right: 4px;
+}
+
+.templateBtn {
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--fg-2);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.templateBtn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+}
+
+.builderGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: var(--space-6);
+    align-items: start;
+}
+
+.editorCol {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.fieldLabel {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+.fieldInput,
+.fieldTextarea {
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--fg);
+    font-size: var(--text-sm);
+    font-family: inherit;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.fieldInput:focus,
+.fieldTextarea:focus {
+    outline: none;
+    border-color: var(--red);
+}
+
+.fieldTextarea {
+    resize: vertical;
+    line-height: 1.55;
+}
+
+.ctaRow {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+.toggleRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-5);
+    padding-top: var(--space-2);
+}
+
+.previewCol {
+    min-width: 0;
+}
+
+.previewShell {
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    background: #121214;
+    box-shadow: var(--shadow-md);
+}
+
+.previewHead {
+    padding: var(--space-5) var(--space-6);
+}
+
+.previewHeadButcher {
+    background: #8B0A10;
+    border-bottom: 3px solid var(--red);
+}
+
+.previewHeadDepot {
+    background: var(--depot-blue-bg);
+    border-bottom: 3px solid var(--depot-blue-light);
+}
+
+.previewHeadGold {
+    background: #3b2f1c;
+    border-bottom: 3px solid var(--gold);
+}
+
+.previewBadge {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fde68a;
+    margin-bottom: 6px;
+}
+
+.previewHeadline {
+    margin: 0;
+    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1.05;
+}
+
+.previewBody {
+    padding: var(--space-5) var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.previewPara {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--fg-2);
+    white-space: pre-line;
+}
+
+.previewHighlights {
+    display: flex;
+    flex-direction: column;
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.previewHighlightRow {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 14px;
+    border-top: 1px solid #27272a;
+}
+
+.previewHighlightRow:first-child {
+    border-top: none;
+}
+
+.previewHighlightTag {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fde68a;
+}
+
+.previewHighlightTitle {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.previewHighlightNote {
+    font-size: 12px;
+    color: #a1a1aa;
+    line-height: 1.45;
+}
+
+.previewTrustLine {
+    margin: -4px 0 0;
+    font-size: 11px;
+    color: #8e8e98;
+}
+
+.previewQrCard {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-2);
+    padding: 12px 14px;
+    background: #18181b;
+    border: 1px solid #2e2e33;
+    border-radius: var(--radius);
+}
+
+.previewQrFrame {
+    flex-shrink: 0;
+    background: #fff;
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.previewQrImg {
+    display: block;
+    width: 84px;
+    height: 84px;
+}
+
+.previewQrCopy {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.previewQrKicker {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fde68a;
+}
+
+.previewQrTitle {
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.previewQrDesc {
+    font-size: 12px;
+    color: #b4b4bc;
+    line-height: 1.45;
+}
+
+.previewPs {
+    margin-top: var(--space-1);
+    padding: 10px 12px;
+    background: #161619;
+    border-left: 3px solid var(--red);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #d4d4d8;
+}
+
+.previewPsDepot {
+    border-left-color: var(--depot-blue-light);
+}
+
+.previewPsGold {
+    border-left-color: var(--gold);
+}
+
+.previewCta {
+    display: inline-block;
+    width: fit-content;
+    margin-top: var(--space-2);
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.previewCtaButcher {
+    background: var(--red);
+}
+
+.previewCtaDepot {
+    background: var(--depot-blue-border);
+}
+
+.previewCtaGold {
+    background: var(--gold);
+    color: #111;
+}
+
+.previewFoot {
+    padding: var(--space-3) var(--space-6);
+    background: #0c0c0e;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--fg-3);
+}
+
+.sendBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+}
+
+.testGroup {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 1 1 360px;
+    flex-wrap: wrap;
+}
+
+.testInput {
+    flex: 1 1 220px;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--fg);
+    font-size: var(--text-sm);
+    font-family: inherit;
+}
+
+.testInput:focus {
+    outline: none;
+    border-color: var(--red);
+}
+
+.broadcastGroup {
+    display: flex;
+    align-items: center;
+}
+
+.confirmRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.confirmText {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--gold-light);
+}
+
+.feedbackOk,
+.feedbackErr {
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 700;
+}
+
+.feedbackOk {
+    background: rgba(22, 163, 74, 0.14);
+    border: 1px solid rgba(22, 163, 74, 0.45);
+    color: #86efac;
+}
+
+.feedbackErr {
+    background: rgba(var(--red-rgb), 0.16);
+    border: 1px solid rgba(var(--red-rgb), 0.55);
+    color: #fca5a5;
+}
+
+@media (max-width: 960px) {
+    .builderGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .ctaRow {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+/* ── Embedded Inline Studio Panels (Social Studio & Send-Time Guide) ── */
+.embeddedPanel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-2);
+    padding: var(--space-5);
+    overflow-x: auto;
+}
+
+.embeddedPanel > main,
+.embeddedPanel > div {
+    padding-top: 0 !important;
+    padding-bottom: var(--space-4) !important;
+}
+
+.embeddedLoading {
+    padding: var(--space-8);
+    text-align: center;
+    font-size: 14px;
+    color: var(--fg-3);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+}

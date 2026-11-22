@@ -500,8 +500,8 @@ export default function ShowcaseClient() {
                         in the country and is ready for implementation. Open the interactive
                         slide deck or let&apos;s talk about priorities and timeline.
                     </p>
-                    <Link href="/pitch-deck" className={styles.ctaBtn}>
-                        Open Interactive Pitch Deck →
+                    <Link href="/launch-checklist" className={styles.ctaBtn}>
+                        Open All Features &amp; Launch Checklist →
                     </Link>
                 </div>
             </section>

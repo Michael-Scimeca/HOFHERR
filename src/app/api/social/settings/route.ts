@@ -15,6 +15,8 @@ export async function GET(request: Request) {
         facebook: Boolean(process.env.META_PAGE_ID && process.env.META_PAGE_ACCESS_TOKEN),
         x: ['X_API_KEY', 'X_API_SECRET', 'X_ACCESS_TOKEN', 'X_ACCESS_SECRET'].every((k) => process.env[k]),
         email: Boolean(process.env.RESEND_API_KEY || process.env.SENDGRID_API_KEY),
+        cronSecret: Boolean(process.env.CRON_SECRET),
+        siteUrl: Boolean(process.env.NEXT_PUBLIC_SITE_URL),
     };
     return NextResponse.json({ settings, connected });
 }

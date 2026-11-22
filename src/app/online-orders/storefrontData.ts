@@ -191,3 +191,57 @@ export function getSocialProof(name: string): CutSocialProof | null {
     return CUT_SOCIAL_PROOF[toProductSlug(name)] ?? null;
 }
 
+/**
+ * Syllable-length & visual fluency cleanup (Coulter et al., 2012):
+ * Drops trailing ".00" on whole-dollar prices ("$150.00" -> "$150", "$180.00/lb" -> "$180/lb")
+ * while keeping charm prices like "$40.99/lb" untouched.
+ */
+export function formatDisplayPrice(price: string): string {
+    return price.replace(/\$(\d[\d,]*)\.00\b/g, '$$$1');
+}
+
+/**
+ * Per-serving & steakhouse price anchors (Ariely 2008; Gourville 1998)
+ * keyed by product slug to neutralize supermarket sticker shock on flagship cuts.
+ */
+export const STEAKHOUSE_ANCHORS: Record<string, string> = {
+    'prime-bone-in-ribeye': '~$17/serving vs. $68 steakhouse',
+    'bone-in-ribeye': '~$17/serving vs. $68 steakhouse',
+    'prime-boneless-ribeye': '~$16/serving vs. $68 steakhouse',
+    'boneless-ribeye': '~$16/serving vs. $68 steakhouse',
+    'dry-aged-ribeye': '~$18/serving vs. $74 steakhouse',
+    'prime-beef-tenderloin': '~$16/serving · trimmed & tied free',
+    'filet-mignon': '~$25 per 8oz filet vs. $64 steakhouse',
+    'prime-porterhouse': '~$20/serving · feeds 2',
+    'prime-t-bone': '~$19/serving vs. $62 steakhouse',
+    'bone-in-prime-rib': '~$20/guest · 1 rib feeds 2',
+    'wagyu-tomahawk-ribeye': 'Showstopper centerpiece · feeds 3–4',
+    'prime-tomahawk-ribeye': 'Showstopper centerpiece · feeds 3–4',
+    'a5-miyazaki-wagyu-new-york-strip': 'Authentic Japanese A5 · $190+/4oz in steakhouses',
+    'glazed-spiral-sliced-ham': '~$10/guest · serves 10+ adults',
+};
+
+export function getSteakhouseAnchor(name: string): string | null {
+    return STEAKHOUSE_ANCHORS[toProductSlug(name)] ?? null;
+}
+
+/**
+ * Zero-Price Effect threshold (Shampanier, Mazar & Ariely, 2007)
+ * & McDonald's "Complete the Plate" 1-tap Mini Cart Rail cross-sells.
+ */
+export const FREE_GIFT_THRESHOLD = 125;
+export const FREE_GIFT_NAME = 'Free House Compound Butter';
+
+export interface MiniCartUpsell {
+    name: string;
+    price: string;
+    tag: string;
+}
+
+export const MINI_CART_UPSELLS: MiniCartUpsell[] = [
+    { name: 'House Compound Butter', price: '$6.99', tag: 'Steak Finish' },
+    { name: 'TALO Beef Tallow', price: '$14.99', tag: 'Cast-Iron Sear' },
+    { name: "Uncle Dougie's Rub", price: '$8.99', tag: 'Pitmaster Rub' },
+    { name: 'House Giardiniera', price: '$7.99', tag: 'Chicago Classic' },
+];
+

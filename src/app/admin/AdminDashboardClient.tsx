@@ -8,7 +8,7 @@ import Pagination from '@/components/shared/Pagination';
 import { usePageTransition } from '@/components/PageTransition';
 import { resolveOrderCutPieces } from '@/lib/cutCollector';
 import KitchenThrottleBar from '@/components/admin/KitchenThrottleBar';
-import InStorePosDrawer from '@/components/admin/InStorePosDrawer';
+import SubscribersPanel from '@/components/admin/SubscribersPanel';
 
 interface OrderItem {
     name: string;
@@ -49,6 +49,9 @@ interface User {
     createdAt: string;
     address?: string;
     hasPassword?: boolean;
+    newsletter?: boolean;
+    favoriteCut?: string;
+    orderCount?: number;
 }
 
 interface ProductItem {
@@ -562,7 +565,15 @@ export default function AdminDashboard({
             },
         }));
     };
-    const [activeTab, setActiveTab] = useState<'orders' | 'users' | 'restocks'>('orders');
+    const [activeTab, setActiveTab] = useState<'orders' | 'users' | 'restocks' | 'subscribers'>('orders');
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const tabParam = params.get('tab');
+        if (tabParam === 'orders' || tabParam === 'users' || tabParam === 'restocks' || tabParam === 'subscribers') {
+            setActiveTab(tabParam);
+        }
+    }, []);
     const [orderFilter, setOrderFilter] = useState<string>('all');
     const [inProgressStageFilter, setInProgressStageFilter] = useState<'all' | 'behind' | 'placed' | 'cutting' | 'ready' | 'done'>('all');
     const [progressSortBy, setProgressSortBy] = useState<'stage_asc' | 'stage_desc' | 'urgent_first' | 'total_desc' | 'newest'>('stage_asc');
@@ -578,7 +589,7 @@ export default function AdminDashboard({
             .then(mod => {
                 if (!cancelled) setRechartsMod(mod);
             })
-            .catch(() => {});
+            .catch(() => { });
         return () => {
             cancelled = true;
         };
@@ -1354,21 +1365,19 @@ export default function AdminDashboard({
         return (
             <article
                 key={`${isUrgentCard ? 'urgent' : 'active'}-${order._id}`}
-                className={`${styles.trackerCard} ${isBehind ? styles.trackerCardBehind : ''} ${
-                    stageIdx === 2 ? styles.trackerCardReady : ''
-                } ${stageIdx === 3 ? styles.trackerCardCompleted : ''}`}
+                className={`${styles.trackerCard} ${isBehind ? styles.trackerCardBehind : ''} ${stageIdx === 2 ? styles.trackerCardReady : ''
+                    } ${stageIdx === 3 ? styles.trackerCardCompleted : ''}`}
             >
                 <div className={styles.trackerTop}>
                     <div>
                         <div className={styles.trackerKickerRow}>
                             <span
-                                className={`${styles.trackerDot} ${
-                                    isBehind
-                                        ? styles.trackerDotUrgent
-                                        : stageIdx === 2 || stageIdx === 3
-                                          ? styles.trackerDotReady
-                                          : ''
-                                }`}
+                                className={`${styles.trackerDot} ${isBehind
+                                    ? styles.trackerDotUrgent
+                                    : stageIdx === 2 || stageIdx === 3
+                                        ? styles.trackerDotReady
+                                        : ''
+                                    }`}
                                 aria-hidden="true"
                             />
                             <span className={styles.trackerKicker}>
@@ -1397,19 +1406,18 @@ export default function AdminDashboard({
                             {isBehind
                                 ? 'SLA OVERDUE TARGET'
                                 : stageIdx === 2
-                                  ? 'PICKUP STATUS'
-                                  : stageIdx === 3
-                                    ? 'HANDOFF STATUS'
-                                    : 'ESTIMATED READY TIME'}
+                                    ? 'PICKUP STATUS'
+                                    : stageIdx === 3
+                                        ? 'HANDOFF STATUS'
+                                        : 'ESTIMATED READY TIME'}
                         </div>
                         <div
-                            className={`${styles.trackerEtaValue} ${
-                                isBehind
-                                    ? styles.trackerEtaUrgent
-                                    : stageIdx === 2 || stageIdx === 3
-                                      ? styles.trackerEtaReady
-                                      : ''
-                            }`}
+                            className={`${styles.trackerEtaValue} ${isBehind
+                                ? styles.trackerEtaUrgent
+                                : stageIdx === 2 || stageIdx === 3
+                                    ? styles.trackerEtaReady
+                                    : ''
+                                }`}
                         >
                             {etaText}
                         </div>
@@ -1422,9 +1430,8 @@ export default function AdminDashboard({
                         <div className={styles.trackerCustomerTopRow}>
                             <span className={styles.trackerCustomerLabel}>ORDERED BY</span>
                             <span
-                                className={`${styles.customerTierPill} ${
-                                    styles[`customerTier_${customerBadge.tierKey}`]
-                                }`}
+                                className={`${styles.customerTierPill} ${styles[`customerTier_${customerBadge.tierKey}`]
+                                    }`}
                                 title={`${customerBadge.label} • ${formatCurrency(customerBadge.lifetimeDollars)} lifetime spend across ${customerBadge.orderCount} orders`}
                             >
                                 <span className={styles.goldStarIcon} aria-hidden="true">
@@ -1472,9 +1479,8 @@ export default function AdminDashboard({
 
                 {/* 4-Stage Interactive Pill Progress Bar (matches /dashboard tracker) */}
                 <ol
-                    className={`${styles.trackerBar} ${
-                        order.status === 'completed' ? styles.trackerBarPickedUp : ''
-                    }`}
+                    className={`${styles.trackerBar} ${order.status === 'completed' ? styles.trackerBarPickedUp : ''
+                        }`}
                     aria-label={`Order ${order.orderNumber} progress`}
                 >
                     {ADMIN_TRACKER_STAGES.map((stage, i) => {
@@ -1484,10 +1490,10 @@ export default function AdminDashboard({
                         const stateClass = finished
                             ? styles.trackerSegPickedUp
                             : done
-                              ? styles.trackerSegDone
-                              : active
-                                ? styles.trackerSegActive
-                                : styles.trackerSegTodo;
+                                ? styles.trackerSegDone
+                                : active
+                                    ? styles.trackerSegActive
+                                    : styles.trackerSegTodo;
                         return (
                             <li key={stage.key} className={styles.trackerSegItem}>
                                 <button
@@ -1556,13 +1562,12 @@ export default function AdminDashboard({
                                 key={`admin-step-${order._id}-${stage.key}`}
                                 type="button"
                                 onClick={() => handleStatusChange(order._id, stage.targetStatus, true)}
-                                className={`${styles.adminStepCard} ${
-                                    done
-                                        ? styles.adminStepCardDone
-                                        : active
-                                          ? styles.adminStepCardActive
-                                          : ''
-                                }`}
+                                className={`${styles.adminStepCard} ${done
+                                    ? styles.adminStepCardDone
+                                    : active
+                                        ? styles.adminStepCardActive
+                                        : ''
+                                    }`}
                             >
                                 <div className={styles.adminStepTop}>
                                     <span className={styles.adminStepNum}>Step {stage.stepNum}</span>
@@ -1678,12 +1683,27 @@ export default function AdminDashboard({
                         </div>
                     </div>
                     <div>
+                        <div className={styles.trackerKicker}>ORDER ITEMS</div>
                         <div className={styles.trackerKicker}>
                             {order.status === 'processing'
                                 ? 'PACK CHECKLIST (CHECK EVERY CUT & SIDE BEFORE READY)'
                                 : 'ORDER ITEMS'}
                         </div>
                         <ul className={styles.trackerItemsList}>
+                            {(order.items || []).map(item => (
+                                <li key={`${order._id}-${item.name}`}>
+                                    <span className={styles.trackerItemQty}>
+                                        {item.qty || item.quantity || 1}×
+                                    </span>{' '}
+                                    {item.name}
+                                    {item.note && (
+                                        <span className={styles.trackerItemNote}>
+                                            {' '}
+                                            — {item.note}
+                                        </span>
+                                    )}
+                                </li>
+                            ))}
                             {(order.items || []).map((item, itemIdx) => {
                                 const isChecked = Boolean(packedByOrder[order._id]?.[itemIdx]);
                                 return (
@@ -1738,6 +1758,15 @@ export default function AdminDashboard({
                             🔪 Move to Block (Step 2 · Cutting)
                         </button>
                     )}
+                    {order.status === 'processing' && (
+                        <button
+                            type="button"
+                            className={styles.actionBtnPrimary}
+                            onClick={() => handleStatusChange(order._id, 'ready_paid', true)}
+                        >
+                            📦 Mark Ready for Pickup (Step 3 · Ready)
+                        </button>
+                    )}
                     {order.status === 'processing' && (() => {
                         const totalItems = (order.items || []).length;
                         const packedCount = (order.items || []).filter((_, idx) => Boolean(packedByOrder[order._id]?.[idx])).length;
@@ -1786,9 +1815,8 @@ export default function AdminDashboard({
                         aria-label={`Change status for order ${order.orderNumber}`}
                         value={order.status || 'pending'}
                         onChange={e => handleStatusChange(order._id, e.target.value, true)}
-                        className={`${styles.statusDropdown} ${
-                            styles[`status_${order.status || 'pending'}`]
-                        }`}
+                        className={`${styles.statusDropdown} ${styles[`status_${order.status || 'pending'}`]
+                            }`}
                     >
                         <option value="pending">Pending (Unpaid)</option>
                         <option value="paid">Placed (Paid)</option>
@@ -1866,27 +1894,24 @@ export default function AdminDashboard({
                         <button
                             type="button"
                             onClick={() => setStoreFilter('all')}
-                            className={`${styles.storeSwitchBtn} ${
-                                storeFilter === 'all' ? styles.storeSwitchBtnActiveAll : ''
-                            }`}
+                            className={`${styles.storeSwitchBtn} ${storeFilter === 'all' ? styles.storeSwitchBtnActiveAll : ''
+                                }`}
                         >
                             All Locations
                         </button>
                         <button
                             type="button"
                             onClick={() => setStoreFilter('butcher')}
-                            className={`${styles.storeSwitchBtn} ${
-                                storeFilter === 'butcher' ? styles.storeSwitchBtnActiveButcher : ''
-                            }`}
+                            className={`${styles.storeSwitchBtn} ${storeFilter === 'butcher' ? styles.storeSwitchBtnActiveButcher : ''
+                                }`}
                         >
                             🥩 The Butcher Shop
                         </button>
                         <button
                             type="button"
                             onClick={() => setStoreFilter('depot')}
-                            className={`${styles.storeSwitchBtn} ${
-                                storeFilter === 'depot' ? styles.storeSwitchBtnActiveDepot : ''
-                            }`}
+                            className={`${styles.storeSwitchBtn} ${storeFilter === 'depot' ? styles.storeSwitchBtnActiveDepot : ''
+                                }`}
                         >
                             🏪 The Depot
                         </button>
@@ -1923,6 +1948,13 @@ export default function AdminDashboard({
                             {restocks.filter(r => r.status === 'pending').length}
                         </span>
                     </button>
+                    <button
+                        type="button"
+                        className={`${styles.tab} ${activeTab === 'subscribers' ? styles.activeTab : ''}`}
+                        onClick={() => setActiveTab('subscribers')}
+                    >
+                        📬 Subscribers &amp; Outreach ({users.filter(u => u.newsletter).length})
+                    </button>
                 </div>
             </div>
 
@@ -1931,9 +1963,8 @@ export default function AdminDashboard({
                 <button
                     type="button"
                     onClick={() => handleSelectProgressFilter('behind')}
-                    className={`${styles.statCard} ${styles.statCardClickable} ${
-                        runningBehindOrders.length > 0 ? styles.statCardAlert : ''
-                    } ${inProgressStageFilter === 'behind' ? styles.statCardSelected : ''}`}
+                    className={`${styles.statCard} ${styles.statCardClickable} ${runningBehindOrders.length > 0 ? styles.statCardAlert : ''
+                        } ${inProgressStageFilter === 'behind' ? styles.statCardSelected : ''}`}
                 >
                     <span className={styles.statLabel}>🚨 Running Behind SLA</span>
                     <span className={`${styles.statValue} ${runningBehindOrders.length > 0 ? styles.statValueDanger : ''}`}>
@@ -1944,9 +1975,8 @@ export default function AdminDashboard({
                 <button
                     type="button"
                     onClick={() => handleSelectProgressFilter('placed')}
-                    className={`${styles.statCard} ${styles.statCardClickable} ${
-                        inProgressStageFilter === 'placed' ? styles.statCardSelected : ''
-                    }`}
+                    className={`${styles.statCard} ${styles.statCardClickable} ${inProgressStageFilter === 'placed' ? styles.statCardSelected : ''
+                        }`}
                 >
                     <span className={styles.statLabel}>01 · Order Placed</span>
                     <span className={styles.statValue}>{placedCount} Orders</span>
@@ -1955,9 +1985,8 @@ export default function AdminDashboard({
                 <button
                     type="button"
                     onClick={() => handleSelectProgressFilter('cutting')}
-                    className={`${styles.statCard} ${styles.statCardActive} ${styles.statCardClickable} ${
-                        inProgressStageFilter === 'cutting' ? styles.statCardSelected : ''
-                    }`}
+                    className={`${styles.statCard} ${styles.statCardActive} ${styles.statCardClickable} ${inProgressStageFilter === 'cutting' ? styles.statCardSelected : ''
+                        }`}
                 >
                     <span className={styles.statLabel}>02 · Cutting (On the Block)</span>
                     <span className={`${styles.statValue} ${styles.statValueGold}`}>
@@ -1968,9 +1997,8 @@ export default function AdminDashboard({
                 <button
                     type="button"
                     onClick={() => handleSelectProgressFilter('ready')}
-                    className={`${styles.statCard} ${styles.statCardClickable} ${
-                        inProgressStageFilter === 'ready' ? styles.statCardSelected : ''
-                    }`}
+                    className={`${styles.statCard} ${styles.statCardClickable} ${inProgressStageFilter === 'ready' ? styles.statCardSelected : ''
+                        }`}
                 >
                     <span className={styles.statLabel}>03 · Ready for Pickup</span>
                     <span className={styles.statValue}>{readyForPickupCount} Orders</span>
@@ -1979,9 +2007,8 @@ export default function AdminDashboard({
                 <button
                     type="button"
                     onClick={() => handleSelectProgressFilter('done')}
-                    className={`${styles.statCard} ${styles.statCardGreen} ${styles.statCardClickable} ${
-                        inProgressStageFilter === 'done' ? styles.statCardSelectedGreen : ''
-                    }`}
+                    className={`${styles.statCard} ${styles.statCardGreen} ${styles.statCardClickable} ${inProgressStageFilter === 'done' ? styles.statCardSelectedGreen : ''
+                        }`}
                 >
                     <span className={styles.statLabel}>04 · Picked Up (&lt;24h)</span>
                     <span className={`${styles.statValue} ${styles.statValueGreen}`}>
@@ -1995,7 +2022,6 @@ export default function AdminDashboard({
                 <>
                     {/* ── 🔥 LIVE KITCHEN LOAD & HOLIDAY PICKUP SLOT THROTTLE ── */}
                     <KitchenThrottleBar />
-                    <InStorePosDrawer />
 
                     {/* ── 🎛️ MASTER PROGRESS STAGE FILTER & SORT BAR ── */}
                     <section className={styles.progressControlBar} aria-label="Filter and sort orders by progress stage">
@@ -2023,15 +2049,14 @@ export default function AdminDashboard({
                                             onClick={() =>
                                                 setProgressSortBy(
                                                     opt.key as
-                                                        | 'stage_asc'
-                                                        | 'stage_desc'
-                                                        | 'urgent_first'
-                                                        | 'total_desc'
+                                                    | 'stage_asc'
+                                                    | 'stage_desc'
+                                                    | 'urgent_first'
+                                                    | 'total_desc'
                                                 )
                                             }
-                                            className={`${styles.progressSortBtn} ${
-                                                progressSortBy === opt.key ? styles.progressSortBtnActive : ''
-                                            }`}
+                                            className={`${styles.progressSortBtn} ${progressSortBy === opt.key ? styles.progressSortBtnActive : ''
+                                                }`}
                                         >
                                             {opt.label}
                                         </button>
@@ -2097,23 +2122,20 @@ export default function AdminDashboard({
                                         key={pill.key}
                                         type="button"
                                         onClick={() => handleSelectProgressFilter(pill.key)}
-                                        className={`${styles.progressStageCardBtn} ${
-                                            pill.tone === 'stage4' ? styles.progressStageCardBtnGreen : ''
-                                        } ${pill.tone === 'danger' ? styles.progressStageCardBtnDanger : ''} ${
-                                            isActive
+                                        className={`${styles.progressStageCardBtn} ${pill.tone === 'stage4' ? styles.progressStageCardBtnGreen : ''
+                                            } ${pill.tone === 'danger' ? styles.progressStageCardBtnDanger : ''} ${isActive
                                                 ? pill.tone === 'stage4'
                                                     ? styles.progressStageCardBtnActiveGreen
                                                     : styles.progressStageCardBtnActive
                                                 : ''
-                                        }`}
+                                            }`}
                                     >
                                         <div className={styles.progressStageCardTop}>
                                             <span
-                                                className={`${styles.progressStageStepTag} ${
-                                                    pill.tone === 'stage4'
-                                                        ? styles.progressStageStepTagGreen
-                                                        : ''
-                                                }`}
+                                                className={`${styles.progressStageStepTag} ${pill.tone === 'stage4'
+                                                    ? styles.progressStageStepTagGreen
+                                                    : ''
+                                                    }`}
                                             >
                                                 {pill.step}
                                             </span>
@@ -2129,43 +2151,43 @@ export default function AdminDashboard({
 
                     {/* ── 🚨 1. ORDERS RUNNING BEHIND & NEEDING IMMEDIATE ATTENTION ── */}
                     {(inProgressStageFilter === 'all' || inProgressStageFilter === 'behind') && (
-                    <section className={styles.urgentSection} aria-labelledby="urgent-orders-heading">
-                        <div className={styles.sectionHeaderRow}>
-                            <div className={styles.sectionTitleWrap}>
-                                <div className={styles.urgentKickerRow}>
-                                    <span className={styles.urgentPulseDot} aria-hidden="true" />
-                                    <span className={styles.urgentKicker}>
-                                        SLA Alert Queue • Immediate Action Required
-                                    </span>
+                        <section className={styles.urgentSection} aria-labelledby="urgent-orders-heading">
+                            <div className={styles.sectionHeaderRow}>
+                                <div className={styles.sectionTitleWrap}>
+                                    <div className={styles.urgentKickerRow}>
+                                        <span className={styles.urgentPulseDot} aria-hidden="true" />
+                                        <span className={styles.urgentKicker}>
+                                            SLA Alert Queue • Immediate Action Required
+                                        </span>
+                                    </div>
+                                    <h2 id="urgent-orders-heading" className={styles.sectionHeading}>
+                                        Orders Running Behind ({runningBehindOrders.length})
+                                    </h2>
+                                    <p className={styles.sectionSubtext}>
+                                        These orders have passed their target prep milestone or have an imminent pickup window.
+                                    </p>
                                 </div>
-                                <h2 id="urgent-orders-heading" className={styles.sectionHeading}>
-                                    Orders Running Behind ({runningBehindOrders.length})
-                                </h2>
-                                <p className={styles.sectionSubtext}>
-                                    These orders have passed their target prep milestone or have an imminent pickup window.
-                                </p>
                             </div>
-                        </div>
 
-                        {runningBehindOrders.length > 0 ? (
-                            <div className={styles.trackerCardsGrid}>
-                                {runningBehindOrders.map(order => renderOrderTrackerCard(order, true))}
-                            </div>
-                        ) : (
-                            <div className={styles.allClearBanner}>
-                                <span>
-                                    ✅ All caught up! Every active order is currently on schedule.
-                                </span>
-                                <button
-                                    type="button"
-                                    className={styles.actionBtnSecondary}
-                                    onClick={handleResetDemoQueue}
-                                >
-                                    ↺ Restore Sample Overdue Orders
-                                </button>
-                            </div>
-                        )}
-                    </section>
+                            {runningBehindOrders.length > 0 ? (
+                                <div className={styles.trackerCardsGrid}>
+                                    {runningBehindOrders.map(order => renderOrderTrackerCard(order, true))}
+                                </div>
+                            ) : (
+                                <div className={styles.allClearBanner}>
+                                    <span>
+                                        ✅ All caught up! Every active order is currently on schedule.
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className={styles.actionBtnSecondary}
+                                        onClick={handleResetDemoQueue}
+                                    >
+                                        ↺ Restore Sample Overdue Orders
+                                    </button>
+                                </div>
+                            )}
+                        </section>
                     )}
 
                     {/* ── 🔪 2. ALL ORDERS SORTED BY PROGRESS STAGE ── */}
@@ -2205,21 +2227,20 @@ export default function AdminDashboard({
                                         onClick={() =>
                                             handleSelectProgressFilter(
                                                 tab.key as
-                                                    | 'all'
-                                                    | 'behind'
-                                                    | 'placed'
-                                                    | 'cutting'
-                                                    | 'ready'
-                                                    | 'done'
+                                                | 'all'
+                                                | 'behind'
+                                                | 'placed'
+                                                | 'cutting'
+                                                | 'ready'
+                                                | 'done'
                                             )
                                         }
-                                        className={`${styles.stageFilterBtn} ${
-                                            inProgressStageFilter === tab.key
-                                                ? tab.key === 'done'
-                                                    ? styles.stageFilterBtnActiveGreen
-                                                    : styles.stageFilterBtnActive
-                                                : ''
-                                        }`}
+                                        className={`${styles.stageFilterBtn} ${inProgressStageFilter === tab.key
+                                            ? tab.key === 'done'
+                                                ? styles.stageFilterBtnActiveGreen
+                                                : styles.stageFilterBtnActive
+                                            : ''
+                                            }`}
                                     >
                                         {tab.label}
                                     </button>
@@ -2229,23 +2250,21 @@ export default function AdminDashboard({
 
                         {activeInProgressOrders.length > 0 ? (
                             inProgressStageFilter === 'all' &&
-                            (progressSortBy === 'stage_asc' || progressSortBy === 'stage_desc') ? (
+                                (progressSortBy === 'stage_asc' || progressSortBy === 'stage_desc') ? (
                                 <div className={styles.stageGroupsStack}>
                                     {groupedStageSections.map(group => (
                                         <div
                                             key={group.key}
-                                            className={`${styles.stageGroupBlock} ${
-                                                group.accent === 'done' ? styles.stageGroupBlockGreen : ''
-                                            }`}
+                                            className={`${styles.stageGroupBlock} ${group.accent === 'done' ? styles.stageGroupBlockGreen : ''
+                                                }`}
                                         >
                                             <div className={styles.stageGroupHeader}>
                                                 <div className={styles.stageGroupHeaderLeft}>
                                                     <span
-                                                        className={`${styles.stageGroupStepPill} ${
-                                                            group.accent === 'done'
-                                                                ? styles.stageGroupStepPillGreen
-                                                                : ''
-                                                        }`}
+                                                        className={`${styles.stageGroupStepPill} ${group.accent === 'done'
+                                                            ? styles.stageGroupStepPillGreen
+                                                            : ''
+                                                            }`}
                                                     >
                                                         {group.stepBadge}
                                                     </span>
@@ -2412,13 +2431,12 @@ export default function AdminDashboard({
                                         onClick={() => {
                                             handleSelectProgressFilter(f.stageKey);
                                         }}
-                                        className={`${styles.filterPillBtn} ${
-                                            orderFilter === f.key
-                                                ? f.key === 'completed'
-                                                    ? styles.filterPillBtnActiveGreen
-                                                    : styles.filterPillBtnActive
-                                                : ''
-                                        }`}
+                                        className={`${styles.filterPillBtn} ${orderFilter === f.key
+                                            ? f.key === 'completed'
+                                                ? styles.filterPillBtnActiveGreen
+                                                : styles.filterPillBtnActive
+                                            : ''
+                                            }`}
                                     >
                                         {f.label}
                                     </button>
@@ -2457,9 +2475,8 @@ export default function AdminDashboard({
                                         return (
                                             <tr
                                                 key={order._id}
-                                                className={`${styles.rowClickable} ${
-                                                    isBehind ? styles.rowBehind : ''
-                                                }`}
+                                                className={`${styles.rowClickable} ${isBehind ? styles.rowBehind : ''
+                                                    }`}
                                                 onClick={() => handleOrderRowClick(order)}
                                             >
                                                 <td>
@@ -2483,9 +2500,8 @@ export default function AdminDashboard({
                                                                 'Guest'}
                                                         </span>
                                                         <span
-                                                            className={`${styles.customerTierPillSm} ${
-                                                                styles[`customerTier_${rowBadge.tierKey}`]
-                                                            }`}
+                                                            className={`${styles.customerTierPillSm} ${styles[`customerTier_${rowBadge.tierKey}`]
+                                                                }`}
                                                         >
                                                             {rowBadge.shortLabel}
                                                         </span>
@@ -2530,9 +2546,8 @@ export default function AdminDashboard({
                                                         onChange={e =>
                                                             handleStatusChange(order._id, e.target.value, true)
                                                         }
-                                                        className={`${styles.statusDropdown} ${
-                                                            styles[`status_${order.status || 'pending'}`]
-                                                        }`}
+                                                        className={`${styles.statusDropdown} ${styles[`status_${order.status || 'pending'}`]
+                                                            }`}
                                                     >
                                                         <option value="pending">Pending (Unpaid)</option>
                                                         <option value="paid">Placed (Paid)</option>
@@ -2614,9 +2629,8 @@ export default function AdminDashboard({
                                                             </span>
                                                             {customer.spendBadge && (
                                                                 <span
-                                                                    className={`${styles.customerTierPillSm} ${
-                                                                        styles[`customerTier_${customer.spendBadge.tierKey}`]
-                                                                    }`}
+                                                                    className={`${styles.customerTierPillSm} ${styles[`customerTier_${customer.spendBadge.tierKey}`]
+                                                                        }`}
                                                                 >
                                                                     {customer.spendBadge.shortLabel}
                                                                 </span>
@@ -2680,6 +2694,23 @@ export default function AdminDashboard({
                             currentPage={customerSearchPage}
                             totalPages={totalPages}
                             onPageChange={setCustomerSearchPage}
+                        />
+                    </div>
+                ) : activeTab === 'subscribers' ? (
+                    <div className={styles.tabPanelInner}>
+                        <SubscribersPanel
+                            subscribers={users
+                                .filter(u => u.newsletter)
+                                .map(u => ({
+                                    _id: u._id,
+                                    name: u.name,
+                                    email: u.email,
+                                    phone: u.phone,
+                                    favoriteCut: u.favoriteCut,
+                                    createdAt: u.createdAt,
+                                    orderCount: u.orderCount ?? 0,
+                                }))}
+                            totalCustomers={users.length}
                         />
                     </div>
                 ) : (

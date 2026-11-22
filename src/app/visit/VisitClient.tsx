@@ -365,8 +365,8 @@ export default function VisitClient() {
                                         <Link href="/online-orders?store=depot" className="btn-hit">
                                             <span className="btn btn-depot">Shop The Depot →</span>
                                         </Link>
-                                        <Link href="/how-ordering-works" className={styles.compareSecondaryLink}>
-                                            How Ordering Works →
+                                        <Link href="/specials" className={styles.compareSecondaryLink}>
+                                            Daily Specials →
                                         </Link>
                                     </div>
                                 </article>

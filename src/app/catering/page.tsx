@@ -174,7 +174,8 @@ export default async function CateringPage() {
                                         src="/assets/catering/how-it-works-build-package.jpg"
                                         alt="Illustrated BBQ catering platter with ribs, brisket, sausages, sides, crossed cleaver and fork, and rising flames"
                                         fill
-                                        sizes="128px"
+                                        sizes="512px"
+                                        quality={95}
                                         className={styles.stepImg}
                                     />
                                 </div>
@@ -193,7 +194,8 @@ export default async function CateringPage() {
                                         src="/assets/catering/how-it-works-pick-date.jpg"
                                         alt="Illustrated flaming calendar with a checked event date square"
                                         fill
-                                        sizes="128px"
+                                        sizes="512px"
+                                        quality={95}
                                         className={styles.stepImg}
                                     />
                                 </div>
@@ -212,7 +214,8 @@ export default async function CateringPage() {
                                         src="/assets/catering/how-it-works-full-service.jpg"
                                         alt="Illustrated full-service banquet cloche lifted over curling smoke, rising flames, and crossed carving knife and fork"
                                         fill
-                                        sizes="128px"
+                                        sizes="512px"
+                                        quality={95}
                                         className={styles.stepImg}
                                     />
                                 </div>
@@ -252,7 +255,7 @@ export default async function CateringPage() {
             <PigRoastsSection />
 
             {/* ── Marquee Ticker ── */}
-            <CateringMarquee id="catering-marquee" rows={1} />
+            <CateringMarquee id="catering-marquee" rows={2} />
 
             {/* ── Beyond BBQ ── */}
             <section id="beyond-bbq" aria-labelledby="beyond-bbq-heading" className={`section ${bbqStyles.servicesSection}`}>

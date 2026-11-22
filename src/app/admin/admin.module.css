@@ -6,7 +6,7 @@
     font-family: var(--font-body, 'Inter', sans-serif);
     display: flex;
     flex-direction: column;
-    max-width: var(--max-w, 1400px);
+    max-width: calc(var(--max-w, 1400px) + var(--container-px) * 2);
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
@@ -201,6 +201,7 @@
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
+    text-decoration: none;
     transition: all 0.2s;
     position: relative;
     display: inline-flex;
@@ -2748,4 +2749,31 @@
     font-weight: 700;
     cursor: not-allowed;
     font-family: inherit;
+}
+
+
+/* ── Recharts Dark Tooltip & Subtle Bar Hover Cursor ── */
+.metricsContainer :global(.recharts-default-tooltip) {
+    background-color: #141416 !important;
+    border: 1px solid #333338 !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55) !important;
+}
+
+.metricsContainer :global(.recharts-tooltip-label) {
+    color: #f4f4f5 !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    margin-bottom: 4px !important;
+}
+
+.metricsContainer :global(.recharts-tooltip-item) {
+    color: #fde68a !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+}
+
+.metricsContainer :global(.recharts-tooltip-cursor) {
+    fill: rgba(255, 255, 255, 0.06) !important;
 }
