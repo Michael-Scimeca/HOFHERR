@@ -6,11 +6,13 @@ import Link from 'next/link';
 import { Toggle } from '@/components/Toggle';
 import styles from './SubscribersPanel.module.css';
 
-const JOINED_DATE_FMT = new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-});
+const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const;
+
+function formatJoinedDate(iso: string): string {
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '—';
+    return `${SHORT_MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
+}
 
 const SocialAdminInline = dynamic(() => import('@/app/admin/social/page'), {
     ssr: false,
@@ -857,9 +859,7 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
                                     <td className={styles.cellGold}>{sub.favoriteCut || '—'}</td>
                                     <td className={styles.cellNum}>{sub.orderCount}</td>
                                     <td className={styles.cellMuted}>
-                                        {sub.createdAt
-                                            ? JOINED_DATE_FMT.format(new Date(sub.createdAt))
-                                            : '—'}
+                                        {sub.createdAt ? formatJoinedDate(sub.createdAt) : '—'}
                                     </td>
                                     </tr>
                                 );
