@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
+import PageHero from '@/components/PageHero';
 import legalStyles from '../(legal)/legal.module.css';
 import styles from './page.module.css';
 
@@ -56,23 +57,26 @@ export default function FaqClient({ faqs }: { faqs: FaqGroup[] }) {
     return (
         <main className={legalStyles.pageWrap}>
             {/* ── Hero (Matches /terms & /privacy) ── */}
-            <header className={legalStyles.hero}>
-                <div className={legalStyles.heroInner}>
-                    <h1 className={legalStyles.title}>
+            <PageHero
+                title={
+                    <>
                         Frequently Asked <em>Questions</em>
-                    </h1>
-                    <p className={legalStyles.heroLead}>
+                    </>
+                }
+                lead={
+                    <>
                         Can&apos;t find your answer? Call us at{' '}
                         <a href="tel:8474416328" className={legalStyles.contactLink}>
                             (847) 441-MEAT
                         </a>{' '}
                         — a real butcher behind the counter will pick up.
-                    </p>
-                    <p className={legalStyles.effective}>
-                        Northfield &amp; Winnetka, IL &middot; Ordering, Custom Cuts &amp; Catering
-                    </p>
-                </div>
-            </header>
+                    </>
+                }
+            >
+                <p className={legalStyles.effective}>
+                    Northfield &amp; Winnetka, IL &middot; Ordering, Custom Cuts &amp; Catering
+                </p>
+            </PageHero>
 
             {/* ── Sticky Sidebar + Document Surface (Matches /terms) ── */}
             <section id="faq-content" aria-labelledby="faq-content-heading" className="section">

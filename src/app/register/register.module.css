@@ -46,7 +46,7 @@
 .subtext {
     font-size: var(--text-base);
     color: var(--fg-3);
-    max-width: 600px;
+    max-width: 700px;
     line-height: 1.7;
 }
 

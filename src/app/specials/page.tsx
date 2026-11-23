@@ -4,6 +4,7 @@ import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
 import { SIGNATURE_PRODUCTS_QUERY, ROTISSERIE_STATUS_QUERY } from '@/sanity/queries';
 import NewsletterInline from '@/components/NewsletterInline';
+import PageHero from '@/components/PageHero';
 import SignatureDishesSection, {
     FALLBACK_SIGNATURES,
     mergeSignatureFallbacks,
@@ -64,16 +65,16 @@ export default async function SpecialsPage() {
         <main>
 
             {/* ── Hero ── */}
-            <section id="specials-hero" aria-labelledby="specials-hero-heading" className={styles.hero}>
-                <div className={`container ${styles.heroInner}`}>
-                    <h1 id="specials-hero-heading" className={styles.headline}>
+            <PageHero
+                id="specials-hero"
+                headingId="specials-hero-heading"
+                title={
+                    <>
                         The Dishes That <em>Made Our Name</em>
-                    </h1>
-                    <p className={styles.sub}>
-                        The dishes and services that define Hofherr Meat Co. — perfected over years and impossible to find anywhere else.
-                    </p>
-                </div>
-            </section>
+                    </>
+                }
+                lead="The dishes and services that define Hofherr Meat Co. — perfected over years and impossible to find anywhere else."
+            />
 
             {/* ── Specials (dynamic from Sanity) ── */}
             <SignatureDishesSection signatures={signatures} rotisserie={rotisserie} />

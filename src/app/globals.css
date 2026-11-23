@@ -927,6 +927,13 @@ body:has(.pt-wrap.pt-enter) [data-pt-portal] {
   pointer-events: none;
 }
 
+/* Hide Google Maps "Use ⌘ + scroll to zoom the map" cooperative overlay */
+.gm-style-pbc {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* ─── Print Media: Hide global site chrome (Navbar, Footer, Embers, Chat, Dev Overlays) ─── */
 @media print {
   body > :not(.pt-wrap),

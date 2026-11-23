@@ -12,6 +12,7 @@ import CateringHeroButtons from './CateringHeroButtons';
 import PigRoastsSection from './PigRoastsSection';
 import MosaicServices from '@/app/bbq/MosaicServices';
 import CateringMarquee from '@/components/CateringMarquee';
+import PageHero from '@/components/PageHero';
 import styles from './page.module.css';
 import bbqStyles from '@/app/bbq/page.module.css';
 
@@ -140,18 +141,18 @@ export default async function CateringPage() {
     return (
         <main>
             {/* ── Hero ── */}
-            <section id="catering-hero" aria-labelledby="catering-hero-heading" className={styles.hero}>
-                <div className={`container ${styles.heroInner}`}>
-                    <h1 id="catering-hero-heading" className={styles.headline}>
+            <PageHero
+                id="catering-hero"
+                headingId="catering-hero-heading"
+                title={
+                    <>
                         Big Guest List? <em>Bring It.</em>
-                    </h1>
-                    <p className={styles.sub}>
-                        Authentic low-and-slow BBQ, backyard pig roasts, and full-service catering from the same
-                        butchers who cut your steaks. Custom menus, full setup, and food people actually talk about.
-                    </p>
-                    <CateringHeroButtons />
-                </div>
-            </section>
+                    </>
+                }
+                lead="Authentic low-and-slow BBQ, backyard pig roasts, and full-service catering from the same butchers who cut your steaks. Custom menus, full setup, and food people actually talk about."
+            >
+                <CateringHeroButtons />
+            </PageHero>
 
             {/* ── How It Works ── */}
             <section

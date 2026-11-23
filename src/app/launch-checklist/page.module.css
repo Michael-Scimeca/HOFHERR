@@ -32,7 +32,7 @@
 
 .lead {
     margin: 0;
-    max-width: 68ch;
+    max-width: calc(68ch + 100px);
     font-size: var(--text-base);
     line-height: 1.65;
     color: var(--fg-2);

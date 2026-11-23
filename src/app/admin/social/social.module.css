@@ -47,7 +47,7 @@
 
 .lead {
     color: var(--fg-2, #cdbfa8);
-    max-width: 75ch;
+    max-width: calc(75ch + 100px);
     line-height: 1.6;
     margin: 0;
 }

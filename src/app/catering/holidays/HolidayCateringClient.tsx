@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
+import PageHero from '@/components/PageHero';
 import { ALL_HOLIDAY_HEROES, getActiveHolidayHero } from '@/lib/holidayHero';
 import {
     HOLIDAY_SELLING_GUIDES,
@@ -174,20 +175,15 @@ export default function HolidayCateringClient() {
 
     return (
         <main className={styles.page}>
-            {/* ── Open Hero Header (Matches /cut-guide) ── */}
-            <header className={styles.hero}>
-                <div className="container">
-                    <div className={styles.heroInner}>
-                        <h1 className={styles.headline}>
-                            Holiday &amp; Event <em>Catering Guide</em>
-                        </h1>
-                        <p className={styles.sub}>
-                            Selling points, signature cuts, and order lead times for every major holiday — plus the
-                            year-round North Shore occasions that bring catering guests through the counter.
-                        </p>
-                    </div>
-                </div>
-            </header>
+            {/* ── Open Hero Header ── */}
+            <PageHero
+                title={
+                    <>
+                        Holiday &amp; Event <em>Catering Guide</em>
+                    </>
+                }
+                lead="Selling points, signature cuts, and order lead times for every major holiday — plus the year-round North Shore occasions that bring catering guests through the counter."
+            />
 
             {/* ── Section 0: Automatic Home Hero Holiday Examples (All 12) ── */}
             <section id="home-hero-holiday-examples" aria-labelledby="home-hero-holiday-examples-heading" className="section-sm">

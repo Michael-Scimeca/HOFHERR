@@ -147,7 +147,7 @@
     color: rgba(255, 255, 255, 0.9);
     line-height: 1.7;
     margin-bottom: 28px;
-    max-width: 500px;
+    max-width: 600px;
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
     animation: fadeInUp 0.6s 0.2s var(--ease-out) both;
 }
@@ -174,11 +174,14 @@
 }
 
 .toggleBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
     padding: 12px 28px;
-    border: 1px solid #ffffff1a;
-    border-radius: 100px;
-    background: rgba(0, 0, 0, 0.35);
-    color: rgba(255, 255, 255, 0.95);
+    border: 1px solid var(--red, #cc0e1d);
+    border-radius: 999px;
+    background: var(--red, #cc0e1d);
+    color: #fff;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
@@ -186,7 +189,8 @@
         background-color 0.25s ease,
         border-color 0.25s ease,
         color 0.25s ease,
-        box-shadow 0.25s ease;
+        box-shadow 0.25s ease,
+        transform 0.2s ease;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     white-space: nowrap;
@@ -194,19 +198,22 @@
 }
 
 .toggleBtn:hover {
-    background: rgba(0, 0, 0, 0.5);
-    border-color: #ffffff1a;
+    background: var(--red-dark, #a93226);
+    border-color: var(--red-dark, #a93226);
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(204, 14, 29, 0.35);
 }
 
 .toggleActive {
-    background: var(--red, #800020);
-    border-color: var(--red, #8b0a10);
+    background: var(--red, #cc0e1d);
+    border-color: var(--red, #cc0e1d);
     color: #fff;
+    box-shadow: 0 8px 24px rgba(204, 14, 29, 0.45);
 }
 
 .toggleActive:hover {
     background: var(--red-dark, #a93226);
-    border-color: #8b0a10;
+    border-color: var(--red-dark, #a93226);
 }
 
 .toggleBtnDepot {
@@ -226,13 +233,20 @@
     background: var(--depot-blue-bg, #1e3a5f);
     border-color: var(--depot-blue-light, #3b82f6);
     color: #fff;
-    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
 }
 
 .toggleActiveDepot:hover {
     background: #234775;
     border-color: var(--depot-blue-light, #3b82f6);
     color: #fff;
+}
+
+.burningDotCanvas {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex-shrink: 0;
 }
 
 .heroShopBtn {

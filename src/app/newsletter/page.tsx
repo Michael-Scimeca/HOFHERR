@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
+import PageHero from '@/components/PageHero';
 import styles from './page.module.css';
 
 const WORTH_IT_REASONS = [
@@ -102,37 +103,33 @@ export default function NewsletterPage() {
     return (
         <main>
             {/* ── Hero ── */}
-            <header className={styles.hero}>
-                <div className={`container ${styles.heroInner}`}>
-                    <h1 className={styles.headline}>
+            <PageHero
+                title={
+                    <>
                         The Hofherr <em>Weekly</em>
-                    </h1>
-                    <p className={styles.sub}>
-                        Why subscribe? Because the best cuts in a real whole-animal butcher shop don&apos;t sit in a
-                        warehouse — they sell out. Every Tuesday morning, we send one concise dispatch giving you first
-                        claim on dry-aged vault releases, subscriber-only weekly steak pricing, and 48-hour early
-                        access to holiday roast reservations.
-                    </p>
-                    <div className={styles.worthMetricsRow}>
-                        <div className={styles.worthMetricItem}>
-                            <span className={styles.worthMetricValue}>Every Tuesday · 8 AM</span>
-                            <span className={styles.worthMetricLabel}>Before the Weekend Counter Rush</span>
-                        </div>
-                        <div className={styles.worthMetricItem}>
-                            <span className={styles.worthMetricValue}>48-Hr Head Start</span>
-                            <span className={styles.worthMetricLabel}>On Thanksgiving &amp; Christmas Roasts</span>
-                        </div>
-                        <div className={styles.worthMetricItem}>
-                            <span className={styles.worthMetricValue}>Insider Pricing</span>
-                            <span className={styles.worthMetricLabel}>Weekly Member-Only Cut Specials</span>
-                        </div>
-                        <div className={styles.worthMetricItem}>
-                            <span className={styles.worthMetricValue}>Zero Fluff</span>
-                            <span className={styles.worthMetricLabel}>1 Email a Week · 1-Click Unsubscribe</span>
-                        </div>
+                    </>
+                }
+                lead="Why subscribe? Because the best cuts in a real whole-animal butcher shop don't sit in a warehouse — they sell out. Every Tuesday morning, we send one concise dispatch giving you first claim on dry-aged vault releases, subscriber-only weekly steak pricing, and 48-hour early access to holiday roast reservations."
+            >
+                <div className={styles.worthMetricsRow}>
+                    <div className={styles.worthMetricItem}>
+                        <span className={styles.worthMetricValue}>Every Tuesday · 8 AM</span>
+                        <span className={styles.worthMetricLabel}>Before the Weekend Counter Rush</span>
+                    </div>
+                    <div className={styles.worthMetricItem}>
+                        <span className={styles.worthMetricValue}>48-Hr Head Start</span>
+                        <span className={styles.worthMetricLabel}>On Thanksgiving &amp; Christmas Roasts</span>
+                    </div>
+                    <div className={styles.worthMetricItem}>
+                        <span className={styles.worthMetricValue}>Insider Pricing</span>
+                        <span className={styles.worthMetricLabel}>Weekly Member-Only Cut Specials</span>
+                    </div>
+                    <div className={styles.worthMetricItem}>
+                        <span className={styles.worthMetricValue}>Zero Fluff</span>
+                        <span className={styles.worthMetricLabel}>1 Email a Week · 1-Click Unsubscribe</span>
                     </div>
                 </div>
-            </header>
+            </PageHero>
 
             {/* ── Sign-Up Card & Why It's Worth It ── */}
             <section className={`section ${styles.formSection}`} aria-labelledby="why-worth-it-heading">

@@ -2,6 +2,13 @@
 .page {
     max-width: calc(var(--max-w, 1400px) + var(--container-px) * 2);
     margin: 0 auto;
+    padding: 40px var(--container-px) 80px;
+    color: var(--fg);
+}
+
+.pageEmbedded {
+    max-width: calc(var(--max-w, 1400px) + var(--container-px) * 2);
+    margin: 0 auto;
     padding: calc(var(--nav-h, 68px) + 24px) var(--container-px) 80px;
     color: var(--fg);
 }
@@ -32,7 +39,7 @@
 
 .lead {
     color: var(--fg-2);
-    max-width: 70ch;
+    max-width: calc(70ch + 100px);
     margin: 0;
     line-height: 1.6;
 }
@@ -507,7 +514,7 @@
 
 /* PrintAtSize sheet styles */
 .printMain {
-    padding-top: calc(var(--nav-h, 68px) + 24px);
+    padding-top: 0;
     padding-bottom: 60px;
     color: var(--fg);
 }
@@ -517,29 +524,14 @@
     color: var(--fg);
 }
 
-.printHeader {
-    max-width: 900px;
-    margin: 0 auto 24px;
-    padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.printTitle {
-    font-family: var(--font-heading);
-    text-transform: uppercase;
-    margin: 0;
-}
-
-.printSub {
-    margin: 0;
-    color: var(--fg-2);
+.printHeroSpacing {
+    margin-bottom: var(--space-8);
 }
 
 .printControls {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
     align-items: center;
 }

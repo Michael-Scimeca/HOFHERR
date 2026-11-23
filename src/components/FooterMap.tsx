@@ -75,7 +75,7 @@ function mountThemedGoogleMap(
                 disableDefaultUI: true,
                 zoomControl: true,
                 zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP },
-                gestureHandling: 'cooperative',
+                scrollwheel: false,
                 keyboardShortcuts: false,
             });
 

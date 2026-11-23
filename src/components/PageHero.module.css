@@ -1,0 +1,54 @@
+/* Shared standard page hero — single source of truth for all centered page headers */
+.hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-2);
+    background-image:
+        radial-gradient(at 20%, #80002026 0%, #0000 60%),
+        radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
+    border-bottom: 1px solid var(--border);
+    padding: 62px 0 var(--space-12);
+    text-align: center;
+}
+
+.inner {
+    max-width: 960px;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.title {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: var(--text-hero, clamp(3rem, 6vw, 5.25rem));
+    font-weight: 800;
+    line-height: 0.96;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--fg);
+}
+
+.title em {
+    font-style: italic;
+    color: var(--red);
+}
+
+.lead {
+    margin: 0 auto;
+    max-width: 740px;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--fg-muted);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+}

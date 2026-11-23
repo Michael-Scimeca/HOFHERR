@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import PageHero from '@/components/PageHero';
 import ParcelSheetsTeaser from '@/components/home/ParcelSheetsTeaser';
 import RecipesBrowser from './RecipesBrowser';
 import { COLLECTIONS } from './recipes';
@@ -39,23 +40,18 @@ export default function RecipesPage() {
 
     return (
         <main>
-            <header className={styles.hero}>
-                <div className={`container ${styles.heroInner}`}>
-                    <h1 className={styles.title}>
+            <PageHero
+                title={
+                    <>
                         Butcher&apos;s Cut <em>Recipes</em>
-                    </h1>
-                    <p className={styles.lede}>
-                        A craft recipe for every primal cut on the beef map — plus pork, poultry, lamb, veal and holiday
-                        centerpieces — built around daily cuts from the Hofherr counter. Pick an occasion or cut to
-                        scale ingredients and add everything directly to your pickup order.
-                    </p>
-                    <div className={styles.heroActionsRow}>
-                        <Link href="/recipes/sheets" className={styles.sheetsIndexCta}>
-                            Printable 12×16&quot; Parcel Cooking Sheets →
-                        </Link>
-                    </div>
-                </div>
-            </header>
+                    </>
+                }
+                lead="A craft recipe for every primal cut on the beef map — plus pork, poultry, lamb, veal and holiday centerpieces — built around daily cuts from the Hofherr counter. Pick an occasion or cut to scale ingredients and add everything directly to your pickup order."
+            >
+                <Link href="/recipes/sheets" className={styles.sheetsIndexCta}>
+                    Printable 12×16&quot; Parcel Cooking Sheets →
+                </Link>
+            </PageHero>
 
             <div className={styles.page}>
                 <RecipesBrowser featuredCollectionId={featured?.id ?? null} today={today} />

@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import PageHero from '@/components/PageHero';
 import { DEFAULT_SPECS, SHEETS, fitOnSheet, fmt, fromUnit, toUnit, type PrintSpec, type Unit } from './specs';
 import s from './sizes.module.css';
 
@@ -162,57 +163,34 @@ export default function SizeStudio({ embedded = false }: { embedded?: boolean })
     const tallest = Math.max(sel.h + sel.bleed * 2, 11);
     const compareScale = Math.min(380 / tallest, 760 / (sel.w + 8.5 + 3.37 + 4));
 
-    const Wrapper = embedded ? 'section' : 'main';
-
-    return (
-        <Wrapper
-            id={embedded ? 'print-sizes' : undefined}
-            aria-labelledby={embedded ? 'print-sizes-heading' : undefined}
-            className={s.page}
-        >
-            <header className={s.top}>
-                <div>
-                    {!embedded && (
-                        <Link href="/product-identity" className={s.back}>
-                            ← Product identity
-                        </Link>
-                    )}
-                    {embedded ? (
-                        <h2 id="print-sizes-heading" className={s.h1}>
-                            Print Sizes &amp; Scale Studio
-                        </h2>
-                    ) : (
-                        <h1 className={s.h1}>Print Sizes</h1>
-                    )}
-                    <p className={s.lead}>
-                        Pick a printable item, set its finished size, and see it true to scale. Saved sizes are shared
-                        with the whole team and used by <b>Print at this size</b>.
-                    </p>
-                </div>
-                <div className={s.topActions}>
-                    <Link href="/product-identity/print" className={s.btn}>
-                        🖨 1:1 Print Kit
-                    </Link>
-                    <Link href="/recipes/sheets" className={s.btn}>
-                        📄 12×16&quot; Recipe Sheets
-                    </Link>
-                    <div className={s.seg} role="group" aria-label="Units">
-                        {(['in', 'cm', 'mm'] as Unit[]).map((u) => (
-                            <button
-                                key={u}
-                                type="button"
-                                className={unit === u ? s.segOn : ''}
-                                onClick={() => setUnit(u)}
-                            >
-                                {u}
-                            </button>
-                        ))}
-                    </div>
-                    <button type="button" className={s.btnPrimary} disabled={!dirty || busy} onClick={save}>
-                        {busy ? 'Saving…' : dirty ? 'Save sizes' : 'Saved'}
+    const controls = (
+        <>
+            <Link href="/product-identity/print" className={s.btn}>
+                🖨 1:1 Print Kit
+            </Link>
+            <Link href="/recipes/sheets" className={s.btn}>
+                📄 12×16&quot; Recipe Sheets
+            </Link>
+            <div className={s.seg} role="group" aria-label="Units">
+                {(['in', 'cm', 'mm'] as Unit[]).map((u) => (
+                    <button
+                        key={u}
+                        type="button"
+                        className={unit === u ? s.segOn : ''}
+                        onClick={() => setUnit(u)}
+                    >
+                        {u}
                     </button>
-                </div>
-            </header>
+                ))}
+            </div>
+            <button type="button" className={s.btnPrimary} disabled={!dirty || busy} onClick={save}>
+                {busy ? 'Saving…' : dirty ? 'Save sizes' : 'Saved'}
+            </button>
+        </>
+    );
+
+    const body = (
+        <>
             {msg && <p className={s.msg}>{msg}</p>}
 
             <div className={s.layout}>
@@ -492,6 +470,50 @@ export default function SizeStudio({ embedded = false }: { embedded?: boolean })
                 </section>
             </div>
             {saved === '' && <p className={s.small}>Loading saved sizes…</p>}
-        </Wrapper>
+        </>
+    );
+
+    if (embedded) {
+        return (
+            <section id="print-sizes" aria-labelledby="print-sizes-heading" className={s.pageEmbedded}>
+                <header className={s.top}>
+                    <div>
+                        <h2 id="print-sizes-heading" className={s.h1}>
+                            Print Sizes &amp; Scale Studio
+                        </h2>
+                        <p className={s.lead}>
+                            Pick a printable item, set its finished size, and see it true to scale. Saved sizes are
+                            shared with the whole team and used by <b>Print at this size</b>.
+                        </p>
+                    </div>
+                    <div className={s.topActions}>{controls}</div>
+                </header>
+                {body}
+            </section>
+        );
+    }
+
+    return (
+        <main>
+            <PageHero
+                title={
+                    <>
+                        Print <em>Sizes</em>
+                    </>
+                }
+                lead={
+                    <>
+                        Pick a printable item, set its finished size, and see it true to scale. Saved sizes are shared
+                        with the whole team and used by <b>Print at this size</b>.
+                    </>
+                }
+            >
+                <Link href="/product-identity" className={s.btn}>
+                    ← Product identity
+                </Link>
+                {controls}
+            </PageHero>
+            <div className={s.page}>{body}</div>
+        </main>
     );
 }

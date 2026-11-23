@@ -67,7 +67,7 @@
     font-size: clamp(1rem, 1.25vw, 1.125rem);
     line-height: 1.65;
     color: var(--fg-2);
-    max-width: 64ch;
+    max-width: calc(64ch + 100px);
 }
 
 .heroNav {

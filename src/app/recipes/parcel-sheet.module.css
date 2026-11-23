@@ -659,7 +659,7 @@
 }
 
 .indexLede {
-    max-width: 580px;
+    max-width: 680px;
     font-size: var(--text-base);
     color: var(--fg-2);
     line-height: 1.7;

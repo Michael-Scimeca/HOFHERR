@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
+import PageHero from '@/components/PageHero';
 import { FLAME_STICKERS } from '../ProductIdentityClient';
 import { VECTOR_ICON_PATHS } from '../vectorIcons';
 import s from './print.module.css';
@@ -1044,16 +1045,24 @@ export default function PrintKit() {
 
     return (
         <main className={s.shell}>
-            <header className={`container ${s.toolbar} ${s.noPrint}`}>
-                <h1 className={s.h1}>1:1 True-Size Print Production Kit (Size in Inches)</h1>
-                <p className={s.lead}>
-                    Every label, sticker, card, patch, ticket, letterhead, and rubber stamp below is engineered in
-                    <b> exact physical inches (in)</b> on standard <b>8.50&quot; W × 11.00&quot; H US Letter</b> with a full
-                    <b> Press-Sheet Registration Frame</b> (CMYK color bars, grayscale step wedges, registration bullseyes,
-                    crop marks, and explicit size callouts in inches on every printable item). Click any sheet to print or
-                    Save as PDF with <b>Scale: 100% / Actual Size</b>, <b>Margins: None</b>, and{' '}
-                    <b>Background Graphics: On</b>.
-                </p>
+            <PageHero
+                className={`${s.heroSpacing} ${s.noPrint}`}
+                title={
+                    <>
+                        1:1 True-Size Print <em>Production Kit</em>
+                    </>
+                }
+                lead={
+                    <>
+                        Every label, sticker, card, patch, ticket, letterhead, and rubber stamp below is engineered in
+                        <b> exact physical inches (in)</b> on standard <b>8.50&quot; W × 11.00&quot; H US Letter</b> with a full
+                        <b> Press-Sheet Registration Frame</b> (CMYK color bars, grayscale step wedges, registration bullseyes,
+                        crop marks, and explicit size callouts in inches on every printable item). Click any sheet to print or
+                        Save as PDF with <b>Scale: 100% / Actual Size</b>, <b>Margins: None</b>, and{' '}
+                        <b>Background Graphics: On</b>.
+                    </>
+                }
+            >
                 <div className={s.btnRow}>
                     <button
                         type="button"
@@ -1096,7 +1105,7 @@ export default function PrintKit() {
                         ← Back to Identity System
                     </Link>
                 </div>
-            </header>
+            </PageHero>
 
             <div id="print-root" className={s.root}>
                 {masterSpec && (

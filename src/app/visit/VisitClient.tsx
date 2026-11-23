@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { ThemedMap } from '@/components/FooterMap';
+import BurningDotCanvas from './BurningDotCanvas';
 import { onGoogleMapsAuthFailure, GOOGLE_MAPS_KEY } from '@/lib/googleMapsLoader';
 import styles from './page.module.css';
 
@@ -148,17 +149,37 @@ export default function VisitClient() {
             {/* ── Hero with toggle ── */}
                 <section id="visit-hero" aria-labelledby="visit-hero-heading" className={styles.hero}>
                     <div className={styles.heroImgWrapper}>
-                        <img
-                            src={loc.heroImage}
-                            alt={loc.heroAlt}
-                            width={1376}
-                            height={768}
-                            fetchPriority="high"
-                            loading="eager"
-                            decoding="sync"
-                            className={styles.heroImg}
-                            data-parallax="inset"
-                        />
+                        <div
+                            className={`${styles.heroSlideLayer} ${styles.heroSlideBase} ${active === 1 ? styles.heroSlideBaseSwapped : ''}`}
+                            aria-hidden={active !== 0}
+                        >
+                            <img
+                                src={LOCATIONS[0].heroImage}
+                                alt={active === 0 ? LOCATIONS[0].heroAlt : ''}
+                                width={1376}
+                                height={768}
+                                fetchPriority="high"
+                                loading="eager"
+                                decoding="sync"
+                                className={styles.heroImg}
+                                data-parallax="inset"
+                            />
+                        </div>
+                        <div
+                            className={`${styles.heroSlideLayer} ${styles.heroSlideHover} ${active === 1 ? styles.heroSlideHoverSwapped : ''}`}
+                            aria-hidden={active !== 1}
+                        >
+                            <img
+                                src={LOCATIONS[1].heroImage}
+                                alt={active === 1 ? LOCATIONS[1].heroAlt : ''}
+                                width={1376}
+                                height={768}
+                                loading="eager"
+                                decoding="sync"
+                                className={styles.heroImg}
+                                data-parallax="inset"
+                            />
+                        </div>
                     </div>
 
 
@@ -181,12 +202,14 @@ export default function VisitClient() {
                                         <button
                                             key={l.id}
                                             type="button"
+                                            aria-pressed={isActive}
                                             className={`${styles.toggleBtn} ${isDepot ? styles.toggleBtnDepot : ''} ${isActive ? (isDepot ? styles.toggleActiveDepot : styles.toggleActive) : ''}`}
                                             onClick={() => {
                                                 setActive(i);
                                                 window.history.replaceState(null, '', `#${l.id}`);
                                             }}
                                         >
+                                            {isActive && <BurningDotCanvas variant={isDepot ? 'depot' : 'butcher'} />}
                                             {l.label}
                                         </button>
                                     );

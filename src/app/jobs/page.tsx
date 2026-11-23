@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import PageHero from '@/components/PageHero';
 import styles from './page.module.css';
 
 import type { Metadata } from 'next';
@@ -92,27 +93,21 @@ export default function JobsPage() {
             />
 
             {/* ── Hero ── */}
-            <header className={styles.hero}>
-                <div className="container">
-                    <div className={styles.heroInner}>
-                        <h1 className={styles.headline}>
-                            WORK AT <em>HOFHERR MEAT CO.</em>
-                        </h1>
-                        <p className={styles.sub}>
-                            We are always looking to grow our team. We offer health care plans, retirement savings
-                            accounts, and other great perks!
-                        </p>
-                        <div className={styles.heroActions}>
-                            <a href="mailto:jobs@hofherrmeatco.com" className="btn-hit">
-                                <span className="btn btn-primary">Email Us Your Resume</span>
-                            </a>
-                            <a href="tel:8474416328" className="btn-hit">
-                                <span className="btn btn-secondary">Call (847) 441-MEAT</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <PageHero
+                title={
+                    <>
+                        WORK AT <em>HOFHERR MEAT CO.</em>
+                    </>
+                }
+                lead="We are always looking to grow our team. We offer health care plans, retirement savings accounts, and other great perks!"
+            >
+                <a href="mailto:jobs@hofherrmeatco.com" className="btn-hit">
+                    <span className="btn btn-primary">Email Us Your Resume</span>
+                </a>
+                <a href="tel:8474416328" className="btn-hit">
+                    <span className="btn btn-secondary">Call (847) 441-MEAT</span>
+                </a>
+            </PageHero>
 
             {/* ── Open Positions & Benefits Grid ── */}
             <section id="open-positions" aria-labelledby="open-positions-heading" className="section">

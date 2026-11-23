@@ -65,7 +65,7 @@
 .sub {
     font-size: var(--text-md);
     color: var(--fg-2);
-    max-width: 960px;
+    max-width: 1060px;
     line-height: 1.65;
 }
 

@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import PageHero from '@/components/PageHero';
 import styles from './register.module.css';
 
 function formatPhoneInput(raw: string): string {
@@ -193,19 +194,14 @@ export default function RegisterPage() {
     return (
         <main className={styles.page}>
             {/* ── Hero Header ── */}
-            <header className={styles.hero}>
-                <div className="container">
-                    <div className={styles.heroInner}>
-                        <h1 className={styles.headline}>
-                            JOIN THE <em>HOFHERR GUILD</em>
-                        </h1>
-                        <p className={styles.subtext}>
-                            Create your customer account to track live counter orders, reserve holiday roasts, and keep
-                            your custom cut preferences ready across both North Shore shops.
-                        </p>
-                    </div>
-                </div>
-            </header>
+            <PageHero
+                title={
+                    <>
+                        JOIN THE <em>HOFHERR GUILD</em>
+                    </>
+                }
+                lead="Create your customer account to track live counter orders, reserve holiday roasts, and keep your custom cut preferences ready across both North Shore shops."
+            />
 
             {/* ── Registration Workspace ── */}
             <section id="register-account" aria-labelledby="register-account-heading" className="section">

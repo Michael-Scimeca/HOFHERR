@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import PageHero from '@/components/PageHero';
 import styles from '../legal.module.css';
 
 export const metadata = {
@@ -28,20 +29,18 @@ const TOC_ITEMS = [
 export default function TermsPage() {
     return (
         <main className={styles.pageWrap}>
-            <header className={styles.hero}>
-                <div className={styles.heroInner}>
-                    <h1 className={styles.title}>
+            <PageHero
+                title={
+                    <>
                         Terms of <em>Service</em>
-                    </h1>
-                    <p className={styles.heroLead}>
-                        Welcome to Hofherr Meat Co. — where the steaks are high and the terms are fair. By using our
-                        website or placing an order, you agree to these Terms. They&apos;re straightforward, we promise.
-                    </p>
-                    <p className={styles.effective}>
-                        Effective: <time dateTime="2026-03-12">March 12, 2026</time>
-                    </p>
-                </div>
-            </header>
+                    </>
+                }
+                lead="Welcome to Hofherr Meat Co. — where the steaks are high and the terms are fair. By using our website or placing an order, you agree to these Terms. They're straightforward, we promise."
+            >
+                <p className={styles.effective}>
+                    Effective: <time dateTime="2026-03-12">March 12, 2026</time>
+                </p>
+            </PageHero>
 
             <section id="terms-content" aria-labelledby="terms-content-heading" className="section">
                 <div className="container">

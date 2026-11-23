@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import PageHero from '@/components/PageHero';
 import { SHEETS, fitOnSheet, fmt, type PrintSpec } from '../specs';
 import s from '../sizes.module.css';
 
@@ -111,41 +112,45 @@ export default function PrintAtSize() {
             <main className={s.printMain}>
                 <style>{`@media print { @page { size: ${page.w}in ${page.h}in; margin: 0; } .no-print { display: none !important; } #size-print-root { padding: 0 !important; } #size-print-root > div { box-shadow: none !important; } }`}</style>
 
-                        <header className={`no-print ${s.printHeader}`}>
-                            <Link href="/product-identity/sizes" className={s.back}>← Print sizes</Link>
-                            <h1 className={s.printTitle}>{spec.name}</h1>
-                            <p className={s.printSub}>
-                                Finished size <b>{fmt(spec.w, 'in')} × {fmt(spec.h, 'in')}</b>{spec.bleed > 0 && <> + {fmt(spec.bleed, 'in')} bleed</>} · {n} on a {page.name} sheet ({page.w}&quot; × {page.h}&quot;){fit.rotated && ' · rotated to fit more'}
-                                {spec.note && <><br />Printer notes: {spec.note}</>}
-                            </p>
-                                <div className={s.printControls}>
-                                    <label>Sheet{' '}
-                                            <select value={sheetKey} onChange={(e) => setSheetKey(e.target.value)} className={s.printSelect}>
-                                                <option value="auto">Smallest that fits</option>
-                                                {SHEETS.map((sh) => <option key={sh.key} value={sh.key}>{sh.name}{fitOnSheet(spec, sh).count === 0 ? ' (too small)' : ''}</option>)}
-                                            </select>
+                        <PageHero
+                            className={`no-print ${s.printHeroSpacing}`}
+                            title={spec.name}
+                            lead={
+                                <>
+                                    Finished size <b>{fmt(spec.w, 'in')} × {fmt(spec.h, 'in')}</b>{spec.bleed > 0 && <> + {fmt(spec.bleed, 'in')} bleed</>} · {n} on a {page.name} sheet ({page.w}&quot; × {page.h}&quot;){fit.rotated && ' · rotated to fit more'}
+                                    {spec.note && <><br />Printer notes: {spec.note}</>}
+                                </>
+                            }
+                        >
+                            <div className={s.printControls}>
+                                <Link href="/product-identity/sizes" className={s.btn}>← Print sizes</Link>
+                                <label>Sheet{' '}
+                                    <select value={sheetKey} onChange={(e) => setSheetKey(e.target.value)} className={s.printSelect}>
+                                        <option value="auto">Smallest that fits</option>
+                                        {SHEETS.map((sh) => <option key={sh.key} value={sh.key}>{sh.name}{fitOnSheet(spec, sh).count === 0 ? ' (too small)' : ''}</option>)}
+                                    </select>
+                                </label>
+                                {fit.count > 1 && (
+                                    <label>Copies{' '}
+                                        <input
+                                            type="number"
+                                            min={1}
+                                            max={fit.count}
+                                            value={n}
+                                            onChange={(e) => {
+                                                const raw = e.target.value;
+                                                const v = raw ? Number(raw) : undefined;
+                                                if (v !== undefined && !Number.isNaN(v)) setCopies(v);
+                                            }}
+                                            className={s.printInput}
+                                        />
                                     </label>
-                                    {fit.count > 1 && (
-                                        <label>Copies{' '}
-                                            <input
-                                                type="number"
-                                                min={1}
-                                                max={fit.count}
-                                                value={n}
-                                                onChange={(e) => {
-                                                    const raw = e.target.value;
-                                                    const v = raw ? Number(raw) : undefined;
-                                                    if (v !== undefined && !Number.isNaN(v)) setCopies(v);
-                                                }}
-                                                className={s.printInput}
-                                            />
-                                        </label>
-                                    )}
-                                    <label><input type="checkbox" checked={marks} onChange={(e) => setMarks(e.target.checked)} /> Crop marks</label>
-                                    <button type="button" onClick={isolateAndPrint} className={s.printBtn}>🖨 Print / Save as PDF</button>
-                                </div>
+                                )}
+                                <label><input type="checkbox" checked={marks} onChange={(e) => setMarks(e.target.checked)} /> Crop marks</label>
+                                <button type="button" onClick={isolateAndPrint} className={s.printBtn}>🖨 Print / Save as PDF</button>
+                            </div>
                             <small className={s.printHint}>In the print dialog set Scale to <b>100% / Actual size</b> and Margins to <b>None</b>. Measure the result to confirm.</small>
-                        </header>
+                        </PageHero>
 
                                                 <section id="size-print-root" aria-label="Print sheet preview" className={s.printStage}>
                                                     <div className={s.printSheet} style={sheetVars}>

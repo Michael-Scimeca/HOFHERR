@@ -53,7 +53,7 @@
     font-size: var(--text-base, 1rem);
     line-height: 1.65;
     color: var(--fg-2);
-    max-width: 76ch;
+    max-width: calc(76ch + 100px);
     margin: 0 auto;
 }
 

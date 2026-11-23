@@ -33,7 +33,7 @@
     font-size: clamp(1rem, 1.6vw, 1.2rem);
     color: var(--fg-2);
     line-height: 1.7;
-    max-width: 880px;
+    max-width: 980px;
 }
 
 .heroStats {

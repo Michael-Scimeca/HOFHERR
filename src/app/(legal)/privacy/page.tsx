@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import PageHero from '@/components/PageHero';
 import styles from '../legal.module.css';
 
 export const metadata = {
@@ -30,22 +31,18 @@ const TOC_ITEMS = [
 export default function PrivacyPolicyPage() {
     return (
         <main className={styles.pageWrap}>
-            <header className={styles.hero}>
-                <div className={styles.heroInner}>
-                    <h1 className={styles.title}>
+            <PageHero
+                title={
+                    <>
                         Privacy <em>Policy</em>
-                    </h1>
-                    <p className={styles.heroLead}>
-                        We take your privacy as seriously as we take our dry-aging process. Hofherr Meat Co.
-                        (&quot;we,&quot; &quot;us,&quot; or &quot;the folks behind the counter&quot;) operates
-                        hofherrmeatco.com. This Privacy Policy explains how we handle your information — no funny
-                        business.
-                    </p>
-                    <p className={styles.effective}>
-                        Effective: <time dateTime="2026-03-12">March 12, 2026</time>
-                    </p>
-                </div>
-            </header>
+                    </>
+                }
+                lead='We take your privacy as seriously as we take our dry-aging process. Hofherr Meat Co. ("we," "us," or "the folks behind the counter") operates hofherrmeatco.com. This Privacy Policy explains how we handle your information — no funny business.'
+            >
+                <p className={styles.effective}>
+                    Effective: <time dateTime="2026-03-12">March 12, 2026</time>
+                </p>
+            </PageHero>
 
             <section id="privacy-content" aria-labelledby="privacy-content-heading" className="section">
                 <div className="container">

@@ -79,7 +79,7 @@
     font-size: 1.05rem;
     color: var(--fg-2);
     line-height: 1.75;
-    max-width: 720px;
+    max-width: 820px;
     margin: 0 auto;
     animation: fadeInUp 0.6s 0.2s var(--ease-out) both;
 }
