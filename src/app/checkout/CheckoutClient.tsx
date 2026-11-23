@@ -356,6 +356,11 @@ export default function CheckoutClient() {
     const [activeStore, setActiveStore] = useState<StoreId>(() => readInitialCheckoutState().store);
     const [cart, setCart] = useState<CartItem[]>(() => readInitialCheckoutState().items);
 
+    const hydrated = useSyncExternalStore(
+        () => () => { },
+        () => true,
+        () => false
+    );
     const isGodModeClient = useSyncExternalStore(
         () => () => { },
         () => document.cookie.includes('hofherr_god_mode=true'),
@@ -716,6 +721,10 @@ export default function CheckoutClient() {
             : cutoffInfo.state === 'buffer'
                 ? `${styles.statusBadge} ${styles.statusBadgeBuffer}`
                 : `${styles.statusBadge} ${styles.statusBadgeClosed}`;
+
+    if (!hydrated) {
+        return <main className={styles.page} aria-busy="true" />;
+    }
 
     return (
         <main className={styles.page}>

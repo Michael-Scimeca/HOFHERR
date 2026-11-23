@@ -630,7 +630,7 @@
         radial-gradient(at 20%, #80002026 0%, #0000 60%),
         radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
     border-bottom: 1px solid var(--border);
-    padding: 64px 0 48px;
+    padding: 62px 0 48px;
     text-align: center;
 }
 

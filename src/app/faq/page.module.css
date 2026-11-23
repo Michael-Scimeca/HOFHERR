@@ -210,11 +210,17 @@
     margin: 0 auto 32px;
 }
 
+.accordionList {
+    display: flex;
+    flex-direction: column;
+}
+
 .ctaBtns {
     display: flex;
-    gap: 12px;
-    justify-content: center;
+    gap: var(--space-3);
+    justify-content: flex-start;
     flex-wrap: wrap;
+    padding-top: var(--space-4);
 }
 
 /* ── Responsive ── */

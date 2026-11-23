@@ -99,6 +99,9 @@ function VerifyEmailContent() {
     const searchParams = useSearchParams();
     const status = searchParams.get('status');
     const token = searchParams.get('token');
+    const emailParam = searchParams.get('email') ?? '';
+    const helpEmailBody = `Hi Hofherr Meat Co.,\n\nI'm having trouble verifying my account.\n\nAccount Email Address: ${emailParam || '[Enter your email address here]'}\n`;
+    const helpMailtoHref = `mailto:butcher@hofherrmeatco.com?subject=${encodeURIComponent('Email Verification Help')}&body=${encodeURIComponent(helpEmailBody)}`;
 
     useEffect(() => {
         if (token && !status) {
@@ -174,7 +177,16 @@ function VerifyEmailContent() {
                     </div>
 
                     <div className={styles.hintBox}>
-                        <strong>Didn&apos;t get it?</strong> Check your spam or promotions folder, or try registering again.
+                        <p className={styles.hintLine}>
+                            <strong>Didn&apos;t get it?</strong> Check your spam or promotions folder, or try registering again.
+                        </p>
+                        <p className={styles.hintLine}>
+                            Still having trouble?{' '}
+                            <a href={helpMailtoHref} className={styles.hintLink}>
+                                Email us
+                            </a>{' '}
+                            and include your account email address.
+                        </p>
                     </div>
 
                     <div className={styles.actionsRow}>

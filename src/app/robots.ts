@@ -26,8 +26,6 @@ export default function robots(): MetadataRoute.Robots {
                     '/press-test',
                     '/map-test',
                     '/order-tracker-test',
-                    '/test-cut-collection',
-                    '/greens-and-emblems',
                     '/showcase',
                     '/launch-checklist',
                     '/roadmap',

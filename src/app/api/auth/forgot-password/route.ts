@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminClient } from '@/sanity/adminClient';
+import { buildPasswordResetEmail } from '@/lib/email-templates';
 import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
@@ -70,21 +71,13 @@ export async function POST(req: NextRequest) {
                 auth: { user: smtpUser, pass: smtpPass },
             });
 
+            const resetEmail = buildPasswordResetEmail(normalizedEmail, resetLink);
             await transporter.sendMail({
                 from: smtpUser,
                 to: normalizedEmail,
-                subject: 'Password Reset Request | Hofherr Meat Co.',
-                html: `
-                    <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
-                        <h2 style="color: #800020;">Reset Your Password</h2>
-                        <p>We received a request to reset your password for your Hofherr Meat Co. account.</p>
-                        <p>Click the link below to set a new password. This link will expire in 1 hour.</p>
-                        <div style="margin: 30px 0;">
-                            <a href="${resetLink}" style="background-color: #800020; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Reset Password</a>
-                        </div>
-                        <p style="font-size: 13px; color: #666;">If you didn't request a password reset, you can safely ignore this email.</p>
-                    </div>
-                `
+                subject: resetEmail.subject,
+                html: resetEmail.html,
+                text: resetEmail.text,
             });
 
             console.log(`[Forgot Password] Reset email sent to ${normalizedEmail}`);

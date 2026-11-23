@@ -12,6 +12,7 @@ import PitchDeckClient from '../pitch-deck/PitchDeckClient';
 import WrappingPaperColorways from './WrappingPaperColorways';
 import WholeAnimalCutCharts from './WholeAnimalCutCharts';
 import ChicagoLockupsSection from './ChicagoLockupsSection';
+import GreensAndEmblemsSection from './GreensAndEmblemsSection';
 import {
     SCALLOP_OUTER_PATH,
     STAMP_COW_CORAL_PATH,
@@ -1193,6 +1194,14 @@ export default function ProductIdentityClient() {
                             <span className={styles.heroNavIndex}>14</span>
                             Master Vector Library (.SVG)
                         </Link>
+                        <a href="#site-greens" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>15</span>
+                            Site Greens &amp; Ready Tester
+                        </a>
+                        <a href="#primary-stamps" className={styles.heroNavLink}>
+                            <span className={styles.heroNavIndex}>16</span>
+                            Emblems, Seals &amp; Crests
+                        </a>
                     </nav>
                 </div>
             </header>
@@ -1964,6 +1973,9 @@ export default function ProductIdentityClient() {
 
             {/* ── 13 / Yelp & Facebook Review Audit & Strategic Growth Pitch Deck (#pitch-deck) ── */}
             <PitchDeckClient embedded />
+
+            {/* ── 15–16 / Site Greens, Live Ready Tester, Quality Seals, Dept Emblems, Woodcuts & Crests ── */}
+            <GreensAndEmblemsSection />
         </main>
     );
 }

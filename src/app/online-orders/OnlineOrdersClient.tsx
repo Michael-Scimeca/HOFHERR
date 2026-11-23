@@ -11,10 +11,7 @@ import styles from './page.module.css';
 import HelpOrdering from '@/components/online-orders/HelpOrdering';
 import {
     DEFAULT_ADD_TO_ORDER_ANIM_CONFIG,
-    OPEN_TEST_MODAL_EVENT,
-    SYNC_LIVE_PRODUCT_EVENT,
     getAddToOrderAnimConfig,
-    resolveProductFlyImage,
     subscribeAddToOrderAnimConfig,
 } from '@/lib/addToOrderAnimConfig';
 import BurnModalShell, { BurnPanel } from '@/components/BurnModalShell';
@@ -26,10 +23,7 @@ import {
     FREE_GIFT_THRESHOLD,
     MINI_CART_UPSELLS,
     formatDisplayPrice,
-    getRecipePairing,
-    getSocialProof,
     getSteakhouseAnchor,
-    toProductSlug,
     type MiniCartUpsell,
 } from './storefrontData';
 const TAX_RATE = 0.0225; // 2.25% based on reference image
@@ -948,50 +942,11 @@ export default function CustomOrdersPage({
     const [restockQty, setRestockQty] = useState(1);
     const [restockSubmitted, setRestockSubmitted] = useState<Set<string>>(new Set());
     const searchRef = useRef<HTMLInputElement>(null);
-    const [modal, setModal] = useState<Item | null>(() => {
-        const slug = searchParams.get('item')?.toLowerCase();
-        if (!slug) return null;
-        for (const cat of [...butcherCategories, ...depotCategories]) {
-            const found = cat.items.find((it) => toProductSlug(it.name) === slug);
-            if (found) return found;
-        }
-        return null;
-    });
-    const [modalClosing, setModalClosing] = useState(false);
-    const [modalQty, setModalQty] = useState(1);
-    const [modalNote, setModalNote] = useState('');
     const animCfg = useSyncExternalStore(
         subscribeAddToOrderAnimConfig,
         getAddToOrderAnimConfig,
         () => DEFAULT_ADD_TO_ORDER_ANIM_CONFIG
     );
-
-    useEffect(() => {
-        const onOpenTestModal = (ev: Event) => {
-            const detail = (ev as CustomEvent<{ name: string; price: string; desc?: string; imageSrc?: string }>).detail;
-            if (!detail) return;
-            setModalClosing(false);
-            setModal({
-                name: detail.name,
-                price: detail.price,
-                desc: detail.desc,
-                image: detail.imageSrc,
-            });
-            setModalQty(1);
-            setModalNote('');
-        };
-        window.addEventListener(OPEN_TEST_MODAL_EVENT, onOpenTestModal);
-        return () => window.removeEventListener(OPEN_TEST_MODAL_EVENT, onOpenTestModal);
-    }, []);
-
-    const requestCloseModal = useCallback(() => {
-        setModalClosing(true);
-    }, []);
-
-    const handleModalBurnOutComplete = useCallback(() => {
-        setModalClosing(false);
-        setModal(null);
-    }, []);
     const [orderNote, setOrderNote] = useState('');
     const [restockToast, setRestockToast] = useState(false);
     const [maxStockToast, setMaxStockToast] = useState<string | null>(null);
@@ -1016,23 +971,8 @@ export default function CustomOrdersPage({
         const onDevOverlay = (ev: Event) => {
             const kind = (ev as CustomEvent<{ kind?: string }>).detail?.kind;
             if (!kind) return;
-            if (kind === 'item') {
-                setModalClosing(false);
-                setModal({
-                    name: 'Bone-In Pork Roast',
-                    price: '$12.99/lb',
-                    desc: 'Heritage Midwest pork roast, French-trimmed to order by our butchers.',
-                    image: '/assets/identity/boxes/box-kraft-twine-rosemary.png',
-                });
-                setModalQty(1);
-                setModalNote('');
-            } else if (kind === 'checkout') {
+            if (kind === 'restock-auth') {
                 setCheckoutClosing(false);
-                setCheckoutStep('form');
-                setCheckoutOpen(true);
-            } else if (kind === 'restock-auth') {
-                setCheckoutClosing(false);
-                setCheckoutStep('choice');
                 setAuthMode('login');
                 setAuthIntent('restock');
                 setCheckoutOpen(true);
@@ -1159,7 +1099,6 @@ export default function CustomOrdersPage({
     }, []);
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [checkoutClosing, setCheckoutClosing] = useState(false);
-    const [checkoutStep, setCheckoutStep] = useState<'choice' | 'form'>('choice');
     const [form, setForm] = useState({ name: '', phone: '', email: '', pickup: '' });
     const [contactPref, setContactPref] = useState<'phone' | 'email'>('phone');
     const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'instore'>('stripe');
@@ -1178,20 +1117,19 @@ export default function CustomOrdersPage({
         setCheckoutOpen(false);
     }, []);
 
-    // No page scrolling behind the add-to-cart modal, the cart drawer or the checkout modal.
+    // No page scrolling behind the cart drawer or the checkout modal.
     // Release scroll lock immediately when any modal/drawer starts its burn-out exit.
-    const overlayOpen = (!!modal && !modalClosing) || (drawerOpen && !drawerClosing) || (checkoutOpen && !checkoutClosing);
+    const overlayOpen = (drawerOpen && !drawerClosing) || (checkoutOpen && !checkoutClosing);
     useEffect(() => {
         if (!overlayOpen) return;
         return lockScroll();
     }, [overlayOpen]);
 
     useEffect(() => {
-        if (!modal && !drawerOpen && !checkoutOpen) return;
+        if (!drawerOpen && !checkoutOpen) return;
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.key !== 'Escape') return;
-            if (modal) setModalClosing(true);
-            else if (checkoutOpen) {
+            if (checkoutOpen) {
                 if (!isPending) {
                     setCheckoutClosing(true);
                     if (typeof window !== 'undefined' && (window.location.search.includes('login=true') || window.location.search.includes('signup=true'))) {
@@ -1205,7 +1143,7 @@ export default function CustomOrdersPage({
         };
         window.addEventListener('keydown', onKeyDown);
         return () => window.removeEventListener('keydown', onKeyDown);
-    }, [modal, drawerOpen, checkoutOpen, isPending]);
+    }, [drawerOpen, checkoutOpen, isPending]);
 
     // ── Auth & Customer States ────────────────────────────────────────────────
     const [user, setUser] = useState<{ id: string, name: string, email: string, phone?: string } | null>(null);
@@ -1367,30 +1305,10 @@ export default function CustomOrdersPage({
         const login = searchParams.get('login') === 'true';
         const signup = searchParams.get('signup') === 'true';
         const openCart = searchParams.get('cart') === 'open';
-        const animStudio = searchParams.get('anim') === 'true';
         const devModal = searchParams.get('devModal');
 
-        if (animStudio) {
-            setModal(cur => cur ?? { name: 'Red White And Blue Sausages', price: '$12.99/lb', desc: 'House-crafted links, ground fresh daily.' });
-        }
-
-        if (devModal === 'item') {
-            setModalClosing(false);
-            setModal({
-                name: 'Bone-In Pork Roast',
-                price: '$12.99/lb',
-                desc: 'Heritage Midwest pork roast, French-trimmed to order by our butchers.',
-                image: '/assets/identity/boxes/box-kraft-twine-rosemary.png',
-            });
-            setModalQty(1);
-            setModalNote('');
-        } else if (devModal === 'checkout') {
+        if (devModal === 'restock-auth') {
             setCheckoutClosing(false);
-            setCheckoutStep('form');
-            setCheckoutOpen(true);
-        } else if (devModal === 'restock-auth') {
-            setCheckoutClosing(false);
-            setCheckoutStep('choice');
             setAuthMode('login');
             setAuthIntent('restock');
             setCheckoutOpen(true);
@@ -1493,7 +1411,8 @@ export default function CustomOrdersPage({
                 setCheckoutOpen(false);
                 navigateTo('/dashboard');
             } else {
-                setCheckoutStep('form');
+                setCheckoutOpen(false);
+                navigateTo('/checkout');
             }
         } catch (err: any) {
             setAuthError(err.message);
@@ -1547,7 +1466,8 @@ export default function CustomOrdersPage({
                 setCheckoutOpen(false);
                 navigateTo('/dashboard');
             } else {
-                setCheckoutStep('form');
+                setCheckoutOpen(false);
+                navigateTo('/checkout');
             }
         } catch (err: any) {
             setAuthError(err.message);
@@ -1848,37 +1768,6 @@ export default function CustomOrdersPage({
         setTimeout(() => { isScrollingTo.current = false; }, 1500);
     };
 
-    const openModal = useCallback((item: Item) => {
-        setModalClosing(false);
-        setModal(item);
-        setModalQty(1);
-        setModalNote('');
-        setShareCopied(false);
-        if (typeof window !== 'undefined') {
-            window.dispatchEvent(
-                new CustomEvent(SYNC_LIVE_PRODUCT_EVENT, {
-                    detail: {
-                        name: item.name,
-                        price: item.price,
-                        desc: item.desc,
-                        imageSrc: item.image,
-                        categoryIcon: categoryIconByItemName.get(item.name),
-                    },
-                })
-            );
-        }
-    }, [categoryIconByItemName]);
-
-    const [shareCopied, setShareCopied] = useState(false);
-
-    const handleShareCut = useCallback((itemName: string) => {
-        if (typeof window === 'undefined') return;
-        const url = `${window.location.origin}/online-orders?item=${toProductSlug(itemName)}`;
-        navigator.clipboard?.writeText(url).catch(() => { });
-        setShareCopied(true);
-        setTimeout(() => setShareCopied(false), 1800);
-    }, []);
-
     const handleBulkAddItems = useCallback((incoming: ReorderItem[]) => {
         setCart((prev) => {
             const next = [...prev];
@@ -1956,49 +1845,6 @@ export default function CustomOrdersPage({
             arrivingQty: addedDelta,
         });
     }, [cart, showMaxStockToast, triggerFlyAnimation, categoryIconByItemName]);
-
-    const confirmAdd = useCallback((e?: React.MouseEvent) => {
-        if (!modal || modalClosing) return;
-        const rect = e ? (e.currentTarget as HTMLElement).getBoundingClientRect() : null;
-        const targetItem = modal;
-        const existingItem = cart.find(i => i.name === targetItem.name);
-        const currentQty = existingItem ? existingItem.qty : 0;
-        if (currentQty + modalQty >= ITEM_MAX_QTY) {
-            showMaxStockToast(targetItem.name);
-        }
-        const nextQty = Math.min(ITEM_MAX_QTY, currentQty + modalQty);
-        const addedDelta = Math.max(0, nextQty - currentQty);
-
-        setCart(prev => {
-            const existingIndex = prev.findIndex(i => i.name === targetItem.name);
-            if (existingIndex >= 0) {
-                const updated = [...prev];
-                const newQty = Math.min(ITEM_MAX_QTY, updated[existingIndex].qty + modalQty);
-                updated[existingIndex] = { ...updated[existingIndex], qty: newQty, note: modalNote || updated[existingIndex].note };
-                return updated;
-            }
-            return [...prev, { ...targetItem, qty: Math.min(ITEM_MAX_QTY, modalQty), note: modalNote }];
-        });
-
-        if (animCfg.burnOutOnConfirm) {
-            setModalClosing(true);
-        } else {
-            setModalClosing(false);
-            setModal(null);
-        }
-
-        // Fire fly-to-cart animation from the button position
-        if (rect) {
-            triggerFlyAnimation({
-                x: rect.left + rect.width / 2,
-                y: rect.top + rect.height / 2,
-                itemName: targetItem.name,
-                imageSrc: targetItem.image,
-                categoryIcon: categoryIconByItemName.get(targetItem.name),
-                arrivingQty: addedDelta,
-            });
-        }
-    }, [modal, modalClosing, modalQty, modalNote, cart, animCfg.burnOutOnConfirm, triggerFlyAnimation, showMaxStockToast, categoryIconByItemName]);
 
     const removeItem = (name: string) => setCart(prev => prev.filter(i => i.name !== name));
     const changeQty = (name: string, delta: number) => {
@@ -2633,8 +2479,9 @@ export default function CustomOrdersPage({
                                             <div className={styles.recentlyOrderedItemPrice}>{item.price}</div>
                                         </div>
                                         <button
+                                            type="button"
                                             className={styles.recentlyOrderedAddBtn}
-                                            onClick={() => openModal({ name: item.name, price: item.price })}
+                                            onClick={(e) => handleRowAddClick({ name: item.name, price: item.price }, e)}
                                         >
                                             + Add
                                         </button>
@@ -2836,7 +2683,6 @@ export default function CustomOrdersPage({
                                                                         setPendingRestockItem(item.name);
                                                                         setAuthIntent('restock');
                                                                         setAuthMode('login');
-                                                                        setCheckoutStep('choice');
                                                                         setCheckoutClosing(false);
                                                                         setCheckoutOpen(true);
                                                                         return;
@@ -2975,6 +2821,13 @@ export default function CustomOrdersPage({
                         </div>
                     </div>
 
+                    <div className={styles.cartRailListHeader}>
+                        <span className={styles.cartRailListTitle}>Items in Your Order</span>
+                        <span className={styles.cartRailListBadge}>
+                            {cart.reduce((s, i) => s + i.qty, 0)}
+                        </span>
+                    </div>
+
                     <ul className={styles.cartRailList} data-lenis-prevent>
                         {cart.map(item => (
                             <li key={item.name} className={styles.cartRailItem}>
@@ -3093,115 +2946,6 @@ export default function CustomOrdersPage({
                 </aside>
                 );
             })(), document.body)}
-
-            {/* ── Add to Cart Modal ── */}
-            {
-                mounted && modal && createPortal((
-                    <div
-                        className={`${styles.overlay} ${modalClosing ? styles.overlayClosing : ''}`}
-                        style={
-                            {
-                                '--pt-enter-ms': `${animCfg.overlayFadeMs}ms`,
-                                '--pt-overlay-blur': `${animCfg.overlayBlurPx}px`,
-                            } as React.CSSProperties
-                        }
-                        data-pt-portal
-                        data-lenis-prevent={modalClosing ? undefined : true}
-                        onClick={requestCloseModal}
-                    >
-                        <BurnModalShell
-                            className={styles.modal}
-                            maxWidth={460}
-                            closing={modalClosing}
-                            onCloseComplete={handleModalBurnOutComplete}
-                            onClick={e => e.stopPropagation()}
-                        >
-                            <div className={styles.modalHeaderRow}>
-                                <div className={styles.modalHeaderText}>
-                                    <div className={styles.modalTitle}>{modal.name}</div>
-                                    <div className={styles.modalPriceRow}>
-                                        <span className={styles.modalPrice}>{modal.price}</span>
-                                        <button
-                                            type="button"
-                                            className={styles.shareCutBtn}
-                                            onClick={() => handleShareCut(modal.name)}
-                                        >
-                                            {shareCopied ? '✓ Link Copied' : 'Share Cut'}
-                                        </button>
-                                    </div>
-                                </div>
-                                {animCfg.flyShowModalPreview && (
-                                    <div className={styles.modalPreviewBadge} title="Product Flying Into Cart">
-                                        <img
-                                            src={resolveProductFlyImage(
-                                                {
-                                                    itemName: modal.name,
-                                                    imageSrc: modal.image,
-                                                    categoryIcon: categoryIconByItemName.get(modal.name),
-                                                },
-                                                animCfg
-                                            )}
-                                            alt=""
-                                            width={48}
-                                            height={48}
-                                            className={styles.modalPreviewImg}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                            {modal.desc && <p className={styles.modalDesc}>{modal.desc}</p>}
-
-                            {(() => {
-                                const proof = getSocialProof(modal.name);
-                                if (!proof) return null;
-                                return (
-                                    <div className={styles.modalSocialProof}>
-                                        <div className={styles.modalProofTop}>
-                                            <span className={styles.modalProofBadge}>{proof.badge}</span>
-                                            <span className={styles.modalProofRating}>★ {proof.rating} · {proof.weeklyOrders} ordered this week</span>
-                                        </div>
-                                        <p className={styles.modalProofQuote}>&ldquo;{proof.quote}&rdquo; — {proof.reviewer}</p>
-                                    </div>
-                                );
-                            })()}
-
-                            {(() => {
-                                const pairing = getRecipePairing(modal.name);
-                                if (!pairing) return null;
-                                return (
-                                    <div className={styles.modalRecipePairing}>
-                                        <div className={styles.modalRecipeLabel}>Butcher&apos;s Cook Tip &amp; Parcel Sheet</div>
-                                        <p className={styles.modalRecipeTip}>{pairing.tip}</p>
-                                        <Link href={pairing.href} className={styles.modalRecipeLink}>
-                                            {pairing.title} →
-                                        </Link>
-                                    </div>
-                                );
-                            })()}
-
-                            <div className={styles.qtyRow}>
-                                <button className={styles.qtyBtn} onClick={() => setModalQty(q => Math.max(1, q - 1))}>−</button>
-                                <span className={styles.qtyNum}>{modalQty}</span>
-                                <button className={styles.qtyBtn} onClick={() => setModalQty(q => q + 1)}>+</button>
-                            </div>
-
-                            <textarea
-                                className={styles.noteInput}
-                                placeholder="Special instructions (e.g. thickness, quantity in lbs, trim preferences)…"
-                                value={modalNote}
-                                onChange={e => setModalNote(e.target.value)}
-                                maxLength={250}
-                                rows={3}
-                            />
-
-                            <div className={styles.modalActions}>
-                                <button className={styles.cancelBtn} onClick={requestCloseModal}>Cancel</button>
-                                <button className={styles.confirmBtn} onClick={(e) => confirmAdd(e)}>Add to Order</button>
-                            </div>
-                        </BurnModalShell>
-                    </div>
-                ), document.body)
-            }
 
             {/* ── Cart Drawer ── */}
             {
@@ -3479,16 +3223,13 @@ export default function CustomOrdersPage({
                         onClick={requestCloseCheckout}
                     >
                         <BurnModalShell
-                            className={`${styles.modal} ${checkoutStep === 'form' ? styles.checkoutFormModal : styles.checkoutAuthModal}`}
-                            maxWidth={checkoutStep === 'form' ? 760 : 480}
+                            className={`${styles.modal} ${styles.checkoutAuthModal}`}
+                            maxWidth={480}
                             closing={checkoutClosing}
                             onCloseComplete={handleCheckoutBurnOutComplete}
                             onClick={e => e.stopPropagation()}
                         >
-
-                            <>
-                                {checkoutStep === 'choice' ? (
-                                    <div className={styles.choiceView}>
+                            <div className={styles.choiceView}>
                                         <div className={styles.choiceSocialHeader} style={{ textAlign: 'center', marginBottom: '4px' }}>
                                             <h3 className={styles.choiceAuthHeading}>
                                                 {authMode === 'forgot' ? 'Reset Password' : authMode === 'register' ? 'Create An Account' : 'Welcome Back'}
@@ -3550,7 +3291,7 @@ export default function CustomOrdersPage({
                                                                 <button
                                                                     type="button"
                                                                     className={styles.secondaryBtn}
-                                                                    onClick={() => { setCheckoutStep('form'); setAuthMode(null); }}
+                                                                    onClick={() => { setCheckoutOpen(false); setAuthMode(null); navigateTo('/checkout'); }}
                                                                 >
                                                                     Checkout as Guest instead
                                                                 </button>
@@ -3560,7 +3301,7 @@ export default function CustomOrdersPage({
                                                         <div className={styles.guestContent}>
                                                             <h3>Guest Checkout</h3>
                                                             <p>Proceed without an account</p>
-                                                            <button type="button" className={styles.guestBtn} onClick={() => setCheckoutStep('form')}>Continue As Guest</button>
+                                                            <button type="button" className={styles.guestBtn} onClick={() => { setCheckoutOpen(false); navigateTo('/checkout'); }}>Continue As Guest</button>
                                                             <div className={styles.dividerOr}><span>or</span></div>
                                                             <button type="button" className={styles.createBtn} onClick={() => { setAuthMode('register'); setAuthError(''); }}>Create An Account</button>
                                                         </div>
@@ -3638,7 +3379,7 @@ export default function CustomOrdersPage({
                                                         <button
                                                             type="button"
                                                             className={styles.secondaryBtn}
-                                                            onClick={() => { setCheckoutStep('form'); setAuthMode(null); }}
+                                                            onClick={() => { setCheckoutOpen(false); setAuthMode(null); navigateTo('/checkout'); }}
                                                         >
                                                             Checkout as Guest instead
                                                         </button>
@@ -3647,356 +3388,6 @@ export default function CustomOrdersPage({
                                             )}
                                         </div>
                                     </div>
-                                ) : (
-                                    <form onSubmit={handleSubmit}>
-                                        <div className={styles.modalTitle} style={{ letterSpacing: '-0.02em', marginBottom: '8px' }}>
-                                            Complete Your Order
-                                        </div>
-                                        <div style={{ fontSize: '18px', fontWeight: 700, backgroundColor: 'rgba(128,0,32,0.1)', color: 'var(--red)', padding: '12px 16px', borderRadius: '8px', marginBottom: '16px', border: '1px solid rgba(139, 10, 16,0.2)' }}>
-                                            {activeStore === 'butcher' ? '📍 Pickup at: The Butcher Shop (Northfield)' : '📍 Pickup at: The Depot (Winnetka)'}
-                                        </div>
-                                        <p className={styles.modalDesc}>
-                                            {activeStore === 'butcher'
-                                                ? "Just a few final details to get your prime cuts ready for pickup."
-                                                : "Just a few final details to get your order ready for pickup."}
-                                        </p>
-
-                                        <div className={styles.formGroup}>
-                                            <div className={styles.formFields}>
-                                                {isLoggedIn ? (
-                                                    <div className={styles.signedInContactCard}>
-                                                        <div className={styles.signedInContactInfo}>
-                                                            <span className={styles.signedInContactLabel}>Signed In Account</span>
-                                                            <span className={styles.signedInContactName}>{form.name || authUser?.name || 'Hofherr Customer'}</span>
-                                                            <span className={styles.signedInContactMeta}>
-                                                                {[form.email || authUser?.email, form.phone || authUser?.phone].filter(Boolean).join(' · ')}
-                                                            </span>
-                                                        </div>
-                                                        <div className={styles.contactPrefToggle}>
-                                                            <button
-                                                                type="button"
-                                                                className={`${styles.contactPrefBtn} ${contactPref === 'phone' ? styles.contactPrefBtnActive : ''}`}
-                                                                onClick={() => setContactPref('phone')}
-                                                            >📞 Call Me</button>
-                                                            <button
-                                                                type="button"
-                                                                className={`${styles.contactPrefBtn} ${contactPref === 'email' ? styles.contactPrefBtnActive : ''}`}
-                                                                onClick={() => setContactPref('email')}
-                                                            >✉️ Email Me</button>
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    /* Two-column contact layout */
-                                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', alignItems: 'start' }}>
-                                                        {/* Left col: Name + phone/email input */}
-                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                                            <input
-                                                                required
-                                                                name="name"
-                                                                id="checkout-name"
-                                                                autoComplete="name"
-                                                                className={styles.formInput}
-                                                                placeholder="John Smith"
-                                                                value={form.name}
-                                                                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                                                                style={{ margin: 0 }}
-                                                            />
-                                                            {contactPref === 'phone' ? (
-                                                                <input
-                                                                    required
-                                                                    name="tel"
-                                                                    id="checkout-phone"
-                                                                    autoComplete="tel"
-                                                                    className={styles.formInput}
-                                                                    placeholder="(847) 555-0100"
-                                                                    type="tel"
-                                                                    value={form.phone}
-                                                                    onChange={e => {
-                                                                        const formatted = formatPhoneNumber(e.target.value);
-                                                                        setForm(f => ({ ...f, phone: formatted }));
-                                                                    }}
-                                                                    style={{ margin: 0 }}
-                                                                />
-                                                            ) : (
-                                                                <input
-                                                                    required
-                                                                    name="email"
-                                                                    id="checkout-email"
-                                                                    autoComplete="email"
-                                                                    className={styles.formInput}
-                                                                    placeholder="Email Address"
-                                                                    type="email"
-                                                                    value={form.email}
-                                                                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                                                                    style={{ margin: 0 }}
-                                                                />
-                                                            )}
-                                                        </div>
-                                                        {/* Right col: label + toggle */}
-                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                            <span className={styles.contactPrefLabel}>How should we reach you?</span>
-                                                            <div className={styles.contactPrefToggle}>
-                                                                <button
-                                                                    type="button"
-                                                                    className={`${styles.contactPrefBtn} ${contactPref === 'phone' ? styles.contactPrefBtnActive : ''}`}
-                                                                    onClick={() => { setContactPref('phone'); setForm(f => ({ ...f, email: '' })); }}
-                                                                >📞 Call Me</button>
-                                                                <button
-                                                                    type="button"
-                                                                    className={`${styles.contactPrefBtn} ${contactPref === 'email' ? styles.contactPrefBtnActive : ''}`}
-                                                                    onClick={() => { setContactPref('email'); setForm(f => ({ ...f, phone: '' })); }}
-                                                                >✉️ Email Me</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                <div className={styles.pickupScheduler}>
-                                                    <label className={styles.pickupLabel}>Select Pickup Day & Time</label>
-                                                    <p className={styles.prepTimeNote}>⚡ Orders generally take 20-40 minutes to prepare.</p>
-                                                    <div className={styles.dateSelectorContainer}>
-                                                        <div className={styles.dateScrollTrack}>
-                                                            {dateThumbWidth > 0 && (
-                                                                <div
-                                                                    ref={dateThumbRef}
-                                                                    className={styles.dateScrollThumb}
-                                                                    style={{ left: dateThumbLeft, width: dateThumbWidth }}
-                                                                />
-                                                            )}
-                                                        </div>
-                                                        {/* Scroll container — inlined to bypass CSS cache */}
-                                                        <div
-                                                            ref={dateScrollRef}
-                                                            onScroll={updateDateThumb}
-                                                            style={{
-                                                                overflowX: 'auto',
-                                                                overflowY: 'visible',
-                                                                WebkitOverflowScrolling: 'touch' as any,
-                                                                touchAction: 'pan-x',
-                                                                paddingBottom: '8px',
-                                                                msOverflowStyle: 'none',
-                                                                scrollbarWidth: 'none' as any,
-                                                                minWidth: 0,
-                                                                width: '100%',
-                                                            }}
-                                                        >
-                                                            <div style={{ display: 'flex', gap: '8px', width: 'max-content' }}>
-                                                                {availableDates.map((date, idx) => (
-                                                                    <button
-                                                                        key={date.toISOString()}
-                                                                        type="button"
-                                                                        className={`${styles.dateBtn} ${selectedDateIdx === idx ? styles.dateBtnActive : ''}`}
-                                                                        onClick={() => setSelectedDateIdx(idx)}
-                                                                    >
-                                                                        <span className={styles.dateDay}>{['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()]}</span>
-                                                                        <span className={styles.dateNum}>{date.getDate()}</span>
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className={styles.timeSelector}>
-                                                        <div className={styles.timeGrid}>
-                                                            {(() => {
-                                                                const selDate = availableDates[selectedDateIdx];
-                                                                const currentDateStr = selDate
-                                                                    ? `${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][selDate.getDay()]}, ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][selDate.getMonth()]} ${selDate.getDate()}`
-                                                                    : '';
-                                                                return availableSlots.length > 0 ? (
-                                                                    availableSlots.map(slot => {
-                                                                        const fullSlotStr = `${currentDateStr} at ${slot.value}`;
-                                                                        const isActive = form.pickup === fullSlotStr;
-                                                                        return (
-                                                                            <button
-                                                                                key={slot.value}
-                                                                                type="button"
-                                                                                disabled={slot.disabled}
-                                                                                className={`${styles.timeSlotBtn} ${isActive ? styles.timeSlotBtnActive : ''} ${slot.disabled ? styles.timeSlotBtnDisabled : ''}`}
-                                                                                onClick={() => {
-                                                                                    if (slot.disabled) return;
-                                                                                    setForm(f => ({ ...f, pickup: fullSlotStr }));
-                                                                                }}
-                                                                            >
-                                                                                {slot.label === slot.value + ' (ASAP)' ? (
-                                                                                    <>
-                                                                                        <span style={{ display: 'block' }}>{slot.value}</span>
-                                                                                        <span style={{ display: 'block', fontSize: '11px', fontWeight: 700, opacity: 0.8 }}>(ASAP)</span>
-                                                                                    </>
-                                                                                ) : (
-                                                                                    slot.label
-                                                                                )}
-                                                                            </button>
-                                                                        );
-                                                                    })
-                                                                ) : (
-                                                                    <p className={styles.noSlots}>No pickup times available for this date. Please select another day.</p>
-                                                                );
-                                                            })()}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-
-                                            <div className={styles.orderSummary}>
-                                                <div className={styles.summaryTitle}>Order Summary</div>
-                                                {/* Custom scrollbar wrapper */}
-                                                <div className={styles.summaryScrollWrap}>
-                                                    <div
-                                                        ref={el => {
-                                                            (summaryRowsRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
-                                                            if (el) setTimeout(updateThumb, 50);
-                                                        }}
-                                                        className={styles.summaryRows}
-                                                        onScroll={updateThumb}
-                                                    >
-                                                        {cart.map(i => (
-                                                            <div key={i.name} className={styles.summaryRow}>
-                                                                <span>{i.name} ×{i.qty}{i.note ? ` · ${i.note}` : ''}</span>
-                                                                <span>{i.price}</span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                    {/* Custom always-visible scrollbar track */}
-                                                    <div className={styles.customScrollTrack}>
-                                                        {thumbHeight > 0 && (
-                                                            <div
-                                                                className={styles.customScrollThumb}
-                                                                style={{ height: thumbHeight, top: thumbTop }}
-                                                            />
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                {/* Pinned stats footer */}
-                                                <div className={styles.summaryStats}>
-                                                    <div className={styles.statRow}>
-                                                        <span>
-                                                            {cart.reduce((s, i) => s + i.qty, 0)} item{cart.reduce((s, i) => s + i.qty, 0) !== 1 ? 's' : ''}
-                                                        </span>
-                                                        <span>
-                                                            ~{cart.filter(i => String(i.price ?? '').includes('/lb')).reduce((s, i) => s + i.qty, 0)} lbs
-                                                        </span>
-                                                    </div>
-
-                                                    {form.pickup && (
-                                                        <div className={styles.pickupSummaryRow}>
-                                                            <span>Your Scheduled Pickup</span>
-                                                            <span>{form.pickup}</span>
-                                                        </div>
-                                                    )}
-
-                                                    <div className={styles.discountRow}>
-                                                        <span>Estimated Tax (2.25%)</span>
-                                                        <span>{fmtTotal(cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0) * TAX_RATE)}</span>
-                                                    </div>
-
-                                                    <span className={styles.summaryEstTotal}>
-                                                        Est. Total {(() => {
-                                                            const subtotal = cart.reduce((s, i) => s + parseItemPrice(i.price) * i.qty, 0);
-                                                            let discounted = subtotal;
-                                                            if (appliedCoupon) {
-                                                                if (appliedCoupon.type === 'percent') {
-                                                                    discounted = subtotal * (1 - appliedCoupon.value / 100);
-                                                                } else {
-                                                                    discounted = Math.max(0, subtotal - appliedCoupon.value);
-                                                                }
-                                                            }
-                                                            const total = discounted * (1 + TAX_RATE);
-                                                            return fmtTotal(total);
-                                                        })()}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* ── Tip Selector ── */}
-                                        <div className={styles.tipSection}>
-                                            <div className={styles.tipLabel}>💝 Add a Tip for Our Team</div>
-                                            <div className={styles.tipGrid}>
-                                                {[0, 10, 15, 20].map(pct => (
-                                                    <button
-                                                        key={pct}
-                                                        type="button"
-                                                        className={`${styles.tipBtn} ${!showTipCustom && tipPercent === pct ? styles.tipBtnActive : ''}`}
-                                                        onClick={() => {
-                                                            setTipPercent(pct);
-                                                            setShowTipCustom(false);
-                                                            setTipCustom('');
-                                                        }}
-                                                    >
-                                                        {pct === 0 ? 'None' : `${pct}%`}
-                                                    </button>
-                                                ))}
-                                                <button
-                                                    type="button"
-                                                    className={`${styles.tipBtn} ${showTipCustom ? styles.tipBtnActive : ''}`}
-                                                    onClick={() => {
-                                                        setShowTipCustom(true);
-                                                        setTipPercent(null);
-                                                    }}
-                                                >
-                                                    Custom
-                                                </button>
-                                            </div>
-                                            {showTipCustom && (
-                                                <div className={styles.tipCustomRow}>
-                                                    <span style={{ color: 'var(--fg)', fontWeight: 700 }}>$</span>
-                                                    <input
-                                                        type="number"
-                                                        min="0"
-                                                        step="0.50"
-                                                        placeholder="0.00"
-                                                        className={styles.tipCustomInput}
-                                                        value={tipCustom}
-                                                        onChange={e => setTipCustom(e.target.value)}
-                                                    />
-                                                </div>
-                                            )}
-                                            {tipAmount > 0 && (
-                                                <div className={styles.tipAmount}>Tip: {fmtTotal(tipAmount)}</div>
-                                            )}
-                                        </div>
-
-                                        {stripeError && <p className={styles.stripeError}>⚠️ {stripeError}</p>}
-
-                                        <div className={styles.payBadgesWrap}>
-                                            <div className={styles.paymentMethodToggle}>
-                                                <label className={`${styles.payToggleBtn} ${paymentMethod === 'stripe' ? styles.payToggleBtnActive : ''}`}>
-                                                    <input
-                                                        type="radio"
-                                                        name="paymentMethod"
-                                                        value="stripe"
-                                                        checked={paymentMethod === 'stripe'}
-                                                        onChange={() => setPaymentMethod('stripe')}
-                                                        style={{ display: 'none' }}
-                                                    />
-                                                    <span className={styles.payToggleLabel}>💳 Pay Online</span>
-                                                </label>
-                                                <label className={`${styles.payToggleBtn} ${paymentMethod === 'instore' ? styles.payToggleBtnActive : ''}`}>
-                                                    <input
-                                                        type="radio"
-                                                        name="paymentMethod"
-                                                        value="instore"
-                                                        checked={paymentMethod === 'instore'}
-                                                        onChange={() => setPaymentMethod('instore')}
-                                                        style={{ display: 'none' }}
-                                                    />
-                                                    <span className={styles.payToggleLabel}>🏪 Pay In-Store</span>
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        <div className={styles.modalActions}>
-                                            <button type="button" className={styles.cancelBtn} onClick={() => setCheckoutStep('choice')} disabled={isPending}>Back</button>
-                                            <button type="submit" className={styles.confirmBtn} disabled={isPending}>
-                                                {isPending ? 'Processing…' : (paymentMethod === 'stripe' ? 'Continue to Payment' : 'Place Order')}
-                                            </button>
-                                        </div>
-
-                                        <p className={styles.stripeNote}>🔒 Powered by Stripe · 256-bit SSL</p>
-                                    </form>
-                                )}
-                            </>
                         </BurnModalShell>
                     </div>
                 ), document.body)

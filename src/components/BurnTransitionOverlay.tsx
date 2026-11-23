@@ -6,7 +6,7 @@ import {
     renderWebGLBurnFrame,
     type BurnShaderParams,
     type BurnWebGLContext,
-} from '@/app/burn-transitions/BurnWebGLEngine';
+} from '@/lib/BurnWebGLEngine';
 import styles from './BurnTransitionOverlay.module.css';
 
 export const DEFAULT_SITE_BURN_MODE = 'vortex-24-smokehouse-draft' as const;

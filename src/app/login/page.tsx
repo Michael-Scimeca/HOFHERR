@@ -2,14 +2,16 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import styles from './login.module.css';
+import styles from '../reset-password/page.module.css';
 
 export default function LoginPage() {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -20,7 +22,7 @@ export default function LoginPage() {
 
         try {
             const res = await signIn('credentials', {
-                email,
+                email: email.trim(),
                 password,
                 redirect: false,
             });
@@ -38,68 +40,100 @@ export default function LoginPage() {
     };
 
     return (
-        <main className={styles.page}>
-            <header className={styles.hero}>
-                <div className="container">
-                    <h1 className={styles.headline}>
-                        Customer <em>Sign In</em>
-                    </h1>
-                    <p className={styles.subtext}>
-                        Access your active orders, personal butcher cuts, and member-only specials.
-                    </p>
-                </div>
-            </header>
+        <main className={styles.resetContainer}>
+            {/* ── Full-bleed butcher wrapping paper backdrop ───────────── */}
+            <div className={styles.illustrationPanel}>
+                <Image
+                    src="/assets/identity/hofherr-wrapping-paper-print-hd.jpg"
+                    alt="Hofherr Meat Co. printed butcher wrapping paper"
+                    fill
+                    sizes="100vw"
+                    className={styles.illustrationImg}
+                    priority
+                />
+            </div>
 
-            <section className="section" aria-labelledby="login-form-heading">
-                <h2 id="login-form-heading" className={styles.srOnly}>Sign In Form</h2>
-                <div className={`container ${styles.formWrap}`}>
-                    {error && <div className={styles.errorBanner} role="alert">⚠️ {error}</div>}
+            {/* ── Centered Sign In card ────────────────────────────────── */}
+            <div className={styles.formPanel}>
+                <div className={styles.resetCard}>
+                    <div className={styles.header}>
+                        <div className={styles.wordmark}>
+                            <img src="/assets/logo.svg" alt="Hofherr Meat Co." />
+                        </div>
+                        <h1 className={styles.subtitle}>Customer Sign In</h1>
+                        <div className={styles.divider} />
+                    </div>
+
+                    {error && (
+                        <div className={styles.error} role="alert">
+                            {error}
+                        </div>
+                    )}
 
                     <form className={styles.form} onSubmit={handleSubmit}>
-                        <div className={styles.field}>
-                            <label htmlFor="login-email" className={styles.label}>Email Address</label>
+                        <div className={styles.inputGroup}>
+                            <label htmlFor="login-email" className={styles.label}>
+                                Email Address
+                            </label>
                             <input
                                 id="login-email"
                                 type="email"
+                                name="email"
                                 required
                                 autoComplete="email"
-                                placeholder="john@example.com"
+                                placeholder="you@hofherrmeats.com"
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
                                 className={styles.input}
                             />
                         </div>
 
-                        <div className={styles.field}>
-                            <label htmlFor="login-password" className={styles.label}>Password</label>
-                            <input
-                                id="login-password"
-                                type="password"
-                                required
-                                autoComplete="current-password"
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={e => setPassword(e.target.value)}
-                                className={styles.input}
-                            />
+                        <div className={styles.inputGroup}>
+                            <div className={styles.labelRow}>
+                                <label htmlFor="login-password" className={styles.label}>
+                                    Password
+                                </label>
+                                <Link href="/reset-password" className={styles.labelHint}>
+                                    Forgot password?
+                                </Link>
+                            </div>
+                            <div className={styles.passwordWrap}>
+                                <input
+                                    id="login-password"
+                                    type={showPassword ? 'text' : 'password'}
+                                    name="password"
+                                    required
+                                    autoComplete="current-password"
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    className={styles.input}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(v => !v)}
+                                    className={styles.toggleVisBtn}
+                                >
+                                    {showPassword ? 'Hide' : 'Show'}
+                                </button>
+                            </div>
                         </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className={styles.submitBtn}
-                        >
+                        <button type="submit" disabled={loading} className={styles.button}>
                             {loading ? 'Signing In…' : 'Sign In To Account'}
                         </button>
                     </form>
 
-                    <div className={styles.switchAuth}>
-                        Don&apos;t have an account yet?
-                        <Link href="/register" className={styles.switchLink}>Create Account</Link>
+                    <div className={styles.footer}>
+                        <Link href="/" className={styles.backLink}>
+                            ← Back to Website
+                        </Link>
+                        <Link href="/register" className={styles.backLink}>
+                            Create Account →
+                        </Link>
                     </div>
                 </div>
-            </section>
+            </div>
         </main>
     );
 }
-

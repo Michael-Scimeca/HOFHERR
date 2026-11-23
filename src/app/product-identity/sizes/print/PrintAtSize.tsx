@@ -66,7 +66,8 @@ export default function PrintAtSize() {
                 if (!r.ok) return;
                 const d = (await r.json()) as { items?: PrintSpec[] };
                 if (!cancelled) {
-                    setSpec(d.items?.find((i) => i.key === key) ?? null);
+                    const found = key ? d.items?.find((i) => i.key === key) : d.items?.[0];
+                    setSpec(found ?? d.items?.[0] ?? null);
                 }
             } catch {
                 /* ignore */

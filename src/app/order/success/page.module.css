@@ -6,32 +6,34 @@
 }
 
 .splitLayout {
+    container-type: inline-size;
     display: flex;
     flex-direction: row-reverse;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     width: 100%;
     min-height: 100vh;
 }
 
 .leftPane {
     flex: 1 1 56%;
-    min-width: 320px;
+    min-width: 0;
     background: var(--bg);
     display: flex;
     align-items: flex-start;
     justify-content: stretch;
-    padding-top: 32px;
-    padding-bottom: 64px;
-    padding-left: 32px;
-    padding-right: max(var(--container-px), calc((100vw - var(--max-w, 1400px)) / 2 + var(--container-px)));
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-12);
+    padding-left: var(--space-8);
+    padding-right: max(var(--container-px), calc((100cqi - var(--max-w, 1400px)) / 2));
 }
 
 .contentWrapper {
     width: 100%;
+    min-width: 0;
     max-width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--space-4);
 }
 
 /* Interactive Layout Switcher */
@@ -91,6 +93,8 @@
 /* Main Butcher Ticket Card with Smoker-Ember FireBorder */
 .ticketCard {
     position: relative;
+    width: 100%;
+    min-width: 0;
     background: linear-gradient(165deg, rgba(24, 18, 14, 0.96) 0%, rgba(10, 8, 7, 0.98) 100%);
     border: 1px solid rgba(245, 155, 26, 0.28);
     border-radius: 20px;
@@ -1013,8 +1017,8 @@ a.infoValue:hover {
 
 /* Right Visual Pane (Flipped to Left via row-reverse) */
 .rightPane {
-    flex: 1 1 44%;
-    min-width: 320px;
+    flex: 0 0 44%;
+    min-width: 0;
     position: relative;
     background: var(--bg-2);
     border-right: 1px solid var(--border);

@@ -743,8 +743,8 @@
     font-weight: 700;
     cursor: pointer;
     transition: background 0.2s;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
-    letter-spacing: 0.05em;
+    font-family: var(--font-body), sans-serif;
+    letter-spacing: 0.02em;
 }
 .submitBtn:hover:not(:disabled) { background: #9a0025; }
 .submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }

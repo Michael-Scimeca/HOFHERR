@@ -7,6 +7,7 @@ import s from './sizes.module.css';
 
 const CARD_IN = 3.37; // ISO/IEC 7810 ID-1 credit card width — used to calibrate "actual size"
 const PPI_KEY = 'hofherr-screen-ppi-v1';
+const NUM_FMT = new Intl.NumberFormat('en-US');
 
 function useScreenPpi() {
     const [ppi, setPpi] = useState(96);
@@ -65,6 +66,7 @@ export default function SizeStudio({ embedded = false }: { embedded?: boolean })
     const [saved, setSaved] = useState<string>('');
     const [dirty, setDirty] = useState(false);
     const [selKey, setSelKey] = useState(DEFAULT_SPECS[0].key);
+    const [searchQuery, setSearchQuery] = useState('');
     const [unit, setUnit] = useState<Unit>('in');
     const [view, setView] = useState<'compare' | 'actual'>('compare');
     const [lock, setLock] = useState(true);
@@ -87,7 +89,14 @@ export default function SizeStudio({ embedded = false }: { embedded?: boolean })
     }, [load]);
 
     const sel = items.find((i) => i.key === selKey) ?? items[0];
-    const groups = useMemo(() => Array.from(new Set(items.map((i) => i.group))), [items]);
+    const filteredItems = useMemo(() => {
+        const q = searchQuery.trim().toLowerCase();
+        if (!q) return items;
+        return items.filter(
+            (i) => i.name.toLowerCase().includes(q) || i.group.toLowerCase().includes(q) || (i.note ?? '').toLowerCase().includes(q),
+        );
+    }, [items, searchQuery]);
+    const groups = useMemo(() => Array.from(new Set(filteredItems.map((i) => i.group))), [filteredItems]);
 
     const update = (patch: Partial<PrintSpec>) => {
         setItems((list) => list.map((i) => (i.key === sel.key ? { ...i, ...patch } : i)));
@@ -181,6 +190,12 @@ export default function SizeStudio({ embedded = false }: { embedded?: boolean })
                     </p>
                 </div>
                 <div className={s.topActions}>
+                    <Link href="/product-identity/print" className={s.btn}>
+                        🖨 1:1 Print Kit
+                    </Link>
+                    <Link href="/recipes/sheets" className={s.btn}>
+                        📄 12×16&quot; Recipe Sheets
+                    </Link>
                     <div className={s.seg} role="group" aria-label="Units">
                         {(['in', 'cm', 'mm'] as Unit[]).map((u) => (
                             <button
@@ -203,10 +218,18 @@ export default function SizeStudio({ embedded = false }: { embedded?: boolean })
             <div className={s.layout}>
                 {/* item list */}
                 <nav className={s.list} aria-label="Printable items">
+                    <input
+                        type="search"
+                        className={s.listSearch}
+                        placeholder={`Search ${items.length} printable items…`}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        aria-label="Filter printable items"
+                    />
                     {groups.map((g) => (
                         <div key={g} className={s.group}>
                             <h2>{g}</h2>
-                            {items
+                            {filteredItems
                                 .filter((i) => i.group === g)
                                 .map((i) => (
                                     <button
@@ -351,7 +374,7 @@ export default function SizeStudio({ embedded = false }: { embedded?: boolean })
                         </div>
                         <div>
                             <b>
-                                {dpi300.w.toLocaleString()} × {dpi300.h.toLocaleString()} px
+                                {NUM_FMT.format(dpi300.w)} × {NUM_FMT.format(dpi300.h)} px
                             </b>
                             <span>artwork needed at 300 DPI</span>
                         </div>

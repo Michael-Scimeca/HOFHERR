@@ -1,237 +1,16 @@
 /**
- * Hofherr Meat Co. — Branded Email Templates
+ * Hofherr Meat Co. — Branded Editorial Steakhouse Email Templates
  *
- * All templates output table-based HTML for universal email client compatibility.
- * Brand colors: #800020 (maroon), #c5a255 (gold), #111 (dark bg), #0a0a0a (outer bg)
+ * Unified design system:
+ * - Obsidian outer canvas (#070707) & card surface (#111111)
+ * - 5px signature crimson left rail (#cc0e1d) & subtle hairline border (#242424)
+ * - Brushed gold eyebrow & numbered editorial steps (#c9a96e)
+ * - Bold 2-line white + crimson uppercase display headlines
+ * - Full-width crimson uppercase CTA button
+ * - Anti-inversion dark-mode meta tags for Apple Mail, Gmail & Outlook
  */
 
-/* ── Shared wrapper around all email content ─────────────────────────── */
-function wrap(title: string, innerHtml: string): string {
-    return `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>${title}</title>
-</head>
-<body style="margin:0;padding:0;background:#0a0a0a;font-family:'Inter','Helvetica Neue',Arial,sans-serif;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;">
-        <tr><td align="center" style="padding:20px 16px;">
-            <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
-                <!-- Header -->
-                <tr>
-                    <td style="background:#111;border-radius:12px 12px 0 0;padding:24px 30px;text-align:center;border-bottom:2px solid #800020;">
-                        <div style="font-family:'Yanone Kaffeesatz','Georgia',serif;font-size:28px;font-weight:700;color:#fff;letter-spacing:1px;">HOFHERR MEAT CO.</div>
-                        <div style="font-size:11px;color:#c5a255;letter-spacing:2px;text-transform:uppercase;margin-top:4px;">Craft Butchery · Northfield & Winnetka</div>
-                    </td>
-                </tr>
-
-                ${innerHtml}
-
-                <!-- Footer -->
-                <tr>
-                    <td style="background:#0d0d0d;border-radius:0 0 12px 12px;padding:20px 30px;text-align:center;">
-                        <div style="font-size:11px;color:#555;">Hofherr Meat Co. • 300 Happ Rd, Northfield, IL 60093</div>
-                        <div style="font-size:11px;color:#555;margin-top:4px;">📞 (847) 441-6328 • info@hofherrmeatco.com</div>
-                        <div style="margin-top:12px;">
-                            <a href="https://hofherrmeatco.com" style="color:#800020;font-size:11px;text-decoration:none;font-weight:600;">hofherrmeatco.com</a>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </td></tr>
-    </table>
-</body>
-</html>`;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   1. WELCOME EMAIL — sent after account registration
-   ═══════════════════════════════════════════════════════════════════════ */
-
-export function buildWelcomeEmail(name: string, email: string) {
-    const firstName = name.split(' ')[0] || 'there';
-
-    const subject = `Welcome to the Hofherr Family, ${firstName}! 🥩`;
-
-    const inner = `
-                <!-- Hero Banner -->
-                <tr>
-                    <td style="background:linear-gradient(135deg,#800020,#5c0018);padding:32px 30px;text-align:center;">
-                        <div style="font-size:36px;margin-bottom:8px;">🔥</div>
-                        <div style="font-size:24px;font-weight:700;color:#fff;">Welcome to Hofherr Meat Co.</div>
-                        <div style="font-size:14px;color:rgba(255,255,255,0.7);margin-top:8px;">Your account is all set, ${firstName}.</div>
-                    </td>
-                </tr>
-
-                <!-- Body -->
-                <tr>
-                    <td style="background:#111;padding:28px 30px;">
-                        <div style="font-size:15px;color:#ddd;line-height:1.7;">
-                            Thanks for joining! As a member, here's what you can enjoy:
-                        </div>
-
-                        <!-- Perks Grid -->
-                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;">
-                            <tr>
-                                <td width="50%" style="padding:8px 6px 8px 0;vertical-align:top;">
-                                    <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:14px;">
-                                        <div style="font-size:20px;margin-bottom:4px;">🛒</div>
-                                        <div style="font-size:13px;font-weight:700;color:#fff;">Order Online</div>
-                                        <div style="font-size:11px;color:#888;margin-top:2px;">Skip the line — pickup ready</div>
-                                    </div>
-                                </td>
-                                <td width="50%" style="padding:8px 0 8px 6px;vertical-align:top;">
-                                    <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:14px;">
-                                        <div style="font-size:20px;margin-bottom:4px;">🔥</div>
-                                        <div style="font-size:13px;font-weight:700;color:#fff;">Save Favorites</div>
-                                        <div style="font-size:11px;color:#888;margin-top:2px;">Quick reorder your go-tos</div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="50%" style="padding:8px 6px 8px 0;vertical-align:top;">
-                                    <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:14px;">
-                                        <div style="font-size:20px;margin-bottom:4px;">📋</div>
-                                        <div style="font-size:13px;font-weight:700;color:#fff;">Order History</div>
-                                        <div style="font-size:11px;color:#888;margin-top:2px;">Track past & current orders</div>
-                                    </div>
-                                </td>
-                                <td width="50%" style="padding:8px 0 8px 6px;vertical-align:top;">
-                                    <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:14px;">
-                                        <div style="font-size:20px;margin-bottom:4px;">🎁</div>
-                                        <div style="font-size:13px;font-weight:700;color:#fff;">Member Perks</div>
-                                        <div style="font-size:11px;color:#888;margin-top:2px;">Exclusive deals & early access</div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <!-- Account details -->
-                        <div style="margin-top:24px;padding:14px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;">
-                            <div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Your Account</div>
-                            <div style="font-size:13px;color:#f2f2f2;">📧 ${email}</div>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- CTA -->
-                <tr>
-                    <td style="background:#111;padding:0 30px 28px;text-align:center;">
-                        <a href="https://hofherrmeatco.com/online-orders" style="display:inline-block;background:#800020;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:14px 36px;border-radius:8px;">Start Shopping</a>
-                        <div style="font-size:11px;color:#666;margin-top:12px;">or <a href="https://hofherrmeatco.com/dashboard" style="color:#c5a255;text-decoration:none;">visit your dashboard</a></div>
-                    </td>
-                </tr>`;
-
-    const text = `Welcome to Hofherr Meat Co., ${firstName}!
-
-Your account is all set. Here's what you can do:
-
-• Order Online — skip the line, pickup ready
-• Save Favorites — quick reorder your go-tos
-• Order History — track past and current orders
-• Member Perks — exclusive deals and early access
-
-Your account email: ${email}
-
-Start shopping: https://hofherrmeatco.com/online-orders
-Dashboard: https://hofherrmeatco.com/dashboard
-
-— Hofherr Meat Co.
-300 Happ Rd, Northfield, IL 60093
-(847) 441-6328`;
-
-    return { subject, html: wrap(subject, inner), text };
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   2. NEWSLETTER WELCOME — sent after newsletter signup
-   ═══════════════════════════════════════════════════════════════════════ */
-
-export function buildNewsletterWelcomeEmail(email: string, name?: string) {
-    const firstName = name?.split(' ')[0] || '';
-    const greeting = firstName ? `Hey ${firstName}` : `Hey there`;
-
-    const subject = `You're on the list! 🔥 Hofherr Meat Co.`;
-
-    const inner = `
-                <!-- Hero Banner -->
-                <tr>
-                    <td style="background:linear-gradient(135deg,#800020,#5c0018);padding:32px 30px;text-align:center;">
-                        <div style="font-size:36px;margin-bottom:8px;">📬</div>
-                        <div style="font-size:22px;font-weight:700;color:#fff;">You're On The List!</div>
-                        <div style="font-size:14px;color:rgba(255,255,255,0.7);margin-top:8px;">${greeting} — welcome to the Hofherr newsletter.</div>
-                    </td>
-                </tr>
-
-                <!-- Body -->
-                <tr>
-                    <td style="background:#111;padding:28px 30px;">
-                        <div style="font-size:15px;color:#ddd;line-height:1.7;">
-                            You'll be the first to hear about:
-                        </div>
-
-                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;">
-                            <tr>
-                                <td style="padding:10px 0;border-bottom:1px solid #2a2a2a;">
-                                    <span style="font-size:16px;margin-right:10px;">🔥</span>
-                                    <span style="font-size:14px;color:#f2f2f2;font-weight:600;">Weekly Specials & Flash Sales</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding:10px 0;border-bottom:1px solid #2a2a2a;">
-                                    <span style="font-size:16px;margin-right:10px;">🥩</span>
-                                    <span style="font-size:14px;color:#f2f2f2;font-weight:600;">New Cuts & Seasonal Products</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding:10px 0;border-bottom:1px solid #2a2a2a;">
-                                    <span style="font-size:16px;margin-right:10px;">🌡️</span>
-                                    <span style="font-size:14px;color:#f2f2f2;font-weight:600;">BBQ Tips & Recipes from the Butcher</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding:10px 0;">
-                                    <span style="font-size:16px;margin-right:10px;">🎉</span>
-                                    <span style="font-size:14px;color:#f2f2f2;font-weight:600;">Events, Tastings & Community News</span>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <div style="margin-top:20px;font-size:13px;color:#888;line-height:1.6;">
-                            We keep it short, useful, and no spam — just the good stuff from behind the counter.
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- CTA -->
-                <tr>
-                    <td style="background:#111;padding:0 30px 28px;text-align:center;">
-                        <a href="https://hofherrmeatco.com/specials" style="display:inline-block;background:#800020;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:14px 36px;border-radius:8px;">See This Week's Specials</a>
-                    </td>
-                </tr>`;
-
-    const text = `${greeting} — You're on the list!
-
-Welcome to the Hofherr Meat Co. newsletter. You'll be the first to hear about:
-
-• Weekly Specials & Flash Sales
-• New Cuts & Seasonal Products
-• BBQ Tips & Recipes from the Butcher
-• Events, Tastings & Community News
-
-We keep it short, useful, and no spam — just the good stuff from behind the counter.
-
-See this week's specials: https://hofherrmeatco.com/specials
-
-— Hofherr Meat Co.
-300 Happ Rd, Northfield, IL 60093
-(847) 441-6328`;
-
-    return { subject, html: wrap(subject, inner), text };
-}
-
-import { resolveOrderCutPieces, OrderCutPiece } from '@/lib/cutCollector';
+import { resolveOrderCutPieces, type OrderCutPiece } from '@/lib/cutCollector';
 
 function safeEsc(raw: string): string {
     return String(raw)
@@ -246,6 +25,316 @@ function parsePriceValue(price: string | number | undefined): number {
     const m = String(price || '').match(/\$([\d.]+)/);
     return m ? parseFloat(m[1]) : 0;
 }
+
+/* ── Shared Editorial Steakhouse Wrapper ─────────────────────────────── */
+function wrapEditorial(params: {
+    title: string;
+    eyebrow?: string;
+    headlineWhite: string;
+    headlineRed: string;
+    leadHtml: string;
+    bodyRowsHtml: string;
+    ctaLabel: string;
+    ctaUrl: string;
+    secondaryNoteHtml?: string;
+}): string {
+    const eyebrow = params.eyebrow || 'HOFHERR MEAT CO.';
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark only" />
+    <meta name="supported-color-schemes" content="dark only" />
+    <title>${safeEsc(params.title)}</title>
+</head>
+<body style="margin:0;padding:0;background-color:#070707;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#070707;padding:24px 12px;">
+        <tr><td align="center">
+            <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#111111;border:1px solid #242424;border-left:5px solid #cc0e1d;border-radius:8px;overflow:hidden;">
+                <!-- Editorial Masthead -->
+                <tr>
+                    <td style="padding:32px 34px 24px;border-bottom:1px solid #222222;background-color:#111111;">
+                        <div style="font-size:11px;font-weight:800;letter-spacing:0.22em;text-transform:uppercase;color:#c9a96e;">
+                            ${eyebrow}
+                        </div>
+                        <h1 style="margin:12px 0 12px;font-size:32px;line-height:1.05;font-weight:900;text-transform:uppercase;letter-spacing:-0.01em;color:#ffffff;">
+                            ${params.headlineWhite}<br /><span style="color:#cc0e1d;">${params.headlineRed}</span>
+                        </h1>
+                        <p style="margin:0;font-size:15px;line-height:1.6;color:#b8b2a8;">
+                            ${params.leadHtml}
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- Dynamic Body -->
+                ${params.bodyRowsHtml}
+
+                <!-- Full-Width Crimson CTA -->
+                <tr>
+                    <td style="padding:6px 34px 28px;background-color:#111111;">
+                        <a href="${params.ctaUrl}" style="display:block;text-align:center;background-color:#cc0e1d;color:#ffffff;text-decoration:none;font-weight:800;font-size:15px;letter-spacing:0.08em;text-transform:uppercase;padding:15px 24px;border-radius:6px;">
+                            ${params.ctaLabel}
+                        </a>
+                        ${params.secondaryNoteHtml ? `<div style="margin-top:14px;text-align:center;font-size:12px;line-height:1.5;color:#888178;">${params.secondaryNoteHtml}</div>` : ''}
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td style="padding:18px 34px;background-color:#0c0c0c;border-top:1px solid #222222;text-align:center;">
+                        <div style="font-size:11px;font-weight:700;color:#8e877e;">
+                            Hofherr Meat Co. · 300 Happ Rd, Northfield · 754 Elm St, Winnetka
+                        </div>
+                        <div style="font-size:11px;color:#666058;margin-top:4px;">
+                            (847) 441-MEAT · <a href="https://hofherrmeatco.com" style="color:#c9a96e;text-decoration:none;font-weight:700;">hofherrmeatco.com</a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td></tr>
+    </table>
+</body>
+</html>`;
+}
+
+function buildNumberedStepsHtml(steps: { num: string; title: string; desc: string }[]): string {
+    const rows = steps
+        .map((step, idx) => {
+            const isLast = idx === steps.length - 1;
+            const borderCss = isLast ? '' : 'border-bottom:1px solid #222222;';
+            return `
+                <tr>
+                    <td width="44" valign="top" style="padding:12px 0;font-size:18px;font-weight:900;color:#c9a96e;">${step.num}</td>
+                    <td style="padding:12px 0;${borderCss}">
+                        <div style="font-size:15px;font-weight:800;color:#ffffff;">${step.title}</div>
+                        <div style="font-size:13px;color:#999289;margin-top:3px;line-height:1.5;">${step.desc}</div>
+                    </td>
+                </tr>`;
+        })
+        .join('');
+
+    return `
+                <tr>
+                    <td style="padding:20px 34px 22px;background-color:#111111;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                            ${rows}
+                        </table>
+                    </td>
+                </tr>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   1. WELCOME EMAIL — sent after account registration
+   ═══════════════════════════════════════════════════════════════════════ */
+
+export function buildWelcomeEmail(name: string, email: string) {
+    const firstName = safeEsc(name.split(' ')[0] || 'Neighbor');
+    const safeEmail = safeEsc(email);
+    const subject = `Quality Meats. No Compromise. Welcome, ${name.split(' ')[0] || 'Neighbor'}.`;
+
+    const bodyRowsHtml = buildNumberedStepsHtml([
+        {
+            num: '01',
+            title: 'Reserve Before Friday Rush',
+            desc: 'Lock in a 15-minute pickup slot or Curbside Trunk Drop-Off at Northfield or Winnetka.',
+        },
+        {
+            num: '02',
+            title: 'Unlock Your 7-Animal Cut Collector',
+            desc: 'Every order logs your cuts automatically on your personal Butcher Chart.',
+        },
+        {
+            num: '03',
+            title: 'Free Hand-Trimming to Spec',
+            desc: 'Add inch thickness or French-trim notes to any cut — never an upcharge.',
+        },
+    ]);
+
+    const html = wrapEditorial({
+        title: subject,
+        headlineWhite: 'QUALITY MEATS.',
+        headlineRed: 'NO COMPROMISE.',
+        leadHtml: `Welcome, ${firstName}. Your member profile (<strong style="color:#ffffff;">${safeEmail}</strong>) is ready for custom butcher orders and 1-tap reorders.`,
+        bodyRowsHtml,
+        ctaLabel: 'SHOP THE BUTCHER CASE →',
+        ctaUrl: 'https://hofherrmeatco.com/online-orders',
+        secondaryNoteHtml: `or <a href="https://hofherrmeatco.com/dashboard" style="color:#c9a96e;text-decoration:underline;">visit your member dashboard</a>`,
+    });
+
+    const text = [
+        `HOFHERR MEAT CO. — QUALITY MEATS. NO COMPROMISE.`,
+        ``,
+        `Welcome, ${name.split(' ')[0] || 'Neighbor'}. Your member profile (${email}) is ready.`,
+        ``,
+        `01 · Reserve Before Friday Rush — Lock in a 15-minute pickup slot or Curbside Trunk Drop-Off.`,
+        `02 · Unlock Your 7-Animal Cut Collector — Every order logs your cuts automatically.`,
+        `03 · Free Hand-Trimming to Spec — Add thickness or trim notes with zero upcharge.`,
+        ``,
+        `Shop the Butcher Case: https://hofherrmeatco.com/online-orders`,
+        `Member Dashboard: https://hofherrmeatco.com/dashboard`,
+        ``,
+        `— Hofherr Meat Co. · (847) 441-MEAT`,
+    ].join('\n');
+
+    return { subject, html, text };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   2. EMAIL VERIFICATION — sent on registration to confirm the email
+   ═══════════════════════════════════════════════════════════════════════ */
+
+export function buildVerifyEmail(name: string, email: string, verifyUrl: string) {
+    const firstName = safeEsc(name.split(' ')[0] || 'Neighbor');
+    const safeEmail = safeEsc(email);
+    const subject = `Confirm your email — Hofherr Meat Co.`;
+
+    const bodyRowsHtml = buildNumberedStepsHtml([
+        {
+            num: '01',
+            title: 'Verify Your Email Address',
+            desc: `Click the crimson button below to activate <strong style="color:#ffffff;">${safeEmail}</strong>.`,
+        },
+        {
+            num: '02',
+            title: 'Start Custom Butcher Ordering',
+            desc: 'Reserve dry-aged steaks, Winnetka Depot hot lunches, and holiday roasts with 15-min pickup windows.',
+        },
+    ]);
+
+    const html = wrapEditorial({
+        title: subject,
+        eyebrow: 'HOFHERR MEAT CO. · ACCOUNT VERIFICATION',
+        headlineWhite: 'CONFIRM YOUR',
+        headlineRed: 'ACCOUNT.',
+        leadHtml: `Hi ${firstName}, one quick click and you&apos;re all set at the counter. This verification link stays active for <strong style="color:#ffffff;">24 hours</strong>.`,
+        bodyRowsHtml,
+        ctaLabel: 'VERIFY MY EMAIL →',
+        ctaUrl: verifyUrl,
+        secondaryNoteHtml: `Didn&apos;t create an account? You can safely ignore this email.`,
+    });
+
+    const text = [
+        `CONFIRM YOUR ACCOUNT — HOFHERR MEAT CO.`,
+        ``,
+        `Hi ${name.split(' ')[0] || 'Neighbor'},`,
+        `Click the link below to verify ${email} and activate your account (valid for 24 hours):`,
+        ``,
+        verifyUrl,
+        ``,
+        `Didn't create an account? You can safely ignore this email.`,
+        `— Hofherr Meat Co. · (847) 441-MEAT`,
+    ].join('\n');
+
+    return { subject, html, text };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   3. PASSWORD RESET EMAIL — sent from /api/auth/forgot-password
+   ═══════════════════════════════════════════════════════════════════════ */
+
+export function buildPasswordResetEmail(email: string, resetUrl: string) {
+    const safeEmail = safeEsc(email);
+    const subject = `Reset Your Password — Hofherr Meat Co.`;
+
+    const bodyRowsHtml = buildNumberedStepsHtml([
+        {
+            num: '01',
+            title: 'Link Expires in 1 Hour',
+            desc: `We received a password reset request for <strong style="color:#ffffff;">${safeEmail}</strong>. Set your new password using the button below.`,
+        },
+        {
+            num: '02',
+            title: 'Didn’t Request This?',
+            desc: 'Your current password remains unchanged — simply ignore this email or reply if you need help.',
+        },
+    ]);
+
+    const html = wrapEditorial({
+        title: subject,
+        eyebrow: 'HOFHERR MEAT CO. · ACCOUNT RECOVERY',
+        headlineWhite: 'RESET YOUR',
+        headlineRed: 'PASSWORD.',
+        leadHtml: `Use the secure button below to choose a new password for your Hofherr Meat Co. member account.`,
+        bodyRowsHtml,
+        ctaLabel: 'SET NEW PASSWORD →',
+        ctaUrl: resetUrl,
+        secondaryNoteHtml: `Need help? Reply to this email or call <strong style="color:#c9a96e;">(847) 441-MEAT</strong>.`,
+    });
+
+    const text = [
+        `RESET YOUR PASSWORD — HOFHERR MEAT CO.`,
+        ``,
+        `We received a password reset request for ${email}.`,
+        `Set your new password (link expires in 1 hour):`,
+        ``,
+        resetUrl,
+        ``,
+        `If you didn't request this, you can safely ignore this email.`,
+        `— Hofherr Meat Co. · (847) 441-MEAT`,
+    ].join('\n');
+
+    return { subject, html, text };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   4. NEWSLETTER WELCOME EMAIL — sent after newsletter signup
+   ═══════════════════════════════════════════════════════════════════════ */
+
+export function buildNewsletterWelcomeEmail(email: string, name?: string) {
+    const firstName = name ? safeEsc(name.split(' ')[0]) : 'Neighbor';
+    const safeEmail = safeEsc(email);
+    const subject = `You're on the List — Hofherr Meat Co. Butcher Dispatch`;
+
+    const bodyRowsHtml = buildNumberedStepsHtml([
+        {
+            num: '01',
+            title: 'Weekly Butcher Block Drops',
+            desc: 'First look at dry-aged USDA Prime cuts, house-made sausages, and counter specials before Friday rush.',
+        },
+        {
+            num: '02',
+            title: 'Winnetka Depot Hot Case',
+            desc: 'Daily Italian Beef, herb-roasted rotisserie chickens, kettle soups, and seasonal pop-ups at 754 Elm St.',
+        },
+        {
+            num: '03',
+            title: 'Holiday Roast Reservations',
+            desc: 'Priority booking for Thanksgiving heritage turkeys, Christmas Prime Rib, and Easter rack of lamb.',
+        },
+    ]);
+
+    const html = wrapEditorial({
+        title: subject,
+        eyebrow: 'HOFHERR MEAT CO. · BUTCHER DISPATCH',
+        headlineWhite: 'YOU&apos;RE ON',
+        headlineRed: 'THE LIST.',
+        leadHtml: `Welcome, ${firstName}. <strong style="color:#ffffff;">${safeEmail}</strong> is now subscribed to our weekly Northfield &amp; Winnetka counter dispatch.`,
+        bodyRowsHtml,
+        ctaLabel: 'SEE THIS WEEK&apos;S SPECIALS →',
+        ctaUrl: 'https://hofherrmeatco.com/specials',
+        secondaryNoteHtml: `Unsubscribe anytime from any dispatch — zero spam, just great meat.`,
+    });
+
+    const text = [
+        `YOU'RE ON THE LIST — HOFHERR MEAT CO.`,
+        ``,
+        `Welcome, ${name ? name.split(' ')[0] : 'Neighbor'}! ${email} is subscribed to the weekly Butcher Dispatch.`,
+        ``,
+        `01 · Weekly Butcher Block Drops`,
+        `02 · Winnetka Depot Hot Case`,
+        `03 · Priority Holiday Roast Reservations`,
+        ``,
+        `See this week's specials: https://hofherrmeatco.com/specials`,
+        `— Hofherr Meat Co. · (847) 441-MEAT`,
+    ].join('\n');
+
+    return { subject, html, text };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   5. ORDER CONFIRMATION EMAIL — includes Butcher's Guide to Cuts pieces
+   ═══════════════════════════════════════════════════════════════════════ */
 
 export interface OrderConfirmationItemInput {
     name: string;
@@ -265,75 +354,6 @@ export interface OrderConfirmationEmailPayload {
     baseUrl?: string;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   3. EMAIL VERIFICATION — sent on registration to confirm the email
-   ═══════════════════════════════════════════════════════════════════════ */
-
-export function buildVerifyEmail(name: string, email: string, verifyUrl: string) {
-    const firstName = name.split(' ')[0] || 'there';
-
-    const subject = `Confirm your email — Hofherr Meat Co.`;
-
-    const inner = `
-                <!-- Hero Banner -->
-                <tr>
-                    <td style="background:linear-gradient(135deg,#800020,#5c0018);padding:32px 30px;text-align:center;">
-                        <div style="font-size:36px;margin-bottom:8px;">📧</div>
-                        <div style="font-size:24px;font-weight:700;color:#fff;">Almost There, ${firstName}!</div>
-                        <div style="font-size:14px;color:rgba(255,255,255,0.7);margin-top:8px;">Just one more step to activate your account.</div>
-                    </td>
-                </tr>
-
-                <!-- Body -->
-                <tr>
-                    <td style="background:#111;padding:28px 30px;">
-                        <div style="font-size:15px;color:#ddd;line-height:1.7;">
-                            We received a sign-up request for <strong style="color:#fff;">${email}</strong>. If this was you, click the button below to verify your email and finish setting up your account.
-                        </div>
-
-                        <div style="margin-top:8px;font-size:13px;color:#888;line-height:1.5;">
-                            If you didn't create this account, you can safely ignore this email.
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- CTA Button -->
-                <tr>
-                    <td style="background:#111;padding:0 30px 12px;text-align:center;">
-                        <a href="${verifyUrl}" style="display:inline-block;background:#800020;color:#fff;text-decoration:none;font-weight:700;font-size:16px;padding:16px 48px;border-radius:8px;letter-spacing:0.5px;">Verify My Email</a>
-                    </td>
-                </tr>
-
-                <!-- Fallback link -->
-                <tr>
-                    <td style="background:#111;padding:0 30px 28px;text-align:center;">
-                        <div style="font-size:11px;color:#666;margin-top:8px;">Or copy and paste this link into your browser:</div>
-                        <div style="font-size:11px;color:#c5a255;word-break:break-all;margin-top:6px;">${verifyUrl}</div>
-                        <div style="font-size:11px;color:#555;margin-top:12px;">This link expires in 24 hours.</div>
-                    </td>
-                </tr>`;
-
-    const text = `Almost there, ${firstName}!
-
-We received a sign-up request for ${email}. If this was you, click the link below to verify your email:
-
-${verifyUrl}
-
-If you didn't create this account, you can safely ignore this email.
-
-This link expires in 24 hours.
-
-— Hofherr Meat Co.
-300 Happ Rd, Northfield, IL 60093
-(847) 441-6328`;
-
-    return { subject, html: wrap(subject, inner), text };
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   4. ORDER CONFIRMATION EMAIL — includes Butcher's Guide to Cuts pieces
-   ═══════════════════════════════════════════════════════════════════════ */
-
 export function buildOrderConfirmationEmail(payload: OrderConfirmationEmailPayload): {
     subject: string;
     html: string;
@@ -342,7 +362,7 @@ export function buildOrderConfirmationEmail(payload: OrderConfirmationEmailPaylo
 } {
     const { items, contact, orderNote, storeId, tipAmount, coupon } = payload;
     const baseUrl = payload.baseUrl !== undefined ? payload.baseUrl : '';
-    const storeName = storeId === 'depot' ? 'The Depot' : 'The Butcher Shop';
+    const storeName = storeId === 'depot' ? 'The Depot (Winnetka)' : 'The Butcher Shop (Northfield)';
     const storeAddr = storeId === 'depot' ? '754 Elm St, Winnetka, IL' : '300 Happ Rd, Northfield, IL';
     const orderNum =
         payload.orderNumber ||
@@ -367,12 +387,12 @@ export function buildOrderConfirmationEmail(payload: OrderConfirmationEmailPaylo
             const lineTotal = parsePriceValue(i.price) * i.qty;
             return `
         <tr>
-            <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;color:#f2f2f2;font-size:14px;">
-                ${safeEsc(i.name)}${i.note ? `<br/><span style="font-size:11px;color:#888;font-style:italic;">📝 ${safeEsc(i.note)}</span>` : ''}
+            <td style="padding:10px 0;border-bottom:1px solid #222222;color:#ffffff;font-size:14px;font-weight:700;">
+                ${safeEsc(i.name)}${i.note ? `<br/><span style="font-size:11px;color:#999289;font-weight:400;font-style:italic;">Note: ${safeEsc(i.note)}</span>` : ''}
             </td>
-            <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;color:#999;font-size:13px;text-align:center;">×${i.qty}</td>
-            <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;color:#f2f2f2;font-size:14px;text-align:right;font-weight:600;">${safeEsc(i.price)}</td>
-            <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;color:#c5a255;font-size:14px;text-align:right;font-weight:700;">$${lineTotal.toFixed(2)}</td>
+            <td style="padding:10px 0;border-bottom:1px solid #222222;color:#999289;font-size:13px;text-align:center;">×${i.qty}</td>
+            <td style="padding:10px 0;border-bottom:1px solid #222222;color:#b8b2a8;font-size:13px;text-align:right;">${safeEsc(i.price)}</td>
+            <td style="padding:10px 0;border-bottom:1px solid #222222;color:#c9a96e;font-size:14px;text-align:right;font-weight:800;">$${lineTotal.toFixed(2)}</td>
         </tr>`;
         })
         .join('');
@@ -380,55 +400,23 @@ export function buildOrderConfirmationEmail(payload: OrderConfirmationEmailPaylo
     const butcherGuideRows =
         cutPieces.length > 0
             ? `
-                <!-- Butcher's Guide to Cuts — Unlocked Pieces -->
                 <tr>
-                    <td style="background:#111;padding:0 30px 24px;">
-                        <div style="background:#171311;border:1px solid #4a2c18;border-radius:10px;padding:18px 20px;">
-                            <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #332015;padding-bottom:12px;margin-bottom:14px;">
-                                <div>
-                                    <div style="font-size:10px;font-weight:800;color:#f59b1a;letter-spacing:1.5px;text-transform:uppercase;">🥩 Butcher's Guide to Cuts</div>
-                                    <div style="font-size:17px;font-weight:800;color:#faf0e6;margin-top:2px;">Pieces Unlocked in Your Order (${cutPieces.length})</div>
-                                    <div style="font-size:12px;color:#b8a99a;margin-top:2px;">Each primal section below is now lit up in gold on your 7-Animal Butcher Chart.</div>
-                                </div>
-                            </div>
+                    <td style="padding:0 34px 22px;background-color:#111111;">
+                        <div style="background-color:#171311;border:1px solid #33251d;border-left:3px solid #c9a96e;border-radius:6px;padding:16px 18px;">
+                            <div style="font-size:10px;font-weight:800;color:#c9a96e;letter-spacing:0.16em;text-transform:uppercase;">CUT COLLECTOR UNLOCKED (${cutPieces.length})</div>
+                            <div style="font-size:15px;font-weight:800;color:#ffffff;margin-top:4px;">Primal Cuts Logged on Your Butcher Chart</div>
                             ${cutPieces
                                 .map((piece) => {
-                                    const pieceImgUrl = `${baseUrl}/api/butcher-cut-piece?animal=${encodeURIComponent(piece.animalId)}&cuts=${encodeURIComponent(piece.cutId)}&zoom=piece`;
-                                    const fullImgUrl = `${baseUrl}/api/butcher-cut-piece?animal=${encodeURIComponent(piece.animalId)}&cuts=${encodeURIComponent(piece.cutId)}&zoom=full`;
                                     const matchedNames = piece.matchedItems
                                         .map((m) => `${safeEsc(m.orderedName)} ×${m.qty}`)
                                         .join(', ');
                                     return `
-                            <table width="100%" cellpadding="0" cellspacing="0" style="background:#120f0d;border:1px solid #3a2416;border-radius:8px;margin-bottom:12px;overflow:hidden;">
-                                <tr>
-                                    <td width="46%" valign="middle" style="padding:10px;background:#f3ead8;border-right:2px solid #6b070b;text-align:center;">
-                                        <img src="${pieceImgUrl}" alt="${safeEsc(piece.animalName)} — ${safeEsc(piece.cutName)} Cut Piece" width="210" style="width:100%;max-width:210px;height:auto;display:block;margin:0 auto;border-radius:4px;border:1px solid #6b070b;" />
-                                        <div style="font-size:9px;font-weight:800;color:#6b070b;letter-spacing:1px;text-transform:uppercase;margin-top:4px;">▲ Zoomed Cut Piece (${safeEsc(piece.cutName)})</div>
-                                    </td>
-                                    <td width="54%" valign="top" style="padding:12px 14px;">
-                                        <div style="display:inline-block;background:rgba(245,155,26,0.16);border:1px solid rgba(245,155,26,0.5);color:#f59b1a;font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:999px;">
-                                            ★ ${safeEsc(piece.animalName)} Guide · Cut #${piece.cutOrderIndex} of ${piece.totalAnimalCuts}
-                                        </div>
-                                        <div style="font-size:17px;font-weight:800;color:#fff;margin-top:6px;letter-spacing:0.3px;">
-                                            ${safeEsc(piece.animalName)}: ${safeEsc(piece.cutName)} Section
-                                        </div>
-                                        <div style="font-size:12px;color:#d6c7b8;margin-top:4px;">
-                                            Ordered Cut: <strong style="color:#f59b1a;">${matchedNames}</strong>
-                                        </div>
-                                        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #2b1d14;">
-                                            <img src="${fullImgUrl}" alt="Full ${safeEsc(piece.animalName)} Butcher Guide" width="170" style="width:100%;max-width:170px;height:auto;display:block;border-radius:4px;border:1px solid #4a2c18;" />
-                                            <div style="font-size:9px;color:#9c8d7e;margin-top:3px;">Full ${safeEsc(piece.wholeTitle)} chart with ${safeEsc(piece.cutName)} highlighted</div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>`;
+                                    <div style="margin-top:10px;padding-top:10px;border-top:1px solid #2a211b;font-size:13px;color:#d6cec4;">
+                                        <strong style="color:#c9a96e;">${safeEsc(piece.animalName)} · ${safeEsc(piece.cutName)}</strong>
+                                        <span style="color:#888178;"> — ${matchedNames}</span>
+                                    </div>`;
                                 })
                                 .join('')}
-                            <div style="text-align:center;margin-top:14px;">
-                                <a href="${baseUrl || 'https://hofherrmeatco.com'}/dashboard#cut-collection" style="display:inline-block;background:#f59b1a;color:#140d08;text-decoration:none;font-weight:800;font-size:12px;padding:9px 20px;border-radius:6px;letter-spacing:0.5px;text-transform:uppercase;">
-                                    View Your 7-Animal Butcher Guide →
-                                </a>
-                            </div>
                         </div>
                     </td>
                 </tr>`
@@ -436,171 +424,100 @@ export function buildOrderConfirmationEmail(payload: OrderConfirmationEmailPaylo
 
     const subject = `Order Confirmed — ${storeName} #${orderNum}`;
 
-    const html = `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>${safeEsc(subject)}</title>
-</head>
-<body style="margin:0;padding:0;background:#0a0a0a;font-family:'Inter','Helvetica Neue',Arial,sans-serif;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;">
-        <tr><td align="center" style="padding:20px 16px;">
-            <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
-                <!-- Header -->
+    const bodyRowsHtml = `
+                <!-- Pickup & Order Number Strip -->
                 <tr>
-                    <td style="background:#111;border-radius:12px 12px 0 0;padding:24px 30px;text-align:center;border-bottom:2px solid #800020;">
-                        <div style="font-family:'Yanone Kaffeesatz','Georgia',serif;font-size:28px;font-weight:700;color:#fff;letter-spacing:1px;">HOFHERR MEAT CO.</div>
-                        <div style="font-size:11px;color:#c5a255;letter-spacing:2px;text-transform:uppercase;margin-top:4px;">Premium Butcher • Since 1906</div>
-                    </td>
-                </tr>
-
-                <!-- Confirmation Banner -->
-                <tr>
-                    <td style="background:linear-gradient(135deg,#800020,#5c0018);padding:28px 30px;text-align:center;">
-                        <div style="font-size:32px;margin-bottom:8px;">✅</div>
-                        <div style="font-size:22px;font-weight:700;color:#fff;">Order Confirmed!</div>
-                        <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:6px;">Thank you, ${safeEsc(contact.name)}. We're preparing your order.</div>
-                        <div style="margin-top:12px;display:inline-block;background:rgba(0,0,0,0.3);border-radius:6px;padding:6px 16px;">
-                            <span style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:1px;">ORDER #</span>
-                            <span style="font-size:16px;font-weight:800;color:#fff;margin-left:4px;">${safeEsc(orderNum)}</span>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Pickup Info -->
-                <tr>
-                    <td style="background:#111;padding:20px 30px;">
-                        <table width="100%" cellpadding="0" cellspacing="0">
+                    <td style="padding:20px 34px 0;background-color:#111111;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#181818;border:1px solid #262626;border-radius:6px;">
                             <tr>
-                                <td width="50%" style="padding:10px 0;">
-                                    <div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">📍 Pickup Location</div>
-                                    <div style="font-size:15px;font-weight:700;color:#fff;">${safeEsc(storeName)}</div>
-                                    <div style="font-size:12px;color:#999;">${safeEsc(storeAddr)}</div>
+                                <td width="50%" valign="top" style="padding:14px 16px;border-right:1px solid #262626;">
+                                    <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#c9a96e;">PICKUP LOCATION</div>
+                                    <div style="font-size:14px;font-weight:800;color:#ffffff;margin-top:4px;">${safeEsc(storeName)}</div>
+                                    <div style="font-size:12px;color:#999289;margin-top:2px;">${safeEsc(storeAddr)}</div>
                                 </td>
-                                <td width="50%" style="padding:10px 0;text-align:right;">
-                                    <div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">🕐 Pickup Time</div>
-                                    <div style="font-size:15px;font-weight:700;color:#c5a255;">${safeEsc(contact.pickup || 'To be confirmed')}</div>
+                                <td width="50%" valign="top" style="padding:14px 16px;">
+                                    <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#c9a96e;">SCHEDULED PICKUP</div>
+                                    <div style="font-size:15px;font-weight:800;color:#ffffff;margin-top:4px;">${safeEsc(contact.pickup)}</div>
+                                    <div style="font-size:12px;color:#999289;margin-top:2px;">Order #${safeEsc(orderNum)}</div>
                                 </td>
                             </tr>
                         </table>
                     </td>
                 </tr>
 
-                <!-- Items Table -->
+                <!-- Itemized Order Table -->
                 <tr>
-                    <td style="background:#111;padding:0 30px 20px;">
-                        <div style="font-size:11px;font-weight:800;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;padding-top:16px;border-top:1px solid #2a2a2a;">Your Order</div>
-                        <table width="100%" cellpadding="0" cellspacing="0">
+                    <td style="padding:22px 34px 18px;background-color:#111111;">
+                        <div style="font-size:10px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#c9a96e;margin-bottom:10px;">YOUR CUT TICKET</div>
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                             <tr>
-                                <th style="text-align:left;font-size:10px;color:#666;text-transform:uppercase;letter-spacing:0.5px;padding-bottom:6px;">Item</th>
-                                <th style="text-align:center;font-size:10px;color:#666;text-transform:uppercase;letter-spacing:0.5px;padding-bottom:6px;">Qty</th>
-                                <th style="text-align:right;font-size:10px;color:#666;text-transform:uppercase;letter-spacing:0.5px;padding-bottom:6px;">Price</th>
-                                <th style="text-align:right;font-size:10px;color:#666;text-transform:uppercase;letter-spacing:0.5px;padding-bottom:6px;">Total</th>
+                                <th style="text-align:left;font-size:10px;color:#777068;text-transform:uppercase;letter-spacing:0.08em;padding-bottom:8px;border-bottom:1px solid #242424;">Item</th>
+                                <th style="text-align:center;font-size:10px;color:#777068;text-transform:uppercase;letter-spacing:0.08em;padding-bottom:8px;border-bottom:1px solid #242424;">Qty</th>
+                                <th style="text-align:right;font-size:10px;color:#777068;text-transform:uppercase;letter-spacing:0.08em;padding-bottom:8px;border-bottom:1px solid #242424;">Price</th>
+                                <th style="text-align:right;font-size:10px;color:#777068;text-transform:uppercase;letter-spacing:0.08em;padding-bottom:8px;border-bottom:1px solid #242424;">Est.</th>
                             </tr>
                             ${itemRows}
                         </table>
-                        ${orderNote ? `<div style="margin-top:12px;padding:10px;background:#1a1a1a;border-radius:6px;font-size:12px;color:#999;">📝 <em>${safeEsc(orderNote)}</em></div>` : ''}
-                    </td>
-                </tr>
 
-                ${butcherGuideRows}
+                        ${orderNote ? `<div style="margin-top:12px;padding:10px 12px;background-color:#181818;border-radius:6px;font-size:12px;color:#b8b2a8;"><strong style="color:#c9a96e;">Order Note:</strong> ${safeEsc(orderNote)}</div>` : ''}
 
-                <!-- Totals -->
-                <tr>
-                    <td style="background:#111;padding:0 30px 24px;">
-                        <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #2a2a2a;padding-top:12px;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:14px;">
                             <tr>
-                                <td style="padding:4px 0;font-size:13px;color:#999;">Subtotal</td>
-                                <td style="padding:4px 0;font-size:13px;color:#f2f2f2;text-align:right;">$${subtotal.toFixed(2)}</td>
+                                <td style="padding:4px 0;font-size:13px;color:#999289;">Subtotal</td>
+                                <td style="padding:4px 0;font-size:13px;color:#ffffff;text-align:right;">$${subtotal.toFixed(2)}</td>
                             </tr>
-                            ${discountAmt > 0 ? `
+                            ${discountAmt > 0 && coupon ? `<tr><td style="padding:4px 0;font-size:13px;color:#16a34a;">Discount (${safeEsc(coupon.code)})</td><td style="padding:4px 0;font-size:13px;color:#16a34a;text-align:right;">-$${discountAmt.toFixed(2)}</td></tr>` : ''}
                             <tr>
-                                <td style="padding:4px 0;font-size:13px;color:#16a34a;">Discount (${safeEsc(coupon?.code || '')})</td>
-                                <td style="padding:4px 0;font-size:13px;color:#16a34a;text-align:right;">-$${discountAmt.toFixed(2)}</td>
-                            </tr>` : ''}
-                            <tr>
-                                <td style="padding:4px 0;font-size:13px;color:#999;">Tax (2.25%)</td>
-                                <td style="padding:4px 0;font-size:13px;color:#f2f2f2;text-align:right;">$${tax.toFixed(2)}</td>
+                                <td style="padding:4px 0;font-size:13px;color:#999289;">Estimated Tax (2.25%)</td>
+                                <td style="padding:4px 0;font-size:13px;color:#ffffff;text-align:right;">$${tax.toFixed(2)}</td>
                             </tr>
-                            ${tip > 0 ? `
+                            ${tip > 0 ? `<tr><td style="padding:4px 0;font-size:13px;color:#999289;">Butcher Team Tip</td><td style="padding:4px 0;font-size:13px;color:#c9a96e;text-align:right;">$${tip.toFixed(2)}</td></tr>` : ''}
                             <tr>
-                                <td style="padding:4px 0;font-size:13px;color:#999;">Tip 💝</td>
-                                <td style="padding:4px 0;font-size:13px;color:#c5a255;text-align:right;">$${tip.toFixed(2)}</td>
-                            </tr>` : ''}
-                            <tr>
-                                <td style="padding:12px 0 0;font-size:18px;font-weight:800;color:#fff;border-top:1px solid #2a2a2a;">Estimated Total</td>
-                                <td style="padding:12px 0 0;font-size:22px;font-weight:800;color:#800020;text-align:right;border-top:1px solid #2a2a2a;">$${total.toFixed(2)}</td>
+                                <td style="padding:12px 0 0;font-size:16px;font-weight:900;color:#ffffff;border-top:1px solid #242424;">Estimated Total</td>
+                                <td style="padding:12px 0 0;font-size:20px;font-weight:900;color:#cc0e1d;text-align:right;border-top:1px solid #242424;">$${total.toFixed(2)}</td>
                             </tr>
                         </table>
-                        <div style="font-size:11px;color:#666;margin-top:8px;text-align:center;">*Final total is determined by exact scale weight at pickup.</div>
                     </td>
                 </tr>
+                ${butcherGuideRows}`;
 
-                <!-- CTA -->
-                <tr>
-                    <td style="background:#111;padding:0 30px 24px;text-align:center;">
-                        <a href="${baseUrl || 'https://hofherrmeatco.com'}/online-orders" style="display:inline-block;background:#800020;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:12px 32px;border-radius:8px;">Order Again</a>
-                    </td>
-                </tr>
-
-                <!-- Footer -->
-                <tr>
-                    <td style="background:#0d0d0d;border-radius:0 0 12px 12px;padding:20px 30px;text-align:center;">
-                        <div style="font-size:11px;color:#555;">Hofherr Meat Co. • ${safeEsc(storeAddr)}</div>
-                        <div style="font-size:11px;color:#555;margin-top:4px;">📞 (847) 441-6328 • info@hofherrmeatco.com</div>
-                        <div style="font-size:10px;color:#444;margin-top:8px;">You received this email because you placed an order at Hofherr Meat Co.</div>
-                    </td>
-                </tr>
-            </table>
-        </td></tr>
-    </table>
-</body>
-</html>`;
-
-    const butcherGuideText =
-        cutPieces.length > 0
-            ? [
-                  '',
-                  "BUTCHER'S GUIDE TO CUTS — PIECES UNLOCKED IN THIS ORDER:",
-                  ...cutPieces.map(
-                      (p) =>
-                          `  ★ ${p.animalName.toUpperCase()} — ${p.cutName.toUpperCase()} SECTION (Cut #${p.cutOrderIndex}/${p.totalAnimalCuts}): ${p.matchedItems.map((m) => `${m.orderedName} x${m.qty}`).join(', ')}`
-                  ),
-              ]
-            : [];
+    const html = wrapEditorial({
+        title: subject,
+        eyebrow: `HOFHERR MEAT CO. · TICKET #${safeEsc(orderNum)}`,
+        headlineWhite: 'ORDER CONFIRMED.',
+        headlineRed: 'IN THE QUEUE.',
+        leadHtml: `Thank you, <strong style="color:#ffffff;">${safeEsc(contact.name)}</strong>. Our butchers have your ticket and will hand-cut and wrap your order in kraft paper for pickup.`,
+        bodyRowsHtml,
+        ctaLabel: 'VIEW ORDER & TRACK PICKUP →',
+        ctaUrl: `${baseUrl || 'https://hofherrmeatco.com'}/dashboard`,
+        secondaryNoteHtml: `*Final total is determined by exact scale weight at pickup. Need Curbside Trunk Drop-Off? Call (847) 441-MEAT when you pull up.`,
+    });
 
     const text = [
-        `ORDER CONFIRMED — #${orderNum}`,
-        `Thank you, ${contact.name}!`,
-        '',
-        `Pickup Location: ${storeName} (${storeAddr})`,
-        `Pickup Time: ${contact.pickup || 'To be confirmed'}`,
-        '',
-        'Items:',
-        ...items.map(
-            (i) =>
-                `  • ${i.name} ×${i.qty} — ${i.price} ($${(parsePriceValue(i.price) * i.qty).toFixed(2)})${i.note ? ` [${i.note}]` : ''}`
-        ),
-        ...(orderNote ? ['', `Order Note: ${orderNote}`] : []),
-        ...butcherGuideText,
-        '',
+        `ORDER CONFIRMED — ${storeName} #${orderNum}`,
+        ``,
+        `Hi ${contact.name},`,
+        `Our butchers have your ticket and are preparing your order for pickup.`,
+        ``,
+        ...items.map((i) => `• ${i.name} ×${i.qty} — ${i.price}${i.note ? ` (${i.note})` : ''}`),
+        ``,
         `Subtotal: $${subtotal.toFixed(2)}`,
-        ...(discountAmt > 0 ? [`Discount (${coupon?.code}): -$${discountAmt.toFixed(2)}`] : []),
+        ...(discountAmt > 0 && coupon ? [`Discount (${coupon.code}): -$${discountAmt.toFixed(2)}`] : []),
         `Tax (2.25%): $${tax.toFixed(2)}`,
         ...(tip > 0 ? [`Tip: $${tip.toFixed(2)}`] : []),
         `Estimated Total: $${total.toFixed(2)}`,
-        '',
-        '*Final total is determined by exact scale weight at pickup.',
-        '',
-        'Hofherr Meat Co. • (847) 441-6328',
+        ``,
+        `Pickup: ${storeName} (${storeAddr}) · ${contact.pickup}`,
+        `*Final total determined by exact scale weight at pickup.`,
+        ``,
+        `— Hofherr Meat Co. · (847) 441-MEAT`,
     ].join('\n');
 
     return { subject, html, text, cutPieces };
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   4. RESTOCK FILLED EMAIL — sent to customer when their requested item is back in stock
+   6. RESTOCK FILLED EMAIL — sent when a requested cut is back in stock
    ═══════════════════════════════════════════════════════════════════════ */
 
 export function buildRestockFilledEmail(params: {
@@ -610,7 +527,7 @@ export function buildRestockFilledEmail(params: {
     store: string;
     baseUrl?: string;
 }) {
-    const firstName = (params.customerName || '').trim().split(' ')[0] || 'there';
+    const firstName = safeEsc((params.customerName || '').trim().split(' ')[0] || 'Neighbor');
     const storeName = params.store === 'depot' ? 'The Depot (Winnetka)' : 'The Butcher Shop (Northfield)';
     const storeAddr =
         params.store === 'depot'
@@ -618,60 +535,44 @@ export function buildRestockFilledEmail(params: {
             : '300 Happ Rd, Northfield, IL 60093';
     const orderUrl = `${params.baseUrl || 'https://hofherrmeatco.com'}/online-orders`;
 
-    const subject = `🔔 Back in Stock: ${params.item} is Ready at Hofherr Meat Co.!`;
+    const subject = `Back in Stock: ${params.item} is Ready at Hofherr Meat Co.`;
 
-    const inner = `
-                <!-- Hero Banner -->
-                <tr>
-                    <td style="background:linear-gradient(135deg,#800020,#5c0018);padding:32px 30px;text-align:center;">
-                        <div style="font-size:36px;margin-bottom:8px;">🔔</div>
-                        <div style="font-size:11px;font-weight:800;color:#c5a255;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Restock Request Filled</div>
-                        <div style="font-size:24px;font-weight:700;color:#fff;">Good News, ${firstName}! It&apos;s Back on the Block.</div>
-                        <div style="font-size:14px;color:rgba(255,255,255,0.8);margin-top:8px;">Your requested cut has just been restocked and is available to order.</div>
-                    </td>
-                </tr>
+    const bodyRowsHtml = buildNumberedStepsHtml([
+        {
+            num: '01',
+            title: `${params.qty}× ${safeEsc(params.item)}`,
+            desc: `Freshly cut and restocked at <strong style="color:#ffffff;">${safeEsc(storeName)}</strong> (${safeEsc(storeAddr)}).`,
+        },
+        {
+            num: '02',
+            title: '1-Click Add From Your Profile',
+            desc: 'We also posted this alert on your Butcher Guild Dashboard so you can reserve it before today’s batch sells out.',
+        },
+    ]);
 
-                <!-- Item Highlight Card -->
-                <tr>
-                    <td style="background:#111;padding:28px 30px;">
-                        <div style="background:#1a1a1a;border:1px solid #2e2e2e;border-left:4px solid #c5a255;border-radius:8px;padding:18px 20px;">
-                            <div style="font-size:10px;color:#c5a255;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:6px;">Ready to Order</div>
-                            <div style="font-size:18px;font-weight:700;color:#fff;">${params.qty}× ${params.item}</div>
-                            <div style="font-size:13px;color:#aaa;margin-top:6px;">📍 ${storeName} • ${storeAddr}</div>
-                        </div>
-
-                        <div style="font-size:14px;color:#ccc;line-height:1.6;margin-top:20px;">
-                            We&apos;ve also posted a notification on your <strong>Butcher Guild Profile Page</strong> so you can add <strong>${params.item}</strong> straight to your bag in one click before today&apos;s batch sells out.
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- CTA -->
-                <tr>
-                    <td style="background:#111;padding:0 30px 28px;text-align:center;">
-                        <a href="${orderUrl}" style="display:inline-block;background:#800020;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:14px 32px;border-radius:8px;letter-spacing:0.5px;">Order ${params.item} Now →</a>
-                    </td>
-                </tr>`;
+    const html = wrapEditorial({
+        title: subject,
+        eyebrow: 'HOFHERR MEAT CO. · RESTOCK ALERT',
+        headlineWhite: 'BACK ON',
+        headlineRed: 'THE BLOCK.',
+        leadHtml: `Good news, ${firstName} — your requested cut <strong style="color:#ffffff;">${safeEsc(params.item)}</strong> is back in the case and ready to order.`,
+        bodyRowsHtml,
+        ctaLabel: `ORDER ${safeEsc(params.item).toUpperCase()} NOW →`,
+        ctaUrl: orderUrl,
+        secondaryNoteHtml: `Small-batch cuts move quickly — reserve online to lock in your pickup window.`,
+    });
 
     const text = [
-        `RESTOCK REQUEST FILLED — HOFHERR MEAT CO.`,
+        `BACK ON THE BLOCK — HOFHERR MEAT CO.`,
         ``,
-        `Good news, ${firstName}!`,
-        `Your requested cut is back in stock and ready to order:`,
+        `Good news, ${params.customerName || 'Neighbor'}!`,
+        `Your requested cut is back in stock:`,
+        `• ${params.qty}× ${params.item}`,
+        `• Location: ${storeName} (${storeAddr})`,
         ``,
-        `  • Item: ${params.qty}× ${params.item}`,
-        `  • Location: ${storeName} (${storeAddr})`,
-        ``,
-        `Order online now before today's batch sells out: ${orderUrl}`,
-        `A notification has also been added to your Butcher Guild Profile page.`,
-        ``,
-        `Hofherr Meat Co. • (847) 441-6328`,
+        `Order online now: ${orderUrl}`,
+        `— Hofherr Meat Co. · (847) 441-MEAT`,
     ].join('\n');
 
-    return {
-        subject,
-        html: wrap(subject, inner),
-        text,
-    };
+    return { subject, html, text };
 }
-

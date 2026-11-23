@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Toggle } from '@/components/Toggle';
+import TransactionalEmailsSection from './TransactionalEmailsSection';
 import styles from './SubscribersPanel.module.css';
 
 const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const;
@@ -37,6 +38,7 @@ interface SubscribersPanelProps {
 type EmailTheme = 'butcher' | 'depot' | 'gold';
 
 interface EmailHighlight {
+    id?: string;
     tag: string;
     title: string;
     note: string;
@@ -226,8 +228,8 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
         setTestSubscribers(prev => prev.filter(s => s._id !== id));
     };
 
-    // Active inline panel: Email Builder | Social Studio (IG · FB · X) | Collapsed
-    const [activePanel, setActivePanel] = useState<'email' | 'social' | 'none'>('email');
+    // Toggle Email Builder visibility (Social Studio renders directly below this section)
+    const [showEmailBuilder, setShowEmailBuilder] = useState(true);
     const [theme, setTheme] = useState<EmailTheme>(EMAIL_TEMPLATES[0].theme);
     const [subject, setSubject] = useState(EMAIL_TEMPLATES[0].subject);
     const [previewText, setPreviewText] = useState(EMAIL_TEMPLATES[0].previewText);
@@ -237,7 +239,31 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
     const [ctaUrl, setCtaUrl] = useState(EMAIL_TEMPLATES[0].ctaUrl);
     const [psNote, setPsNote] = useState(EMAIL_TEMPLATES[0].psNote);
     const [quickItems, setQuickItems] = useState(EMAIL_TEMPLATES[0].quickItems);
-    const [highlights, setHighlights] = useState<EmailHighlight[]>(EMAIL_TEMPLATES[0].highlights);
+    const [highlights, setHighlights] = useState<EmailHighlight[]>(() =>
+        EMAIL_TEMPLATES[0].highlights.map((h, i) => ({ ...h, id: `hl-init-${i}` }))
+    );
+
+    const handleUpdateHighlight = (id: string, field: 'tag' | 'title' | 'note', value: string) => {
+        setHighlights(prev => prev.map(h => (h.id === id ? { ...h, [field]: value } : h)));
+    };
+
+    const handleAddHighlight = () => {
+        const nextNum = highlights.length + 1;
+        setShowHighlights(true);
+        setHighlights(prev => [
+            ...prev,
+            {
+                id: `hl-${Date.now()}-${nextNum}`,
+                tag: nextNum === 1 ? '★ Butcher’s Reserve' : nextNum === 2 ? '🔥 Most Popular' : '⚡ Easy Add-On',
+                title: '',
+                note: '',
+            },
+        ]);
+    };
+
+    const handleRemoveHighlight = (id: string) => {
+        setHighlights(prev => prev.filter(h => h.id !== id));
+    };
     const [showHighlights, setShowHighlights] = useState(true);
     const [showQr, setShowQr] = useState(true);
     const [autoSchedule, setAutoSchedule] = useState(true);
@@ -271,7 +297,7 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
         setCtaUrl(tpl.ctaUrl);
         setPsNote(tpl.psNote);
         setQuickItems(tpl.quickItems);
-        setHighlights(tpl.highlights);
+        setHighlights(tpl.highlights.map((h, i) => ({ ...h, id: `hl-${tpl.id}-${i}` })));
         setShowHighlights(tpl.highlights.length > 0);
         setSendFeedback(null);
         setConfirmBroadcast(false);
@@ -404,30 +430,28 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
                     </button>
                     <button
                         type="button"
-                        className={activePanel === 'email' ? styles.copyBtn : styles.secondaryBtn}
-                        onClick={() => setActivePanel(p => (p === 'email' ? 'none' : 'email'))}
+                        className={showEmailBuilder ? styles.copyBtn : styles.secondaryBtn}
+                        onClick={() => setShowEmailBuilder(v => !v)}
                     >
-                        {activePanel === 'email' ? '✉️ Email Builder ✓' : '✉️ Email Builder'}
+                        {showEmailBuilder ? '✉️ Email Builder ✓' : '✉️ Email Builder'}
                     </button>
-                    <button
-                        type="button"
-                        className={activePanel === 'social' ? styles.copyBtn : styles.secondaryBtn}
-                        onClick={() => setActivePanel(p => (p === 'social' ? 'none' : 'social'))}
+                    <a
+                        href="#automated-emails-section"
+                        className={styles.secondaryBtn}
                     >
-                        {activePanel === 'social' ? '📣 IG · FB · X Studio ✓' : '📣 Post to IG · FB · X'}
-                    </button>
+                        📧 Automated Emails ↓
+                    </a>
+                    <a
+                        href="#social-studio-section"
+                        className={styles.secondaryBtn}
+                    >
+                        📣 Post to IG · FB · X ↓
+                    </a>
                 </div>
             </div>
 
-            {/* ── Inline Social Studio (Instagram, Facebook & X) ── */}
-            {activePanel === 'social' && (
-                <div className={styles.embeddedPanel}>
-                    <SocialAdminInline />
-                </div>
-            )}
-
             {/* ── Email Builder & Real Test Sender ── */}
-            {activePanel === 'email' && (
+            {showEmailBuilder && (
                 <div className={styles.builderCard}>
                     <div className={styles.builderTop}>
                         <div>
@@ -568,14 +592,17 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
                                     onChange={setShowQr}
                                     label="Scan-to-Order QR Code"
                                 />
-                                {highlights.length > 0 && (
-                                    <Toggle
-                                        size="sm"
-                                        checked={showHighlights}
-                                        onChange={setShowHighlights}
-                                        label="3-Cut Spotlight Strip"
-                                    />
-                                )}
+                                <Toggle
+                                    size="sm"
+                                    checked={showHighlights}
+                                    onChange={checked => {
+                                        setShowHighlights(checked);
+                                        if (checked && highlights.length === 0) {
+                                            handleAddHighlight();
+                                        }
+                                    }}
+                                    label="3-Cut Spotlight Strip"
+                                />
                                 <Toggle
                                     size="sm"
                                     variant="gold"
@@ -584,6 +611,67 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
                                     label="Auto-Optimal Send Time (Tue–Thu 10 AM CT)"
                                 />
                             </div>
+
+                            {showHighlights && (
+                                <div className={styles.highlightEditor}>
+                                    <div className={styles.highlightEditorHead}>
+                                        <span className={styles.highlightEditorTitle}>
+                                            Spotlight Cuts ({highlights.length})
+                                        </span>
+                                        <button
+                                            type="button"
+                                            className={styles.highlightAddBtn}
+                                            onClick={handleAddHighlight}
+                                        >
+                                            + Add Cut
+                                        </button>
+                                    </div>
+                                    {highlights.map(item => (
+                                        <div key={item.id ?? item.title} className={styles.highlightEditorRow}>
+                                            <div className={styles.highlightEditorTop}>
+                                                <input
+                                                    type="text"
+                                                    className={styles.highlightTagInput}
+                                                    value={item.tag}
+                                                    onChange={e =>
+                                                        handleUpdateHighlight(item.id ?? '', 'tag', e.target.value)
+                                                    }
+                                                    placeholder="★ Butcher's Reserve"
+                                                    aria-label="Spotlight badge tag"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className={styles.highlightRemoveBtn}
+                                                    onClick={() => handleRemoveHighlight(item.id ?? '')}
+                                                    aria-label="Remove spotlight cut"
+                                                >
+                                                    ×
+                                                </button>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                className={styles.fieldInput}
+                                                value={item.title}
+                                                onChange={e =>
+                                                    handleUpdateHighlight(item.id ?? '', 'title', e.target.value)
+                                                }
+                                                placeholder="Cut or item title (e.g. Dry-Aged Prime Ribeye)…"
+                                                aria-label="Spotlight cut title"
+                                            />
+                                            <input
+                                                type="text"
+                                                className={styles.fieldInput}
+                                                value={item.note}
+                                                onChange={e =>
+                                                    handleUpdateHighlight(item.id ?? '', 'note', e.target.value)
+                                                }
+                                                placeholder="Short description line…"
+                                                aria-label="Spotlight cut description"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         {/* Live Branded Email Preview */}
@@ -616,15 +704,17 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
                                                 {para}
                                             </p>
                                         ))}
-                                    {showHighlights && highlights.length > 0 && (
+                                    {showHighlights && highlights.some(h => h.title.trim()) && (
                                         <div className={styles.previewHighlights}>
-                                            {highlights.map(item => (
-                                                <div key={item.title} className={styles.previewHighlightRow}>
-                                                    <span className={styles.previewHighlightTag}>{item.tag}</span>
-                                                    <strong className={styles.previewHighlightTitle}>{item.title}</strong>
-                                                    <span className={styles.previewHighlightNote}>{item.note}</span>
-                                                </div>
-                                            ))}
+                                            {highlights
+                                                .filter(h => h.title.trim())
+                                                .map(item => (
+                                                    <div key={item.id ?? item.title} className={styles.previewHighlightRow}>
+                                                        <span className={styles.previewHighlightTag}>{item.tag}</span>
+                                                        <strong className={styles.previewHighlightTitle}>{item.title}</strong>
+                                                        <span className={styles.previewHighlightNote}>{item.note}</span>
+                                                    </div>
+                                                ))}
                                         </div>
                                     )}
                                     {ctaLabel && (
@@ -868,6 +958,18 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
                     </table>
                 </div>
             )}
+
+            {/* ── Automated Transactional Emails (Welcome, Verify, Reset, Order, Restock, Newsletter) ── */}
+            <TransactionalEmailsSection />
+
+            {/* ── Social & Print Automation Studio (IG · FB · X) ── */}
+            <section
+                id="social-studio-section"
+                aria-label="Social and Print Automation Studio"
+                className={styles.embeddedPanel}
+            >
+                <SocialAdminInline />
+            </section>
         </div>
     );
 }

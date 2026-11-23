@@ -7,7 +7,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
 import { resolveOrderCutPieces } from '@/lib/cutCollector';
-import { buildOrderConfirmationEmail } from '@/lib/email-templates';
 import { COUNTER_CUT_DETAILS } from '@/data/cutMap';
 import styles from './page.module.css';
 
@@ -121,8 +120,6 @@ function SuccessContent() {
     const [autoPlay, setAutoPlay] = useState<boolean>(false);
     const [activePresetId, setActivePresetId] = useState<string>('signature');
     const [fullChartKeys, setFullChartKeys] = useState<Record<string, boolean>>({});
-    const [showEmailPreview, setShowEmailPreview] = useState<boolean>(true);
-    const [emailSendState, setEmailSendState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
     const [orderDetails, setOrderDetails] = useState<{
         name: string;
         summary: string;
@@ -239,21 +236,6 @@ function SuccessContent() {
         [parsedOrderItems]
     );
 
-    const emailPreview = useMemo(() => {
-        return buildOrderConfirmationEmail({
-            orderNumber: 'HMC-8F42A910',
-            items: parsedOrderItems,
-            contact: {
-                name: orderDetails?.name || 'Hofherr Master Butcher',
-                email: session?.user?.email || 'customer@hofherrmeatco.com',
-                phone: '(847) 441-6328',
-                pickup: orderDetails?.pickupTime || 'Ready during shop hours',
-            },
-            storeId: orderDetails?.storeId || 'butcher',
-            baseUrl: '',
-        });
-    }, [parsedOrderItems, orderDetails?.name, orderDetails?.pickupTime, orderDetails?.storeId, session?.user?.email]);
-
     const handleSelectPreset = (preset: TestOrderPreset) => {
         setActivePresetId(preset.id);
         setOrderDetails((prev) => ({
@@ -264,30 +246,6 @@ function SuccessContent() {
             pickupTime: prev?.pickupTime || 'Ready during shop hours',
             storeId: prev?.storeId || 'butcher',
         }));
-    };
-
-    const handleSendTestEmail = async () => {
-        setEmailSendState('sending');
-        try {
-            const res = await fetch('/api/order-confirmation', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    items: parsedOrderItems,
-                    contact: {
-                        name: orderDetails?.name || 'Hofherr Master Butcher',
-                        email: session?.user?.email || 'admin@hofherrmeatco.com',
-                        phone: '(847) 441-6328',
-                        pickup: orderDetails?.pickupTime || 'Ready during shop hours',
-                    },
-                    storeId: orderDetails?.storeId || 'butcher',
-                }),
-            });
-            if (!res.ok) throw new Error('Send failed');
-            setEmailSendState('sent');
-        } catch {
-            setEmailSendState('error');
-        }
     };
 
     if (status === 'loading') {
@@ -741,55 +699,6 @@ function SuccessContent() {
                                     >
                                         Open Full 7-Animal Butcher Guide on Dashboard →
                                     </Link>
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowEmailPreview((prev) => !prev)}
-                                        className={styles.emailPreviewToggleBtn}
-                                    >
-                                        {showEmailPreview
-                                            ? '▾ Hide Confirmation Email Test'
-                                            : '📧 Show Confirmation Email Test'}
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* ── Live Confirmation Email Test Preview ── */}
-                        {showEmailPreview && (
-                            <div className={styles.emailTestCard}>
-                                <div className={styles.emailTestHeader}>
-                                    <div className={styles.emailTestMeta}>
-                                        <span className={styles.emailTestBadge}>
-                                            📧 ORDER CONFIRMATION EMAIL · LIVE TEST PREVIEW
-                                        </span>
-                                        <span className={styles.emailTestSubject}>
-                                            Subject: {emailPreview.subject}
-                                        </span>
-                                    </div>
-                                    <div className={styles.emailTestActions}>
-                                        <button
-                                            type="button"
-                                            onClick={handleSendTestEmail}
-                                            disabled={emailSendState === 'sending'}
-                                            className={styles.sendTestEmailBtn}
-                                        >
-                                            {emailSendState === 'sending'
-                                                ? 'Sending…'
-                                                : emailSendState === 'sent'
-                                                  ? '✓ Test Email Dispatched'
-                                                  : emailSendState === 'error'
-                                                    ? '⚠ Retry Test Email'
-                                                    : '📤 Trigger /api/order-confirmation'}
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className={styles.emailIframeWrap}>
-                                    <iframe
-                                        title="Order Confirmation Email Live Preview"
-                                        sandbox="allow-same-origin"
-                                        srcDoc={emailPreview.html}
-                                        className={styles.emailIframe}
-                                    />
                                 </div>
                             </div>
                         )}

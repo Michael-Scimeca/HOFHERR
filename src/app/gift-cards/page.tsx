@@ -42,7 +42,7 @@ export default function GiftCardsPage() {
                                 className={styles.heroImg}
                             />
                             <div className={styles.overlayText}>
-                                <h2>The ultimate<br/>gift for the<br/>meat lover.</h2>
+                                <h2>The ultimate<br />gift for the<br />meat lover.</h2>
                                 <p>Never expires. Always delicious.</p>
                             </div>
                         </div>

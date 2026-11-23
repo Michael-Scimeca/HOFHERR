@@ -859,23 +859,45 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
         setStatusBanner(`✓ Verified ${label} (${keys.length} posts) by ${verifier || 'Sean Hofherr'} — Armed for Automatic Posting!`);
     };
 
-    const verifyByHorizon = () => {
+    const unverifyBatch = (keys: string[], label: string) => {
+        const next = { ...verifiedMap };
+        keys.forEach((k) => {
+            delete next[k];
+        });
+        setVerifiedMap(next);
+        saveLocal(animalsData, next, verifier);
+        setStatusBanner(`✕ Unverified ${label} (${keys.length} posts) — Removed from Automatic Posting queue.`);
+    };
+
+    const getHorizonBatch = () => {
         if (horizon === 'day') {
             const item = SCHEDULE_ITEMS[selectedDayIdx] ?? SCHEDULE_ITEMS[0];
-            verifyBatch([item.key], `Day Post (${item.day})`);
-        } else if (horizon === 'week') {
+            return { keys: [item.key], label: `Day Post (${item.day})` };
+        }
+        if (horizon === 'week') {
             const items = SCHEDULE_ITEMS.filter((x) => x.week === selectedWeekNum);
-            verifyBatch(items.map((x) => x.key), `Week ${selectedWeekNum}`);
+            return { keys: items.map((x) => x.key), label: `Week ${selectedWeekNum}` };
+        }
+        const allKeys = [
+            ...SCHEDULE_ITEMS.map((x) => x.key),
+            ...animalsData.flatMap((a) => [
+                `cuts-${a.slug}-1-chart`,
+                `cuts-${a.slug}-2-guide`,
+                ...a.facts.map((_, i) => `cuts-${a.slug}-fact-${i + 1}`),
+            ]),
+        ];
+        return { keys: Array.from(new Set(allKeys)), label: 'Entire Month Schedule & Cut Guides' };
+    };
+
+    const horizonBatch = getHorizonBatch();
+    const isHorizonAllVerified =
+        horizonBatch.keys.length > 0 && horizonBatch.keys.every((k) => Boolean(verifiedMap[k]));
+
+    const toggleVerifyByHorizon = () => {
+        if (isHorizonAllVerified) {
+            unverifyBatch(horizonBatch.keys, horizonBatch.label);
         } else {
-            const allKeys = [
-                ...SCHEDULE_ITEMS.map((x) => x.key),
-                ...animalsData.flatMap((a) => [
-                    `cuts-${a.slug}-1-chart`,
-                    `cuts-${a.slug}-2-guide`,
-                    ...a.facts.map((_, i) => `cuts-${a.slug}-fact-${i + 1}`),
-                ]),
-            ];
-            verifyBatch(Array.from(new Set(allKeys)), 'Entire Month Schedule & Cut Guides');
+            verifyBatch(horizonBatch.keys, horizonBatch.label);
         }
     };
 
@@ -1032,12 +1054,22 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
 
                                 <div className={s.ctl}>
                                     One-Click Verification
-                                    <button type="button" className={s.dlVerified} onClick={verifyByHorizon}>
-                                        {horizon === 'day'
-                                            ? '✓ Verify Selected Day Post'
-                                            : horizon === 'week'
-                                                ? `✓ Verify All Week ${selectedWeekNum} Posts`
-                                                : '✓ Verify Entire Month Schedule'}
+                                    <button
+                                        type="button"
+                                        className={isHorizonAllVerified ? s.dl : s.dlVerified}
+                                        onClick={toggleVerifyByHorizon}
+                                    >
+                                        {isHorizonAllVerified
+                                            ? horizon === 'day'
+                                                ? '✕ Unverify Selected Day Post'
+                                                : horizon === 'week'
+                                                    ? `✕ Unverify All Week ${selectedWeekNum} Posts`
+                                                    : '✕ Unverify Entire Month Schedule'
+                                            : horizon === 'day'
+                                                ? '✓ Verify Selected Day Post'
+                                                : horizon === 'week'
+                                                    ? `✓ Verify All Week ${selectedWeekNum} Posts`
+                                                    : '✓ Verify Entire Month Schedule'}
                                     </button>
                                 </div>
                             </div>
@@ -1159,22 +1191,33 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
                                                 {a.name}
                                             </button>
                                         ))}
-                                        <button
-                                            type="button"
-                                            className={s.dlVerify}
-                                            onClick={() => {
-                                                const keys = [
-                                                    `cuts-${activeEditAnimal.slug}-1-chart`,
-                                                    `cuts-${activeEditAnimal.slug}-2-guide`,
-                                                    ...activeEditAnimal.facts.map(
-                                                        (_, idx) => `cuts-${activeEditAnimal.slug}-fact-${idx + 1}`
-                                                    ),
-                                                ];
-                                                verifyBatch(keys, `${activeEditAnimal.name} Cut Carousel`);
-                                            }}
-                                        >
-                                            ✓ Verify All {activeEditAnimal.name} Slides
-                                        </button>
+                                        {(() => {
+                                            const animalKeys = [
+                                                `cuts-${activeEditAnimal.slug}-1-chart`,
+                                                `cuts-${activeEditAnimal.slug}-2-guide`,
+                                                ...activeEditAnimal.facts.map(
+                                                    (_, idx) => `cuts-${activeEditAnimal.slug}-fact-${idx + 1}`
+                                                ),
+                                            ];
+                                            const allVerified = animalKeys.every((k) => Boolean(verifiedMap[k]));
+                                            return (
+                                                <button
+                                                    type="button"
+                                                    className={allVerified ? s.dl : s.dlVerify}
+                                                    onClick={() => {
+                                                        if (allVerified) {
+                                                            unverifyBatch(animalKeys, `${activeEditAnimal.name} Cut Carousel`);
+                                                        } else {
+                                                            verifyBatch(animalKeys, `${activeEditAnimal.name} Cut Carousel`);
+                                                        }
+                                                    }}
+                                                >
+                                                    {allVerified
+                                                        ? `✕ Unverify All ${activeEditAnimal.name} Slides`
+                                                        : `✓ Verify All ${activeEditAnimal.name} Slides`}
+                                                </button>
+                                            );
+                                        })()}
                                         <button
                                             type="button"
                                             className={s.dl}

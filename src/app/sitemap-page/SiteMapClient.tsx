@@ -41,9 +41,7 @@ const GRAPH_POS: Record<string, { x: number; y: number }> = {
     '/bbq': { x: 92, y: 74 },
     '/press': { x: 732, y: 74 },
     '/cut-guide': { x: 250, y: 74 },
-    '/burn-transition': { x: 575, y: 74 },
     '/admin-dashbaord': { x: 102, y: 536 },
-    '/dashboard/cut-collector': { x: 410, y: 536 },
 };
 
 function PageBadges({ page }: { page: SitePageNode }) {

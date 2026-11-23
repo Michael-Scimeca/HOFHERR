@@ -179,6 +179,9 @@
 
 .hintBox {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
     background: rgba(200, 164, 126, 0.08);
     border: 1px solid #ffffff1a;
     border-radius: var(--radius);
@@ -188,9 +191,25 @@
     line-height: 1.5;
 }
 
+.hintLine {
+    margin: 0;
+}
+
 .hintBox strong {
     color: var(--gold);
     font-weight: 700;
+}
+
+.hintLink {
+    color: var(--gold);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease;
+}
+
+.hintLink:hover {
+    color: var(--fg);
 }
 
 .actionsRow {

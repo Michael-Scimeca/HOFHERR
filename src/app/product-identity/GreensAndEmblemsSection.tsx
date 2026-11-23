@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import styles from './page.module.css';
+import styles from './GreensAndEmblemsSection.module.css';
 
 interface GreenSwatch {
   id: string;
@@ -317,6 +317,8 @@ const GREEN_GROUPS: GreenGroup[] = [
   },
 ];
 
+const ALL_SWATCHES = GREEN_GROUPS.flatMap((g) => g.swatches);
+
 interface SingleEmblem {
   code: string;
   title: string;
@@ -427,9 +429,8 @@ const EXTRA_STICKERS_AND_ENGRAVINGS: SingleEmblem[] = [
 
 type BackdropMode = 'dark' | 'kraft' | 'depot' | 'light';
 
-export default function GreensAndEmblemsClient() {
-  const allSwatches = GREEN_GROUPS.flatMap((g) => g.swatches);
-  const [selectedGreen, setSelectedGreen] = useState<GreenSwatch>(allSwatches[5]); // defaults to #16a34a (--green-ready)
+export default function GreensAndEmblemsSection() {
+  const [selectedGreen, setSelectedGreen] = useState<GreenSwatch>(ALL_SWATCHES[5]); // defaults to #16a34a (--green-ready)
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [backdrop, setBackdrop] = useState<BackdropMode>('dark');
 
@@ -458,37 +459,14 @@ export default function GreensAndEmblemsClient() {
           : styles.stageDark;
 
   return (
-    <main className={styles.page}>
-      <header className={styles.heroHeader}>
-        <div className="container">
-          <div className={styles.heroInner}>
-            <h1 className={styles.heroTitle}>
-              Site Greens &amp; <span className={styles.heroTitleAccent}>Emblems</span>
-            </h1>
-            <p className={styles.heroSubtitle}>
-              Complete visual inventory of all 46 green values used across Hofherr Meat Co. (with live
-              &ldquo;Ready for pickup.&rdquo; headline preview) alongside every stamp, seal, die-cut
-              sticker, department icon, woodcut engraving, and crest on the site.
-            </p>
-            <nav aria-label="Catalog sections" className={styles.anchorRow}>
-              <a href="#site-greens" className={styles.anchorLink}>46 Site Greens</a>
-              <a href="#primary-stamps" className={styles.anchorLink}>19 Stamps &amp; Marks</a>
-              <a href="#quality-seals" className={styles.anchorLink}>12 Quality Seals</a>
-              <a href="#butcher-emblems" className={styles.anchorLink}>14 Butcher Dept Emblems</a>
-              <a href="#depot-emblems" className={styles.anchorLink}>12 Winnetka Depot Emblems</a>
-              <a href="#engravings-avatars" className={styles.anchorLink}>21 Engravings, Wax Seals &amp; Crests</a>
-            </nav>
-          </div>
-        </div>
-      </header>
-
-      {/* ─── SECTION 1: ALL SITE GREENS ─── */}
+    <>
+      {/* ─── SECTION: ALL SITE GREENS + LIVE READY-FOR-PICKUP TESTER ─── */}
       <section id="site-greens" aria-labelledby="site-greens-heading" className="section">
         <div className="container">
           <div className={styles.sectionStack}>
             <div className={styles.sectionHeader}>
               <h2 id="site-greens-heading" className={styles.sectionTitle}>
-                All 46 Green Colors On The Site
+                All {ALL_SWATCHES.length} Site Green Colors &amp; Ready-For-Pickup Tester
               </h2>
               <p className={styles.sectionDesc}>
                 Click any swatch card below to preview how that exact green looks on the pulsing
@@ -590,7 +568,7 @@ export default function GreensAndEmblemsClient() {
         </div>
       </section>
 
-      {/* ─── SECTION 2: PRIMARY BRAND MARKS, STAMPS & PROVENANCE SEALS ─── */}
+      {/* ─── SECTION: PRIMARY BRAND MARKS, STAMPS & PROVENANCE SEALS ─── */}
       <section id="primary-stamps" aria-labelledby="primary-stamps-heading" className="section">
         <div className="container">
           <div className={styles.sectionStack}>
@@ -667,7 +645,7 @@ export default function GreensAndEmblemsClient() {
         </div>
       </section>
 
-      {/* ─── SECTION 3: 12 PACKAGING QUALITY SEALS ─── */}
+      {/* ─── SECTION: 12 PACKAGING QUALITY SEALS ─── */}
       <section id="quality-seals" aria-labelledby="quality-seals-heading" className="section">
         <div className="container">
           <div className={styles.sectionStack}>
@@ -676,8 +654,9 @@ export default function GreensAndEmblemsClient() {
                 12 Butcher Counter &amp; Packaging Quality Seals
               </h2>
               <p className={styles.sectionDesc}>
-                Each counter spec emblem shown side-by-side in both its clean vector seal (`/icons/*.svg`)
-                and its die-cut parcel sticker (`/assets/identity/stickers/sticker-*.svg`).
+                Each counter spec emblem shown side-by-side in both its clean vector seal (
+                <code>/icons/*.svg</code>) and its die-cut parcel sticker (
+                <code>/assets/identity/stickers/sticker-*.svg</code>).
               </p>
             </div>
 
@@ -708,7 +687,7 @@ export default function GreensAndEmblemsClient() {
         </div>
       </section>
 
-      {/* ─── SECTION 4: 14 NORTHFIELD BUTCHER DEPARTMENT EMBLEMS ─── */}
+      {/* ─── SECTION: 14 NORTHFIELD BUTCHER DEPARTMENT EMBLEMS ─── */}
       <section id="butcher-emblems" aria-labelledby="butcher-emblems-heading" className="section">
         <div className="container">
           <div className={styles.sectionStack}>
@@ -749,7 +728,7 @@ export default function GreensAndEmblemsClient() {
         </div>
       </section>
 
-      {/* ─── SECTION 5: 12 WINNETKA DEPOT EMBLEMS ─── */}
+      {/* ─── SECTION: 12 WINNETKA DEPOT EMBLEMS ─── */}
       <section id="depot-emblems" aria-labelledby="depot-emblems-heading" className="section">
         <div className="container">
           <div className={styles.sectionStack}>
@@ -789,7 +768,7 @@ export default function GreensAndEmblemsClient() {
         </div>
       </section>
 
-      {/* ─── SECTION 6: WOODCUT ENGRAVINGS, WAX SEALS & HERITAGE AVATAR CRESTS ─── */}
+      {/* ─── SECTION: WOODCUT ENGRAVINGS, WAX SEALS & HERITAGE AVATAR CRESTS ─── */}
       <section id="engravings-avatars" aria-labelledby="engravings-avatars-heading" className="section">
         <div className="container">
           <div className={styles.sectionStack}>
@@ -825,6 +804,6 @@ export default function GreensAndEmblemsClient() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }

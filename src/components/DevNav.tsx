@@ -6,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { openAuthModal } from '@/components/AuthModal';
 import { useCartCount } from '@/context/CartContext';
-import { TOGGLE_ANIM_STUDIO_EVENT } from '@/lib/addToOrderAnimConfig';
 import { usePageTransition } from '@/components/PageTransition';
 import BorderColorsOverlay from '@/components/BorderColorsOverlay';
 import SectionGapsOverlay from '@/components/SectionGapsOverlay';
@@ -17,8 +16,6 @@ import styles from './dev-nav.module.css';
 type DevOverlayAction =
     | 'cart-filled'
     | 'cart-empty'
-    | 'shop-item-modal'
-    | 'shop-checkout-modal'
     | 'shop-restock-auth'
     | 'shop-restock-toast'
     | 'shop-max-stock-toast'
@@ -27,9 +24,6 @@ type DevOverlayAction =
     | 'auth-forgot'
     | 'chat-general'
     | 'chat-quote'
-    | 'cart-anim'
-    | 'mobile-menu'
-    | 'preloader-replay'
     | 'cut-popover'
     | 'admin-customer-modal'
     | 'admin-add-product-modal'
@@ -66,8 +60,6 @@ const SECTIONS: DevSection[] = [
         links: [
             { href: '/online-orders?devModal=cart-filled', icon: '🧺', label: 'Cart Drawer (Filled)', action: 'cart-filled' },
             { href: '/online-orders?devModal=cart-empty', icon: '🛒', label: 'Cart Drawer (Empty)', action: 'cart-empty' },
-            { href: '/online-orders?devModal=item', icon: '🥩', label: 'Add-to-Order Item Modal', action: 'shop-item-modal' },
-            { href: '/online-orders?devModal=checkout', icon: '💳', label: 'Checkout Modal (Pickup)', action: 'shop-checkout-modal' },
             { href: '/online-orders?devModal=restock-auth', icon: '🔔', label: 'Restock Alert Modal', action: 'shop-restock-auth' },
             { href: '/online-orders?devModal=restock-toast', icon: '✅', label: 'Restock Sent Toast', action: 'shop-restock-toast' },
             { href: '/online-orders?devModal=max-stock-toast', icon: '⚠️', label: 'Max Stock Alert Toast', action: 'shop-max-stock-toast' },
@@ -82,16 +74,13 @@ const SECTIONS: DevSection[] = [
             { href: '#auth-forgot', icon: '🔐', label: 'Auth Modal (Forgot Pass)', action: 'auth-forgot' },
             { href: '#chat', icon: '💬', label: 'Butcher Chat Popup', action: 'chat-general' },
             { href: '#chat-quote', icon: '🍖', label: 'Catering Quote Chat', action: 'chat-quote' },
-            { href: '#mobile-menu', icon: '📱', label: 'Mobile Fullscreen Drawer', action: 'mobile-menu' },
-            { href: '#cart-anim', icon: '🎬', label: 'Cart Fly Anim Studio', action: 'cart-anim' },
-            { href: '#preloader', icon: '🔥', label: 'Replay Fire Preloader', action: 'preloader-replay' },
         ],
     },
     {
         label: 'Modals & Popovers · Admin & Cuts',
         category: 'modals',
         links: [
-            { href: '/test-cut-collection?devModal=popover', icon: '🔪', label: 'Cut Quick-Order Popover', action: 'cut-popover' },
+            { href: '/dashboard?devModal=popover', icon: '🔪', label: 'Cut Quick-Order Popover', action: 'cut-popover' },
             { href: '/admin-dashboard/admin?devModal=customer', icon: '👤', label: 'Admin Customer Modal', action: 'admin-customer-modal' },
             { href: '/admin/inventory?devModal=add', icon: '📦', label: 'Admin Add Product Modal', action: 'admin-add-product-modal' },
             { href: '/inventory?devModal=add', icon: '🗃️', label: 'Inventory Add Item Modal', action: 'inventory-add-product-modal' },
@@ -116,7 +105,6 @@ const SECTIONS: DevSection[] = [
             { href: '/recipes', icon: '🍳', label: 'Recipes' },
             { href: '/recipes/sheets', icon: '📋', label: 'Recipe Sheets' },
             { href: '/press', icon: '📰', label: 'Press' },
-            { href: '/burn-transitions', icon: '🔥', label: '20 Burn Transitions' },
             { href: '/newsletter', icon: '✉️', label: 'Newsletter' },
         ],
     },
@@ -128,7 +116,6 @@ const SECTIONS: DevSection[] = [
             { href: '/checkout', icon: '💳', label: '2· Checkout Page' },
             { href: '/order/success', icon: '✅', label: '3· Order Success' },
             { href: '/dashboard', icon: '👤', label: 'Customer Dashboard' },
-            { href: '/dashboard/cut-collector', icon: '🥩', label: 'Cut Collector' },
             { href: '/login', icon: '🔑', label: 'Login Page' },
             { href: '/register', icon: '📝', label: 'Register Page' },
             { href: '/reset-password', icon: '🔐', label: 'Reset Password' },
@@ -144,6 +131,7 @@ const SECTIONS: DevSection[] = [
             { href: '/launch-checklist', icon: '🚀', label: 'All Features & What’s Left' },
             { href: '/admin-dashboard/admin', icon: '📊', label: 'Admin Dashboard' },
             { href: '/admin-dashboard/admin?tab=subscribers', icon: '✉️', label: 'Email Builder & Subscribers' },
+            { href: '/debug-email/preview', icon: '📧', label: 'Email Templates (Orders & Auth)' },
             { href: '/admin/social', icon: '📣', label: 'Social Studio (IG · FB · X)' },
             { href: '/product-identity/social', icon: '📱', label: 'Social Profiles (IG · FB · X)' },
             { href: '/google-preview', icon: '🔍', label: 'Google Profile & SERP Preview' },
@@ -156,18 +144,13 @@ const SECTIONS: DevSection[] = [
             { href: '/product-identity/print', icon: '🖨️', label: 'Print Kit' },
             { href: '/product-identity/sizes', icon: '📐', label: 'Sizes' },
             { href: '/product-identity/sizes/print', icon: '🖨️', label: 'Sizes · Print' },
-            { href: '/product-identity/social/admin', icon: '⚙️', label: 'Social · Admin' },
-            { href: '/greens-and-emblems', icon: '🟢', label: 'Greens & Emblems' },
             { href: '/design-system', icon: '🧩', label: 'Design System' },
             { href: '/showcase', icon: '🎯', label: 'Showcase' },
             { href: '/roadmap', icon: '🧭', label: 'Roadmap' },
             { href: '/fire-test', icon: '🔥', label: 'Fire Test' },
-            { href: '/burn-transition', icon: '🔥', label: 'Burn Transition Lab' },
             { href: '/press-test', icon: '📰', label: 'Press Ticker Test' },
             { href: '/map-test', icon: '📍', label: 'Map Test' },
             { href: '/order-tracker-test', icon: '🚚', label: 'Order Tracker Test' },
-            { href: '/test-cut-collection', icon: '🔪', label: 'Cut Collection Bench' },
-            { href: '/debug-email/preview', icon: '📧', label: 'Email Templates' },
         ],
     },
 ];
@@ -271,14 +254,10 @@ const DevNav = () => {
                 }
                 return;
             }
-            case 'shop-item-modal':
-            case 'shop-checkout-modal':
             case 'shop-restock-auth':
             case 'shop-restock-toast':
             case 'shop-max-stock-toast': {
                 const kindMap: Record<string, string> = {
-                    'shop-item-modal': 'item',
-                    'shop-checkout-modal': 'checkout',
                     'shop-restock-auth': 'restock-auth',
                     'shop-restock-toast': 'restock-toast',
                     'shop-max-stock-toast': 'max-stock-toast',
@@ -307,17 +286,8 @@ const DevNav = () => {
             case 'chat-quote':
                 window.dispatchEvent(new CustomEvent('open-chat', { detail: { subject: 'quote' } }));
                 return;
-            case 'cart-anim':
-                window.dispatchEvent(new CustomEvent(TOGGLE_ANIM_STUDIO_EVENT));
-                return;
-            case 'mobile-menu':
-                window.dispatchEvent(new CustomEvent('hofherr-open-mobile-menu'));
-                return;
-            case 'preloader-replay':
-                window.dispatchEvent(new CustomEvent('preloader-hud-command', { detail: { replay: true } }));
-                return;
             case 'cut-popover':
-                if (pathname === '/test-cut-collection' || pathname === '/dashboard/cut-collector') {
+                if (pathname === '/dashboard') {
                     window.dispatchEvent(new CustomEvent('hofherr-dev-cut-popover'));
                 } else {
                     navigateTo(link.href);

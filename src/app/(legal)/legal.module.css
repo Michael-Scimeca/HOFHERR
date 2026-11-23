@@ -13,7 +13,7 @@
 .hero {
     position: relative;
     overflow: hidden;
-    padding-block: var(--space-12);
+    padding: 62px 0 var(--space-12);
     background: var(--bg-2);
     background-image:
         radial-gradient(at 20% 40%, rgba(var(--red-rgb), 0.16) 0%, transparent 60%),

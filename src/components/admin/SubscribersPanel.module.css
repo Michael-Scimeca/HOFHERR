@@ -741,3 +741,92 @@
     border: 1px dashed var(--border);
     border-radius: var(--radius);
 }
+
+
+/* ── Inline 3-Cut Spotlight Editor ── */
+.highlightEditor {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.highlightEditorHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.highlightEditorTitle {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.highlightAddBtn {
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(var(--gold-rgb), 0.45);
+    background: rgba(var(--gold-rgb), 0.1);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.highlightAddBtn:hover {
+    background: rgba(var(--gold-rgb), 0.2);
+}
+
+.highlightEditorRow {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    border: 1px solid #27272a;
+    background: #0d0d10;
+}
+
+.highlightEditorTop {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.highlightTagInput {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: #141418;
+    color: #fde68a;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.highlightRemoveBtn {
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg-3);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.highlightRemoveBtn:hover {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.5);
+}
