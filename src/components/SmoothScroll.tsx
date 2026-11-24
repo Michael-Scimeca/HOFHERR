@@ -43,7 +43,6 @@ export default function SmoothScroll() {
 
         let rafId: number;
         function raf(time: number) {
-            clampLimitToFooter();
             lenis.raf(time);
             rafId = requestAnimationFrame(raf);
         }

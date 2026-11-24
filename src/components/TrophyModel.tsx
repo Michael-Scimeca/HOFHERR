@@ -1,7 +1,7 @@
 'use client';
 import { useRef, Suspense, useState, useEffect, useMemo, useSyncExternalStore } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF, Environment, Float } from '@react-three/drei';
+import { useGLTF, Environment, Lightformer, Float } from '@react-three/drei';
 import * as THREE from 'three';
 import { isWebGLSupported } from '@/lib/webglSupport';
 import WebGLErrorBoundary from '@/components/WebGLErrorBoundary';
@@ -147,8 +147,9 @@ export default function TrophyCanvas({ className, style }: { className?: string,
         >
             <WebGLErrorBoundary>
                 <Canvas
+                    dpr={[1, 1.5]}
                     camera={{ position: [0, 0, 5], fov: 45 }}
-                    gl={{ alpha: true, antialias: true }}
+                    gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
                     style={{ background: 'transparent' }}
                 >
                     {/* Ambient light for base visibility */}
@@ -178,10 +179,13 @@ export default function TrophyCanvas({ className, style }: { className?: string,
                         color="#f5e1c8" // slightly warm gold tint
                     />
 
-                    {/* Combine Environment and Trophy into ONE Suspense boundary!
-                    This guarantees the model CANNOT fade in until the lighting map is compiled. */}
+                    {/* Procedural studio environment (0 KB external HDRI download) */}
                     <Suspense fallback={null}>
-                        <Environment preset="city" />
+                        <Environment resolution={128}>
+                            <Lightformer form="rect" intensity={2.2} color="#fff7eb" position={[0, 6, 4]} scale={[10, 4, 1]} target={[0, 0, 0]} />
+                            <Lightformer form="rect" intensity={1.6} color="#cc0e1d" position={[6, 2, -4]} scale={[6, 6, 1]} target={[0, 0, 0]} />
+                            <Lightformer form="rect" intensity={1.4} color="#c5a255" position={[-6, 3, 2]} scale={[6, 5, 1]} target={[0, 0, 0]} />
+                        </Environment>
                         <Trophy onLoaded={() => setReady(true)} />
                     </Suspense>
                 </Canvas>

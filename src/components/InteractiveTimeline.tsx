@@ -28,8 +28,8 @@ const DEFAULT_TIMELINE_MEDIA: FallbackMedia[] = [
         imageAlt: 'Old-world village butcher working by lantern light with hanging cured cuts',
     },
     {
-        image: '/assets/timeline/chicago-south-side-butcher.jpg',
-        imageAlt: 'Early 1900s Chicago South Side butcher at the timber block under brass lamps',
+        image: '/assets/timeline/chicago-south-side-1900s.jpg',
+        imageAlt: 'Early 1900s Chicago South Side butcher in a flat cap and striped apron trimming beef on a maple block',
     },
     {
         image: '/assets/timeline/earning-his-stripes-knives.jpg',

@@ -1,11 +1,13 @@
 'use client';
 import { usePathname } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Footer.module.css';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
-import FooterMap from './FooterMap';
 import ContactLink from './ContactLink';
+
+const FooterMap = dynamic(() => import('./FooterMap'), { ssr: false });
 
 function phoneHref(phone: string) {
     return 'tel:' + phone.replace(/[^\d]/g, '');

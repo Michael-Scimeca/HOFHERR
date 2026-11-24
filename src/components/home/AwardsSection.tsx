@@ -1,5 +1,7 @@
+import dynamic from 'next/dynamic';
 import styles from './AwardsSection.module.css';
-import ModelViewer from '../ModelViewer';
+
+const ModelViewer = dynamic(() => import('../ModelViewer'), { ssr: false });
 
 const AWARDS = [
     {

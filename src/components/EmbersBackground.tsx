@@ -355,9 +355,9 @@ export default function EmberBackground() {
             }
         };
 
-        let animationId: number;
+        let animationId = 0;
         let lastFrameTime = 0;
-        const FRAME_INTERVAL = 1000 / 30;
+        const FRAME_INTERVAL = 1000 / 24;
         let paused = false;
 
         const loop = (now: number) => {
@@ -367,7 +367,9 @@ export default function EmberBackground() {
             lastFrameTime = now;
             draw(now);
         };
-        animationId = requestAnimationFrame(loop);
+        const startTimer = window.setTimeout(() => {
+            animationId = requestAnimationFrame(loop);
+        }, 900);
 
         const onVisibility = () => {
             paused = document.hidden;
@@ -381,6 +383,7 @@ export default function EmberBackground() {
         window.addEventListener('resize', onResize);
 
         return () => {
+            window.clearTimeout(startTimer);
             cancelAnimationFrame(animationId);
             window.removeEventListener('resize', onResize);
             window.removeEventListener('page-transition-exit', onExit);

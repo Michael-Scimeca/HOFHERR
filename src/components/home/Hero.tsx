@@ -29,6 +29,8 @@ export default function Hero() {
                     src="/assets/hero/hero-backdrop-mobile.jpg"
                     alt=""
                     aria-hidden="true"
+                    width={1280}
+                    height={720}
                     fetchPriority="high"
                     decoding="sync"
                     className={styles.heroMobileImg}

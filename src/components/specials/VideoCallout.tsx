@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import styles from './VideoCallout.module.css';
 
 interface VideoCalloutProps {
@@ -12,33 +12,59 @@ interface VideoCalloutProps {
 }
 
 export default function VideoCallout({ image, video, alt, title, sub }: VideoCalloutProps) {
+    const wrapperRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const [inView, setInView] = useState(false);
 
     useEffect(() => {
+        const el = wrapperRef.current;
+        if (!el || typeof IntersectionObserver === 'undefined') {
+            setInView(true);
+            return;
+        }
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0]?.isIntersecting) {
+                    setInView(true);
+                    observer.disconnect();
+                }
+            },
+            { rootMargin: '120px 0px' },
+        );
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (!inView) return;
         const vid = videoRef.current;
         if (!vid) return;
         vid.play().catch(() => { });
-    }, []);
+    }, [inView]);
 
     return (
-        <div className={styles.wrapper}>
+        <div ref={wrapperRef} className={styles.wrapper}>
             {/* Static image in normal flow — guarantees the box always has height */}
             <img
                 src={image}
                 alt={alt}
+                loading="lazy"
                 className={styles.posterImg}
             />
-            {/* Video overlays the image */}
-            <video
-                ref={videoRef}
-                src={video}
-                poster={image}
-                muted
-                playsInline
-                autoPlay
-                loop
-                className={styles.video}
-            />
+            {/* Video only loads and plays once scrolled near viewport */}
+            {inView && (
+                <video
+                    ref={videoRef}
+                    src={video}
+                    poster={image}
+                    preload="metadata"
+                    muted
+                    playsInline
+                    autoPlay
+                    loop
+                    className={styles.video}
+                />
+            )}
             {(title || sub) && (
                 <div className={styles.overlay}>
                     {title && <div className={styles.title}>{title}</div>}

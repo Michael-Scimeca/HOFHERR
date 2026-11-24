@@ -8,18 +8,23 @@ const TrophyCanvas = dynamic(() => import('@/components/TrophyModel'), { ssr: fa
 export default function LazyTrophy({ className }: { className?: string }) {
     const [shouldMount, setShouldMount] = useState(false);
 
-    // Defer Three.js + 3D GLB bundle evaluation until after initial paint / idle so TBT & LCP stay fast
+    // Defer Three.js + 3D GLB bundle evaluation until after initial paint & TBT window
     useEffect(() => {
-        const w = window as unknown as {
-            requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
-            cancelIdleCallback?: (id: number) => void;
+        let mounted = false;
+        const mount = () => {
+            if (mounted) return;
+            mounted = true;
+            setShouldMount(true);
         };
-        if (w.requestIdleCallback) {
-            const id = w.requestIdleCallback(() => setShouldMount(true), { timeout: 1400 });
-            return () => w.cancelIdleCallback?.(id);
-        }
-        const timer = window.setTimeout(() => setShouldMount(true), 800);
-        return () => window.clearTimeout(timer);
+        const timer = window.setTimeout(mount, 2600);
+        const onInteract = () => mount();
+        window.addEventListener('pointerdown', onInteract, { once: true, passive: true });
+        window.addEventListener('scroll', onInteract, { once: true, passive: true });
+        return () => {
+            window.clearTimeout(timer);
+            window.removeEventListener('pointerdown', onInteract);
+            window.removeEventListener('scroll', onInteract);
+        };
     }, []);
 
     if (!shouldMount) return null;

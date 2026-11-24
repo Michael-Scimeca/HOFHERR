@@ -11,8 +11,6 @@ import { getClient } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import ClientProviders from "@/components/ClientProviders";
 import Navbar from "@/components/Navbar";
-import AuthModal from "@/components/AuthModal";
-import GlobalCartDrawer from "@/components/GlobalCartDrawer";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -21,7 +19,9 @@ import PageTransition, { TransitionProvider } from "@/components/PageTransition"
 import { auth } from "@/auth";
 import ParallaxImages from "@/components/ParallaxImages";
 
-// ── Lazy-loaded heavy components (code-split from initial JS bundle) ──
+// ── Lazy-loaded heavy & interactive-only components (code-split from initial JS/CSS bundle) ──
+const AuthModal = dynamic(() => import("@/components/AuthModal"));
+const GlobalCartDrawer = dynamic(() => import("@/components/GlobalCartDrawer"));
 const EmbersBackground = dynamic(() => import("@/components/EmbersBackground"));
 const ChatWidgetWrapper = dynamic(() => import("@/components/ChatWidgetWrapper"));
 const DevNav = dynamic(() => import("@/components/DevNav"));
@@ -32,11 +32,13 @@ const yanone = Yanone_Kaffeesatz({
   subsets: ["latin"],
   variable: "--font-heading",
   weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-body",
+  display: "swap",
 });
 
 
@@ -192,6 +194,8 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${yanone.variable} ${inter.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
       </head>
       <body suppressHydrationWarning>
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (

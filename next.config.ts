@@ -38,14 +38,10 @@ const nextConfig: NextConfig = {
     '/admin/social/**': ['public/assets/*.{jpg,png,svg}', 'src/lib/social/fonts/**/*', 'node_modules/dictionary-en/index.{aff,dic}'],
   },
 
-  // Merge shared CSS chunks in production builds only so dev HMR always reloads CSS Modules cleanly
-  ...(process.env.NODE_ENV === 'production'
-    ? {
-        experimental: {
-          cssChunking: 'loose' as const,
-        },
-      }
-    : {}),
+  // Tree-shake heavy icon/chart/animation barrel imports to minimize unused JS
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@react-three/drei', 'recharts', 'gsap'],
+  },
 
   // Compress all static assets
   compress: true,
@@ -99,6 +95,13 @@ const nextConfig: NextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+        ],
+      },
+      // Long-lived immutable cache for static media (images, videos, 3D models, fonts)
+      {
+        source: '/(assets|images|video-clips|team|OG|3D)/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
       // Allow browser back/forward cache (bfcache) on public marketing pages while still preventing shared CDN caching

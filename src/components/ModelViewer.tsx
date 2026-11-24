@@ -1,7 +1,7 @@
 "use client";
 import { useRef, Suspense, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, Float } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, Lightformer, Float } from '@react-three/drei';
 import * as THREE from 'three';
 import { isWebGLSupported } from '@/lib/webglSupport';
 import WebGLErrorBoundary from '@/components/WebGLErrorBoundary';
@@ -134,14 +134,18 @@ export default function ModelViewer({ modelPath, className, style }: ModelViewer
     >
       {isVisible && webglOk && (
         <WebGLErrorBoundary>
-          <Canvas camera={{ position: [0, 0, 5], fov: 45 }} gl={{ alpha: true, antialias: true }} style={{ background: 'transparent' }}>
+          <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 5], fov: 45 }} gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }} style={{ background: 'transparent' }}>
             <ambientLight intensity={0.8} />
             <spotLight position={[0, 10, 0]} angle={0.5} penumbra={1} intensity={3} castShadow color="#ffffff" />
             <directionalLight position={[5, 2, -5]} intensity={2.5} color="#cc0e1d" />
             <directionalLight position={[-5, 5, 5]} intensity={1.5} color="#f5e1c8" />
             <OrbitControls enableZoom={false} enablePan={false} />
             <Suspense fallback={null}>
-              <Environment preset="city" />
+              <Environment resolution={128}>
+                <Lightformer form="rect" intensity={2.2} color="#fff7eb" position={[0, 6, 4]} scale={[10, 4, 1]} target={[0, 0, 0]} />
+                <Lightformer form="rect" intensity={1.6} color="#cc0e1d" position={[6, 2, -4]} scale={[6, 6, 1]} target={[0, 0, 0]} />
+                <Lightformer form="rect" intensity={1.4} color="#c5a255" position={[-6, 3, 2]} scale={[6, 5, 1]} target={[0, 0, 0]} />
+              </Environment>
               <Model modelPath={modelPath} onLoaded={() => setReady(true)} />
             </Suspense>
           </Canvas>
