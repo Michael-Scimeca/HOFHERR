@@ -104,7 +104,7 @@
 }
 
 .socialYelp {
-    color: #fca5a5;
+    color: var(--red-soft);
     border-color: rgba(211, 35, 35, 0.55);
     background: rgba(211, 35, 35, 0.18);
 }

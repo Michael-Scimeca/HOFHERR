@@ -220,14 +220,14 @@
 .ctaBtn {
     background: #fff;
     color: var(--red, #cc0e1d);
-    border-color: #ffffff1a;
+    border-color: var(--border);
     padding: 10px 24px;
 }
 
 .ctaBtn:hover {
     background: transparent;
     color: #fff;
-    border-color: #ffffff1a;
+    border-color: var(--border);
 }
 
 /* ── Responsive ── */

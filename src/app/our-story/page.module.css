@@ -125,8 +125,8 @@
     background: transparent;
     overflow: hidden;
     min-height: 680px;
-    border-top: 1px solid #ffffff1a;
-    border-bottom: 1px solid #ffffff1a;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     position: relative;
 }
 
@@ -242,7 +242,7 @@
 /* ── Founder header ── */
 .founderHeader {
     text-align: center;
-    padding: 96px var(--container-px) 64px;
+    padding: 64px var(--container-px);
 }
 
 .founderTitle {
@@ -264,8 +264,8 @@
 
 /* ── Team ── */
 .team {
-    padding: 96px 0 0;
-    border-top: 1px solid #ffffff1a;
+    padding: 64px 0 0;
+    border-top: 1px solid var(--border);
 }
 
 .teamHeader {
@@ -320,7 +320,7 @@
     overflow: hidden;
     height: 100vh;
     min-height: 500px;
-    border-top: 1px solid #ffffff1a;
+    border-top: 1px solid var(--border);
     position: sticky;
     top: 0;
 }
@@ -414,7 +414,7 @@
 
 /* ── Accolades ── */
 .accolades {
-    padding: 96px 0;
+    padding: 64px 0;
 }
 
 .accoladesHeader {
@@ -462,7 +462,7 @@
     background-position: center, center;
     background-size: 100% 100%, 380px auto;
     background-repeat: no-repeat, repeat;
-    padding: 72px 0;
+    padding: 64px 0;
     text-align: center;
     color: #f3ead8;
     position: relative;

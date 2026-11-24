@@ -469,3 +469,58 @@
     text-transform: uppercase;
     color: var(--fg-muted);
 }
+
+/* ── Updated Shared DRY Primitives showcase ── */
+.mainCol {
+    min-width: 0;
+}
+
+.primitivesStack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.flamePillRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.flameDemoButcher,
+.flameDemoDepot {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.flameDemoButcher {
+    background: var(--red);
+    box-shadow: var(--shadow-red);
+}
+
+.flameDemoDepot {
+    background: var(--depot-blue-bg);
+    border: 1px solid var(--depot-blue-light);
+    box-shadow: 0 4px 18px rgba(37, 99, 235, 0.35);
+}
+
+.inlineLink {
+    color: var(--gold-light);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.sectionHeaderPreview {
+    padding: var(--space-6);
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}

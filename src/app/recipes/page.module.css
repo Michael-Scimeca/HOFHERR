@@ -4,7 +4,7 @@
     width: 100%;
     max-width: calc(var(--max-w) + var(--container-px) * 2);
     margin: 0 auto;
-    padding: 96px var(--container-px);
+    padding: 64px var(--container-px);
     color: var(--text);
 }
 
@@ -135,7 +135,7 @@
 }
 
 .recipe:hover {
-    border-color: #ffffff1a;
+    border-color: var(--border);
 }
 
 .recipeHeader {
@@ -184,7 +184,7 @@
     gap: 8px 28px;
     margin: 6px 0 0;
     padding-top: 14px;
-    border-top: 1px dashed #ffffff1a;
+    border-top: 1px dashed var(--border);
 }
 
 .times div {
@@ -344,7 +344,7 @@
     gap: 24px;
     margin-bottom: 32px;
     padding: 24px;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     background: linear-gradient(135deg, #1b1111 0%, #0f0d0e 100%);
     color: var(--fg);
@@ -362,7 +362,7 @@
 .featuredMedia {
     border-radius: var(--radius);
     overflow: hidden;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     aspect-ratio: 4 / 3;
     background: #140f10;
 }
@@ -603,7 +603,7 @@
     min-height: 220px;
     border-radius: var(--radius);
     overflow: hidden;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     background: #140f10;
     box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
 }

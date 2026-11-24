@@ -24,7 +24,7 @@
     background-image:
         radial-gradient(at 20%, #80002026 0%, #0000 60%),
         radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
 }
 
 .headerTitleGroup {
@@ -80,7 +80,7 @@
 
 .headerBtn {
     background: #141414;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     color: #e5e5e5;
     padding: 10px 18px;
     border-radius: 10px;
@@ -137,7 +137,7 @@
     background: #111111;
     padding: 5px;
     border-radius: 12px;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
 }
 
 .storeSwitchBtn {
@@ -179,7 +179,7 @@
 .tabs {
     display: flex;
     gap: 8px;
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
     padding-bottom: 2px;
     /* on a phone the tab strip scrolls sideways inside itself instead of widening the page */
     max-width: 100%;
@@ -259,7 +259,7 @@
     padding: 23px 22px;
     /* 23px + 1px border = 24px from the card edge to its text */
     border-radius: 16px;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
@@ -340,7 +340,7 @@
 /* ── 🎛️ Master 4-Stage Progress Filter & Sorter Bar ── */
 .progressControlBar {
     background: linear-gradient(165deg, #151212 0%, #0d0d0d 100%);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 24px;
     margin-bottom: 24px;
@@ -405,7 +405,7 @@
     background: #0a0a0a;
     padding: 4px;
     border-radius: 12px;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
 }
 
 .progressSortBtn {
@@ -440,7 +440,7 @@
 
 .progressStageCardBtn {
     background: #111111;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 14px;
     padding: 12px 14px;
     display: flex;
@@ -453,7 +453,7 @@
 }
 
 .progressStageCardBtn:hover {
-    border-color: #ffffff1a;
+    border-color: var(--border);
     transform: translateY(-1px);
     background: #161616;
 }
@@ -738,7 +738,7 @@
     margin: 0;
     padding: 10px 12px;
     background: #141414;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -773,7 +773,7 @@
     gap: 8px;
     flex-wrap: wrap;
     padding-top: 8px;
-    border-top: 1px solid #ffffff1a;
+    border-top: 1px solid var(--border);
     margin-top: auto;
 }
 
@@ -822,7 +822,7 @@
 .actionBtnSecondary {
     background: #1b1b1b;
     color: #e5e5e5;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     padding: 10px 14px;
     border-radius: 8px;
     font-size: 11px;
@@ -857,7 +857,7 @@
 /* ── 🔪 Active In-Progress Orders Board ── */
 .inProgressSection {
     background: #111111;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 28px;
     margin-bottom: 96px;
@@ -873,7 +873,7 @@
 
 .stageFilterBtn {
     background: #181818;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     color: #a3a3a3;
     padding: 7px 14px;
     border-radius: 999px;
@@ -887,7 +887,7 @@
 
 .stageFilterBtn:hover {
     color: #fff;
-    border-color: #ffffff1a;
+    border-color: var(--border);
 }
 
 .stageFilterBtnActive {
@@ -910,7 +910,7 @@
 
 .stageGroupBlock {
     background: #0c0c0c;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-left: 4px solid var(--red, #cc0e1d);
     border-radius: 16px;
     padding: 20px;
@@ -932,7 +932,7 @@
     gap: 14px;
     flex-wrap: wrap;
     padding-bottom: 14px;
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
 }
 
 .stageGroupHeaderLeft {
@@ -985,7 +985,7 @@
 
 .stageGroupIsolateBtn {
     background: #171717;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     color: #e5e5e5;
     padding: 8px 14px;
     border-radius: 999px;
@@ -1011,7 +1011,7 @@
 
 .inProgressCard {
     background: #0c0c0c;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 20px;
     display: flex;
@@ -1022,7 +1022,7 @@
 }
 
 .inProgressCard:hover {
-    border-color: #ffffff1a;
+    border-color: var(--border);
     transform: translateY(-2px);
 }
 
@@ -1049,7 +1049,7 @@
     text-align: center;
     background: #171717;
     color: #666;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
 }
 
 .miniSegDone {
@@ -1080,7 +1080,7 @@
 .tableContainer {
     background: #111111;
     border-radius: 20px;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     overflow-x: auto;
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
     margin-bottom: 40px;
@@ -1103,7 +1103,7 @@
     align-items: center;
     flex-wrap: wrap;
     background: #0a0a0a;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 12px;
 }
 
@@ -1116,7 +1116,7 @@
 
 .filterPillBtn {
     background: transparent;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     color: #a3a3a3;
     font-size: 11px;
     font-weight: 700;
@@ -1130,7 +1130,7 @@
 
 .filterPillBtn:hover {
     color: #fff;
-    border-color: #ffffff1a;
+    border-color: var(--border);
 }
 
 .filterPillBtnActive {
@@ -1155,7 +1155,7 @@
     width: 100%;
     padding: 10px 14px;
     border-radius: 8px;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     background: #141414;
     color: #f5f5f4;
     font-size: 13px;
@@ -1187,7 +1187,7 @@
     color: #999;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
     background: #0d0d0d;
 }
 
@@ -1204,7 +1204,7 @@
     padding: 16px 20px;
     font-size: 13px;
     color: #e5e5e5;
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
     vertical-align: middle;
 }
 
@@ -1249,7 +1249,7 @@
     appearance: none;
     -webkit-appearance: none;
     background: #141414;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     color: inherit;
     font-family: inherit;
     font-size: 11px;
@@ -1298,7 +1298,7 @@
 .status_completed {
     background: rgba(255, 255, 255, 0.06);
     color: #a3a3a3;
-    border-color: #ffffff1a;
+    border-color: var(--border);
 }
 
 .status_cancelled {
@@ -1434,7 +1434,7 @@
 
 .deleteRestockBtn {
     background: transparent;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 6px;
     color: #e5e5e5;
     cursor: pointer;
@@ -1483,7 +1483,7 @@
 .chartCard {
     background: #111111;
     border-radius: 16px;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -1639,7 +1639,7 @@
 
 .modalContent {
     background: #111111;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 28px;
     width: 100%;
@@ -1655,7 +1655,7 @@
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 20px;
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
     padding-bottom: 16px;
 }
 
@@ -1696,7 +1696,7 @@
 .insightBox {
     padding: 12px;
     background: #171717;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 10px;
     font-size: 11px;
     color: #a3a3a3;
@@ -1715,7 +1715,7 @@
     font-family: var(--font-heading, "Yanone Kaffeesatz", sans-serif);
     font-size: 20px;
     text-transform: uppercase;
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
     padding-bottom: 10px;
     margin: 0 0 14px;
     color: #fff;
@@ -1731,7 +1731,7 @@
 
 .modalOrderCard {
     background: #161616;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     padding: 14px;
     border-radius: 12px;
 }
@@ -2122,7 +2122,7 @@
 }
 
 .trackerEtaReady {
-    color: #16a34a;
+    color: var(--green-success);
 }
 
 /* ── Customer Contact Strip at Top of Admin Order Tracker Card ── */
@@ -2304,7 +2304,7 @@
     min-height: 48px;
     padding: 0 12px;
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     overflow: hidden;
     color: #9e9e9e;
     cursor: pointer;
@@ -2381,7 +2381,7 @@
 }
 
 .trackerSegPickedUp:hover {
-    border-color: #16a34a;
+    border-color: var(--green-success);
     box-shadow: 0 0 22px rgba(34, 197, 94, 0.48);
 }
 
@@ -2415,7 +2415,7 @@
     grid-template-columns: 1fr 1.25fr;
     gap: 20px;
     padding-top: 16px;
-    border-top: 1px solid #ffffff1a;
+    border-top: 1px solid var(--border);
 }
 
 .trackerDetailMain {
@@ -2540,7 +2540,7 @@
     flex-direction: column;
     gap: 8px;
     padding-top: 12px;
-    border-top: 1px solid #ffffff1a;
+    border-top: 1px solid var(--border);
 }
 
 .adminCutsGrid {
@@ -2727,7 +2727,7 @@
 }
 
 .packItemLabel input {
-    accent-color: #16a34a;
+    accent-color: var(--green-success);
     width: 15px;
     height: 15px;
     cursor: pointer;

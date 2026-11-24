@@ -1,6 +1,6 @@
 import type { SanityClient } from 'next-sanity';
-import { HOW_TOS, TRIVIA, TRICKS, HASHTAGS } from '@/app/product-identity/social/copy';
-import { ANIMALS } from '@/app/product-identity/social/animals';
+import { HOW_TOS, TRIVIA, TRICKS, HASHTAGS } from '@/components/admin/social-kit/copy';
+import { ANIMALS } from '@/components/admin/social-kit/animals';
 import { RECIPES } from './recipes';
 import { DEFAULT_SETTINGS, type SocialContent, type SocialPost, type SocialSettings, type SocialWeek, type Slide } from './types';
 

@@ -75,6 +75,8 @@
 }
 
 .contentPane {
+    position: relative;
+    overflow: hidden;
     flex: 1 1 55%;
     background: var(--bg);
     min-width: 320px;
@@ -82,7 +84,22 @@
     padding-left: 48px;
 }
 
+.glowGold {
+    position: absolute;
+    top: -60px;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: rgba(197, 162, 85, 0.08);
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+}
+
 .contentInner {
+    position: relative;
+    z-index: 1;
     max-width: 640px;
     margin: 0 0 0 auto;
     padding: 62px 0 8vw; /* fixed top gap; was 4vw, which changed with window width */
@@ -254,7 +271,7 @@
         linear-gradient(180deg, rgba(18, 14, 11, 0.86) 0%, rgba(12, 9, 7, 0.9) 100%),
         url('/assets/identity/hofherr-wrapping-paper-tile-10-icons.svg');
     background-size: cover, 260px auto;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     overflow: hidden;
 }
 
@@ -353,7 +370,7 @@
 
 .howTo {
     background: rgba(0, 0, 0, 0.55);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 24px;
 }

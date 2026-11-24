@@ -4,7 +4,7 @@
     border-top: 1px solid rgba(74, 122, 66, 0.3);
     border-bottom: 1px solid rgba(74, 122, 66, 0.3);
     overflow: hidden;
-    padding: 96px 0;
+    padding: 64px 0;
 }
 
 .overlay {
@@ -33,7 +33,7 @@
     font-weight: 800;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #16a34a;
+    color: var(--green-success);
     margin-bottom: 12px;
 }
 

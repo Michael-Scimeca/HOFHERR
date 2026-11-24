@@ -56,7 +56,7 @@
 }
 
 .toggleBtnDepot:hover {
-    background: #234775;
+    background: var(--depot-blue-hover);
     border-color: var(--depot-blue-light, #3b82f6);
     color: #fff;
     box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35);
@@ -70,7 +70,7 @@
 }
 
 .toggleActiveDepot:hover {
-    background: #234775;
+    background: var(--depot-blue-hover);
     border-color: var(--depot-blue-light, #3b82f6);
     color: #fff;
 }

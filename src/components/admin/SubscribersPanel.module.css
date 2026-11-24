@@ -703,7 +703,7 @@
 .feedbackErr {
     background: rgba(var(--red-rgb), 0.16);
     border: 1px solid rgba(var(--red-rgb), 0.55);
-    color: #fca5a5;
+    color: var(--red-soft);
 }
 
 @media (max-width: 960px) {

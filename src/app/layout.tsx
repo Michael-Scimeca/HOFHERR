@@ -53,10 +53,12 @@ function resolveMetadataBase(): URL {
   }
 }
 
-export const metadata: Metadata = {
-  title: "Hofherr Meat Co. | Northfield's Premier Craft Butcher",
-  description: "Craft butchery in Northfield & Winnetka, IL. Order hand-cut USDA Prime steaks, whole-hog roasts, Italian beef, and BBQ catering online.",
-  keywords: [
+export async function generateMetadata(): Promise<Metadata> {
+  const defaultTitle = "Hofherr Meat Co. | Northfield's Premier Craft Butcher";
+  const defaultDescription =
+    "Craft butchery in Northfield & Winnetka, IL. Order hand-cut USDA Prime steaks, whole-hog roasts, Italian beef, and BBQ catering online.";
+  const defaultOgDesc = "Northfield's Premier Craft Butcher & BBQ Pitmasters";
+  const defaultKeywords = [
     "Hofherr Meat Co",
     "butcher shop Northfield IL",
     "craft butcher North Shore",
@@ -65,42 +67,79 @@ export const metadata: Metadata = {
     "BBQ catering Chicago North Shore",
     "whole pig roast",
     "house-made sausages",
-  ],
-  metadataBase: resolveMetadataBase(),
-  applicationName: "Hofherr Meat Co.",
-  authors: [{ name: "Hofherr Meat Co.", url: "https://hofherrmeatco.com" }],
-  creator: "Hofherr Meat Co.",
-  publisher: "Hofherr Meat Co.",
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+  ];
+
+  let cmsSeo: {
+    seoTitle?: string;
+    seoDescription?: string;
+    ogTitle?: string;
+    ogDescription?: string;
+    seoKeywords?: string[];
+    shopName?: string;
+  } | null = null;
+
+  try {
+    cmsSeo = await getClient(false).fetch(
+      `*[_type == "siteSettings"][0]{ seoTitle, seoDescription, ogTitle, ogDescription, seoKeywords, shopName }`,
+      {},
+      { next: { revalidate: 60 } }
+    );
+  } catch {
+    // Fall back cleanly to defaults if Sanity is unreachable
+  }
+
+  const siteName = cmsSeo?.shopName || "Hofherr Meat Co.";
+  const title = cmsSeo?.seoTitle || defaultTitle;
+  const description = cmsSeo?.seoDescription || defaultDescription;
+  const ogTitle = cmsSeo?.ogTitle || title;
+  const ogDescription = cmsSeo?.ogDescription || defaultOgDesc;
+  const keywords =
+    Array.isArray(cmsSeo?.seoKeywords) && cmsSeo.seoKeywords.length > 0
+      ? cmsSeo.seoKeywords
+      : defaultKeywords;
+
+  return {
+    title,
+    description,
+    keywords,
+    metadataBase: resolveMetadataBase(),
+    applicationName: siteName,
+    authors: [{ name: siteName, url: "https://hofherrmeatco.com" }],
+    creator: siteName,
+    publisher: siteName,
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  openGraph: {
-    siteName: "Hofherr Meat Co.",
-    type: "website",
-    locale: "en_US",
-    title: "Hofherr Meat Co. | Northfield's Premier Craft Butcher",
-    description: "Northfield's Premier Craft Butcher & BBQ Pitmasters",
-    images: [
-      {
-        url: "/OG/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Hofherr Meat Co. — Premium Butcher Shop, Northfield IL",
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
       },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
-};
+    },
+    openGraph: {
+      siteName,
+      type: "website",
+      locale: "en_US",
+      title: ogTitle,
+      description: ogDescription,
+      images: [
+        {
+          url: "/OG/og-image.jpg",
+          width: 1200,
+          height: 630,
+          alt: `${siteName} — Premium Butcher Shop, Northfield IL`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ogTitle,
+      description: ogDescription,
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",

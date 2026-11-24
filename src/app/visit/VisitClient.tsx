@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import ActionButton from '@/components/ActionButton';
 import { ThemedMap } from '@/components/FooterMap';
 import BurningDotCanvas from './BurningDotCanvas';
 import { onGoogleMapsAuthFailure, GOOGLE_MAPS_KEY } from '@/lib/googleMapsLoader';
@@ -217,14 +218,13 @@ export default function VisitClient() {
                             </div>
 
                             {/* CTA */}
-                            <Link
+                            <ActionButton
                                 href={`/online-orders?store=${loc.id}`}
-                                className={`btn-hit ${styles.heroShopBtn}`}
+                                variant={loc.id === 'depot' ? 'depot' : 'primary'}
+                                className={styles.heroShopBtn}
                             >
-                                <span className={`btn ${loc.id === 'depot' ? 'btn-depot' : 'btn-primary'}`}>
-                                    Shop {loc.name}
-                                </span>
-                            </Link>
+                                Shop {loc.name}
+                            </ActionButton>
                         </div>
                     </div>
                 </section>

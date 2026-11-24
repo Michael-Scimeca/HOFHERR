@@ -244,7 +244,7 @@
 .badgeBroken {
     background: rgba(239, 68, 68, 0.16);
     border: 1px solid rgba(239, 68, 68, 0.45);
-    color: #fca5a5;
+    color: var(--red-soft);
 }
 
 .badgeDead {
@@ -470,7 +470,7 @@
 }
 
 .countWarn { color: #fcd34d; }
-.countErr { color: #fca5a5; }
+.countErr { color: var(--red-soft); }
 
 /* ── 3. Interactive SVG Link Map ── */
 .graphCard {
@@ -732,7 +732,7 @@
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 12px;
     font-weight: 700;
-    color: #fca5a5;
+    color: var(--red-soft);
 }
 
 .outFrom {

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import PressTicker from '@/components/PressTicker';
 import { PRESS_ITEMS, IN_PRINT, PRESS_MEDIA_ASSETS } from '@/lib/press';
-import styles from '@/app/press/page.module.css';
+import styles from './PressSection.module.css';
 
 export default function PressSection() {
     const [featured, ...rest] = PRESS_ITEMS;

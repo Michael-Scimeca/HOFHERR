@@ -376,7 +376,7 @@
     border-radius: 20px;
     overflow: hidden;
     margin-bottom: 40px;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     aspect-ratio: 21 / 9;
     position: relative;
     -webkit-mask-image: -webkit-radial-gradient(white, black);
@@ -455,7 +455,7 @@
 
 /* ── Beyond BBQ — Brutalist numbered list ── */
 .beyondBbq {
-    padding: 80px 0;
+    padding: 64px 0;
     position: relative;
     z-index: 1;
 }
@@ -481,7 +481,7 @@
 }
 
 .brutalistList {
-    border-top: 1px solid #ffffff1a;
+    border-top: 1px solid var(--border);
 }
 
 .brutalistRow {
@@ -489,7 +489,7 @@
     align-items: center;
     gap: 32px;
     padding: 24px 16px;
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
     text-decoration: none;
     color: #fff;
     border-radius: 6px;
@@ -569,7 +569,7 @@
 
 .bbqHero {
     background: transparent;
-    padding: 80px 24px 48px;
+    padding: 64px 24px;
     text-align: center;
     position: relative;
     border: none;
@@ -641,8 +641,8 @@
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid #ffffff1a;
-    border-left: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
+    border-left: 1px solid var(--border);
     border-radius: 16px;
     padding: 30px 26px 34px;
     transition: transform 0.3s var(--ease-out), border-color 0.3s, background 0.3s;
@@ -661,7 +661,7 @@
 }
 
 .bbqCard:last-child {
-    border-right: 1px solid #ffffff1a;
+    border-right: 1px solid var(--border);
 }
 
 .bbqCard:hover {
@@ -683,7 +683,7 @@
     justify-content: space-between;
     margin-bottom: 22px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
 }
 
 .bbqCardTitle {
@@ -722,7 +722,7 @@
     padding: 10px 0 10px 20px;
     position: relative;
     line-height: 1.4;
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
     transition: color 0.15s;
 }
 
@@ -754,7 +754,7 @@
     background: #000;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 44px;
     display: flex;
@@ -830,7 +830,7 @@
     justify-content: space-between;
     align-items: center;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 16px 20px;
     gap: 16px;
@@ -838,11 +838,11 @@
 }
 
 .bbqPriceRow:nth-child(even) {
-    border-right: 1px solid #ffffff1a;
+    border-right: 1px solid var(--border);
 }
 
 .bbqPriceRow:nth-last-child(-n+2) {
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
 }
 
 .bbqPriceRow:hover {
@@ -876,7 +876,7 @@
     background-position: center, center;
     background-size: 100% 100%, 380px auto;
     background-repeat: no-repeat, repeat;
-    padding: 72px 24px;
+    padding: 64px 24px;
 }
 
 .newsletterInner {

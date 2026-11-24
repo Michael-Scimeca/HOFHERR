@@ -5,6 +5,7 @@ import Image from 'next/image';
 import styles from './Footer.module.css';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
 import FooterMap from './FooterMap';
+import ContactLink from './ContactLink';
 
 function phoneHref(phone: string) {
     return 'tel:' + phone.replace(/[^\d]/g, '');
@@ -34,7 +35,7 @@ export default function Footer() {
                             loading="eager"
                         />
                     </div>
-                    <p className={styles.tagline}>Premium, traceable meats. Custom cuts, rotisserie chicken, seasonal specials, and world-class catering — all from our shop in Northfield, IL.</p>
+                    <p className={styles.tagline}>Premium, traceable meats. Custom cuts, rotisserie chicken, seasonal specials, and world-class catering — from our Northfield butcher shop and The Depot in Winnetka, IL.</p>
                     <div className={styles.socials}>
                         <a href={s.instagram} target="_blank" rel="noreferrer" className={`${styles.social} ${styles.socialInstagram}`}>Instagram</a>
                         <a href={s.facebook} target="_blank" rel="noreferrer" className={`${styles.social} ${styles.socialFacebook}`}>Facebook</a>
@@ -46,30 +47,34 @@ export default function Footer() {
                     <div className={styles.col}>
                         <div className={styles.colTitle}>Order</div>
                         <Link href="/online-orders">Order Online</Link>
-                        <Link href="/specials">Specials</Link>
-                        <Link href="/online-orders">Custom Orders</Link>
-                        <Link href="/catering#build-your-package">Holiday Pre-Orders</Link>
+                        <Link href="/online-orders?store=butcher">The Butcher Shop</Link>
+                        <Link href="/online-orders?store=depot">The Depot</Link>
+                        <Link href="/specials">Weekly Specials</Link>
+                        <Link href="/gift-cards">Gift Cards</Link>
                     </div>
                     <div className={styles.col}>
                         <div className={styles.colTitle}>BBQ &amp; Catering</div>
-                        <Link href="/catering">Overview</Link>
-                        <Link href="/catering#build-your-package">BBQ Menu</Link>
+                        <Link href="/catering">Catering Overview</Link>
+                        <Link href="/bbq">BBQ Menu</Link>
+                        <Link href="/catering/holidays">Holiday Catering</Link>
                         <Link href="/catering#build-your-package">Pricing &amp; Quote</Link>
                         <Link href="/catering#beyond-bbq" className={styles.link}>Pig Roasts &amp; Events</Link>
                     </div>
                     <div className={styles.col}>
                         <div className={styles.colTitle}>Discover</div>
                         <Link href="/selections">Our Selections</Link>
-                        <Link href="/selections#cut-guide">Cut Guide</Link>
+                        <Link href="/cut-guide">Cut Guide</Link>
                         <Link href="/recipes">Recipes</Link>
-                        <Link href="/faq">FAQ</Link>
-                        <Link href="/our-story">Our Story</Link>
-                        <Link href="/our-story#press">Press</Link>
-                        <Link href="/jobs">Jobs</Link>
-                        <Link href="/gift-cards">Gift Cards</Link>
+                        <Link href="/recipes/sheets">Parcel Sheets</Link>
+                        <Link href="/our-story">Our Story &amp; Team</Link>
+                        <Link href="/our-story#press">Press &amp; Media</Link>
                     </div>
                     <div className={styles.col}>
-                        <div className={styles.colTitle}>Legal</div>
+                        <div className={styles.colTitle}>Visit &amp; Info</div>
+                        <Link href="/visit">Visit Us &amp; Hours</Link>
+                        <Link href="/faq">FAQ</Link>
+                        <Link href="/newsletter">Newsletter</Link>
+                        <Link href="/jobs">Careers &amp; Jobs</Link>
                         <Link href="/privacy">Privacy Policy</Link>
                         <Link href="/terms">Terms of Service</Link>
                     </div>
@@ -83,7 +88,7 @@ export default function Footer() {
                         <span>📞 <a href={phoneHref(s.phone)}>{s.phone}</a></span>
                         <span className={styles.emailWrap}>
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.emailIcon}><rect x="2" y="4" width="20" height="16" rx="2" /><polyline points="2,4 12,13 22,4" /></svg>
-                            <a href="mailto:butcher@hofherrmeatco.com">butcher@hofherrmeatco.com</a>
+                            <ContactLink kind="email" />
                         </span>
                     </div>
                     <div className={styles.locations}>

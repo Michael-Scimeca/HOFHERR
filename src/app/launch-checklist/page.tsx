@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { adminClient } from '@/sanity/adminClient';
 import LaunchChecklistClient, { type LaunchItem, type ManualTask } from './LaunchChecklistClient';
+import ShowcaseSection from './ShowcaseSection';
 import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -100,7 +101,7 @@ const ALL_FEATURE_CATEGORIES: FeatureCategory[] = [
     {
         id: 'brand-lab',
         title: 'Brand Identity, Social Profiles & Sales Lab',
-        route: '/product-identity/social',
+        route: '/admin-dashboard/admin?tab=subscribers',
         routeLabel: 'Open Social Profiles →',
         features: [
             { name: 'Standalone Social Profiles Kit (IG · FB · X)', detail: 'Editable avatars, banners, posts, bios, captions, and 1-click full-res PNG downloads.', status: 'live' },
@@ -138,11 +139,11 @@ const VERIFIED_GROUPS: { title: string; routes: { label: string; href: string; n
         routes: [
             { label: 'Admin Console', href: '/admin-dashboard/admin', note: 'Live orders, SLA alerts, slot capacity, dark-mode Recharts analytics, restock requests' },
             { label: 'Email Builder & Subscribers', href: '/admin-dashboard/admin?tab=subscribers', note: 'Branded dark HTML emails, 3-Cut Spotlight, Depot/Butcher QR Quick-Order, Resend auto-schedule' },
-            { label: 'Social Studio (IG · FB · X)', href: '/admin/social', note: '45 seeded ideas, live editable Facebook Feed preview, HTML/CSS recipe posters, Auto-Post toggle' },
+            { label: 'Social Studio (IG · FB · X)', href: '/admin-dashboard/admin?tab=subscribers', note: '45 seeded ideas, live editable Facebook Feed preview, HTML/CSS recipe posters, Auto-Post toggle' },
             { label: 'Admin Inventory', href: '/admin/inventory', note: 'Live Sanity product stock & pricing controls' },
             { label: 'Customer Dashboard', href: '/dashboard', note: 'Order rewards, 7-Animal Mastery, restock alerts (admin test buttons hidden from customers)' },
             { label: 'Sales Psychology', href: '/sales-psychology', note: '14 conversion studies & interactive steak/decoy simulators' },
-            { label: 'Social Profiles & Google SERP', href: '/product-identity/social', note: 'IG/FB/X profile mockups, downloadable PNGs & /google-preview' },
+            { label: 'Social Profiles & Google SERP', href: '/admin-dashboard/admin?tab=subscribers', note: 'IG/FB/X profile mockups, downloadable PNGs & /google-preview' },
         ],
     },
 ];
@@ -156,8 +157,8 @@ const MANUAL_TASKS: ManualTask[] = [
     {
         id: 'monday-special',
         title: 'Replace [Special name] & [price] on Monday’s Weekly Special post',
-        detail: 'Click directly on the caption and graphic text in /admin/social to enter this week’s real special before turning Auto-Post on.',
-        href: '/admin/social',
+        detail: 'Click directly on the caption and graphic text in the Admin Subscribers & Social Studio tab to enter this week’s real special before turning Auto-Post on.',
+        href: '/admin-dashboard/admin?tab=subscribers',
         hrefLabel: 'Edit in Social Studio →',
     },
     {
@@ -266,7 +267,7 @@ export default async function LaunchChecklistPage() {
             envSnippet: `META_PAGE_ID=\nMETA_IG_USER_ID=\nMETA_PAGE_ACCESS_TOKEN=`,
             externalHref: 'https://developers.facebook.com/apps/',
             externalLabel: 'Meta Developers ↗',
-            actionHref: '/admin/social',
+            actionHref: '/admin-dashboard/admin?tab=subscribers',
             actionLabel: 'Social Studio →',
         },
         {
@@ -283,7 +284,7 @@ export default async function LaunchChecklistPage() {
             envSnippet: `X_API_KEY=\nX_API_SECRET=\nX_ACCESS_TOKEN=\nX_ACCESS_SECRET=`,
             externalHref: 'https://developer.x.com/en/portal/dashboard',
             externalLabel: 'X Developer Portal ↗',
-            actionHref: '/admin/social',
+            actionHref: '/admin-dashboard/admin?tab=subscribers',
             actionLabel: 'Social Studio →',
         },
         {
@@ -456,6 +457,8 @@ export default async function LaunchChecklistPage() {
                     </div>
                 </div>
             </section>
+
+            <ShowcaseSection />
         </main>
     );
 }

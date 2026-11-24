@@ -1,7 +1,7 @@
 :root {
     --dash-bg: var(--bg);
     --card-bg: var(--bg-2);
-    --card-border: 1px solid #ffffff1a;
+    --card-border: 1px solid var(--border);
     --accent-red: var(--red);
     --accent-gold: var(--red-light);
     --text-primary: var(--text);
@@ -592,7 +592,7 @@
 }
 
 .giftCardCard:hover {
-    border-color: #ffffff1a;
+    border-color: var(--border);
     box-shadow: 0 12px 40px rgba(209, 72, 54, 0.5);
     transform: translateY(-3px);
 }
@@ -917,7 +917,7 @@
 }
 
 .specialBadge[data-badge="new"] {
-    background: #16a34a;
+    background: var(--green-success);
 }
 
 .specialBadge[data-badge="hot-deal"] {
@@ -1036,7 +1036,7 @@
 
 .buyAgainCard {
     background: var(--card-bg);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 20px;
     display: flex;
@@ -1161,7 +1161,7 @@
     position: relative;
     background: var(--card-bg);
     margin-bottom: 24px;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     padding-top: 28px;
 }
 
@@ -2032,7 +2032,7 @@
 }
 
 .dashOrbitalPartial .dashOrbitalCount {
-    color: #fca5a5;
+    color: var(--red-soft);
 }
 
 .dashOrbitalTooltip {
@@ -2489,7 +2489,7 @@
     font-family: var(--font-mono, monospace);
     font-size: 9.5px;
     font-weight: 800;
-    color: #16a34a;
+    color: var(--green-success);
     background: rgba(34, 197, 94, 0.16);
     border: 1px solid rgba(22, 163, 74, 0.45);
     padding: 1px 6px;
@@ -2916,7 +2916,7 @@
     border-radius: 6px;
     font-size: 12px;
     font-weight: 600;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     cursor: pointer;
     background: transparent;
     color: var(--text-secondary);
@@ -3110,7 +3110,7 @@
 }
 
 .liveTrackerEtaValueGreen {
-    color: #16a34a;
+    color: var(--green-success);
 }
 
 .liveTrackerBar {
@@ -3212,7 +3212,7 @@
 }
 
 .liveSegPickedUp:hover {
-    border-color: #16a34a;
+    border-color: var(--green-success);
     box-shadow: 0 0 22px rgba(34, 197, 94, 0.48);
 }
 

@@ -94,7 +94,7 @@
     max-width: var(--max-w, 1400px) !important;
     aspect-ratio: 16 / 9;
     border-radius: 20px;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     box-shadow: var(--shadow-lg);
     overflow: hidden;
     z-index: 101;
@@ -183,7 +183,7 @@
     height: 40px;
     background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(8px);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 50%;
     color: #fff;
     display: flex;

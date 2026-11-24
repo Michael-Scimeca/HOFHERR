@@ -1,5 +1,5 @@
 .root {
-    padding: 96px 0;
+    padding: 64px 0 32px;
     overflow: hidden;
     position: relative;
 }
@@ -35,6 +35,15 @@
     text-transform: uppercase;
     margin: 0;
     line-height: 1;
+}
+
+.lead {
+    max-width: 660px;
+    margin: 16px auto 0;
+    font-size: var(--text-base);
+    color: var(--fg-3);
+    line-height: 1.7;
+    text-wrap: pretty;
 }
 
 /* ── Canvas: relative container that holds the SVG + absolute cards ── */
@@ -88,10 +97,10 @@
     top: var(--row-top, 0%);
     left: 0;
     right: 0;
-    transform: translateY(-28px);
+    transform: translateY(0);
     display: grid;
     grid-template-columns: 1fr 80px 1fr;
-    align-items: center;
+    align-items: start;
     z-index: 3;
     pointer-events: none;
 }
@@ -221,25 +230,142 @@
 
 .cardTitle {
     font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    font-size: clamp(1.55rem, 2.5vw, 2.15rem);
     font-weight: 700;
     color: var(--fg);
     text-transform: uppercase;
-    margin: 0 0 10px;
-    line-height: 1.1;
+    margin: 0 0 12px;
+    line-height: 1.05;
+    letter-spacing: 0.02em;
 }
 
 .cardBody {
     font-size: var(--text-sm);
-    color: rgba(255, 255, 255, 0.55);
-    line-height: 1.75;
+    color: rgba(244, 239, 230, 0.86);
+    line-height: 1.72;
     margin: 0;
+}
+
+/* ── Firelight Rim (Scroll-linked ember spotlight radiating from the flame node) ── */
+.cardFirelight {
+    position: relative;
+    overflow: hidden;
+    background: rgba(16, 14, 16, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.72);
+    transition: border-color 0.45s ease, box-shadow 0.45s ease;
+}
+
+.cardFirelightGlow {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    will-change: opacity;
+}
+
+.cardFirelight > :not(.cardFirelightGlow) {
+    position: relative;
+    z-index: 1;
+}
+
+.cardLeft .cardFirelightGlow {
+    background: radial-gradient(circle at 6% 12%, rgba(255, 110, 22, 0.42) 0%, rgba(204, 28, 18, 0.18) 34%, transparent 62%);
+}
+
+.cardRight .cardFirelightGlow {
+    background: radial-gradient(circle at 94% 12%, rgba(255, 110, 22, 0.42) 0%, rgba(204, 28, 18, 0.18) 34%, transparent 62%);
+}
+
+.cardFirelightLit {
+    border-color: rgba(255, 110, 35, 0.45);
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.75), 0 0 34px rgba(204, 14, 29, 0.22);
+}
+
+/* ── Paired Editorial Photograph (Feathered Fade) ── */
+.mediaCard {
+    position: relative;
+    width: 100%;
+    max-width: 660px;
+    height: 350px;
+    margin: -36px 0 0;
+    background: transparent;
+    opacity: 0;
+    isolation: isolate;
+}
+
+.mediaFrame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+    -webkit-mask-image:
+        linear-gradient(90deg, transparent 0%, #000 20%, #000 80%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+        linear-gradient(90deg, transparent 0%, #000 20%, #000 80%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
+    mask-composite: intersect;
+}
+
+.mediaImg {
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.65s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.mediaCard:hover .mediaImg {
+    transform: scale(1.05);
+}
+
+.mediaVignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        ellipse 78% 76% at 50% 48%,
+        transparent 45%,
+        rgba(0, 0, 0, 0.48) 78%,
+        rgba(0, 0, 0, 0.92) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+}
+
+.mediaCaption {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fg);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95);
+    white-space: nowrap;
+}
+
+.mediaCaptionIndex {
+    color: var(--gold, #c5a255);
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
     .root {
         padding: 64px 0;
+    }
+
+    .mediaCard {
+        max-width: 440px;
+        height: 240px;
     }
 }
 
@@ -250,14 +376,25 @@
 
     .row {
         grid-template-columns: 48px 1fr;
-        grid-template-areas: "center card";
+        grid-template-areas:
+            "center media"
+            "center card";
+        row-gap: 10px;
+        align-items: start;
     }
 
     .slotLeft,
     .slotRight {
-        grid-area: card;
         padding: 0 0 0 12px;
         justify-content: flex-start;
+    }
+
+    .slotMedia {
+        grid-area: media;
+    }
+
+    .slotCard {
+        grid-area: card;
     }
 
     .nodeCenter {
@@ -270,6 +407,16 @@
         height: 56px;
     }
 
+    .mediaCard {
+        max-width: 100%;
+        height: 156px;
+        margin: 0;
+    }
+
+    .card {
+        padding: 16px 18px;
+    }
+
     .cardLeft,
     .cardRight {
         text-align: left;
@@ -280,61 +427,15 @@
 @media (prefers-reduced-motion: reduce) {
     .nodeCircle,
     .nodeVideo,
-    .card {
+    .card,
+    .mediaCard,
+    .mediaImg {
         transition: none;
     }
 
     .nodeVideo {
         transform: none;
     }
-}
-
-/* ── Live Flame Style Switcher ── */
-.flameSwitcher {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 24px;
-}
-
-.flameBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--bg-2);
-    color: var(--fg-muted);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: border-color 0.18s var(--ease-out), color 0.18s var(--ease-out), background 0.18s var(--ease-out);
-}
-
-.flameBtn:hover {
-    color: var(--fg);
-    border-color: var(--gold);
-}
-
-.flameBtnActive {
-    background: var(--red);
-    border-color: var(--red);
-    color: #fff;
-}
-
-.flameBtnActive:hover {
-    color: #fff;
-    border-color: var(--red);
-}
-
-.flameNum {
-    font-family: "Yanone Kaffeesatz", "Yanone Kaffeesatz Fallback", sans-serif;
-    font-size: 14px;
-    letter-spacing: 0.04em;
-    opacity: 0.85;
 }
 
 /* ── 60fps Flame Overlay Canvas ── */

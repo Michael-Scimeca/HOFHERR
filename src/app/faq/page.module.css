@@ -40,7 +40,7 @@
 
 /* ── Section ── */
 .faqSection {
-    padding: 96px 0;
+    padding: 64px 0;
 }
 
 /* ── Editorial Split Layout ── */
@@ -185,7 +185,7 @@
     background-position: center, center;
     background-size: 100% 100%, 380px auto;
     background-repeat: no-repeat, repeat;
-    padding: 96px 24px;
+    padding: 64px 24px;
     text-align: center;
     color: #f3ead8;
 }

@@ -1,20 +1,70 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import {
-    TIMELINE_FLAME_OPTIONS,
+    DEFAULT_TIMELINE_FLAME_TUNING,
     TimelineFlameRenderer,
     type PathSample,
-    type TimelineFlameStyle,
 } from './TimelineFlameEngine';
 import styles from './InteractiveTimeline.module.css';
 
-type TimelineEvent = { era: string; title: string; body?: string | null; video?: string | null };
+type TimelineEvent = {
+    era: string;
+    title: string;
+    body?: string | null;
+    video?: string | null;
+    image?: string | null;
+    imageAlt?: string | null;
+    archival?: boolean;
+};
 type Props = { events: TimelineEvent[] };
+
+type FallbackMedia = { image: string; imageAlt: string; archival?: boolean };
+
+const DEFAULT_TIMELINE_MEDIA: FallbackMedia[] = [
+    {
+        image: '/assets/timeline/old-country-butcher.jpg',
+        imageAlt: 'Old-world village butcher working by lantern light with hanging cured cuts',
+    },
+    {
+        image: '/assets/timeline/chicago-south-side-butcher.jpg',
+        imageAlt: 'Early 1900s Chicago South Side butcher at the timber block under brass lamps',
+    },
+    {
+        image: '/assets/timeline/earning-his-stripes-knives.jpg',
+        imageAlt: 'Butcher drawing a hand-forged knife from a wooden roll beside an open fire',
+    },
+    {
+        image: '/assets/timeline/northfield-shop-dusk.jpg',
+        imageAlt: 'Hofherr Meat Co. flagship butcher shop on Happ Road in Northfield at dusk',
+    },
+    {
+        image: '/assets/timeline/the-depot-winnetka-dusk.jpg',
+        imageAlt: 'Sean Hofherr at The Depot red-awning window inside the historic Winnetka train station at dusk',
+    },
+];
+
+function resolveEventMedia(event: TimelineEvent, index: number): FallbackMedia {
+    if (event.image) {
+        return {
+            image: event.image,
+            imageAlt: event.imageAlt || `${event.era} — ${event.title}`,
+            archival: event.archival,
+        };
+    }
+    const lower = `${event.era} ${event.title}`.toLowerCase();
+    if (lower.includes('old country') || lower.includes('1800')) return DEFAULT_TIMELINE_MEDIA[0];
+    if (lower.includes('south side') || lower.includes('1900')) return DEFAULT_TIMELINE_MEDIA[1];
+    if (lower.includes('stripes') || lower.includes('2009')) return DEFAULT_TIMELINE_MEDIA[2];
+    if (lower.includes('opens') && !lower.includes('depot')) return DEFAULT_TIMELINE_MEDIA[3];
+    if (lower.includes('depot') || lower.includes('2025')) return DEFAULT_TIMELINE_MEDIA[4];
+    return DEFAULT_TIMELINE_MEDIA[index % DEFAULT_TIMELINE_MEDIA.length];
+}
 
 /* ── Layout constants (SVG coordinate space) ── */
 const SVG_W = 1000;
-const STEP_H = 300;
+const STEP_H = 420;
 const LEFT_X = 36;    // outer edge of left card column (3.6%)
 const RIGHT_X = 964;  // outer edge of right card column (96.4%)
 
@@ -25,22 +75,16 @@ export default function InteractiveTimeline({ events }: Props) {
     const pathRef = useRef<SVGPathElement>(null);
     const flameCanvasRef = useRef<HTMLCanvasElement>(null);
     const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const firelightRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const mediaRefs = useRef<(HTMLElement | null)[]>([]);
     const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
-    const [flameStyle, setFlameStyle] = useState<TimelineFlameStyle>('preloader');
-    const flameStyleRef = useRef<TimelineFlameStyle>('preloader');
     const drawnPxRef = useRef(0);
     const pathSamplesRef = useRef<PathSample[]>([]);
     const flameRendererRef = useRef<TimelineFlameRenderer | null>(null);
 
-    const handleSelectFlameStyle = (next: TimelineFlameStyle) => {
-        flameStyleRef.current = next;
-        flameRendererRef.current?.reset();
-        setFlameStyle(next);
-    };
-
-    const totalH = events.length * STEP_H + 60;
+    const totalH = Math.max(STEP_H, (events.length - 1) * STEP_H + 370);
 
     /* ── Node positions ── */
     const nodes = events.map((_, i) => ({
@@ -78,12 +122,21 @@ export default function InteractiveTimeline({ events }: Props) {
                     nodes.forEach((_, i) => {
                         const nodeEl = nodeRefs.current[i];
                         const card = cardRefs.current[i];
+                        const glow = firelightRefs.current[i];
+                        const media = mediaRefs.current[i];
                         if (nodeEl) {
                             gsap.set(nodeEl, { opacity: 1, scale: 1 });
                             nodeEl.classList.add(styles.nodeCircleLit);
                         }
                         if (card) {
                             gsap.set(card, { opacity: 1, x: 0, y: 0 });
+                            card.classList.add(styles.cardFirelightLit);
+                        }
+                        if (glow) {
+                            gsap.set(glow, { opacity: 1 });
+                        }
+                        if (media) {
+                            gsap.set(media, { opacity: 1, x: 0, y: 0 });
                         }
                     });
                     return;
@@ -199,7 +252,34 @@ export default function InteractiveTimeline({ events }: Props) {
                     drawnPxRef.current = drawnPx;
 
                     for (let i = 0; i < nodes.length; i++) {
-                        const shouldLight = drawnPx >= metrics.contactLengths[i];
+                        const contact = metrics.contactLengths[i];
+                        const cardEl = cardRefs.current[i];
+                        const glowEl = firelightRefs.current[i];
+                        const mediaEl = mediaRefs.current[i];
+                        const isLast = i === nodes.length - 1;
+                        const firelight =
+                            i === 0
+                                ? Math.max(0, Math.min(1, (drawnPx - 120) / 280))
+                                : isLast
+                                  ? Math.max(0, Math.min(1, (drawnPx - (contact - 160)) / 180))
+                                  : Math.max(0, Math.min(1, (drawnPx - contact) / 240));
+                        const mediaOpacity =
+                            i === 0
+                                ? Math.max(0, Math.min(1, (drawnPx - 40) / 300))
+                                : isLast
+                                  ? Math.max(0, Math.min(1, (drawnPx - (contact - 200)) / 220))
+                                  : Math.max(0, Math.min(1, (drawnPx - (contact - 60)) / 300));
+                        if (glowEl) {
+                            glowEl.style.opacity = firelight.toFixed(3);
+                        }
+                        if (mediaEl) {
+                            mediaEl.style.opacity = mediaOpacity.toFixed(3);
+                        }
+                        if (cardEl) {
+                            cardEl.classList.toggle(styles.cardFirelightLit, firelight > 0.3);
+                        }
+
+                        const shouldLight = drawnPx >= contact;
                         if (shouldLight === litStates[i]) continue;
 
                         litStates[i] = shouldLight;
@@ -221,10 +301,13 @@ export default function InteractiveTimeline({ events }: Props) {
 
                 computePathMetrics();
 
-                /* ── 1. Draw the path — slowed scroll progression (0.9 × 0.8 = 0.72x speed) ── */
+                /* ── 1. Draw the path — keep top start unchanged, finish sooner at the last milestone ── */
                 const firstNodeY = nodes[0].y;
                 const lastNodeY = nodes[nodes.length - 1].y;
-                const slowedEndY = Math.round(firstNodeY + (lastNodeY - firstNodeY) / 0.72);
+                const finishEndY = Math.max(firstNodeY + 200, lastNodeY - 80);
+                const startOffset = firstNodeY - 300;
+                const startTrigger =
+                    startOffset >= 0 ? `top+=${startOffset}px 55%` : `top-=${Math.abs(startOffset)}px 55%`;
 
                 let pathTween: ReturnType<typeof gsap.fromTo> | null = null;
 
@@ -245,9 +328,9 @@ export default function InteractiveTimeline({ events }: Props) {
                         },
                         scrollTrigger: {
                             trigger: canvasRef.current,
-                            start: `top+=${firstNodeY}px 90%`,
-                            end: `clamp(top+=${slowedEndY}px 90%)`,
-                            scrub: 0.55,
+                            start: startTrigger,
+                            end: `clamp(top+=${finishEndY}px 62%)`,
+                            scrub: 0.85,
                             invalidateOnRefresh: true,
                             onRefreshInit: () => {
                                 computePathMetrics();
@@ -367,7 +450,7 @@ export default function InteractiveTimeline({ events }: Props) {
                     canvas.height,
                     pathSamplesRef.current,
                     drawnPxRef.current,
-                    flameStyleRef.current,
+                    DEFAULT_TIMELINE_FLAME_TUNING,
                     now / 1000
                 );
             }
@@ -389,22 +472,11 @@ export default function InteractiveTimeline({ events }: Props) {
                 <div className={styles.header}>
                     <span className={styles.eyebrow}><span>—</span> Our History <span>—</span></span>
                     <h2 id="timeline-heading" className={styles.title}>A Century of Craft</h2>
-                    <div className={styles.flameSwitcher} role="tablist" aria-label="Choose timeline line flame style">
-                        {TIMELINE_FLAME_OPTIONS.map((opt) => (
-                            <button
-                                key={opt.id}
-                                type="button"
-                                role="tab"
-                                aria-selected={flameStyle === opt.id}
-                                className={`${styles.flameBtn} ${flameStyle === opt.id ? styles.flameBtnActive : ''}`}
-                                onClick={() => handleSelectFlameStyle(opt.id)}
-                                title={opt.desc}
-                            >
-                                <span className={styles.flameNum}>{opt.num}</span>
-                                <span>{opt.label}</span>
-                            </button>
-                        ))}
-                    </div>
+                    <p className={styles.lead}>
+                        Four generations of butchery — from a German village block to Chicago&apos;s South Side
+                        stockyards, and on to our Northfield butcher counter and The Depot in Winnetka. Scroll to
+                        follow the fire through more than 120 years of Hofherr family craft.
+                    </p>
                 </div>
 
                 {/* ── Canvas ── */}
@@ -473,9 +545,48 @@ export default function InteractiveTimeline({ events }: Props) {
                     {/* Real-time 60fps Canvas Flame Overlay locked to the burning line tip */}
                     <canvas ref={flameCanvasRef} className={styles.flameCanvas} aria-hidden="true" />
 
-                    {/* HTML cards — positioned at each node */}
+                    {/* HTML cards & paired archival/shop photographs — positioned at each node */}
                     {nodes.map((node, i) => {
                         const topPct = (node.y / totalH) * 100;
+                        const media = resolveEventMedia(events[i], i);
+                        const cardEl = (
+                            <div
+                                ref={el => { cardRefs.current[i] = el; }}
+                                className={`${styles.card} ${node.isLeft ? styles.cardLeft : styles.cardRight} ${styles.cardFirelight}`}
+                            >
+                                <div
+                                    ref={el => { firelightRefs.current[i] = el; }}
+                                    className={styles.cardFirelightGlow}
+                                    aria-hidden="true"
+                                />
+                                <div className={styles.cardEra}>{events[i].era}</div>
+                                <h3 className={styles.cardTitle}>{events[i].title}</h3>
+                                {events[i].body && <p className={styles.cardBody}>{events[i].body}</p>}
+                            </div>
+                        );
+                        const mediaEl = (
+                            <figure
+                                ref={el => { mediaRefs.current[i] = el; }}
+                                className={styles.mediaCard}
+                            >
+                                <div className={styles.mediaFrame}>
+                                    <Image
+                                        src={media.image}
+                                        alt={media.imageAlt}
+                                        fill
+                                        sizes="(max-width: 700px) 90vw, 680px"
+                                        className={styles.mediaImg}
+                                    />
+                                    <div className={styles.mediaVignette} aria-hidden="true" />
+                                </div>
+                                <figcaption className={styles.mediaCaption}>
+                                    <span className={styles.mediaCaptionIndex}>
+                                        {String(i + 1).padStart(2, '0')}
+                                    </span>
+                                    <span>{events[i].era}</span>
+                                </figcaption>
+                            </figure>
+                        );
                         return (
                             <div
                                 key={events[i].title}
@@ -483,34 +594,16 @@ export default function InteractiveTimeline({ events }: Props) {
                                 style={{ '--row-top': `${topPct}%` } as React.CSSProperties}
                             >
                                 {/* Left slot */}
-                                <div className={styles.slotLeft}>
-                                    {node.isLeft && (
-                                        <div
-                                            ref={el => { cardRefs.current[i] = el; }}
-                                            className={`${styles.card} ${styles.cardLeft}`}
-                                        >
-                                            <div className={styles.cardEra}>{events[i].era}</div>
-                                            <h3 className={styles.cardTitle}>{events[i].title}</h3>
-                                            {events[i].body && <p className={styles.cardBody}>{events[i].body}</p>}
-                                        </div>
-                                    )}
+                                <div className={`${styles.slotLeft} ${node.isLeft ? styles.slotCard : styles.slotMedia}`}>
+                                    {node.isLeft ? cardEl : mediaEl}
                                 </div>
 
                                 {/* Center spacer */}
                                 <div className={styles.nodeCenter} />
 
                                 {/* Right slot */}
-                                <div className={styles.slotRight}>
-                                    {!node.isLeft && (
-                                        <div
-                                            ref={el => { cardRefs.current[i] = el; }}
-                                            className={`${styles.card} ${styles.cardRight}`}
-                                        >
-                                            <div className={styles.cardEra}>{events[i].era}</div>
-                                            <h3 className={styles.cardTitle}>{events[i].title}</h3>
-                                            {events[i].body && <p className={styles.cardBody}>{events[i].body}</p>}
-                                        </div>
-                                    )}
+                                <div className={`${styles.slotRight} ${node.isLeft ? styles.slotMedia : styles.slotCard}`}>
+                                    {node.isLeft ? mediaEl : cardEl}
                                 </div>
                             </div>
                         );

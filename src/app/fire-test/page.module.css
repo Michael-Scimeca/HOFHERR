@@ -320,7 +320,7 @@
 }
 
 .stepCardDone {
-    border-color: #ffffff1a;
+    border-color: var(--border);
 }
 
 .stepCardActive {

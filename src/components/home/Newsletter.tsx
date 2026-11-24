@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import FireBorder from '@/components/TestimonialWall/FireBorder';
+import ActionButton from '@/components/ActionButton';
 import styles from './Newsletter.module.css';
 
 export default function Newsletter() {
@@ -86,18 +86,18 @@ export default function Newsletter() {
                                 className={`${styles.input} ${styles.inputEmail}`}
                                 autoComplete="email"
                             />
-                            <button
+                            <ActionButton
                                 type="submit"
-                                className={`btn-hit ${styles.submitHit}`}
+                                variant="primary"
+                                fire
+                                className={styles.submitHit}
+                                innerClassName={styles.submitBtn}
                                 disabled={emailStatus === 'loading'}
                             >
-                                <span className={`btn btn-primary ${styles.submitBtn}`}>
-                                    <FireBorder active={true} radius={6} />
-                                    <span>
-                                        {emailStatus === 'loading' ? 'Subscribing…' : 'Get Weekly Specials'}
-                                    </span>
+                                <span>
+                                    {emailStatus === 'loading' ? 'Subscribing…' : 'Get Weekly Specials'}
                                 </span>
-                            </button>
+                            </ActionButton>
                         </div>
 
                         {emailStatus === 'error' && (

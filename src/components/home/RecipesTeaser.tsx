@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import ActionButton from '@/components/ActionButton';
 import styles from './RecipesTeaser.module.css';
 
 export default function RecipesTeaser() {
@@ -13,9 +13,9 @@ export default function RecipesTeaser() {
                         Recipes for every occasion and season, dinner bundles, and printable 12×16&quot; parcel
                         cooking sheets for your Hofherr cuts.
                     </p>
-                    <Link href="/recipes" className="btn-hit">
-                        <span className="btn btn-primary">Browse Recipes &amp; Parcel Sheets →</span>
-                    </Link>
+                    <ActionButton href="/recipes" variant="primary">
+                        Browse Recipes &amp; Parcel Sheets →
+                    </ActionButton>
                 </div>
             </div>
         </section>

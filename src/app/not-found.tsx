@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import FireBorder from '@/components/TestimonialWall/FireBorder';
+import ActionButton from '@/components/ActionButton';
+import ContactLink from '@/components/ContactLink';
 
 export default function NotFound() {
     return (
@@ -12,22 +12,19 @@ export default function NotFound() {
                     Looks like you wandered into the walk-in cooler. That page isn&apos;t on the board — but we&apos;ve got plenty of good stuff back at the counter.
                 </p>
                 <div className="notFoundBtns">
-                    <Link href="/" className="btn-hit">
-                        <span className="btn btn-secondary">← Back to Home</span>
-                    </Link>
-                    <Link href="/online-orders" className="btn-hit">
-                        <span className="btn btn-primary">
-                            <FireBorder active={true} radius={6} />
-                            Order Online
-                        </span>
-                    </Link>
-                    <Link href="/specials" className="btn-hit">
-                        <span className="btn btn-secondary">See Specials</span>
-                    </Link>
+                    <ActionButton href="/" variant="secondary">
+                        ← Back to Home
+                    </ActionButton>
+                    <ActionButton href="/online-orders" variant="primary" fire>
+                        Order Online
+                    </ActionButton>
+                    <ActionButton href="/specials" variant="secondary">
+                        See Specials
+                    </ActionButton>
                 </div>
                 <div className="notFoundHours">
                     <span>Need help? Call us:</span>
-                    <a href="tel:8474416328">(847) 441-MEAT</a>
+                    <ContactLink kind="phone" />
                 </div>
             </div>
             <div className="notFoundBigNum" aria-hidden>404</div>

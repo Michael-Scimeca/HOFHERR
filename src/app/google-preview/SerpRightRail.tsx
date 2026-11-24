@@ -565,7 +565,7 @@ export function SerpRightRail({
                     <div className={styles.kpFactRow}>
                         <dt className={styles.kpFactTerm}>Featured in</dt>
                         <dd className={styles.kpFactValue}>
-                            <Link href="/press" className={styles.kpFactLink}>
+                            <Link href="/our-story#press" className={styles.kpFactLink}>
                                 America’s Test Kitchen (Proof Podcast) · WGN &amp; North Shore Press
                             </Link>
                         </dd>

@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import ActionButton from '@/components/ActionButton';
 import PageHero from '@/components/PageHero';
+import { SITE_CONTACT } from '@/lib/siteContact';
 import styles from './page.module.css';
 
 import type { Metadata } from 'next';
@@ -101,12 +103,12 @@ export default function JobsPage() {
                 }
                 lead="We are always looking to grow our team. We offer health care plans, retirement savings accounts, and other great perks!"
             >
-                <a href="mailto:jobs@hofherrmeatco.com" className="btn-hit">
-                    <span className="btn btn-primary">Email Us Your Resume</span>
-                </a>
-                <a href="tel:8474416328" className="btn-hit">
-                    <span className="btn btn-secondary">Call (847) 441-MEAT</span>
-                </a>
+                <ActionButton href={SITE_CONTACT.jobsEmailHref} variant="primary">
+                    Email Us Your Resume
+                </ActionButton>
+                <ActionButton href={SITE_CONTACT.phoneHref} variant="secondary">
+                    Call {SITE_CONTACT.phoneDisplay}
+                </ActionButton>
             </PageHero>
 
             {/* ── Open Positions & Benefits Grid ── */}

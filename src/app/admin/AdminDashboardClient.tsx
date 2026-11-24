@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useEffect, useState, useMemo, useRef } from 'react';
+import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import type * as RechartsModule from 'recharts';
 import styles from './admin.module.css';
@@ -9,6 +11,25 @@ import { usePageTransition } from '@/components/PageTransition';
 import { resolveOrderCutPieces } from '@/lib/cutCollector';
 import KitchenThrottleBar from '@/components/admin/KitchenThrottleBar';
 import SubscribersPanel from '@/components/admin/SubscribersPanel';
+
+const loadPrintStudio = () => import('@/components/admin/print-studio/PrintStudioClient');
+const loadProductIdentity = () => import('@/app/product-identity/ProductIdentityClient');
+const loadGoogleSeo = () => import('@/components/admin/GoogleSeoEditorPanel');
+
+const PrintStudioInline = dynamic(loadPrintStudio, {
+    ssr: false,
+    loading: () => <div className={styles.tabPanelInner}>Loading 1:1 Print &amp; Sizes Studio…</div>,
+});
+
+const ProductIdentityInline = dynamic(loadProductIdentity, {
+    ssr: false,
+    loading: () => <div className={styles.tabPanelInner}>Loading Product Identity Hub…</div>,
+});
+
+const GoogleSeoEditorInline = dynamic(loadGoogleSeo, {
+    ssr: false,
+    loading: () => <div className={styles.tabPanelInner}>Loading Google SEO Editor &amp; Preview…</div>,
+});
 
 interface OrderItem {
     name: string;
@@ -565,15 +586,23 @@ export default function AdminDashboard({
             },
         }));
     };
-    const [activeTab, setActiveTab] = useState<'orders' | 'users' | 'restocks' | 'subscribers'>('orders');
+    const searchParams = useSearchParams();
+    const [activeTab, setActiveTab] = useState<'orders' | 'users' | 'restocks' | 'subscribers' | 'print' | 'identity' | 'google'>('orders');
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const tabParam = params.get('tab');
-        if (tabParam === 'orders' || tabParam === 'users' || tabParam === 'restocks' || tabParam === 'subscribers') {
+        const tabParam = searchParams.get('tab');
+        if (
+            tabParam === 'orders' ||
+            tabParam === 'users' ||
+            tabParam === 'restocks' ||
+            tabParam === 'subscribers' ||
+            tabParam === 'print' ||
+            tabParam === 'identity' ||
+            tabParam === 'google'
+        ) {
             setActiveTab(tabParam);
         }
-    }, []);
+    }, [searchParams]);
     const [orderFilter, setOrderFilter] = useState<string>('all');
     const [inProgressStageFilter, setInProgressStageFilter] = useState<'all' | 'behind' | 'placed' | 'cutting' | 'ready' | 'done'>('all');
     const [progressSortBy, setProgressSortBy] = useState<'stage_asc' | 'stage_desc' | 'urgent_first' | 'total_desc' | 'newest'>('stage_asc');
@@ -590,8 +619,16 @@ export default function AdminDashboard({
                 if (!cancelled) setRechartsMod(mod);
             })
             .catch(() => { });
+        const warmTabs = () => {
+            if (cancelled) return;
+            void loadProductIdentity();
+            void loadPrintStudio();
+            void loadGoogleSeo();
+        };
+        const timerId = window.setTimeout(warmTabs, 1200);
         return () => {
             cancelled = true;
+            window.clearTimeout(timerId);
         };
     }, []);
 
@@ -1865,17 +1902,37 @@ export default function AdminDashboard({
                     </button>
                     <button
                         type="button"
-                        onClick={() => navigateTo('/dashboard/mikeyscimeca')}
-                        className={styles.headerBtn}
+                        onClick={() => setActiveTab('subscribers')}
+                        className={`${styles.headerBtn} ${activeTab === 'subscribers' ? styles.headerBtnGold : ''}`}
                     >
-                        👤 Customer View
+                        📬 Subscribers &amp; Outreach ({users.filter(u => u.newsletter).length})
                     </button>
                     <button
                         type="button"
-                        onClick={() => navigateTo('/')}
-                        className={styles.headerBtn}
+                        onClick={() => setActiveTab('print')}
+                        onMouseEnter={() => { void loadPrintStudio(); }}
+                        onFocus={() => { void loadPrintStudio(); }}
+                        className={`${styles.headerBtn} ${activeTab === 'print' ? styles.headerBtnGold : ''}`}
                     >
-                        View Storefront
+                        🖨️ Print &amp; Sizes
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab('identity')}
+                        onMouseEnter={() => { void loadProductIdentity(); }}
+                        onFocus={() => { void loadProductIdentity(); }}
+                        className={`${styles.headerBtn} ${activeTab === 'identity' ? styles.headerBtnGold : ''}`}
+                    >
+                        🏷️ Product Identity
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab('google')}
+                        onMouseEnter={() => { void loadGoogleSeo(); }}
+                        onFocus={() => { void loadGoogleSeo(); }}
+                        className={`${styles.headerBtn} ${activeTab === 'google' ? styles.headerBtnGold : ''}`}
+                    >
+                        🔍 Google SEO
                     </button>
                     <button
                         type="button"
@@ -1947,13 +2004,6 @@ export default function AdminDashboard({
                         <span className={styles.tabCountBadge}>
                             {restocks.filter(r => r.status === 'pending').length}
                         </span>
-                    </button>
-                    <button
-                        type="button"
-                        className={`${styles.tab} ${activeTab === 'subscribers' ? styles.activeTab : ''}`}
-                        onClick={() => setActiveTab('subscribers')}
-                    >
-                        📬 Subscribers &amp; Outreach ({users.filter(u => u.newsletter).length})
                     </button>
                 </div>
             </div>
@@ -2363,7 +2413,31 @@ export default function AdminDashboard({
                 </>
             )}
 
-            {/* ── 3. MASTER ORDERS / CUSTOMERS / RESTOCKS TABLE ── */}
+            {/* ── 3. FULL-WIDTH ADMIN STUDIO WORKSPACES (NO TABLE BOX) ── */}
+            {activeTab === 'subscribers' ? (
+                <div className={styles.tabPanelInner}>
+                    <SubscribersPanel
+                        subscribers={users
+                            .filter(u => u.newsletter)
+                            .map(u => ({
+                                _id: u._id,
+                                name: u.name,
+                                email: u.email,
+                                phone: u.phone,
+                                favoriteCut: u.favoriteCut,
+                                createdAt: u.createdAt,
+                                orderCount: u.orderCount ?? 0,
+                            }))}
+                        totalCustomers={users.length}
+                    />
+                </div>
+            ) : activeTab === 'print' ? (
+                <PrintStudioInline embedded />
+            ) : activeTab === 'identity' ? (
+                <ProductIdentityInline />
+            ) : activeTab === 'google' ? (
+                <GoogleSeoEditorInline />
+            ) : (
             <div className={styles.tableContainer}>
                 {activeTab === 'orders' ? (
                     <>
@@ -2696,23 +2770,6 @@ export default function AdminDashboard({
                             onPageChange={setCustomerSearchPage}
                         />
                     </div>
-                ) : activeTab === 'subscribers' ? (
-                    <div className={styles.tabPanelInner}>
-                        <SubscribersPanel
-                            subscribers={users
-                                .filter(u => u.newsletter)
-                                .map(u => ({
-                                    _id: u._id,
-                                    name: u.name,
-                                    email: u.email,
-                                    phone: u.phone,
-                                    favoriteCut: u.favoriteCut,
-                                    createdAt: u.createdAt,
-                                    orderCount: u.orderCount ?? 0,
-                                }))}
-                            totalCustomers={users.length}
-                        />
-                    </div>
                 ) : (
                     <div className={styles.tabPanelInner}>
                         <div className={styles.tableScrollArea}>
@@ -2808,6 +2865,7 @@ export default function AdminDashboard({
                     </div>
                 )}
             </div>
+            )}
 
             {/* ── 4. ANALYTICS & STORE METRICS ── */}
             {rechartsMod &&

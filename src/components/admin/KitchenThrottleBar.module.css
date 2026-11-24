@@ -57,7 +57,7 @@
 
 .activeNormal {
     background: rgba(22, 163, 74, 0.16);
-    border-color: #16a34a;
+    border-color: var(--green-success);
     color: #bbf7d0;
 }
 

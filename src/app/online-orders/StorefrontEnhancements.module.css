@@ -193,7 +193,7 @@
 }
 
 .bundleBtnDone {
-    background: #16a34a;
+    background: var(--green-success);
 }
 
 @media (max-width: 960px) {
@@ -208,6 +208,6 @@
     border-radius: var(--radius-sm);
     border: 1px solid rgba(204, 14, 29, 0.45);
     background: rgba(204, 14, 29, 0.12);
-    color: #fca5a5;
+    color: var(--red-soft);
     font-size: 12.5px;
 }

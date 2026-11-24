@@ -52,7 +52,7 @@
     display: flex;
     align-items: center;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 8px;
     overflow: hidden;
     width: fit-content;
@@ -101,7 +101,7 @@
 
 .textarea {
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     color: #fff;
     padding: 14px 16px;
     border-radius: 8px;
@@ -115,7 +115,7 @@
 .textarea:focus {
     outline: none;
     background: rgba(255, 255, 255, 0.06);
-    border-color: #ffffff1a;
+    border-color: var(--border);
 }
 
 .textarea::placeholder {
@@ -141,7 +141,7 @@
     align-items: center;
     padding: 14px 16px;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
@@ -151,7 +151,7 @@
 
 .packageOption:hover {
     background: rgba(255, 255, 255, 0.06);
-    border-color: #ffffff1a;
+    border-color: var(--border);
 }
 
 .packageOptionActive {
@@ -167,7 +167,7 @@
 
 .stepperBtnSm {
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     color: var(--fg);
     width: 32px;
     height: 32px;
@@ -256,7 +256,7 @@
 }
 
 .checkbox:checked {
-    background: #16a34a;
+    background: var(--green-success);
 }
 
 .checkbox:checked::after {
@@ -284,7 +284,7 @@
     color: var(--red);
     margin: 0 0 24px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
 }
 
 .receiptItems {
@@ -327,13 +327,13 @@
     font-weight: 800;
     color: #fff;
     padding-top: 20px;
-    border-top: 1px solid #ffffff1a;
+    border-top: 1px solid var(--border);
     margin-bottom: 16px;
 }
 
 .totalNum {
     font-size: 24px;
-    color: #16a34a;
+    color: var(--green-success);
 }
 
 .receiptNote {

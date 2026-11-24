@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import FireBorder from '@/components/TestimonialWall/FireBorder';
+import ActionButton from '@/components/ActionButton';
+import { SITE_CONTACT } from '@/lib/siteContact';
 import styles from './OrderCTABanner.module.css';
 
 export default function OrderCTABanner() {
@@ -12,15 +12,12 @@ export default function OrderCTABanner() {
                     <div className={styles.text}>Order online. Pick up in-store or curbside.</div>
                 </div>
                 <div className={styles.right}>
-                    <a href="tel:8474416328" className="btn-hit">
-                        <span className="btn btn-secondary">📞 Call to Order</span>
-                    </a>
-                    <Link href="/online-orders" className="btn-hit">
-                        <span className="btn btn-primary">
-                            <FireBorder active={true} radius={6} />
-                            Order Online Now
-                        </span>
-                    </Link>
+                    <ActionButton href={SITE_CONTACT.phoneHref} variant="secondary">
+                        📞 Call to Order
+                    </ActionButton>
+                    <ActionButton href="/online-orders" variant="primary" fire>
+                        Order Online Now
+                    </ActionButton>
                 </div>
             </div>
         </div>

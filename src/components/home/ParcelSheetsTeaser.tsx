@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import ActionButton from '@/components/ActionButton';
 import styles from './ParcelSheetsTeaser.module.css';
 
 const PREVIEW_SHEETS = [
@@ -37,9 +38,9 @@ export default function ParcelSheetsTeaser() {
                             <li className={styles.specItem}>Serves 2 · Oven ≤ 425°F</li>
                         </ul>
                         <div className={styles.actions}>
-                            <Link href="/recipes/sheets" className="btn-hit">
-                                <span className="btn btn-primary">Explore Parcel Sheets →</span>
-                            </Link>
+                            <ActionButton href="/recipes/sheets" variant="primary">
+                                Explore Parcel Sheets →
+                            </ActionButton>
                         </div>
                     </div>
 

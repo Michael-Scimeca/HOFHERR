@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import HoverVideo from '@/components/HoverVideo';
 import Link from 'next/link';
+import ActionButton from '@/components/ActionButton';
 import { draftMode } from 'next/headers';
 import { getClient } from '@/sanity/client';
 import { TEAM_MEMBERS_QUERY, TIMELINE_QUERY } from '@/sanity/queries';
@@ -54,12 +55,43 @@ export const metadata: Metadata = {
 };
 
 /* ── Fallbacks ── */
-const FALLBACK_TIMELINE = [
-    { era: 'Late 1800s', title: 'The Old Country', body: 'A Hofherr great-great-grandfather plies his trade as a village butcher in Germany — a craft handed down and carried across the Atlantic.' },
-    { era: 'Early 1900s', title: 'Chicago\'s South Side', body: 'His son, an immigrant, establishes the original Hofherr Meat Company on Chicago\'s storied South Side, building a name among the city\'s legendary stockyard community.' },
-    { era: '2009 – 2013', title: 'Earning His Stripes', body: 'Sean sharpens his craft at Keefer\'s Restaurant in River North, then apprentices at Zier\'s Prime Meats in Wilmette. He wins the 2009 North Shore Chili Cookoff and the 2010 Lake Bluff Ribfest before directing the kitchen at Stormy\'s Tavern in Northfield.' },
-    { era: 'March 2014', title: 'Hofherr Meat Co. Opens', body: '300 Happ Rd, Northfield. Sean and his wife Arielle open a new chapter — and a return to roots. Every cut made to order. Every animal traceable to a named family farm.', video: '/video-clips/stage-fire.mp4' },
-    { era: 'April 2025', title: 'The Depot Opens', body: 'Sean and Arielle expand to a second location — The Depot, inside the historic Winnetka Elm Street Metra Train Station at 754 Elm St. Serving their America\'s Test Kitchen-featured Italian Beef, custom-blend Sparrow Coffee, Rare Tea Cellar teas, and grab-and-go butcher favorites.' },
+const FALLBACK_TIMELINE: TimelineItem[] = [
+    {
+        era: 'Late 1800s',
+        title: 'The Old Country',
+        body: 'A Hofherr great-great-grandfather plies his trade as a village butcher in Germany — a craft handed down and carried across the Atlantic.',
+        image: '/assets/timeline/old-country-butcher.jpg',
+        imageAlt: 'Old-world village butcher working by lantern light with hanging cured cuts',
+    },
+    {
+        era: 'Early 1900s',
+        title: 'Chicago\'s South Side',
+        body: 'His son, an immigrant, establishes the original Hofherr Meat Company on Chicago\'s storied South Side, building a name among the city\'s legendary stockyard community.',
+        image: '/assets/timeline/chicago-south-side-butcher.jpg',
+        imageAlt: 'Early 1900s Chicago South Side butcher at the timber block under brass lamps',
+    },
+    {
+        era: '2009 – 2013',
+        title: 'Earning His Stripes',
+        body: 'Sean sharpens his craft at Keefer\'s Restaurant in River North, then apprentices at Zier\'s Prime Meats in Wilmette. He wins the 2009 North Shore Chili Cookoff and the 2010 Lake Bluff Ribfest before directing the kitchen at Stormy\'s Tavern in Northfield.',
+        image: '/assets/timeline/earning-his-stripes-knives.jpg',
+        imageAlt: 'Butcher drawing a hand-forged knife from a wooden roll beside an open fire',
+    },
+    {
+        era: 'March 2014',
+        title: 'Hofherr Meat Co. Opens',
+        body: '300 Happ Rd, Northfield. Sean and his wife Arielle open a new chapter — and a return to roots. Every cut made to order. Every animal traceable to a named family farm.',
+        video: '/video-clips/stage-fire.mp4',
+        image: '/assets/timeline/northfield-shop-dusk.jpg',
+        imageAlt: 'Hofherr Meat Co. flagship butcher shop on Happ Road in Northfield at dusk',
+    },
+    {
+        era: 'April 2025',
+        title: 'The Depot Opens',
+        body: 'Sean and Arielle expand to a second location — The Depot, inside the historic Winnetka Elm Street Metra Train Station at 754 Elm St. Serving their America\'s Test Kitchen-featured Italian Beef, custom-blend Sparrow Coffee, Rare Tea Cellar teas, and grab-and-go butcher favorites.',
+        image: '/assets/timeline/the-depot-winnetka-dusk.jpg',
+        imageAlt: 'Sean Hofherr at The Depot red-awning window inside the historic Winnetka train station at dusk',
+    },
 ];
 
 const FALLBACK_TEAM = [
@@ -102,7 +134,15 @@ const FALLBACK_TEAM = [
 ];
 
 type TeamMember = { name: string; role: string; photo?: string | null; bio?: string | null };
-type TimelineItem = { era: string; title: string; body?: string | null };
+type TimelineItem = {
+    era: string;
+    title: string;
+    body?: string | null;
+    video?: string | null;
+    image?: string | null;
+    imageAlt?: string | null;
+    archival?: boolean;
+};
 
 export default async function OurStoryPage() {
     const { isEnabled: preview } = await draftMode();
@@ -229,9 +269,9 @@ export default async function OurStoryPage() {
                                         <p className={`${styles.teamBio} ${styles.teamBioSpaced}`}>
                                             In April 2025, they expanded the Hofherr footprint with <strong>The Depot</strong> — a second location inside the historic Winnetka Elm Street Metra Train Station featuring their famous Italian Beef, Sparrow Coffee, Rare Tea Cellar teas, and grab-and-go butcher favorites.
                                         </p>
-                                        <Link href="/visit" className={`btn-hit ${styles.seanVisitBtn}`}>
-                                            <span className="btn btn-primary">Come Visit Us</span>
-                                        </Link>
+                                        <ActionButton href="/visit" variant="primary" className={styles.seanVisitBtn}>
+                                            Come Visit Us
+                                        </ActionButton>
                                     </div>
                                 </div>
                             </div>

@@ -26,14 +26,14 @@ type DevOverlayAction =
     | 'chat-quote'
     | 'cut-popover'
     | 'admin-customer-modal'
-    | 'admin-add-product-modal'
-    | 'inventory-add-product-modal';
+    | 'admin-add-product-modal';
 
 interface DevLinkItem {
     href: string;
     icon: string;
     label: string;
     action?: DevOverlayAction;
+    children?: DevLinkItem[];
 }
 
 interface DevSection {
@@ -83,7 +83,6 @@ const SECTIONS: DevSection[] = [
             { href: '/dashboard?devModal=popover', icon: '🔪', label: 'Cut Quick-Order Popover', action: 'cut-popover' },
             { href: '/admin-dashboard/admin?devModal=customer', icon: '👤', label: 'Admin Customer Modal', action: 'admin-customer-modal' },
             { href: '/admin/inventory?devModal=add', icon: '📦', label: 'Admin Add Product Modal', action: 'admin-add-product-modal' },
-            { href: '/inventory?devModal=add', icon: '🗃️', label: 'Inventory Add Item Modal', action: 'inventory-add-product-modal' },
         ],
     },
     {
@@ -104,7 +103,6 @@ const SECTIONS: DevSection[] = [
             { href: '/cut-guide', icon: '🥩', label: 'Cut Guide' },
             { href: '/recipes', icon: '🍳', label: 'Recipes' },
             { href: '/recipes/sheets', icon: '📋', label: 'Recipe Sheets' },
-            { href: '/press', icon: '📰', label: 'Press' },
             { href: '/newsletter', icon: '✉️', label: 'Newsletter' },
         ],
     },
@@ -129,27 +127,26 @@ const SECTIONS: DevSection[] = [
         category: 'pages',
         links: [
             { href: '/launch-checklist', icon: '🚀', label: 'All Features & What’s Left' },
-            { href: '/admin-dashboard/admin', icon: '📊', label: 'Admin Dashboard' },
-            { href: '/admin-dashboard/admin?tab=subscribers', icon: '✉️', label: 'Email Builder & Subscribers' },
-            { href: '/debug-email/preview', icon: '📧', label: 'Email Templates (Orders & Auth)' },
-            { href: '/admin/social', icon: '📣', label: 'Social Studio (IG · FB · X)' },
-            { href: '/product-identity/social', icon: '📱', label: 'Social Profiles (IG · FB · X)' },
-            { href: '/google-preview', icon: '🔍', label: 'Google Profile & SERP Preview' },
+            {
+                href: '/admin-dashboard/admin',
+                icon: '📊',
+                label: 'Admin Console',
+                children: [
+                    { href: '/admin-dashboard/admin?tab=orders', icon: '📋', label: 'Live Orders & Queue' },
+                    { href: '/admin-dashboard/admin?tab=users', icon: '👥', label: 'Customers' },
+                    { href: '/admin-dashboard/admin?tab=restocks', icon: '🔔', label: 'Restock Requests' },
+                    { href: '/admin-dashboard/admin?tab=subscribers', icon: '✉️', label: 'Subscribers & Social' },
+                    { href: '/admin-dashboard/admin?tab=print', icon: '🖨️', label: 'Print & Sizes' },
+                    { href: '/admin-dashboard/admin?tab=identity', icon: '🏷️', label: 'Product Identity' },
+                    { href: '/admin-dashboard/admin?tab=google', icon: '🔍', label: 'Google SEO' },
+                    { href: '/admin/inventory', icon: '🗃️', label: 'Inventory' },
+                    { href: '/admin/login', icon: '🔒', label: 'Admin Login' },
+                ],
+            },
             { href: '/sales-psychology', icon: '🧠', label: 'Sales Psychology' },
-            { href: '/admin/inventory', icon: '🗃️', label: 'Admin Inventory' },
-            { href: '/admin/login', icon: '🔒', label: 'Admin Login' },
-            { href: '/inventory', icon: '📦', label: 'Inventory Manager' },
             { href: '/studio', icon: '🎨', label: 'Sanity Studio' },
-            { href: '/product-identity', icon: '🏷️', label: 'Product Identity' },
-            { href: '/product-identity/print', icon: '🖨️', label: 'Print Kit' },
-            { href: '/product-identity/sizes', icon: '📐', label: 'Sizes' },
-            { href: '/product-identity/sizes/print', icon: '🖨️', label: 'Sizes · Print' },
             { href: '/design-system', icon: '🧩', label: 'Design System' },
-            { href: '/showcase', icon: '🎯', label: 'Showcase' },
-            { href: '/roadmap', icon: '🧭', label: 'Roadmap' },
             { href: '/fire-test', icon: '🔥', label: 'Fire Test' },
-            { href: '/press-test', icon: '📰', label: 'Press Ticker Test' },
-            { href: '/map-test', icon: '📍', label: 'Map Test' },
             { href: '/order-tracker-test', icon: '🚚', label: 'Order Tracker Test' },
         ],
     },
@@ -160,8 +157,6 @@ function isProtectedRoute(href: string): boolean {
     return (
         href === '/dashboard' ||
         href.startsWith('/dashboard/') ||
-        href === '/inventory' ||
-        href.startsWith('/inventory?') ||
         href.startsWith('/admin') ||
         href.startsWith('/product-identity')
     );
@@ -307,13 +302,6 @@ const DevNav = () => {
                     await ensureGodModeAndNavigate(link.href);
                 }
                 return;
-            case 'inventory-add-product-modal':
-                if (pathname === '/inventory') {
-                    window.dispatchEvent(new CustomEvent('hofherr-dev-add-product-modal'));
-                } else {
-                    await ensureGodModeAndNavigate(link.href);
-                }
-                return;
         }
     };
 
@@ -423,19 +411,36 @@ const DevNav = () => {
                                         <span className={styles.navLabel}>{link.label}</span>
                                     </button>
                                 ) : (
-                                    <Link
-                                        key={`${section.label}-${link.label}`}
-                                        href={link.href}
-                                        data-no-transition={!isGodMode && isProtectedRoute(link.href) ? '' : undefined}
-                                        className={styles.navItem}
-                                        onClick={e => handleLinkClick(e, link)}
-                                    >
-                                        <span className={styles.navIcon}>{link.icon}</span>
-                                        <span className={styles.navText}>
-                                            <span className={styles.navLabel}>{link.label}</span>
-                                            <span className={styles.navPath}>{link.href}</span>
-                                        </span>
-                                    </Link>
+                                    <div key={`${section.label}-${link.label}`}>
+                                        <Link
+                                            href={link.href}
+                                            data-no-transition={!isGodMode && isProtectedRoute(link.href) ? '' : undefined}
+                                            className={styles.navItem}
+                                            onClick={e => handleLinkClick(e, link)}
+                                        >
+                                            <span className={styles.navIcon}>{link.icon}</span>
+                                            <span className={styles.navText}>
+                                                <span className={styles.navLabel}>{link.label}</span>
+                                                <span className={styles.navPath}>{link.href}</span>
+                                            </span>
+                                        </Link>
+                                        {link.children && link.children.length > 0 && (
+                                            <div className={styles.subList}>
+                                                {link.children.map(child => (
+                                                    <Link
+                                                        key={`${section.label}-${link.label}-${child.label}`}
+                                                        href={child.href}
+                                                        data-no-transition={!isGodMode && isProtectedRoute(child.href) ? '' : undefined}
+                                                        className={styles.subItem}
+                                                        onClick={e => handleLinkClick(e, child)}
+                                                    >
+                                                        <span className={styles.subIcon}>{child.icon}</span>
+                                                        <span className={styles.subLabel}>{child.label}</span>
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 )
                             )}
                         </div>

@@ -5,6 +5,7 @@ import { Suspense, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
+import { SITE_CONTACT } from '@/lib/siteContact';
 import styles from './page.module.css';
 
 interface VerifyStateConfig {
@@ -101,7 +102,7 @@ function VerifyEmailContent() {
     const token = searchParams.get('token');
     const emailParam = searchParams.get('email') ?? '';
     const helpEmailBody = `Hi Hofherr Meat Co.,\n\nI'm having trouble verifying my account.\n\nAccount Email Address: ${emailParam || '[Enter your email address here]'}\n`;
-    const helpMailtoHref = `mailto:butcher@hofherrmeatco.com?subject=${encodeURIComponent('Email Verification Help')}&body=${encodeURIComponent(helpEmailBody)}`;
+    const helpMailtoHref = `${SITE_CONTACT.emailHref}?subject=${encodeURIComponent('Email Verification Help')}&body=${encodeURIComponent(helpEmailBody)}`;
 
     useEffect(() => {
         if (token && !status) {

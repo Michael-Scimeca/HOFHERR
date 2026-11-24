@@ -72,7 +72,7 @@
     padding: 8px 16px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.08);
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     color: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
     white-space: nowrap;
@@ -82,7 +82,7 @@
 /* ── Menu Section ─────────────────────────────────────── */
 .menuSection {
     background: var(--bg);
-    padding: 96px 0;
+    padding: 64px 0;
     position: relative;
     z-index: 10;
 }
@@ -121,11 +121,11 @@
     gap: 0;
     border-radius: 14px;
     overflow: hidden;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
 }
 
 .meatCategory {
-    border-bottom: 1px solid #ffffff1a;
+    border-bottom: 1px solid var(--border);
 }
 
 .stackedCategories {
@@ -302,7 +302,7 @@
             grid-column: span 2;
             grid-row: span 2;
             background: #0c0c0c;
-            border: 1px solid #ffffff1a;
+            border: 1px solid var(--border);
             border-radius: 4px;
             padding: 24px 26px;
             display: flex;
@@ -359,7 +359,7 @@
             align-items: flex-start;
             gap: 12px;
             padding-bottom: 11px;
-            border-bottom: 1px solid #ffffff1a;
+            border-bottom: 1px solid var(--border);
         }
 
         .buildStep:last-child {
@@ -453,7 +453,7 @@
         /* ── Pricing Section ──────────────────────────────────── */
         .pricingSection {
             background: var(--bg-2);
-            padding: 96px 0;
+            padding: 64px 0;
             position: relative;
             animation: fadeInUp 0.6s 0.1s var(--ease-out) both;
         }
@@ -499,7 +499,7 @@
         .pricingCardFeatured {
             background: #000;
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
-            border: 1px solid #ffffff1a;
+            border: 1px solid var(--border);
         }
 
         .pricingCardBadge {
@@ -573,7 +573,7 @@
         /* ── Beyond BBQ Services ──────────────────────────────── */
         .servicesSection {
             background: var(--bg);
-            padding: 96px 0;
+            padding: 64px 0;
             animation: fadeInUp 0.6s 0.15s var(--ease-out) both;
         }
 
@@ -598,7 +598,7 @@
         }
 
         .brutalistList {
-            border-top: 1px solid #ffffff1a;
+            border-top: 1px solid var(--border);
         }
 
         .brutalistRow {
@@ -606,7 +606,7 @@
             align-items: center;
             gap: 32px;
             padding: 24px 16px;
-            border-bottom: 1px solid #ffffff1a;
+            border-bottom: 1px solid var(--border);
             text-decoration: none;
             color: #fff;
             border-radius: 6px;
@@ -680,7 +680,7 @@
             background-position: center, center;
             background-size: 100% 100%, 380px auto;
             background-repeat: no-repeat, repeat;
-            padding: 96px 0;
+            padding: 64px 0;
             text-align: center;
             color: #f3ead8;
             position: relative;

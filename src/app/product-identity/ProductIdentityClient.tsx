@@ -1,24 +1,30 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import styles from './page.module.css';
-import ExtendedIdentityBoards, { BrandColorTokensSection } from './ExtendedIdentityBoards';
-import AppBrandIdentitySection from './AppBrandIdentitySection';
-import WebsiteIdentitySection from './WebsiteIdentitySection';
-import SocialKit from './social/SocialKit';
-import PressKitSection from './PressKitSection';
-import PitchDeckClient from '../pitch-deck/PitchDeckClient';
-import WrappingPaperColorways from './WrappingPaperColorways';
-import WholeAnimalCutCharts from './WholeAnimalCutCharts';
-import ChicagoLockupsSection from './ChicagoLockupsSection';
-import GreensAndEmblemsSection from './GreensAndEmblemsSection';
 import {
     SCALLOP_OUTER_PATH,
     STAMP_COW_CORAL_PATH,
     STAMP_COW_CRIMSON_PATH,
     VECTOR_ICON_PATHS,
 } from './vectorIcons';
+
+const BrandColorTokensSection = dynamic(
+    () => import('./ExtendedIdentityBoards').then((m) => m.BrandColorTokensSection),
+    { ssr: false },
+);
+const ExtendedIdentityBoards = dynamic(() => import('./ExtendedIdentityBoards'), { ssr: false });
+const AppBrandIdentitySection = dynamic(() => import('./AppBrandIdentitySection'), { ssr: false });
+const WebsiteIdentitySection = dynamic(() => import('./WebsiteIdentitySection'), { ssr: false });
+const SocialKit = dynamic(() => import('@/components/admin/social-kit/SocialKit'), { ssr: false });
+const PressKitSection = dynamic(() => import('./PressKitSection'), { ssr: false });
+const PitchDeckClient = dynamic(() => import('../pitch-deck/PitchDeckClient'), { ssr: false });
+const WrappingPaperColorways = dynamic(() => import('./WrappingPaperColorways'), { ssr: false });
+const WholeAnimalCutCharts = dynamic(() => import('./WholeAnimalCutCharts'), { ssr: false });
+const ChicagoLockupsSection = dynamic(() => import('./ChicagoLockupsSection'), { ssr: false });
+const GreensAndEmblemsSection = dynamic(() => import('./GreensAndEmblemsSection'), { ssr: false });
 
 const PROVENANCE_TOP_GLYPHS: ArcGlyph[] = [
     { key: '0-dot', char: '•', transform: 'translate(342.97 742.62) rotate(-66.45)' },
@@ -1106,19 +1112,19 @@ export default function ProductIdentityClient() {
                             <span className={styles.heroNavIndex}>00</span>
                             Brand &amp; Site Color Tokens
                         </a>
-                        <Link href="/product-identity#press-kit" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="#press-kit" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>⬇</span>
                             Press &amp; Media Download Kit
                         </Link>
-                        <Link href="/product-identity/print" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="/admin-dashboard/admin?tab=print" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>🖨</span>
                             1:1 True-Size Print Kit (PDF)
                         </Link>
-                        <Link href="/product-identity#cut-charts" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="#cut-charts" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>✦</span>
                             Primal Cut Charts &amp; Animal Anatomies
                         </Link>
-                        <Link href="/admin/social" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="/admin-dashboard/admin?tab=subscribers" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>⚙</span>
                             Admin Auto-Post &amp; Verification
                         </Link>
@@ -1138,59 +1144,59 @@ export default function ProductIdentityClient() {
                             <span className={styles.heroNavIndex}>04</span>
                             Complete Counter Suite
                         </a>
-                        <Link href="/product-identity#cut-charts" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="#cut-charts" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>04B</span>
                             Whole-Animal Cut Charts
                         </Link>
-                        <Link href="/product-identity#chicago-lockups" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="#chicago-lockups" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>04C</span>
                             Chicago Lockups &amp; Taglines
                         </Link>
-                        <Link href="/product-identity#retail-packaging" className={styles.heroNavLink}>
+                        <Link href="#retail-packaging" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>05</span>
                             Retail &amp; Cold Case
                         </Link>
-                        <Link href="/product-identity#carryout-gifting" className={styles.heroNavLink}>
+                        <Link href="#carryout-gifting" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>06</span>
                             Carry-Out &amp; Gifting
                         </Link>
-                        <Link href="/product-identity#signage" className={styles.heroNavLink}>
+                        <Link href="#signage" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>07</span>
                             In-Store Signage
                         </Link>
-                        <Link href="/product-identity#uniforms-stationery" className={styles.heroNavLink}>
+                        <Link href="#uniforms-stationery" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>08</span>
                             Uniforms &amp; Stationery
                         </Link>
-                        <Link href="/product-identity#digital" className={styles.heroNavLink}>
+                        <Link href="#digital" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>09</span>
                             Digital &amp; Social
                         </Link>
-                        <Link href="/product-identity#app-identity" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="#app-identity" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>09B</span>
                             Instagram (@hofherrmeatco) &amp; Apps
                         </Link>
-                        <Link href="/product-identity#website-assets" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="#website-assets" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>09C</span>
                             Website &amp; Digital Production Kit
                         </Link>
-                        <Link href="/product-identity#brand-standards" className={styles.heroNavLink}>
+                        <Link href="#brand-standards" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>10</span>
                             Brand Standards
                         </Link>
-                        <Link href="/product-identity#cuts" className={styles.heroNavLink}>
+                        <Link href="#cuts" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>11</span>
                             Cut Charts, Social &amp; Auto-Post
                         </Link>
-                        <Link href="/product-identity#press-kit" className={styles.heroNavLink}>
+                        <Link href="#press-kit" className={styles.heroNavLink}>
                             <span className={styles.heroNavIndex}>12</span>
                             Press &amp; Media Kit
                         </Link>
-                        <Link href="/product-identity#pitch-deck" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="#pitch-deck" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>13</span>
                             Review Audit &amp; Growth Pitch Deck
                         </Link>
-                        <Link href="/product-identity#vector-library" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
+                        <Link href="#vector-library" className={`${styles.heroNavLink} ${styles.heroNavLinkPrimary}`}>
                             <span className={styles.heroNavIndex}>14</span>
                             Master Vector Library (.SVG)
                         </Link>
@@ -1285,7 +1291,7 @@ export default function ProductIdentityClient() {
                                 </div>
                                 <div className={styles.downloadRow}>
                                     <Link
-                                        href="/product-identity/print?sheet=wrap&autoprint=1"
+                                        href="/admin-dashboard/admin?tab=print&sheet=wrap&autoprint=1"
                                         className={styles.downloadBtn}
                                     >
                                         🖨 Print 1:1 Swatch (7.50&quot;×4.75&quot;) &amp; Freezer Plate (7.50&quot;×4.40&quot;)
@@ -1504,13 +1510,13 @@ export default function ProductIdentityClient() {
                                 </div>
                                 <div className={styles.downloadRow}>
                                     <Link
-                                        href="/product-identity/print?sheet=stickers&autoprint=1"
+                                        href="/admin-dashboard/admin?tab=print&sheet=stickers&autoprint=1"
                                         className={styles.downloadBtn}
                                     >
                                         🖨 Print 3.00&quot;×3.00&quot; Stickers (1:1)
                                     </Link>
                                     <Link
-                                        href="/product-identity/print?sheet=scale-labels&autoprint=1"
+                                        href="/admin-dashboard/admin?tab=print&sheet=scale-labels&autoprint=1"
                                         className={styles.downloadBtn}
                                     >
                                         🖨 Print 4.00&quot;×3.00&quot; Scale Labels (1:1)
@@ -1664,7 +1670,7 @@ export default function ProductIdentityClient() {
                                 </div>
                                 <div className={styles.downloadRow}>
                                     <Link
-                                        href="/product-identity/print?sheet=stamps&autoprint=1"
+                                        href="/admin-dashboard/admin?tab=print&sheet=stamps&autoprint=1"
                                         className={styles.downloadBtn}
                                     >
                                         🖨 Print Ø 2.00&quot;, Ø 3.00&quot; &amp; 2.50&quot;×1.10&quot; Stamp Dies (1:1)

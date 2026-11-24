@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/sanity/adminClient';
-import { DEFAULT_SPECS, type PrintSpec } from '@/app/product-identity/sizes/specs';
+import { DEFAULT_SPECS, type PrintSpec } from '@/components/admin/print-studio/specs';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

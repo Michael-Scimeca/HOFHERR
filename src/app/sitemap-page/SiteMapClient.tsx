@@ -4,10 +4,11 @@ import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Toggle from '@/components/Toggle';
+import RoadmapSection from './RoadmapSection';
 import { SITE_PAGES, SITE_PROBLEMS, type SitePageNode } from './siteMapData';
 import styles from './page.module.css';
 
-type TabId = 'hierarchy' | 'cards' | 'graph' | 'problems';
+type TabId = 'hierarchy' | 'cards' | 'graph' | 'problems' | 'roadmap';
 
 const PAGE_MAP: Record<string, SitePageNode> = Object.fromEntries(
     SITE_PAGES.map((p) => [p.id, p])
@@ -39,7 +40,6 @@ const GRAPH_POS: Record<string, { x: number; y: number }> = {
     '/verify-email': { x: 560, y: 372 },
     '/reset-password': { x: 690, y: 536 },
     '/bbq': { x: 92, y: 74 },
-    '/press': { x: 732, y: 74 },
     '/cut-guide': { x: 250, y: 74 },
     '/admin-dashbaord': { x: 102, y: 536 },
 };
@@ -231,6 +231,15 @@ export default function SiteMapClient() {
                             >
                                 4. Problems List
                             </button>
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={tab === 'roadmap'}
+                                className={`${styles.tabBtn} ${tab === 'roadmap' ? styles.tabBtnActive : ''}`}
+                                onClick={() => setTab('roadmap')}
+                            >
+                                5. Feature Roadmap
+                            </button>
                         </div>
 
                         <div className={styles.filterTools}>
@@ -251,6 +260,10 @@ export default function SiteMapClient() {
                         </div>
                     </div>
 
+                    {tab === 'roadmap' ? (
+                        <RoadmapSection />
+                    ) : (
+                    <>
                     <div className={styles.legend}>
                         <span className={styles.legendTitle}>Legend:</span>
                         <span className={styles.legendItem}>
@@ -673,6 +686,8 @@ export default function SiteMapClient() {
                             </div>
                         </aside>
                     </div>
+                    </>
+                    )}
                 </div>
             </section>
         </main>

@@ -34,7 +34,7 @@ const FB_PROFILE_SETS = [
         spec: '1080 × 1080 px (Ø 880 Safe Circle) · Vector SVG',
         desc: 'Diagonal butcher wrapping paper ground with the circular Oxblood Crimson Flaming Bull medallion and stencil ribbon.',
         svg: '/assets/identity/apps/fb-profile-wrapping-paper.svg',
-        printHref: '/product-identity/print?master=fb-profile-1&w=5.0&h=5.0&autoprint=1',
+        printHref: '/admin-dashboard/admin?tab=print&master=fb-profile-1&w=5.0&h=5.0&autoprint=1',
     },
     {
         id: 'fb-profile-2',
@@ -42,7 +42,7 @@ const FB_PROFILE_SETS = [
         spec: '1080 × 1080 px (Ø 880 Safe Circle) · Vector SVG',
         desc: 'High-contrast Oxblood Crimson (#8B0A10) circular badge with Counter Cream wordmark plate for small mobile comment avatars.',
         svg: '/assets/identity/apps/fb-profile-crimson-badge.svg',
-        printHref: '/product-identity/print?master=fb-profile-2&w=5.0&h=5.0&autoprint=1',
+        printHref: '/admin-dashboard/admin?tab=print&master=fb-profile-2&w=5.0&h=5.0&autoprint=1',
     },
     {
         id: 'fb-profile-3',
@@ -50,7 +50,7 @@ const FB_PROFILE_SETS = [
         spec: '1080 × 1080 px (Ø 880 Safe Circle) · Vector SVG',
         desc: 'Dark Smokehouse Charcoal (#1C1614) & Smokehouse Amber (#F59B1A) ring lockup engineered for Facebook dark-mode feeds.',
         svg: '/assets/identity/apps/fb-profile-charcoal-seal.svg',
-        printHref: '/product-identity/print?master=fb-profile-3&w=5.0&h=5.0&autoprint=1',
+        printHref: '/admin-dashboard/admin?tab=print&master=fb-profile-3&w=5.0&h=5.0&autoprint=1',
     },
 ];
 
@@ -61,7 +61,7 @@ const FB_HERO_SETS = [
         spec: '1640 × 624 px (2× Retina Facebook Cover) · Safe-Zoned for Avatar Overlap',
         desc: 'Signature Hofherr Wrapping Paper background with bottom-left avatar overlap clearance, center-right smokehouse card, and 10-department ribbon.',
         svg: '/assets/identity/apps/fb-hero-cover-wrapping-paper.svg',
-        printHref: '/product-identity/print?master=fb-hero-1&w=8.5&h=3.23&autoprint=1',
+        printHref: '/admin-dashboard/admin?tab=print&master=fb-hero-1&w=8.5&h=3.23&autoprint=1',
     },
     {
         id: 'fb-hero-2',
@@ -69,7 +69,7 @@ const FB_HERO_SETS = [
         spec: '1640 × 624 px (2× Retina Facebook Cover) · Desktop & Mobile Safe Band',
         desc: 'Diagonal crimson/charcoal split banner featuring the circular Flaming Bull seal and side-by-side Northfield & Winnetka hours cards.',
         svg: '/assets/identity/apps/fb-hero-cover-crimson-smokehouse.svg',
-        printHref: '/product-identity/print?master=fb-hero-2&w=8.5&h=3.23&autoprint=1',
+        printHref: '/admin-dashboard/admin?tab=print&master=fb-hero-2&w=8.5&h=3.23&autoprint=1',
     },
     {
         id: 'fb-hero-3',
@@ -77,7 +77,7 @@ const FB_HERO_SETS = [
         spec: '1640 × 624 px (2× Retina Facebook Cover) · 16:9 Front-Facing Storefronts',
         desc: 'Dual storefront showcase pairing the front-facing Northfield Butcher Shop (300 Happ Rd) and Winnetka Depot (754 Elm St) exteriors.',
         svg: '/assets/identity/apps/fb-hero-cover-two-locations.svg',
-        printHref: '/product-identity/print?master=fb-hero-3&w=8.5&h=3.23&autoprint=1',
+        printHref: '/admin-dashboard/admin?tab=print&master=fb-hero-3&w=8.5&h=3.23&autoprint=1',
     },
 ];
 
@@ -95,32 +95,32 @@ const IG_GRID_TILES = [
     {
         title: "This Week's Specials",
         img: '/assets/identity/social/social-example-1-this-weeks-specials.svg',
-        href: '/product-identity/print?master=social-example-1&w=6.8&h=8.5&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&master=social-example-1&w=6.8&h=8.5&autoprint=1',
     },
     {
         title: 'New Cut: Picanha',
         img: '/assets/identity/social/social-example-2-new-cut-picanha.svg',
-        href: '/product-identity/print?master=social-example-2&w=6.8&h=8.5&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&master=social-example-2&w=6.8&h=8.5&autoprint=1',
     },
     {
         title: 'Behind The Block',
         img: '/assets/identity/social/social-example-3-behind-the-block.svg',
-        href: '/product-identity/print?master=social-example-3&w=5.0&h=8.9&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&master=social-example-3&w=5.0&h=8.9&autoprint=1',
     },
     {
         title: 'The Butcher Shop (16:9)',
         img: '/images/visit/northfield-storefront-front.jpg',
-        href: '/product-identity#press-kit',
+        href: '#press-kit',
     },
     {
         title: 'Winnetka Depot (16:9)',
         img: '/shops/winnetka.png',
-        href: '/product-identity#press-kit',
+        href: '#press-kit',
     },
     {
         title: 'Wrapping Paper Suite',
         img: '/assets/identity/wrapping-paper/butcher-wrapping-paper-roll-10-icons.jpg',
-        href: '/product-identity#wrapping-paper',
+        href: '#wrapping-paper',
     },
 ];
 
@@ -131,7 +131,7 @@ const APP_ASSET_CARDS = [
         spec: '1600 × 1000 px · 10.00" × 6.25" Vector SVG · Profile + 9-Grid + Highlights',
         desc: 'Complete visual specification board for https://www.instagram.com/hofherrmeatco/ including circular avatar safe zones, bio lockup, 8 highlight covers, and 6-tile grid rhythm.',
         svg: '/assets/identity/apps/instagram-profile-kit-board.svg',
-        printHref: '/product-identity/print?master=ig-kit-board&w=9.5&h=5.94&autoprint=1',
+        printHref: '/admin-dashboard/admin?tab=print&master=ig-kit-board&w=9.5&h=5.94&autoprint=1',
     },
     {
         id: 'ig-avatar-wrap',
@@ -139,7 +139,7 @@ const APP_ASSET_CARDS = [
         spec: '1080 × 1080 px (Ø 880 px Circle Safe Zone) · 100% Vector SVG',
         desc: 'Universal profile picture for Instagram, TikTok, Facebook, YouTube, and Yelp featuring the diagonal butcher wrapping paper pattern and centered Flaming Bull seal.',
         svg: '/assets/identity/apps/ig-avatar-wrapping-paper.svg',
-        printHref: '/product-identity/print?master=ig-avatar-wrap&w=5.0&h=5.0&autoprint=1',
+        printHref: '/admin-dashboard/admin?tab=print&master=ig-avatar-wrap&w=5.0&h=5.0&autoprint=1',
     },
     {
         id: 'ig-link-bio',
@@ -147,7 +147,7 @@ const APP_ASSET_CARDS = [
         spec: '1080 × 1920 px (9:16 Mobile Screen) · Butcher Wrapping Paper Theme',
         desc: 'Branded mobile landing screen linked from @hofherrmeatco bio routing followers directly to Northfield Butcher Shop orders, Winnetka Depot orders, weekly specials, and catering.',
         svg: '/assets/identity/apps/ig-link-in-bio-screen.svg',
-        printHref: '/product-identity/print?master=ig-link-bio&w=5.0&h=8.89&autoprint=1',
+        printHref: '/admin-dashboard/admin?tab=print&master=ig-link-bio&w=5.0&h=8.89&autoprint=1',
     },
     {
         id: 'ordering-app-banner',
@@ -155,7 +155,7 @@ const APP_ASSET_CARDS = [
         spec: '1600 × 900 px (16:9) · Toast / Yelp / DoorDash / Google Business',
         desc: '16:9 storefront banner in the Hofherr Wrapping Paper & 10-Department Emblem theme for online ordering apps, delivery apps, and business listings.',
         svg: '/assets/identity/apps/ordering-app-storefront-banner.svg',
-        printHref: '/product-identity/print?master=ordering-app-banner&w=8.5&h=4.78&autoprint=1',
+        printHref: '/admin-dashboard/admin?tab=print&master=ordering-app-banner&w=8.5&h=4.78&autoprint=1',
     },
 ];
 
@@ -266,7 +266,7 @@ export default function AppBrandIdentitySection() {
                                 ↓ Jump to Facebook Profile &amp; Hero Sets
                             </a>
                             <Link
-                                href="/product-identity/print?master=ig-kit-board&w=9.5&h=5.94&autoprint=1"
+                                href="/admin-dashboard/admin?tab=print&master=ig-kit-board&w=9.5&h=5.94&autoprint=1"
                                 className={styles.secondaryBtn}
                             >
                                 🖨 Print 1:1 App Identity Proof

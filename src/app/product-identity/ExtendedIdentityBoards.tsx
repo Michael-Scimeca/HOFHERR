@@ -395,39 +395,39 @@ const PRINT_SPEC_BY_SLUG: Record<
     }
 > = {
     'cryovac-label-front-back': {
-        href: '/product-identity/print?sheet=vac-labels&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=vac-labels&autoprint=1',
         scaleLabel: 'SIZE: 4.00" W × 3.00" H (Front) & 4.00" W × 4.00" H (Back) · 1:1 @ 300 DPI',
     },
     'case-ready-tray-labels': {
-        href: '/product-identity/print?sheet=tray-labels&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=tray-labels&autoprint=1',
         scaleLabel: 'SIZE: 2.50" W × 3.50" H Each (6-Up) · 1:1 @ 300 DPI',
     },
     'freezer-paper-bulk-order': {
-        href: '/product-identity/print?sheet=wrap&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=wrap&autoprint=1',
         scaleLabel: 'SIZE: 8.00" W × 2.75" H Wrap Plate & 8.00" W × 5.25" H Carton Plate · 1:1 @ 300 DPI',
         svgMaster: '/assets/identity/hofherr-wrapping-paper-pattern-10-icons.svg',
         svgDownloadName: 'hofherr-wrapping-paper-pattern-10-icons.svg',
     },
     'jar-tub-labels': {
-        href: '/product-identity/print?sheet=jar-labels&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=jar-labels&autoprint=1',
         scaleLabel: 'SIZE: 5.00" W × 2.125" H Each (4-Up Wraparound) · 1:1 @ 300 DPI',
     },
     'insulated-tote': {
-        href: '/product-identity/print?master=insulated-tote&w=7.5&h=7.5&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&master=insulated-tote&w=7.5&h=7.5&autoprint=1',
         scaleLabel: 'SIZE: 8.50" W × 8.50" H Screen Print Master (Ø 5.25" Seal) · 1:1 @ 300 DPI',
         svgMaster: '/assets/identity/hofherr-stamp-circular.svg',
         svgDownloadName: 'hofherr-stamp-circular.svg',
     },
     'catering-box': {
-        href: '/product-identity/print?sheet=belly-band&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=belly-band&autoprint=1',
         scaleLabel: 'SIZE: 3.25" W × 9.50" H Foil-Pan Belly-Band Straps (2-Up) & 10.00" W × 7.00" H Lid · 1:1 @ 300 DPI',
     },
     'steak-gift-box': {
-        href: '/product-identity/print?master=steak-gift-box&w=7.5&h=5.6&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&master=steak-gift-box&w=7.5&h=5.6&autoprint=1',
         scaleLabel: 'SIZE: 10.00" W × 2.75" H Belly Band & 5.00" W × 3.50" H Gift Card · 1:1 @ 300 DPI',
     },
     'gift-cards': {
-        href: '/product-identity/print?sheet=cards&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=cards&autoprint=1',
         scaleLabel: 'SIZE: 3.375" W × 2.125" H CR80 Card & 4.00" W × 2.75" H Sleeve · 1:1 @ 300 DPI',
         svgMaster: '/assets/identity/gifting/gift-card-crimson.svg',
         svgDownloadName: 'hofherr-gift-card-crimson.svg',
@@ -437,70 +437,70 @@ const PRINT_SPEC_BY_SLUG: Record<
                 title: '01 · Oxblood Crimson CR80 Gift Card (Front · #8B0A10)',
                 spec: 'CR80 Standard · 3.375" W × 2.125" H · /assets/identity/gifting/gift-card-crimson.svg',
                 svg: '/assets/identity/gifting/gift-card-crimson.svg',
-                printHref: '/product-identity/print?sheet=cards&autoprint=1',
+                printHref: '/admin-dashboard/admin?tab=print&sheet=cards&autoprint=1',
             },
             {
                 id: 'gift-card-amber',
                 title: '02 · Smokehouse Amber CR80 eGift / Gift Card (Front · #F59B1A)',
                 spec: 'CR80 Standard · 3.375" W × 2.125" H · /assets/identity/gifting/gift-card-amber.svg',
                 svg: '/assets/identity/gifting/gift-card-amber.svg',
-                printHref: '/product-identity/print?sheet=cards&autoprint=1',
+                printHref: '/admin-dashboard/admin?tab=print&sheet=cards&autoprint=1',
             },
             {
                 id: 'gift-card-back',
                 title: '03 · CR80 Physical Gift Card Back (Mag Stripe & Barcode)',
                 spec: 'CR80 Standard · 3.375" W × 2.125" H · /assets/identity/gifting/gift-card-back.svg',
                 svg: '/assets/identity/gifting/gift-card-back.svg',
-                printHref: '/product-identity/print?sheet=cards&autoprint=1',
+                printHref: '/admin-dashboard/admin?tab=print&sheet=cards&autoprint=1',
             },
         ],
     },
     'case-price-tags': {
-        href: '/product-identity/print?sheet=price-tags&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=price-tags&autoprint=1',
         scaleLabel: 'SIZE: 3.50" W × 2.25" H Each (6-Up Slate Tags) · 1:1 @ 300 DPI',
     },
     'cut-chart-poster': {
-        href: '/product-identity/print?master=cut-chart-poster&w=6.5&h=9.75&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&master=cut-chart-poster&w=6.5&h=9.75&autoprint=1',
         scaleLabel: 'SIZE: 24.00" W × 36.00" H Poster (10× Ø 3.00" Emblems) · 150 DPI',
         svgMaster: '/assets/identity/hofherr-master-emblem-suite.svg',
         svgDownloadName: 'hofherr-master-emblem-suite.svg',
     },
     'menu-board-aframe': {
-        href: '/product-identity/print?master=menu-board-aframe&w=7.5&h=5.6&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&master=menu-board-aframe&w=7.5&h=5.6&autoprint=1',
         scaleLabel: 'SIZE: 36.00" × 36.00" Wall Menu Board & 24.00" × 36.00" Sidewalk A-Frame · 300 DPI',
     },
     'door-decal-hours': {
-        href: '/product-identity/print?master=door-decal-hours&w=7.2&h=9.6&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&master=door-decal-hours&w=7.2&h=9.6&autoprint=1',
         scaleLabel: 'SIZE: 18.00" W × 24.00" H Die-Cut Window Vinyl (9.00" × 10.50" Bull Emblem) · Vector SVG + 300 DPI',
         svgMaster: '/assets/identity/hofherr-door-decal-hours.svg',
         svgDownloadName: 'hofherr-door-decal-hours.svg',
     },
     'farm-source-sign': {
-        href: '/product-identity/print?master=farm-source-sign&w=7.5&h=4.18&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&master=farm-source-sign&w=7.5&h=4.18&autoprint=1',
         scaleLabel: 'SIZE: 48.00" W × 27.00" H Wall Sign (10× Ø 4.00" Emblems) · 300 DPI',
     },
     'apron-coat-cap': {
-        href: '/product-identity/print?sheet=patches&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=patches&autoprint=1',
         scaleLabel: 'SIZE: Ø 3.50" Chest Patch & 10× Ø 3.00" Department Patches · 100% Vector SVG',
         svgMaster: '/assets/identity/hofherr-master-emblem-suite.svg',
         svgDownloadName: 'hofherr-master-emblem-suite.svg',
     },
     'business-cards-letterhead': {
-        href: '/product-identity/print?sheet=letterhead&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=letterhead&autoprint=1',
         scaleLabel: 'SIZE: 8.50" W × 11.00" H Letterhead & 3.50" W × 2.00" H Card · 1:1 @ 300 DPI',
     },
     'custom-cut-order-pad': {
-        href: '/product-identity/print?sheet=order-pad&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=order-pad&autoprint=1',
         scaleLabel: 'SIZE: 5.50" W × 8.50" H Half-Letter Ticket · 1:1 @ 300 DPI',
     },
     'loyalty-punch-card': {
-        href: '/product-identity/print?sheet=cards&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=cards&autoprint=1',
         scaleLabel: 'SIZE: 3.50" W × 2.00" H Kraft Stamp Card (Ø 0.48" Targets) · 1:1 @ 300 DPI',
         svgMaster: '/assets/identity/hofherr-stamp-circular.svg',
         svgDownloadName: 'hofherr-stamp-circular.svg',
     },
     'social-templates': {
-        href: '/product-identity/print?sheet=social-examples&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=social-examples&autoprint=1',
         scaleLabel: 'SIZE: 3.60" W × 4.50" H (1080×1350) & 3.60" W × 6.40" H (1080×1920) · 100% Vector SVG + 300 DPI',
         svgPrintMaster: '/assets/identity/print/social-templates-print.svg',
         printableExamples: [
@@ -509,34 +509,34 @@ const PRINT_SPEC_BY_SLUG: Record<
                 title: "01 · This Week's Specials (Woodcut Stencil Feed)",
                 spec: '1080 × 1350 px · 3.60" W × 4.50" H @ 300 DPI · Vector SVG',
                 svg: '/assets/identity/social/social-example-1-this-weeks-specials.svg',
-                printHref: '/product-identity/print?master=social-example-1&w=6.8&h=8.5&autoprint=1',
+                printHref: '/admin-dashboard/admin?tab=print&master=social-example-1&w=6.8&h=8.5&autoprint=1',
             },
             {
                 id: 'social-example-2',
                 title: '02 · New Cut: Picanha (Featured Cut Feed)',
                 spec: '1080 × 1350 px · 3.60" W × 4.50" H @ 300 DPI · Vector SVG',
                 svg: '/assets/identity/social/social-example-2-new-cut-picanha.svg',
-                printHref: '/product-identity/print?master=social-example-2&w=6.8&h=8.5&autoprint=1',
+                printHref: '/admin-dashboard/admin?tab=print&master=social-example-2&w=6.8&h=8.5&autoprint=1',
             },
             {
                 id: 'social-example-3',
                 title: '03 · Behind The Block (9:16 Vertical Story)',
                 spec: '1080 × 1920 px · 3.60" W × 6.40" H @ 300 DPI · Vector SVG',
                 svg: '/assets/identity/social/social-example-3-behind-the-block.svg',
-                printHref: '/product-identity/print?master=social-example-3&w=5.0&h=8.9&autoprint=1',
+                printHref: '/admin-dashboard/admin?tab=print&master=social-example-3&w=5.0&h=8.9&autoprint=1',
             },
         ],
     },
     'email-header': {
-        href: '/product-identity/print?master=email-header&w=7.5&h=4.18&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&master=email-header&w=7.5&h=4.18&autoprint=1',
         scaleLabel: 'SIZE: 10.00" W × 3.33" H (1200×400 Banner Master) @ 300 DPI',
     },
     'google-business-cover': {
-        href: '/product-identity/print?master=google-business-cover&w=7.5&h=4.18&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&master=google-business-cover&w=7.5&h=4.18&autoprint=1',
         scaleLabel: 'SIZE: 10.00" W × 5.63" H (1080×608 Cover Master) @ 300 DPI',
     },
     'app-icon-favicon': {
-        href: '/product-identity/print?sheet=master-suite&autoprint=1',
+        href: '/admin-dashboard/admin?tab=print&sheet=master-suite&autoprint=1',
         scaleLabel: 'SIZE: 100% VECTOR (.SVG) · Ø 3.41" Master + 10× Ø 3.00" Emblem Suite (Print at Any Size)',
         svgMaster: '/assets/identity/hofherr-master-emblem-suite.svg',
         svgPrintMaster: '/assets/identity/print/app-icon-favicon-print.svg',
@@ -548,7 +548,7 @@ function ItemCard({ item, folder }: { item: IdentityItem; folder: string }) {
     const [missing, setMissing] = useState(false);
     const [missingPrint, setMissingPrint] = useState(false);
     const printInfo = PRINT_SPEC_BY_SLUG[item.slug] || {
-        href: `/product-identity/print?master=${item.slug}&w=7.5&h=5.6&autoprint=1`,
+        href: `/admin-dashboard/admin?tab=print&master=${item.slug}&w=7.5&h=5.6&autoprint=1`,
         scaleLabel: '1:1 True Size · 300 DPI Press Master',
     };
     const categoryBase = `/assets/identity/${folder}`;
@@ -818,10 +818,10 @@ export default function ExtendedIdentityBoards() {
                                 <a href="/assets/identity/hofherr-die-cut-stickers-10-icons.svg" download="hofherr-die-cut-stickers-10-icons.svg" className={styles.actionLinkSecondary}>
                                     ↓ Die-Cut Stickers Sheet (.SVG)
                                 </a>
-                                <Link href="/product-identity/print?sheet=stickers&autoprint=1" className={styles.actionLinkSecondary}>
+                                <Link href="/admin-dashboard/admin?tab=print&sheet=stickers&autoprint=1" className={styles.actionLinkSecondary}>
                                     🖨 Print 3.00&quot; Die-Cut Stickers
                                 </Link>
-                                <Link href="/product-identity/print?sheet=master-suite&autoprint=1" className={styles.actionLinkSecondary}>
+                                <Link href="/admin-dashboard/admin?tab=print&sheet=master-suite&autoprint=1" className={styles.actionLinkSecondary}>
                                     🖨 Print Vector Master Sheet
                                 </Link>
                         </div>

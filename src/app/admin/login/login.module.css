@@ -7,15 +7,15 @@
     --c-label: #b8b2a8;
     --c-muted: #888888;
     --c-placeholder: #5c5852;
-    --c-accent: #a8905f;
-    --c-divider: #a8905f;
+    --c-accent: var(--gold);
+    --c-divider: var(--gold);
     --c-panel-border: 1px solid rgba(255, 255, 255, 0.18);
     --c-line: rgba(255, 255, 255, 0.18);
-    --c-btn-bg: #a8905f;
+    --c-btn-bg: var(--gold);
     --c-btn-hover: #c4ae82;
     --c-btn-text: #0a0a0a;
     --c-badge-bg: #0a0a0a;
-    --c-badge-border: #a8905f;
+    --c-badge-border: var(--gold);
     --c-fade: rgba(10, 10, 10, 0.92);
 
     position: relative;

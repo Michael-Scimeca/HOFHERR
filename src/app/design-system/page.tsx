@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import PageHero from '@/components/PageHero';
+import legalStyles from '@/app/(legal)/legal.module.css';
 import styles from './page.module.css';
 import ResponsivePreview from './ResponsivePreview';
+import SharedPrimitivesDemo from './SharedPrimitivesDemo';
 
 const IS_DEV = process.env.NODE_ENV === 'development';
 
@@ -10,18 +13,24 @@ export const metadata: Metadata = {
     robots: { index: false, follow: false },
 };
 
-/* ── Color data ── */
+/* ── Color data (synced 1:1 with globals.css) ── */
 const brandColors = [
     { name: '--red', hex: '#CC0E1D', label: 'Brand Red' },
     { name: '--red-dark', hex: '#a00b17', label: 'Red Dark' },
     { name: '--red-light', hex: '#e01e2e', label: 'Red Light' },
+    { name: '--red-soft', hex: '#fca5a5', label: 'Red Soft (Alert)' },
     { name: '--gold', hex: '#A8905F', label: 'Brand Gold' },
     { name: '--gold-dark', hex: '#8a7349', label: 'Gold Dark' },
     { name: '--gold-light', hex: '#c4ae82', label: 'Gold Light' },
-    { name: '--depot-blue-bg', hex: '#1E3A5F', label: 'Depot Blue Background' },
+    { name: '--amber', hex: '#f59b1a', label: 'Smokehouse Amber' },
+    { name: '--parchment', hex: '#f3ead8', label: 'Butcher Parchment' },
+    { name: '--depot-blue-bg', hex: '#1E3A5F', label: 'Depot Blue BG' },
+    { name: '--depot-blue-hover', hex: '#234775', label: 'Depot Blue Hover' },
     { name: '--depot-blue-border', hex: '#2563EB', label: 'Depot Blue Border' },
-    { name: '--dark', hex: '#000000', label: 'Dark' },
-    { name: '--light', hex: '#F2F2F2', label: 'Light' },
+    { name: '--depot-blue-light', hex: '#3B82F6', label: 'Depot Blue Light' },
+    { name: '--green-depot', hex: '#142a1e', label: 'Depot Forest Green' },
+    { name: '--green-success', hex: '#16a34a', label: 'Success Green' },
+    { name: '--green-ready', hex: '#4ade80', label: 'Live Ready Green' },
 ];
 
 const bgColors = [
@@ -29,23 +38,27 @@ const bgColors = [
     { name: '--bg-2', value: 'rgba(0,0,0,0.45)', label: 'Overlay 45%' },
     { name: '--bg-3', value: 'rgba(0,0,0,0.65)', label: 'Overlay 65%' },
     { name: '--bg-4', value: 'rgba(0,0,0,0.8)', label: 'Overlay 80%' },
+    { name: '--surface-1', value: '#0a0a0a', label: 'Surface 1' },
+    { name: '--surface-2', value: '#111111', label: 'Surface 2' },
+    { name: '--surface-3', value: '#1a1a1a', label: 'Surface 3' },
+    { name: '--bg-card', value: 'rgba(18,18,20,0.75)', label: 'Card Surface' },
 ];
 
 const textColors = [
     { name: '--text / --fg', hex: '#F2F2F2', label: 'Primary' },
     { name: '--text-2 / --fg-2', hex: '#CCCCCC', label: 'Secondary' },
     { name: '--text-3 / --fg-3', hex: '#999999', label: 'Tertiary' },
-    { name: '--text-muted', hex: '#666666', label: 'Muted' },
     { name: '--fg-muted', hex: '#888888', label: 'FG Muted' },
+    { name: '--text-muted', hex: '#666666', label: 'Muted' },
 ];
 
 const spacingTokens = [
     { name: '--nav-h', value: '68px', desc: 'Navbar height' },
-    { name: '--page-stem', value: '40px', desc: 'Page padding top' },
     { name: '--max-w', value: '1400px', desc: 'Max content width' },
-    { name: '--radius', value: '10px', desc: 'Default radius' },
-    { name: '--radius-sm', value: '6px', desc: 'Small radius' },
-    { name: '--radius-lg', value: '18px', desc: 'Large radius' },
+    { name: '--space-2 / --space-4 / --space-6', value: '8px / 16px / 24px', desc: 'Core 8px grid steps' },
+    { name: '--space-8 / --space-10 / --space-12', value: '32px / 40px / 48px', desc: 'Section & hero padding' },
+    { name: '--radius-sm / --radius / --radius-lg', value: '6px / 10px / 18px', desc: 'Corner radius scale' },
+    { name: '--text-hero', value: 'clamp(3rem, 6vw, 5.25rem)', desc: 'Canonical page headline' },
 ];
 
 const motionTokens = [
@@ -53,22 +66,51 @@ const motionTokens = [
     { name: '--ease-in-out', value: 'cubic-bezier(0.4, 0, 0.2, 1)', desc: 'Smooth (transitions)' },
 ];
 
+const TOC_ITEMS = [
+    { id: 'typography', index: '01.', label: 'Typography' },
+    { id: 'colors', index: '02.', label: 'Color Tokens' },
+    { id: 'shared-primitives', index: '03.', label: 'Shared DRY Components' },
+    { id: 'components', index: '04.', label: 'Buttons, Tags & Cards' },
+    { id: 'spacing', index: '05.', label: 'Spacing & Layout' },
+    { id: 'motion', index: '06.', label: 'Motion & Easing' },
+    { id: 'shadows', index: '07.', label: 'Shadows' },
+    { id: 'responsive', index: '08.', label: 'Responsive & Preview' },
+];
+
 export default function DesignSystemPage() {
     if (!IS_DEV) return notFound();
 
     return (
-        <div className={styles.page}>
-            <div className={styles.container}>
+        <main className={legalStyles.pageWrap}>
+            <PageHero
+                title={
+                    <>
+                        Design <em>System</em>
+                    </>
+                }
+                lead="Living reference for Hofherr Meat Co. typography, semantic color tokens (globals.css), shared DRY UI primitives, spacing, motion, and responsive breakpoints."
+            />
 
-                {/* ── Header ── */}
-                <header className={styles.header}>
-                    <div className="section-label">Internal Reference</div>
-                    <h1 className={styles.title}>Design System</h1>
-                    <p className={styles.subtitle}>
-                        Typography, color palette, spacing tokens, and component library for
-                        Hofherr Meat Co. — <code>globals.css</code> reference.
-                    </p>
-                </header>
+            <section id="design-system-workspace" aria-label="Design System documentation" className="section">
+                <div className="container">
+                    <div className={legalStyles.legalGrid}>
+                        <aside className={legalStyles.sidebar} aria-label="Design System sections">
+                            <nav className={legalStyles.sidebarPanel} aria-label="On this page">
+                                <h2 className={legalStyles.sidebarHeading}>On This Page</h2>
+                                <ol className={legalStyles.tocList}>
+                                    {TOC_ITEMS.map((item) => (
+                                        <li key={item.id}>
+                                            <a href={`#${item.id}`} className={legalStyles.tocLink}>
+                                                <span className={legalStyles.tocIndex}>{item.index}</span>
+                                                <span>{item.label}</span>
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ol>
+                            </nav>
+                        </aside>
+
+                        <div className={styles.mainCol}>
 
                 {/* ── 01 Typography ── */}
                 <section className={styles.section} id="typography">
@@ -111,9 +153,9 @@ export default function DesignSystemPage() {
                             <div className={styles.typeRow}>
                                 <div className={styles.typeMeta}>
                                     <code>&lt;h1&gt;</code>
-                                    <span>clamp(2.4rem, 6vw, 4.5rem)</span>
+                                    <span>var(--text-hero)</span>
                                 </div>
-                                <h1 className={styles.specimenH1}>Premium Craft Butchery</h1>
+                                <span className={styles.specimenH1}>Premium Craft Butchery</span>
                             </div>
                             <div className={styles.typeRow}>
                                 <div className={styles.typeMeta}>
@@ -239,11 +281,20 @@ export default function DesignSystemPage() {
                     </div>
                 </section>
 
-                {/* ── 03 Components ── */}
-                <section className={styles.section} id="components">
+                {/* ── 03 Shared DRY Components ── */}
+                <section className={styles.section} id="shared-primitives">
                     <h2 className={styles.sectionTitle}>
                         <span className={styles.sectionNum}>03</span>
-                        Components
+                        Shared DRY Components
+                    </h2>
+                    <SharedPrimitivesDemo />
+                </section>
+
+                {/* ── 04 Components ── */}
+                <section className={styles.section} id="components">
+                    <h2 className={styles.sectionTitle}>
+                        <span className={styles.sectionNum}>04</span>
+                        Global Buttons, Tags &amp; Cards
                     </h2>
 
                     <div className={styles.subsection}>
@@ -320,10 +371,10 @@ export default function DesignSystemPage() {
                     </div>
                 </section>
 
-                {/* ── 04 Spacing & Layout ── */}
+                {/* ── 05 Spacing & Layout ── */}
                 <section className={styles.section} id="spacing">
                     <h2 className={styles.sectionTitle}>
-                        <span className={styles.sectionNum}>04</span>
+                        <span className={styles.sectionNum}>05</span>
                         Spacing &amp; Layout
                     </h2>
                     <div className={styles.tokenTable}>
@@ -342,10 +393,10 @@ export default function DesignSystemPage() {
                     </div>
                 </section>
 
-                {/* ── 05 Motion ── */}
+                {/* ── 06 Motion ── */}
                 <section className={styles.section} id="motion">
                     <h2 className={styles.sectionTitle}>
-                        <span className={styles.sectionNum}>05</span>
+                        <span className={styles.sectionNum}>06</span>
                         Motion &amp; Easing
                     </h2>
                     <div className={styles.tokenTable}>
@@ -378,10 +429,10 @@ export default function DesignSystemPage() {
                     </div>
                 </section>
 
-                {/* ── 06 Shadows ── */}
+                {/* ── 07 Shadows ── */}
                 <section className={styles.section} id="shadows">
                     <h2 className={styles.sectionTitle}>
-                        <span className={styles.sectionNum}>06</span>
+                        <span className={styles.sectionNum}>07</span>
                         Shadows
                     </h2>
                     <div className={styles.shadowGrid}>
@@ -399,10 +450,10 @@ export default function DesignSystemPage() {
                     </div>
                 </section>
 
-                {/* ── 07 Responsive ── */}
+                {/* ── 08 Responsive ── */}
                 <section className={styles.section} id="responsive">
                     <h2 className={styles.sectionTitle}>
-                        <span className={styles.sectionNum}>07</span>
+                        <span className={styles.sectionNum}>08</span>
                         Responsive &amp; Breakpoints
                     </h2>
 
@@ -440,7 +491,10 @@ export default function DesignSystemPage() {
                     </div>
                 </section>
 
-            </div>
-        </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     );
 }

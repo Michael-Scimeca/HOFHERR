@@ -51,6 +51,7 @@ export default function GiftCardsPage() {
 
                 {/* Content Pane */}
                 <div className={styles.contentPane}>
+                    <div className={styles.glowGold} aria-hidden="true" />
                     <div className={styles.contentInner}>
                         <h1 className={styles.headline}>The Gift of <em>Great Meat</em></h1>
                         <p className={styles.sub}>

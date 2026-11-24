@@ -1,6 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
-import FireBorder from '@/components/TestimonialWall/FireBorder';
+import ActionButton from '@/components/ActionButton';
 import styles from './HolidayCateringTeaser.module.css';
 
 export default function HolidayCateringTeaser() {
@@ -39,15 +38,12 @@ export default function HolidayCateringTeaser() {
                     </div>
 
                     <div className={styles.actions}>
-                        <Link href="/catering/holidays" className="btn-hit">
-                            <span className="btn btn-primary">Explore Holiday Guide →</span>
-                        </Link>
-                        <Link href="/catering#build-your-package" className="btn-hit">
-                            <span className="btn btn-secondary">
-                                <FireBorder active={true} radius={6} />
-                                Build a Package
-                            </span>
-                        </Link>
+                        <ActionButton href="/catering/holidays" variant="primary">
+                            Explore Holiday Guide →
+                        </ActionButton>
+                        <ActionButton href="/catering#build-your-package" variant="secondary" fire>
+                            Build a Package
+                        </ActionButton>
                     </div>
                 </div>
             </div>

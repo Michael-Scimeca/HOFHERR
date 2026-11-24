@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import FireBorder from '@/components/TestimonialWall/FireBorder';
+import ActionButton from '@/components/ActionButton';
+import { SITE_CONTACT } from '@/lib/siteContact';
 import styles from './HelpOrdering.module.css';
 
 export default function HelpOrdering() {
@@ -18,22 +18,28 @@ export default function HelpOrdering() {
                     </p>
                 </div>
                 <div className={styles.ctaSide}>
-                    <a href="tel:8474416328" className="btn-hit">
-                        <span className={`btn btn-primary ${styles.btnPrimary}`}>
-                            <FireBorder active={true} radius={6} />
-                            <span>📞 Call (847) 441-MEAT</span>
-                        </span>
-                    </a>
-                    <a href="mailto:butcher@hofherrmeatco.com" className="btn-hit">
-                        <span className={`btn btn-secondary ${styles.btnSecondary}`}>
-                            <span>✉️ Email Us</span>
-                        </span>
-                    </a>
-                    <Link href="/catering#get-a-quote" className="btn-hit">
-                        <span className={`btn btn-secondary ${styles.btnSecondary}`}>
-                            <span>Custom &amp; Wholesale</span>
-                        </span>
-                    </Link>
+                    <ActionButton
+                        href={SITE_CONTACT.phoneHref}
+                        variant="primary"
+                        fire
+                        innerClassName={styles.btnPrimary}
+                    >
+                        <span>📞 Call {SITE_CONTACT.phoneDisplay}</span>
+                    </ActionButton>
+                    <ActionButton
+                        href={SITE_CONTACT.emailHref}
+                        variant="secondary"
+                        innerClassName={styles.btnSecondary}
+                    >
+                        <span>✉️ Email Us</span>
+                    </ActionButton>
+                    <ActionButton
+                        href="/catering#get-a-quote"
+                        variant="secondary"
+                        innerClassName={styles.btnSecondary}
+                    >
+                        <span>Custom &amp; Wholesale</span>
+                    </ActionButton>
                 </div>
             </div>
         </section>

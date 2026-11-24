@@ -1,24 +1,21 @@
 'use client';
 
-import React from 'react';
-import FireBorder from '@/components/TestimonialWall/FireBorder';
+import ActionButton from '@/components/ActionButton';
+import { SITE_CONTACT } from '@/lib/siteContact';
 import styles from './page.module.css';
 
 export default function CateringHeroButtons() {
     return (
         <div className={styles.heroBtns}>
-            <a href="#build-your-package" className="btn-hit">
-                <span className="btn btn-primary">
-                    <FireBorder active={true} radius={6} />
-                    Build Your Package
-                </span>
-            </a>
-            <a href="#pig-roasts" className="btn-hit">
-                <span className="btn btn-secondary">Pig Roasts</span>
-            </a>
-            <a href="tel:8474416328" className="btn-hit">
-                <span className="btn btn-secondary">📞 (847) 441-MEAT</span>
-            </a>
+            <ActionButton href="#build-your-package" variant="primary" fire>
+                Build Your Package
+            </ActionButton>
+            <ActionButton href="#pig-roasts" variant="secondary">
+                Pig Roasts
+            </ActionButton>
+            <ActionButton href={SITE_CONTACT.phoneHref} variant="secondary">
+                📞 {SITE_CONTACT.phoneDisplay}
+            </ActionButton>
         </div>
     );
 }

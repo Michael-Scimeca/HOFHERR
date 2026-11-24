@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import FireBorder from '@/components/TestimonialWall/FireBorder';
+import ActionButton from '@/components/ActionButton';
+import { SITE_CONTACT } from '@/lib/siteContact';
 import styles from './CutGuide.module.css';
 
 type Animal = 'beef' | 'pork' | 'chicken' | 'lamb';
@@ -117,15 +117,12 @@ export default function CutGuide() {
                 <div className={styles.cta}>
                     <p>Need a specific cut? We cut everything fresh to order.</p>
                     <div className={styles.ctaBtns}>
-                        <a href="tel:8474416328" className="btn-hit">
-                            <span className="btn btn-secondary">📞 Call Us</span>
-                        </a>
-                        <Link href="/online-orders" className="btn-hit">
-                            <span className="btn btn-primary">
-                                <FireBorder active={true} radius={6} />
-                                Order Online
-                            </span>
-                        </Link>
+                        <ActionButton href={SITE_CONTACT.phoneHref} variant="secondary">
+                            📞 Call Us
+                        </ActionButton>
+                        <ActionButton href="/online-orders" variant="primary" fire>
+                            Order Online
+                        </ActionButton>
                     </div>
                 </div>
             </div>

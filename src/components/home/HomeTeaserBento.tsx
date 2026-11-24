@@ -1,6 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
-import FireBorder from '@/components/TestimonialWall/FireBorder';
+import ActionButton from '@/components/ActionButton';
 import styles from './HomeTeaserBento.module.css';
 
 export default function HomeTeaserBento() {
@@ -42,15 +41,12 @@ export default function HomeTeaserBento() {
                             </div>
 
                             <div className={styles.holidayActions}>
-                                <Link href="/catering/holidays" className="btn-hit">
-                                    <span className="btn btn-primary">Explore Holiday Guide →</span>
-                                </Link>
-                                <Link href="/catering#build-your-package" className="btn-hit">
-                                    <span className="btn btn-secondary">
-                                        <FireBorder active={true} radius={6} />
-                                        Build a Package
-                                    </span>
-                                </Link>
+                                <ActionButton href="/catering/holidays" variant="primary">
+                                    Explore Holiday Guide →
+                                </ActionButton>
+                                <ActionButton href="/catering#build-your-package" variant="secondary" fire>
+                                    Build a Package
+                                </ActionButton>
                             </div>
                         </div>
                     </article>
@@ -86,9 +82,9 @@ export default function HomeTeaserBento() {
 
                                 <div className={styles.cardFoot}>
                                     <span className={styles.footTags}>Prime Rib · Brisket · Turkey</span>
-                                    <Link href="/recipes" className="btn-hit">
-                                        <span className="btn btn-primary">Browse Recipes →</span>
-                                    </Link>
+                                    <ActionButton href="/recipes" variant="primary">
+                                        Browse Recipes →
+                                    </ActionButton>
                                 </div>
                             </div>
                         </article>
@@ -123,9 +119,9 @@ export default function HomeTeaserBento() {
 
                                 <div className={styles.cardFoot}>
                                     <span className={styles.footTags}>Northfield &amp; Winnetka</span>
-                                    <Link href="/our-story" className="btn-hit">
-                                        <span className="btn btn-primary">Read Our Story →</span>
-                                    </Link>
+                                    <ActionButton href="/our-story" variant="primary">
+                                        Read Our Story →
+                                    </ActionButton>
                                 </div>
                             </div>
                         </article>

@@ -223,7 +223,7 @@
 }
 
 .toggleBtnDepot:hover {
-    background: #234775;
+    background: var(--depot-blue-hover);
     border-color: var(--depot-blue-light, #3b82f6);
     color: #fff;
     box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35);
@@ -237,7 +237,7 @@
 }
 
 .toggleActiveDepot:hover {
-    background: #234775;
+    background: var(--depot-blue-hover);
     border-color: var(--depot-blue-light, #3b82f6);
     color: #fff;
 }
@@ -269,7 +269,7 @@
 
 /* ── Location Sections ── */
 .locationSection {
-    padding: 96px 0;
+    padding: 64px 0;
 }
 
 /* First section after the hero slides up over the hero image */
@@ -326,7 +326,7 @@
     background: #0b0b0b;
     border-radius: 16px;
     overflow: hidden;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     flex: 1;
     min-height: 360px;
 }
@@ -416,7 +416,7 @@
 
 .card {
     background: #000;
-    border: 1px solid #ffffff1a;
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 28px 24px;
 }
@@ -498,7 +498,7 @@
     background: var(--bg-2);
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
-    padding: 96px 0;
+    padding: 64px 0;
 }
 
 .sectionTitle {

@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect } from 'react';
-import FireBorder from '@/components/TestimonialWall/FireBorder';
+import ActionButton from '@/components/ActionButton';
+import ContactLink from '@/components/ContactLink';
 
 /**
  * error.tsx — Catches runtime errors in any page (not layout).
@@ -25,27 +25,20 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
                 </p>
 
                 <div className="notFoundBtns">
-                    <button
-                        type="button"
-                        onClick={() => reset()}
-                        className="btn-hit"
-                    >
-                        <span className="btn btn-secondary">↻ Try Again</span>
-                    </button>
-                    <Link href="/" className="btn-hit">
-                        <span className="btn btn-secondary">← Back to Home</span>
-                    </Link>
-                    <Link href="/online-orders" className="btn-hit">
-                        <span className="btn btn-primary">
-                            <FireBorder active={true} radius={6} />
-                            Order Online
-                        </span>
-                    </Link>
+                    <ActionButton variant="secondary" onClick={() => reset()}>
+                        ↻ Try Again
+                    </ActionButton>
+                    <ActionButton href="/" variant="secondary">
+                        ← Back to Home
+                    </ActionButton>
+                    <ActionButton href="/online-orders" variant="primary" fire>
+                        Order Online
+                    </ActionButton>
                 </div>
 
                 <div className="notFoundHours">
                     <span>Need help? Call us:</span>
-                    <a href="tel:8474416328">(847) 441-MEAT</a>
+                    <ContactLink kind="phone" />
                 </div>
             </div>
 

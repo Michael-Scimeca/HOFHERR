@@ -15,9 +15,14 @@ function formatJoinedDate(iso: string): string {
     return `${SHORT_MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
 }
 
-const SocialAdminInline = dynamic(() => import('@/app/admin/social/page'), {
+const SocialAdminInline = dynamic(() => import('@/components/admin/social/SocialStudio'), {
     ssr: false,
     loading: () => <div className={styles.embeddedLoading}>Loading Social Studio (IG · FB · X)…</div>,
+});
+
+const SocialKitInline = dynamic(() => import('@/components/admin/social-kit/SocialKit'), {
+    ssr: false,
+    loading: () => <div className={styles.embeddedLoading}>Loading Social Profiles &amp; Brand Kit (IG · FB · X)…</div>,
 });
 
 export interface AdminSubscriber {
@@ -959,9 +964,6 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
                 </div>
             )}
 
-            {/* ── Automated Transactional Emails (Welcome, Verify, Reset, Order, Restock, Newsletter) ── */}
-            <TransactionalEmailsSection />
-
             {/* ── Social & Print Automation Studio (IG · FB · X) ── */}
             <section
                 id="social-studio-section"
@@ -970,6 +972,18 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
             >
                 <SocialAdminInline />
             </section>
+
+            {/* ── Social Profiles, Cut Charts, Bios & Captions Kit (from /product-identity/social) ── */}
+            <section
+                id="social-profiles-kit-section"
+                aria-label="Social Profiles, Cut Charts, Bios and Captions Kit"
+                className={styles.embeddedPanel}
+            >
+                <SocialKitInline embedded />
+            </section>
+
+            {/* ── Automated Transactional Emails (Welcome, Verify, Reset, Order, Restock, Newsletter) ── */}
+            <TransactionalEmailsSection />
         </div>
     );
 }

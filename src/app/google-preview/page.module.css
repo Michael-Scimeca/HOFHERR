@@ -109,7 +109,7 @@
     --g-bg: #1f1f1f;
     --g-surface: #28292a;
     --g-surface-2: #303134;
-    --g-border: #ffffff1a;
+    --g-border: var(--border);
     --g-text: #e8eaed;
     --g-muted: #9aa0a6;
     --g-body: #bdc1c6;

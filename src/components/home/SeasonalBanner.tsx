@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import ActionButton from '@/components/ActionButton';
 import styles from './SeasonalBanner.module.css';
 
 const DEADLINE = new Date('2026-03-14T23:59:59');
@@ -42,12 +42,12 @@ export default function SeasonalBanner() {
                     <h2 className={styles.title}>Pot O&apos; Gold Dinners<br /><em>Pre-Orders Open</em></h2>
                     <p className={styles.sub}>HMCo. Boiled Corned Beef, Red Taters, Best Cabbage Ever, and more! Pre-orders open now — hot n ready to serve 4 adults.</p>
                     <div className={styles.actions}>
-                        <Link href="/specials" className="btn-hit">
-                            <span className="btn btn-primary">Pre-Order Now</span>
-                        </Link>
-                        <Link href="/specials" className="btn-hit">
-                            <span className="btn btn-secondary">See Full Menu</span>
-                        </Link>
+                        <ActionButton href="/specials" variant="primary">
+                            Pre-Order Now
+                        </ActionButton>
+                        <ActionButton href="/specials" variant="secondary">
+                            See Full Menu
+                        </ActionButton>
                     </div>
                 </div>
                 <div className={styles.right}>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
+import ContactLink from '@/components/ContactLink';
 import PageHero from '@/components/PageHero';
 import legalStyles from '../(legal)/legal.module.css';
 import styles from './page.module.css';
@@ -66,10 +67,8 @@ export default function FaqClient({ faqs }: { faqs: FaqGroup[] }) {
                 lead={
                     <>
                         Can&apos;t find your answer? Call us at{' '}
-                        <a href="tel:8474416328" className={legalStyles.contactLink}>
-                            (847) 441-MEAT
-                        </a>{' '}
-                        — a real butcher behind the counter will pick up.
+                        <ContactLink kind="phone" className={legalStyles.contactLink} /> — a real butcher behind the
+                        counter will pick up.
                     </>
                 }
             >

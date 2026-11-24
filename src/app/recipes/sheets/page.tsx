@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import PageHero from '@/components/PageHero';
 import { ParcelSheetThumbnail } from '../ParcelSheetGraphic';
 import { RECIPES } from '../recipes';
 import {
@@ -39,14 +38,20 @@ export default function RecipeCookingSheetsIndexPage() {
 
     return (
         <SheetsInkModeShell>
-            <PageHero
-                title={
-                    <>
-                        Butcher&apos;s Parcel <em>Liners</em>
-                    </>
-                }
-                lead="Single-ink black-and-white 12 × 16 inch parchment print plates calibrated for two servings — strictly for oven-baked parcels at 425°F or below, with life-size 1:1 ingredient contours, USDA safe internal temperatures, and a scannable QR code back to hofherrmeatco.com."
-            />
+            <header className={styles.indexHero}>
+                <div className="container">
+                    <div className={styles.indexHeroInner}>
+                        <h1 className={styles.indexTitle}>
+                            Butcher&apos;s Parcel <em>Liners</em>
+                        </h1>
+                        <p className={styles.indexLede}>
+                            Single-ink black-and-white 12 × 16 inch parchment print plates calibrated for two servings —
+                            strictly for oven-baked parcels at 425°F or below, with life-size 1:1 ingredient contours,
+                            USDA safe internal temperatures, and a scannable QR code back to hofherrmeatco.com.
+                        </p>
+                    </div>
+                </div>
+            </header>
 
             <section
                 id="how-parcel-sheets-work"

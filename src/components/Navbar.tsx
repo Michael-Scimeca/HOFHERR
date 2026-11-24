@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { openAuthModal } from '@/components/AuthModal';
 import { useSiteSettings, type StoreHourEntry } from '@/context/SiteSettingsContext';
+import { SITE_CONTACT } from '@/lib/siteContact';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
 import MobileMenuBurn from '@/components/MobileMenuBurn';
 import { lockScroll } from '@/lib/scrollLock';
@@ -389,8 +390,8 @@ export default function Navbar() {
                     </div>
 
                     <div className={styles.storeStatusOuter}>
-                        <a href="tel:8474416328" className={styles.phone} aria-label="Call Hofherr Meat Co. at (847) 441-6328">
-                            📞 (847) 441-MEAT
+                        <a href={SITE_CONTACT.phoneHref} className={styles.phone} aria-label="Call Hofherr Meat Co. at (847) 441-6328">
+                            📞 {SITE_CONTACT.phoneDisplay}
                         </a>
                         <div className={styles.marqueeTrack}>
                             {storePills}

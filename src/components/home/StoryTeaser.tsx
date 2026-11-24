@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import ActionButton from '@/components/ActionButton';
 import styles from './StoryTeaser.module.css';
 
 export default function StoryTeaser() {
@@ -13,9 +13,9 @@ export default function StoryTeaser() {
                         A village butcher in Germany, a meat packing company on Chicago&apos;s South Side, and in 2014,
                         Sean Hofherr bringing that family legacy back to the North Shore.
                     </p>
-                    <Link href="/our-story" className="btn-hit">
-                        <span className="btn btn-primary">Read Our Story →</span>
-                    </Link>
+                    <ActionButton href="/our-story" variant="primary">
+                        Read Our Story →
+                    </ActionButton>
                 </div>
             </div>
         </section>
