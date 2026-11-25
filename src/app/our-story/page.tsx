@@ -61,21 +61,21 @@ const FALLBACK_TIMELINE: TimelineItem[] = [
         era: 'Late 1800s',
         title: 'The Old Country',
         body: 'A Hofherr great-great-grandfather plies his trade as a village butcher in Germany — a craft handed down and carried across the Atlantic.',
-        image: '/assets/timeline/old-country-butcher.jpg',
+        image: '/assets/timeline/old-country-butcher.webp',
         imageAlt: 'Old-world village butcher working by lantern light with hanging cured cuts',
     },
     {
         era: 'Early 1900s',
         title: 'Chicago\'s South Side',
         body: 'His son, an immigrant, establishes the original Hofherr Meat Company on Chicago\'s storied South Side, building a name among the city\'s legendary stockyard community.',
-        image: '/assets/timeline/chicago-south-side-1900s.jpg',
+        image: '/assets/timeline/chicago-south-side-1900s.webp',
         imageAlt: 'Early 1900s Chicago South Side butcher in a flat cap and striped apron trimming beef on a maple block',
     },
     {
         era: '2009 – 2013',
         title: 'Earning His Stripes',
         body: 'Sean sharpens his craft at Keefer\'s Restaurant in River North, then apprentices at Zier\'s Prime Meats in Wilmette. He wins the 2009 North Shore Chili Cookoff and the 2010 Lake Bluff Ribfest before directing the kitchen at Stormy\'s Tavern in Northfield.',
-        image: '/assets/timeline/earning-his-stripes-knives.jpg',
+        image: '/assets/timeline/earning-his-stripes-knives.webp',
         imageAlt: 'Butcher drawing a hand-forged knife from a wooden roll beside an open fire',
     },
     {
@@ -83,14 +83,14 @@ const FALLBACK_TIMELINE: TimelineItem[] = [
         title: 'Hofherr Meat Co. Opens',
         body: '300 Happ Rd, Northfield. Sean and his wife Arielle open a new chapter — and a return to roots. Every cut made to order. Every animal traceable to a named family farm.',
         video: '/video-clips/stage-fire.mp4',
-        image: '/assets/timeline/northfield-shop-dusk.jpg',
+        image: '/assets/timeline/northfield-shop-dusk.webp',
         imageAlt: 'Hofherr Meat Co. flagship butcher shop on Happ Road in Northfield at dusk',
     },
     {
         era: 'April 2025',
         title: 'The Depot Opens',
         body: 'Sean and Arielle expand to a second location — The Depot, inside the historic Winnetka Elm Street Metra Train Station at 754 Elm St. Serving their America\'s Test Kitchen-featured Italian Beef, custom-blend Sparrow Coffee, Rare Tea Cellar teas, and grab-and-go butcher favorites.',
-        image: '/assets/timeline/the-depot-winnetka-dusk.jpg',
+        image: '/assets/timeline/the-depot-winnetka-dusk.webp',
         imageAlt: 'Sean Hofherr at The Depot red-awning window inside the historic Winnetka train station at dusk',
     },
 ];
@@ -99,37 +99,37 @@ const FALLBACK_TEAM = [
     {
         name: 'Sean Hofherr',
         role: 'Owner & Head Chef',
-        photo: '/assets/team/sean-hofherr-safety-seal.jpg',
+        photo: '/assets/team/sean-hofherr-safety-seal.webp',
         bio: 'Sean carries on a legacy that began with a village butcher in Germany, brought to America by his immigrant great-grandfather who built the original Hofherr Meat Company on Chicago\'s South Side. After honing his craft at Keefer\'s Restaurant in River North, an apprenticeship at Zier\'s Prime Meats in Wilmette, and winning the 2009 North Shore Chili Cookoff, Sean opened Hofherr Meat Co. in 2014. He\'s an active member of the Butcher\'s Guild and the Illinois Barbecue Association.'
     },
     {
         name: 'Vincent Recaei',
         role: 'Manager',
-        photo: '/team/vincent.jpg',
+        photo: '/team/vincent.webp',
         bio: 'The guy behind the scenes who keeps the whole operation running. Vincent manages the day-to-day alongside Sean — from inventory and vendor relationships to making sure the cases are stocked and the shop floor stays spotless. He grew up in the neighborhood and started as a part-time hire before working his way into a leadership role. Vincent is the first one in and the last one out, and if you\'re a regular, he probably already knows your order.'
     },
     {
         name: 'Emily Cushing',
         role: 'Butcher',
-        photo: '/team/emily.jpg',
+        photo: '/team/emily.webp',
         bio: 'Emily holds a degree in Meat Processing from the University of Wisconsin–Platteville — one of only a handful of programs like it in the country. She came to HMC because she wanted to work at a shop that values the craft the way she does. Whether she\'s breaking down a whole hog or helping a first-timer pick the right roast for Sunday dinner, Emily brings the same level of care and expertise. She\'s also the team\'s go-to for custom cuts and special requests.'
     },
     {
         name: 'Dan Blair',
         role: 'Butcher',
-        photo: '/team/dan.jpg',
+        photo: '/team/dan.webp',
         bio: 'A Northfield native through and through, Dan spent years behind the meat counter at Mariano\'s before making the move to HMC. He brings decades of experience, a deep knowledge of every cut in the case, and the kind of old-school customer service that keeps people coming back. Dan is the guy who remembers what you bought last Thanksgiving and will talk you through the best way to cook it. His passion for quality and consistency is a big part of what makes HMC feel like a neighborhood institution.'
     },
     {
         name: 'Jamie Bisoulis',
         role: 'Head Chef',
-        photo: '/team/jamie.jpg',
+        photo: '/team/jamie.webp',
         bio: 'Jamie has been with the shop since the very beginning — she was one of Sean\'s first hires and helped build the prepared foods program from scratch. She runs the HMC kitchen with precision and heart, overseeing everything from the signature soups and sides to the sauces, marinades, and seasonal specials. Jamie\'s background is rooted in scratch cooking and home-style recipes made with real ingredients. If it\'s in the hot case or the grab-and-go cooler, chances are Jamie made it by hand that morning.'
     },
     {
         name: 'Steve Soler',
         role: 'Chef',
-        photo: '/team/steve.jpg',
+        photo: '/team/steve.webp',
         bio: 'Steve met Sean at a charity event and they bonded over pork belly, sauerkraut, and a shared belief that food should be made the right way — no shortcuts. That conversation turned into a partnership, and Steve now plays a key role in developing new recipes, catering menus, and everything that comes out of the HMC kitchen alongside Jamie. With a background in both fine dining and comfort food, Steve brings a versatility that keeps the menu fresh and exciting. He\'s the creative force behind many of the shop\'s most popular seasonal dishes.'
     },
 ];
@@ -168,7 +168,7 @@ export default async function OurStoryPage() {
                 ...m,
                 photo:
                     m.name.toLowerCase() === 'sean hofherr'
-                        ? '/assets/team/sean-hofherr-safety-seal.jpg'
+                        ? '/assets/team/sean-hofherr-safety-seal.webp'
                         : m.photo || fallbackMap.get(m.name.toLowerCase()) || '/team/placeholder.jpg',
             }));
         }
@@ -233,7 +233,7 @@ export default async function OurStoryPage() {
                                     <div className={styles.seanImagePart}>
                                         <div className={`${styles.portraitLayer} ${styles.portraitBase}`}>
                                             <Image
-                                                src="/assets/team/sean-hofherr-safety-seal.jpg"
+                                                src="/assets/team/sean-hofherr-safety-seal.webp"
                                                 alt="Sean Hofherr"
                                                 fill
                                                 loading="eager"
@@ -243,7 +243,7 @@ export default async function OurStoryPage() {
                                         </div>
                                         <div className={`${styles.portraitLayer} ${styles.portraitHover}`}>
                                             <Image
-                                                src="/assets/team/sean-hofherr-salt-sprinkle.jpg"
+                                                src="/assets/team/sean-hofherr-salt-sprinkle.webp"
                                                 alt=""
                                                 aria-hidden="true"
                                                 fill

@@ -7,7 +7,7 @@
 .sectionBgMedia {
     position: absolute;
     inset: -24px;
-    background-image: url('/assets/bg-feed-crowed.png');
+    background-image: url('/assets/bg-feed-crowed.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

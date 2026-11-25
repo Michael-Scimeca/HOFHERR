@@ -50,6 +50,188 @@
     display: none;
 }
 
+.heroVideoOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-color: var(--hero-overlay-color, #000000);
+    opacity: var(--hero-overlay-opacity, 0.45);
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+/* ─── Hero Overlay Live Tuner (Dev UI) ─── */
+.overlayTunerWrap {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.overlayTunerPill {
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(12, 10, 10, 0.9);
+    color: var(--fg);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+.overlayTunerPill:hover {
+    border-color: var(--gold);
+}
+
+.overlayTunerPanel {
+    width: 248px;
+    padding: 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: rgba(14, 12, 12, 0.94);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.overlayTunerHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.overlayTunerTitle {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.overlayTunerClose {
+    border: none;
+    background: transparent;
+    color: var(--fg-3);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.overlayTunerRow {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.overlayTunerLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-2);
+}
+
+.overlayColorInputWrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.overlayColorPicker {
+    width: 30px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.overlayCode {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    color: var(--fg);
+}
+
+.overlayPresets {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.overlayPresetBtn {
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 4px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--fg-2);
+    cursor: pointer;
+}
+
+.overlayPresetActive {
+    border-color: var(--red);
+    background: rgba(var(--red-rgb), 0.22);
+    color: var(--fg);
+}
+
+.overlaySliderLabel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-2);
+}
+
+.overlaySliderTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.overlaySlider {
+    width: 100%;
+    accent-color: var(--red);
+    cursor: pointer;
+}
+
+.overlayTunerActions {
+    display: flex;
+    gap: 8px;
+}
+
+.overlayActionBtn {
+    flex: 1;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--fg);
+    cursor: pointer;
+}
+
+.overlayActionBtn:hover {
+    border-color: var(--gold);
+}
+
 @media (max-width: 1024px) {
     .heroVideoPlayer {
         display: none;
@@ -110,7 +292,7 @@
 
     .floatingMedia {
         position: absolute;
-        right: 310px;
+        right: 210px;
         top: auto;
         bottom: 16px;
         margin: 0;

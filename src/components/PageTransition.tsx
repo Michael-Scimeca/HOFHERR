@@ -3,6 +3,7 @@
 import { createContext, useContext, useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { waitForPageAssets } from '@/lib/waitForPageAssets';
+import { hasSeenPreloaderThisSession } from '@/lib/preloaderGate';
 import {
     PRELOADER_STEPS,
     PRESETS,
@@ -1026,8 +1027,11 @@ export default function PageTransition({ children }: { children: React.ReactNode
         if (!el) return;
         const isSheetRoute =
             pathname === '/recipes/sheets' || Boolean(pathname?.endsWith('/sheet'));
+        // Also true when the preloader already played in this tab's session (see Preloader.tsx)
         const skipsPreloader =
-            PRELOADER_SKIP_ROUTES.some(p => pathname?.startsWith(p)) || isSheetRoute;
+            PRELOADER_SKIP_ROUTES.some(p => pathname?.startsWith(p)) ||
+            isSheetRoute ||
+            hasSeenPreloaderThisSession();
         if (!skipsPreloader) {
             el.classList.add('pt-waiting');
             setMeltStep(2);

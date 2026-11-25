@@ -38,9 +38,9 @@ const nextConfig: NextConfig = {
     '/admin/social/**': ['public/assets/*.{jpg,png,svg}', 'src/lib/social/fonts/**/*', 'node_modules/dictionary-en/index.{aff,dic}'],
   },
 
-  // Tree-shake heavy icon/chart/animation barrel imports to minimize unused JS
+  // Tree-shake heavy icon/animation barrel imports to minimize unused JS
   experimental: {
-    optimizePackageImports: ['lucide-react', '@react-three/drei', 'recharts', 'gsap'],
+    optimizePackageImports: ['lucide-react', '@react-three/drei', 'gsap'],
   },
 
   // Compress all static assets

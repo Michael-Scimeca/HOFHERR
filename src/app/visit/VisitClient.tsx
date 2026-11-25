@@ -27,7 +27,7 @@ const LOCATIONS = [
         phoneTel: 'tel:8474416328',
         email: 'butcher@hofherrmeatco.com',
         directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=300+Happ+Rd,+Northfield,+IL+60093&travelmode=driving',
-        heroImage: '/images/visit/northfield-storefront-front.jpg',
+        heroImage: '/images/visit/northfield-storefront-front.webp',
         heroAlt: 'Hofherr Meat Co. storefront in Northfield, IL',
         hours: [
             { day: 'Tuesday – Friday', time: '10am – 6pm', open: true },
@@ -68,7 +68,7 @@ const LOCATIONS = [
         phoneTel: 'tel:8474416328',
         email: 'butcher@hofherrmeatco.com',
         directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=754+Elm+St,+Winnetka,+IL+60093&travelmode=driving',
-        heroImage: '/shops/winnetka.png',
+        heroImage: '/shops/winnetka.webp',
         heroAlt: 'The Depot at Winnetka Elm Street Metra Station',
         hours: [
             { day: 'Monday – Friday', time: '10:30am – 6pm (Beef: 10:30–2 & 4–6)', open: true },
@@ -406,35 +406,35 @@ export default function VisitClient() {
                                 <div className={styles.galleryGrid}>
                                     {/* Row 1: Large left + 2 stacked right */}
                                     <div className={styles.galleryItemLarge}>
-                                        <img src="/images/visit/shop-interior.jpg" alt="Inside Hofherr Meat Co." className={styles.galleryImg} data-parallax="inset" />
+                                        <img src="/images/visit/shop-interior.webp" alt="Inside Hofherr Meat Co." className={styles.galleryImg} data-parallax="inset" />
                                         <div className={styles.galleryCaption}>Inside the Northfield butcher shop</div>
                                     </div>
                                     <div className={styles.galleryItemSmallA}>
-                                        <img src="/images/visit/sauces-shelf.jpg" alt="Uncle Dougie's BBQ sauces and rubs on the shelf" className={styles.galleryImg} data-parallax="inset" />
+                                        <img src="/images/visit/sauces-shelf.webp" alt="Uncle Dougie's BBQ sauces and rubs on the shelf" className={styles.galleryImg} data-parallax="inset" />
                                         <div className={styles.galleryCaption}>Uncle Dougie&apos;s sauces &amp; house rubs</div>
                                     </div>
                                     <div className={styles.galleryItemSmallB}>
-                                        <img src="/images/visit/hanging-sausages.jpg" alt="House-made sausages hanging to cure" className={styles.galleryImg} data-parallax="inset" />
+                                        <img src="/images/visit/hanging-sausages.webp" alt="House-made sausages hanging to cure" className={styles.galleryImg} data-parallax="inset" />
                                         <div className={styles.galleryCaption}>House-cured links &amp; salumi</div>
                                     </div>
 
                                     {/* Row 2: Wide panorama */}
                                     <div className={styles.galleryItemWide}>
-                                        <img src="/images/visit/shop-event.jpg" alt="Community tasting event at Hofherr Meat Co." className={`${styles.galleryImg} ${styles.galleryImgTop}`} data-parallax="inset" />
+                                        <img src="/images/visit/shop-event.webp" alt="Community tasting event at Hofherr Meat Co." className={`${styles.galleryImg} ${styles.galleryImgTop}`} data-parallax="inset" />
                                         <div className={styles.galleryCaption}>Community events &amp; tastings at the shop</div>
                                     </div>
 
                                     {/* Row 3: 3-up grid */}
                                     <div className={styles.galleryItemThird}>
-                                        <img src="/images/visit/sandwich.jpg" alt="Fresh-sliced roast beef sandwich on artisan bread" className={styles.galleryImg} data-parallax="inset" />
+                                        <img src="/images/visit/sandwich.webp" alt="Fresh-sliced roast beef sandwich on artisan bread" className={styles.galleryImg} data-parallax="inset" />
                                         <div className={styles.galleryCaption}>Made-to-order deli sandwiches</div>
                                     </div>
                                     <div className={styles.galleryItemThird}>
-                                        <img src="/images/visit/rooster-art.jpg" alt="Vintage rooster artwork in the shop" className={styles.galleryImg} data-parallax="inset" />
+                                        <img src="/images/visit/rooster-art.webp" alt="Vintage rooster artwork in the shop" className={styles.galleryImg} data-parallax="inset" />
                                         <div className={styles.galleryCaption}>A shop full of character</div>
                                     </div>
                                     <div className={styles.galleryItemThird}>
-                                        <img src="/images/visit/steins.jpg" alt="Collectible steins and decor on display" className={styles.galleryImg} data-parallax="inset" />
+                                        <img src="/images/visit/steins.webp" alt="Collectible steins and decor on display" className={styles.galleryImg} data-parallax="inset" />
                                         <div className={styles.galleryCaption}>Curated decor &amp; collectibles</div>
                                     </div>
                                 </div>

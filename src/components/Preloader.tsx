@@ -1,10 +1,16 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import styles from './Preloader.module.css';
 import { lockScroll } from '@/lib/scrollLock';
+import {
+    hasSeenPreloaderThisSession,
+    markPreloaderDone,
+    markPreloaderRevealed,
+    rememberPreloaderSeen,
+} from '@/lib/preloaderGate';
 
 // The fire/burn engine is heavy (three.js + per-pixel canvas), so it loads on the client only.
 // The black overlay below is server-rendered, so the page never flashes before it appears.
@@ -14,9 +20,13 @@ const FireTestClient = dynamic(() => import('@/app/fire-test/FireTestClient'), {
 const SKIP = ['/studio', '/admin', '/dashboard', '/fire-test'];
 const PRELOADER_SYNC_VERSION = 7;
 
+const emptySubscribe = () => () => {};
+const seenServerSnapshot = () => false;
+
 /**
- * Site preloader, shown on every full page load and controllable on-demand from the
- * unified Transition UI HUD (via 'preloader-hud-command').
+ * Site preloader, shown on the first full page load of a browser session (refreshes and return
+ * visits in the same tab skip it) and controllable on-demand from the unified Transition UI HUD
+ * (via 'preloader-hud-command').
  */
 export default function Preloader() {
     const pathname = usePathname();
@@ -29,15 +39,25 @@ export default function Preloader() {
     const [runKey, setRunKey] = useState(0);
     const syncVerRef = useRef(PRELOADER_SYNC_VERSION);
 
+    // Already played in this tab's session: treat it as finished until the HUD asks for a replay
+    // (every HUD restart bumps runKey). PageTransition melts the page in on its own in that case.
+    const seenThisSession = useSyncExternalStore(emptySubscribe, hasSeenPreloaderThisSession, seenServerSnapshot);
+    const finished = done || (seenThisSession && runKey === 0);
+
     // No scrolling while the preloader is on screen.
     const skipped =
         SKIP.some(p => pathname?.startsWith(p)) ||
         pathname === '/recipes/sheets' ||
         Boolean(pathname?.endsWith('/sheet'));
     useEffect(() => {
-        if (done || skipped) return;
+        if (finished || skipped) return;
         return lockScroll();
-    }, [done, skipped]);
+    }, [finished, skipped]);
+
+    // Tell deferred effects (hero trophy, ambient embers) that the page is no longer covered.
+    useEffect(() => {
+        if (finished || skipped) markPreloaderDone();
+    }, [finished, skipped]);
 
     useEffect(() => {
         if (syncVerRef.current !== PRELOADER_SYNC_VERSION) {
@@ -46,8 +66,12 @@ export default function Preloader() {
         }
     });
 
-    const handleReveal = useCallback(() => setRevealed(true), []);
+    const handleReveal = useCallback(() => {
+        markPreloaderRevealed();
+        setRevealed(true);
+    }, []);
     const handleDone = useCallback(() => {
+        rememberPreloaderSeen();
         setDone(true);
         window.dispatchEvent(new CustomEvent('preloader-step-report', { detail: { step: 6, pct: 100 } }));
     }, []);
@@ -72,7 +96,7 @@ export default function Preloader() {
                 setAlwaysShowFlame(true);
                 setInitialPaused(true);
                 setRevealed(!detail.darkStage);
-                if (done) {
+                if (finished) {
                     setInitialStep(5);
                     setDone(false);
                     setRunKey(k => k + 1);
@@ -100,7 +124,7 @@ export default function Preloader() {
             } else if (typeof detail.step === 'number') {
                 const stepId = detail.step;
                 setRevealed(stepId >= 4);
-                if (done) {
+                if (finished) {
                     setInitialStep(stepId);
                     setDone(false);
                     setRunKey(k => k + 1);
@@ -108,7 +132,7 @@ export default function Preloader() {
                     window.dispatchEvent(new CustomEvent('preloader-step-control', { detail: { step: stepId } }));
                 }
             } else if (typeof detail.togglePause === 'boolean') {
-                if (done) {
+                if (finished) {
                     setInitialStep(1);
                     setRevealed(false);
                     setDone(false);
@@ -121,9 +145,9 @@ export default function Preloader() {
 
         window.addEventListener('preloader-hud-command', onHudCommand);
         return () => window.removeEventListener('preloader-hud-command', onHudCommand);
-    }, [done]);
+    }, [finished]);
 
-    if (done || skipped) return null;
+    if (finished || skipped) return null;
 
     return (
         <div

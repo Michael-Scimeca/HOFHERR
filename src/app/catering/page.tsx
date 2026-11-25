@@ -188,7 +188,7 @@ export default async function CateringPage() {
                             <div className={styles.stepMediaWrap}>
                                 <div className={styles.stepMedia}>
                                     <Image
-                                        src="/assets/catering/how-it-works-build-package.jpg"
+                                        src="/assets/catering/how-it-works-build-package.webp"
                                         alt="Illustrated BBQ catering platter with ribs, brisket, sausages, sides, crossed cleaver and fork, and rising flames"
                                         fill
                                         sizes="512px"
@@ -208,7 +208,7 @@ export default async function CateringPage() {
                             <div className={styles.stepMediaWrap}>
                                 <div className={styles.stepMedia}>
                                     <Image
-                                        src="/assets/catering/how-it-works-pick-date.jpg"
+                                        src="/assets/catering/how-it-works-pick-date.webp"
                                         alt="Illustrated flaming calendar with a checked event date square"
                                         fill
                                         sizes="512px"
@@ -228,7 +228,7 @@ export default async function CateringPage() {
                             <div className={styles.stepMediaWrap}>
                                 <div className={styles.stepMedia}>
                                     <Image
-                                        src="/assets/catering/how-it-works-full-service.jpg"
+                                        src="/assets/catering/how-it-works-full-service.webp"
                                         alt="Illustrated full-service banquet cloche lifted over curling smoke, rising flames, and crossed carving knife and fork"
                                         fill
                                         sizes="512px"

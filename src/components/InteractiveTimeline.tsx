@@ -24,23 +24,23 @@ type FallbackMedia = { image: string; imageAlt: string; archival?: boolean };
 
 const DEFAULT_TIMELINE_MEDIA: FallbackMedia[] = [
     {
-        image: '/assets/timeline/old-country-butcher.jpg',
+        image: '/assets/timeline/old-country-butcher.webp',
         imageAlt: 'Old-world village butcher working by lantern light with hanging cured cuts',
     },
     {
-        image: '/assets/timeline/chicago-south-side-1900s.jpg',
+        image: '/assets/timeline/chicago-south-side-1900s.webp',
         imageAlt: 'Early 1900s Chicago South Side butcher in a flat cap and striped apron trimming beef on a maple block',
     },
     {
-        image: '/assets/timeline/earning-his-stripes-knives.jpg',
+        image: '/assets/timeline/earning-his-stripes-knives.webp',
         imageAlt: 'Butcher drawing a hand-forged knife from a wooden roll beside an open fire',
     },
     {
-        image: '/assets/timeline/northfield-shop-dusk.jpg',
+        image: '/assets/timeline/northfield-shop-dusk.webp',
         imageAlt: 'Hofherr Meat Co. flagship butcher shop on Happ Road in Northfield at dusk',
     },
     {
-        image: '/assets/timeline/the-depot-winnetka-dusk.jpg',
+        image: '/assets/timeline/the-depot-winnetka-dusk.webp',
         imageAlt: 'Sean Hofherr at The Depot red-awning window inside the historic Winnetka train station at dusk',
     },
 ];

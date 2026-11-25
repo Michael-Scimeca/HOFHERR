@@ -3,7 +3,6 @@ import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './Hero.module.css';
 import HeroBackdropVideo from './HeroBackdropVideo';
 import HeroVideo from './HeroVideo';
-import LazyTrophy from './LazyTrophy';
 import HolidayHeroStrip from './HolidayHeroStrip';
 
 export default function Hero() {
@@ -28,8 +27,6 @@ export default function Hero() {
                             </h1>
                             <div className={styles.floatingMedia}>
                                 <HeroVideo />
-
-                                <LazyTrophy className={styles.heroTrophy} />
                             </div>
                         </div>
 

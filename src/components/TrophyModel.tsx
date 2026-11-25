@@ -125,7 +125,16 @@ function Trophy({ onLoaded }: { onLoaded: () => void }) {
     );
 }
 
-export default function TrophyCanvas({ className, style }: { className?: string, style?: React.CSSProperties }) {
+export default function TrophyCanvas({
+    className,
+    style,
+    paused = false,
+}: {
+    className?: string;
+    style?: React.CSSProperties;
+    /** Stops the render loop (e.g. while the trophy is scrolled off screen). */
+    paused?: boolean;
+}) {
     const [ready, setReady] = useState(false);
     const webglOk = useSyncExternalStore(emptySubscribe, isWebGLSupported, () => false);
 
@@ -147,6 +156,7 @@ export default function TrophyCanvas({ className, style }: { className?: string,
         >
             <WebGLErrorBoundary>
                 <Canvas
+                    frameloop={paused ? 'never' : 'always'}
                     dpr={[1, 1.5]}
                     camera={{ position: [0, 0, 5], fov: 45 }}
                     gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}

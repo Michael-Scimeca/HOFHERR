@@ -19,7 +19,7 @@ const getThumb = (name: string) => {
     if (safeName.includes('slaw')) return '/images/bbq/coleslaw.jpg';
     if (safeName.includes('beans')) return '/images/bbq/baked_beans.jpg';
     if (safeName.includes('collard')) return '/images/bbq/collard_greens.jpg';
-    if (safeName.includes('lion')) return '/images/bbq/grilled-lions-mane-mushrooms.jpg';
+    if (safeName.includes('lion')) return '/images/bbq/grilled-lions-mane-mushrooms.webp';
     if (safeName.includes('portobello')) return '/images/bbq/portobellos.jpg';
     if (safeName.includes('bean salad')) return '/images/bbq/bean_salad.jpg';
     if (safeName.includes('pasta salad')) return '/images/bbq/pasta_salad.jpg';

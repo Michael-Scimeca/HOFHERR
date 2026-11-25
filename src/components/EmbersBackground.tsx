@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import styles from './EmbersBackground.module.css';
+import { isPreloaderRevealed, subscribePreloader } from '@/lib/preloaderGate';
 
 const TRANSITION_CONFIG = {
     burstCount: 75,
@@ -370,10 +371,26 @@ export default function EmberBackground() {
             lastFrameTime = now;
             draw(now);
         };
-        const startTimer = window.setTimeout(() => {
+        // Embers sit behind the preloader's solid black overlay, so the loop only starts once that
+        // overlay has dropped away (never earlier than the original 900ms settle delay).
+        let started = false;
+        let unsubscribePreloader = () => {};
+        const startLoop = () => {
+            if (started) return;
+            started = true;
+            unsubscribePreloader();
             if (!paused && !animationId) {
                 animationId = requestAnimationFrame(loop);
             }
+        };
+        const startTimer = window.setTimeout(() => {
+            if (isPreloaderRevealed()) {
+                startLoop();
+                return;
+            }
+            unsubscribePreloader = subscribePreloader(() => {
+                if (isPreloaderRevealed()) startLoop();
+            });
         }, 900);
 
         const onVisibility = () => {
@@ -383,7 +400,7 @@ export default function EmberBackground() {
                     cancelAnimationFrame(animationId);
                     animationId = 0;
                 }
-            } else if (!animationId) {
+            } else if (started && !animationId) {
                 lastFrameTime = 0;
                 animationId = requestAnimationFrame(loop);
             }
@@ -398,6 +415,7 @@ export default function EmberBackground() {
 
         return () => {
             window.clearTimeout(startTimer);
+            unsubscribePreloader();
             cancelAnimationFrame(animationId);
             window.removeEventListener('resize', onResize);
             window.removeEventListener('page-transition-exit', onExit);
