@@ -35,7 +35,7 @@ export const FALLBACK_SIGNATURES: SignatureProduct[] = [
         title: "The World's Greatest Italian Beef",
         sectionLabel: 'Chicago Classic · Depot Exclusive',
         emoji: '🥩',
-        image: '/assets/italian-beef.jpg',
+        image: '/assets/home/italian-beef.webp',
         description:
             "In November 2022, America's Test Kitchen challenged us to make the best Italian Beef sandwich in the city. We accepted, worked in secret for a month, and in December 2022 served the greatest beef Chicagoland has ever tasted — slow-roasted chuck eye sliced shabu-shabu style to order, piled on Turano bread with sweet peppers, house-made 3-year-aged Melrose pepper giardiniera, and rich jus.\n\nOur story became the season finale of their podcast, Proof on PBS — a deep dive from concept to first service. It's what happens when a 120-year-old butcher shop refuses to play it safe.\n\nThe sandwich is served exclusively at The Depot — our counter inside the Winnetka Elm St. Metra Station (754 Elm St) — Mon–Fri 10:30am–2:00pm & 4:00pm–6:00pm (and Saturdays 10:30am–1:00pm during the Winnetka Farmers Market) until we sell out. There is no substitute and no pre-order.\n\n🏪 Can't make it to The Depot? Order our house-roasted Italian beef by the pound and build the perfect sandwich at home.",
         calloutTitle: 'As Featured On',
@@ -55,7 +55,7 @@ export const FALLBACK_SIGNATURES: SignatureProduct[] = [
         title: 'Rotisserie Chicken Dinners',
         sectionLabel: 'Ready Daily · Tue–Sun',
         emoji: '🍗',
-        image: '/assets/rotisserie-chickens.jpg',
+        image: '/assets/home/rotisserie-chickens.webp',
         video: '/video-clips/chicken.mp4',
         description:
             'These tasty, pasture-raised chickens come hot and ready with roasted schmaltzy potatoes. Slow-roasted on our floor-to-ceiling rotisserie — simple seasoning, perfect every time.\n\nAvailable for curbside pickup Tuesday through Sunday at The Butcher Shop (300 Happ Rd, Northfield). Call ahead — they sell out most days.',

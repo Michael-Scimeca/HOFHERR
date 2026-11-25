@@ -23,6 +23,17 @@ export default function HeroVideo() {
 
     const [hasStarted, setHasStarted] = useState(false);
     const [uiIsDragging, setUiIsDragging] = useState(false);
+    const [loadBubbleVideo, setLoadBubbleVideo] = useState(false);
+
+    // Show crisp 16KB WebP poster immediately; load 850KB beef.mp4 on first interaction
+    useEffect(() => {
+        const activate = () => setLoadBubbleVideo(true);
+        const events = ['pointermove', 'pointerdown', 'touchstart', 'scroll', 'keydown'] as const;
+        events.forEach((ev) => window.addEventListener(ev, activate, { once: true, passive: true }));
+        return () => {
+            events.forEach((ev) => window.removeEventListener(ev, activate));
+        };
+    }, []);
 
     // Draggable refs for 60fps performance
     const dragData = useRef({
@@ -154,15 +165,28 @@ export default function HeroVideo() {
                 }}
             >
                 <div className={styles.bubbleInner}>
-                    <video
-                        src="/video-clips/beef.mp4"
-                        muted
-                        playsInline
-                        autoPlay
-                        loop
-                        className={styles.poster}
-                        draggable={false}
-                    />
+                    {loadBubbleVideo ? (
+                        <video
+                            src="/video-clips/beef.mp4"
+                            poster="/assets/home/italian-beef-thumb.webp"
+                            muted
+                            playsInline
+                            autoPlay
+                            loop
+                            className={styles.poster}
+                            draggable={false}
+                        />
+                    ) : (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                            src="/assets/home/italian-beef-thumb.webp"
+                            alt="Hofherr Meat Co. Italian Beef preview"
+                            width={320}
+                            height={320}
+                            className={styles.poster}
+                            draggable={false}
+                        />
+                    )}
                 </div>
 
                 {/* Elevated completely outside of the bubble mask so it doesn't get clipped */}

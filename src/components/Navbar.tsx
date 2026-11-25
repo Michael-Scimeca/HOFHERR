@@ -249,38 +249,76 @@ export default function Navbar() {
     const butcherStatus = getShopStatus(butcherHours, currentTime);
     const depotStatus = getShopStatus(depotHours, currentTime);
 
-    const storePills = (
-        <div className={styles.storeStatusWrap}>
-            <TransitionLink
-                href="/online-orders?store=butcher"
-                className={`${styles.storeStatus} ${styles[butcherStatus.status]}`}
-            >
-                <div className={styles.statusDot} />
-                <span className={styles.statusStore}>Shop</span>
-                <span className={styles.statusLabel}>{butcherStatus.label}</span>
-                {butcherStatus.todayHours && (
-                    <span className={styles.statusHours}>
-                        <span className={styles.statusDivider}>|</span>
-                        {butcherStatus.todayHours.replace(/:00/g, '').replace(/ /g, '').replace('–', '-')}
+    const renderStorePills = (decorative = false) => {
+        const butcherHoursText = butcherStatus.todayHours
+            ? butcherStatus.todayHours.replace(/:00/g, '').replace(/ /g, '').replace('–', '-')
+            : '';
+        const depotHoursText = depotStatus.todayHours
+            ? depotStatus.todayHours.replace(/:00/g, '').replace(/ /g, '').replace('–', '-')
+            : '';
+
+        if (decorative) {
+            return (
+                <div className={styles.storeStatusWrap}>
+                    <span className={`${styles.storeStatus} ${styles[butcherStatus.status]}`}>
+                        <span className={styles.statusDot} />
+                        <span className={styles.statusStore}>Shop</span>
+                        <span className={styles.statusLabel}>{butcherStatus.label}</span>
+                        {butcherHoursText && (
+                            <span className={styles.statusHours}>
+                                <span className={styles.statusDivider}>|</span>
+                                {butcherHoursText}
+                            </span>
+                        )}
                     </span>
-                )}
-            </TransitionLink>
-            <TransitionLink
-                href="/online-orders?store=depot"
-                className={`${styles.storeStatus} ${styles[depotStatus.status]}`}
-            >
-                <div className={styles.statusDot} />
-                <span className={styles.statusStore}>Depot</span>
-                <span className={styles.statusLabel}>{depotStatus.label}</span>
-                {depotStatus.todayHours && (
-                    <span className={styles.statusHours}>
-                        <span className={styles.statusDivider}>|</span>
-                        {depotStatus.todayHours.replace(/:00/g, '').replace(/ /g, '').replace('–', '-')}
+                    <span className={`${styles.storeStatus} ${styles[depotStatus.status]}`}>
+                        <span className={styles.statusDot} />
+                        <span className={styles.statusStore}>Depot</span>
+                        <span className={styles.statusLabel}>{depotStatus.label}</span>
+                        {depotHoursText && (
+                            <span className={styles.statusHours}>
+                                <span className={styles.statusDivider}>|</span>
+                                {depotHoursText}
+                            </span>
+                        )}
                     </span>
-                )}
-            </TransitionLink>
-        </div>
-    );
+                </div>
+            );
+        }
+
+        return (
+            <div className={styles.storeStatusWrap}>
+                <TransitionLink
+                    href="/online-orders?store=butcher"
+                    className={`${styles.storeStatus} ${styles[butcherStatus.status]}`}
+                >
+                    <div className={styles.statusDot} />
+                    <span className={styles.statusStore}>Shop</span>
+                    <span className={styles.statusLabel}>{butcherStatus.label}</span>
+                    {butcherHoursText && (
+                        <span className={styles.statusHours}>
+                            <span className={styles.statusDivider}>|</span>
+                            {butcherHoursText}
+                        </span>
+                    )}
+                </TransitionLink>
+                <TransitionLink
+                    href="/online-orders?store=depot"
+                    className={`${styles.storeStatus} ${styles[depotStatus.status]}`}
+                >
+                    <div className={styles.statusDot} />
+                    <span className={styles.statusStore}>Depot</span>
+                    <span className={styles.statusLabel}>{depotStatus.label}</span>
+                    {depotHoursText && (
+                        <span className={styles.statusHours}>
+                            <span className={styles.statusDivider}>|</span>
+                            {depotHoursText}
+                        </span>
+                    )}
+                </TransitionLink>
+            </div>
+        );
+    };
 
     return (
         <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
@@ -395,10 +433,10 @@ export default function Navbar() {
                             📞 {SITE_CONTACT.phoneDisplay}
                         </a>
                         <div className={styles.marqueeTrack}>
-                            {storePills}
-                            <div className={styles.mobileOnlyClone} aria-hidden="true">{storePills}</div>
-                            <div className={styles.mobileOnlyClone} aria-hidden="true">{storePills}</div>
-                            <div className={styles.mobileOnlyClone} aria-hidden="true">{storePills}</div>
+                            {renderStorePills(false)}
+                            <div className={styles.mobileOnlyClone} aria-hidden="true">{renderStorePills(true)}</div>
+                            <div className={styles.mobileOnlyClone} aria-hidden="true">{renderStorePills(true)}</div>
+                            <div className={styles.mobileOnlyClone} aria-hidden="true">{renderStorePills(true)}</div>
                         </div>
                     </div>
                 </div>
