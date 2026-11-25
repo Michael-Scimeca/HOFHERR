@@ -49,7 +49,7 @@ export default function RecipesPage() {
                 lead="A craft recipe for every primal cut on the beef map — plus pork, poultry, lamb, veal and holiday centerpieces — built around daily cuts from the Hofherr counter. Pick an occasion or cut to scale ingredients and add everything directly to your pickup order."
             >
                 <Link href="/recipes/sheets" className={styles.sheetsIndexCta}>
-                    Printable 12×16&quot; Parcel Cooking Sheets →
+                    In-Shop 12×16&quot; Parcel Cooking Sheets →
                 </Link>
             </PageHero>
 

@@ -1,10 +1,10 @@
 .hubWrap {
     margin-top: 48px;
-    background: #0d0d0d;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 32px 24px;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
     position: relative;
 }
 
@@ -13,15 +13,25 @@
     margin-top: 0;
 }
 
-/* Add a subtle gradient "glow" behind the whole thing */
-.hubWrap::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(circle at center, rgba(220, 20, 40, 0.03) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+@media (min-width: 769px) {
+    .hubWrap {
+        background: #0d0d0d;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 32px 24px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Add a subtle gradient "glow" behind the whole thing */
+    .hubWrap::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: radial-gradient(circle at center, rgba(220, 20, 40, 0.03) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+    }
 }
 
 .hubGrid {
@@ -71,15 +81,24 @@
     background: var(--red);
 }
 
-/* Receipt Column (Sticky) */
+/* Receipt Column (Sticky on desktop, flush on mobile) */
 .receiptCol {
-    background: rgba(200, 20, 30, 0.03);
-    border: 1px solid rgba(204, 14, 29, 0.15);
-    border-radius: 16px;
-    padding: 24px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
     align-self: flex-start;
     position: sticky;
     top: 100px;
+}
+
+@media (min-width: 769px) {
+    .receiptCol {
+        background: rgba(200, 20, 30, 0.03);
+        border: 1px solid rgba(204, 14, 29, 0.15);
+        border-radius: 16px;
+        padding: 24px;
+    }
 }
 
 .receiptTitle {
@@ -161,7 +180,6 @@
 @media (max-width: 768px) {
     .hubGrid {
         grid-template-columns: 1fr;
-        padding-bottom: 100px;
     }
     .receiptCol,
     .column {
@@ -170,9 +188,6 @@
     }
     .receiptCol {
         grid-column: span 1;
-    }
-    .hubWrap {
-        padding: 20px;
     }
 }
 

@@ -20,7 +20,7 @@ const KNOWN_RECIPE_SLUGS = new Set(RECIPES.map(r => r.slug));
 export const metadata: Metadata = {
     title: "Butcher's Parcel Liners (12×16\") — Hofherr Meat Co.",
     description:
-        'Single-ink black-and-white printable 12 by 16 inch half-sheet parchment parcel liners for 2 servings with right-hand recipe checklists.',
+        'Single-ink black-and-white in-shop 12 by 16 inch FDA food-grade parchment parcel liners for 2 servings with right-hand recipe checklists. Available at our counter — not for home printing.',
     robots: { index: false, follow: true },
 };
 
@@ -235,7 +235,7 @@ export default function RecipeCookingSheetsIndexPage() {
                 <div className={`container ${styles.sectionStack}`}>
                     <div className={styles.sectionHeader}>
                         <h2 id="safety-seal-sheets-heading" className={styles.sectionHeading}>
-                            {`Print-Ready 12×16" Full Sheets — Small Recipe Inside the Wrap Box (${SAFETY_SEAL_SHEET_CONCEPTS.length})`}
+                            {`In-Shop 12×16" Full Parchment Sheets — Small Recipe Inside the Wrap Box (${SAFETY_SEAL_SHEET_CONCEPTS.length})`}
                         </h2>
                         <p className={styles.sectionSub}>
                             Single 12 × 16 inch (3:4) parchment sheets with a compact 2-serving ingredients &amp; method
@@ -511,7 +511,7 @@ export default function RecipeCookingSheetsIndexPage() {
                                     <Link
                                         href={`/recipes/${sheet.slug}/sheet`}
                                         className={styles.thumbLink}
-                                        aria-label={`Open printable sheet for ${sheet.sheetTitle}`}
+                                        aria-label={`Preview parcel sheet for ${sheet.sheetTitle}`}
                                     >
                                         <ParcelSheetThumbnail sheet={sheet} />
                                     </Link>
@@ -545,7 +545,7 @@ export default function RecipeCookingSheetsIndexPage() {
                                         href={`/recipes/${sheet.slug}/sheet`}
                                         className={styles.cardPrimaryBtn}
                                     >
-                                        Open B&amp;W Print Sheet →
+                                        View Parcel Sheet Guide →
                                     </Link>
                                     {KNOWN_RECIPE_SLUGS.has(sheet.recipe.slug) ? (
                                         <Link

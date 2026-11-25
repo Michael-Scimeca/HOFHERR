@@ -135,14 +135,34 @@
     font-variant-numeric: tabular-nums;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+    .indexList {
+        gap: 0;
+        border-top: 1px solid var(--border);
+    }
+
     .indexRow {
-        flex-wrap: wrap;
-        justify-content: space-between;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding-block: 14px;
+        border-bottom: 1px solid var(--border);
     }
 
     .leader {
         display: none;
+    }
+
+    .indexRight {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: baseline;
+    }
+
+    .indexYear {
+        min-width: 0;
+        text-align: right;
     }
 }
 

@@ -43,15 +43,10 @@ const SERVICES = [
         title: 'Custom Meat Platters',
         desc: 'Curated charcuterie boards, premium steak flights, and custom cut packages for dinner parties, holidays, and corporate entertaining.',
         detail: 'Any size group',
-        href: '#',
+        href: '/online-orders',
         cta: 'Shop Cuts',
-        openChat: true,
     },
 ];
-
-function openQuoteChat() {
-    window.dispatchEvent(new CustomEvent('open-chat', { detail: { subject: 'quote' } }));
-}
 
 export default function CateringCTA({ packages }: { packages?: CateringPackage[] }) {
     const s = useSiteSettings();
@@ -89,15 +84,9 @@ export default function CateringCTA({ packages }: { packages?: CateringPackage[]
                                     <h3 className={styles.serviceTitle}>{svc.title}</h3>
                                     <p className={styles.serviceDesc}>{svc.desc}</p>
                                     <div className={styles.serviceDetail}>{svc.detail}</div>
-                                    {svc.openChat ? (
-                                        <button onClick={openQuoteChat} className={styles.serviceLink}>
-                                            {svc.cta}
-                                        </button>
-                                    ) : (
-                                        <Link href={svc.href} className={styles.serviceLink}>
-                                            {svc.cta}
-                                        </Link>
-                                    )}
+                                    <Link href={svc.href} className={styles.serviceLink}>
+                                        {svc.cta}
+                                    </Link>
                                 </div>
                             </div>
                         ))}
@@ -105,7 +94,7 @@ export default function CateringCTA({ packages }: { packages?: CateringPackage[]
                 </div>
 
                 <div className={styles.footer}>
-                    <button onClick={openQuoteChat} className="btn btn-primary">Get a Free Quote</button>
+                    <Link href="/catering#build-your-package" className="btn btn-primary">Get a Free Quote</Link>
                 </div>
             </div>
         </section>

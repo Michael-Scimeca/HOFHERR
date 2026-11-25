@@ -17,9 +17,22 @@
     position: absolute;
     inset: 0;
     overflow: hidden;
+    touch-action: none;
+    overscroll-behavior: none;
 }
 .preloaderRoot .headline {
     top: 46%;
+}
+.preloaderRoot .stage {
+    pointer-events: none;
+    cursor: default;
+}
+.preloaderRoot .stageInteractive {
+    pointer-events: auto;
+    cursor: grab;
+}
+.preloaderRoot .stageInteractive:active {
+    cursor: grabbing;
 }
 
 .stage {

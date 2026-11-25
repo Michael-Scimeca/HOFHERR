@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import HoverVideo from '@/components/HoverVideo';
+import ViewportVideo from '@/components/ViewportVideo';
 import Link from 'next/link';
 import ActionButton from '@/components/ActionButton';
 import { draftMode } from 'next/headers';
@@ -189,12 +190,8 @@ export default async function OurStoryPage() {
 
             {/* ── Hero ── */}
                 <section id="our-story-hero" aria-labelledby="our-story-hero-heading" className={styles.hero}>
-                    <video
+                    <ViewportVideo
                         src="/video-clips/meat-truck.mp4"
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
                         className={`${styles.heroBgVideo} mask-fade-bottom`}
                     />
                     <div className={`${styles.heroOverlay} mask-fade-bottom`} />

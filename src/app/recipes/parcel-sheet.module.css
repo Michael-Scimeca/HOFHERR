@@ -1320,83 +1320,41 @@
     }
 }
 
-/* ── Print Media: Exact 12 x 16 in Half-Sheet Liner with 0.25 in Safe Margin ── */
+/* ── Fire & Food Safety: Block Home Printing of Oven Parcel Sheets ── */
+.printBlockedNotice {
+    display: none;
+}
+
 @media print {
-    @page {
-        size: 12in 16in;
-        margin: 0.25in;
-    }
-
-    .sheetRouteMain {
-        padding: 0 !important;
-        margin: 0 !important;
-        gap: 0 !important;
-        display: block !important;
-    }
-
-    .toolbarSection {
+    .toolbarSection,
+    .styleHeaderBar,
+    .sheetStageSection,
+    .sheetPaper,
+    .sheetsIndexMain {
         display: none !important;
     }
 
-    .sheetStageSection {
-        padding: 0 !important;
-        margin: 0 !important;
+    .printBlockedNotice {
         display: block !important;
+        padding: 36px;
+        margin: 24px;
+        border: 3px solid #cc0e1d;
+        color: #111;
+        background: #fff;
+        font-family: sans-serif;
     }
 
-    .sheetPaper {
-        width: 11.5in !important;
-        height: 15.5in !important;
-        max-width: none !important;
-        aspect-ratio: auto !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        background: transparent !important;
-        background-image: none !important;
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        break-inside: avoid;
-        page-break-inside: avoid;
+    .printBlockedNotice h2 {
+        margin: 0 0 12px;
+        color: #cc0e1d;
+        font-size: 20px;
+        text-transform: uppercase;
     }
 
-    .sheetPaper *,
-    .sheetPaper *::before,
-    .sheetPaper *::after {
-        transition: none !important;
-        animation: none !important;
-    }
-
-    .sheetSafeFrame {
-        border: 1pt solid #1c1614 !important;
-    }
-
-    .headerBand {
-        grid-template-columns: 1fr auto !important;
-        border-bottom: 1pt solid #1c1614 !important;
-    }
-
-    .specBox {
-        border-left: 1pt solid #1c1614 !important;
-    }
-
-    .footerBand {
-        grid-template-columns: 1.2fr auto 1fr !important;
-        border-top: 1pt solid #1c1614 !important;
-    }
-
-    .foldSummaryBlock {
-        display: flex !important;
-        border-left: 1pt solid #1c1614 !important;
-        border-right: 1pt solid #1c1614 !important;
-    }
-
-    .qrBox {
-        border: 1pt solid #1c1614 !important;
-    }
-
-    .cutOrderLink {
-        text-decoration: none;
+    .printBlockedNotice p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
     }
 }
 

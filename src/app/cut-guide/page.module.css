@@ -4,6 +4,11 @@
     gap: 0;
 }
 
+/* When embedded inside /selections, the parent flex-col owns the gap below the cut guide */
+.embedded > :global(.section) {
+    padding-bottom: 0;
+}
+
 /* ── Open Hero Header (Matches /press, /specials, /faq — no enclosing card box, no eyebrow pill) ── */
 .hero {
     background: var(--bg-2);

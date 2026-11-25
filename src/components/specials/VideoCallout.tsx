@@ -44,15 +44,7 @@ export default function VideoCallout({ image, video, alt, title, sub }: VideoCal
 
     return (
         <div ref={wrapperRef} className={styles.wrapper}>
-            {/* Static image in normal flow — guarantees the box always has height */}
-            <img
-                src={image}
-                alt={alt}
-                loading="lazy"
-                className={styles.posterImg}
-            />
-            {/* Video only loads and plays once scrolled near viewport */}
-            {inView && (
+            {inView ? (
                 <video
                     ref={videoRef}
                     src={video}
@@ -63,6 +55,14 @@ export default function VideoCallout({ image, video, alt, title, sub }: VideoCal
                     autoPlay
                     loop
                     className={styles.video}
+                />
+            ) : (
+                /* Static poster image keeps 4:3 height before video loads on scroll */
+                <img
+                    src={image}
+                    alt={alt}
+                    loading="lazy"
+                    className={styles.posterImg}
                 />
             )}
             {(title || sub) && (

@@ -2191,14 +2191,15 @@ export default function CustomOrdersPage({
                 </div>
             </div >
 
-            <div className={`container ${styles.layout} ${cart.length > 0 ? styles.layoutWithRail : ''}`}>
+            <div className={`container ${styles.layout} ${mounted && cart.length > 0 ? styles.layoutWithRail : ''}`}>
 
                 {/* Sidebar */}
                 <aside className={styles.sidebar}>
                     <div ref={catSentinelRef} style={{ height: 0 }} />
-                    <div ref={mobileHeaderRef} className={`${styles.mobileHeader} ${isCatSticky ? styles.stickyHeader : ''}`} style={{ top: navbarHeight + 10 }}>
+                    <div ref={mobileHeaderRef} className={`${styles.mobileHeader} ${isCatSticky ? styles.stickyHeader : ''}`} style={{ top: Math.max(0, Math.floor(navbarHeight)) }}>
 
 
+                        <div className={styles.mobileCommandCard}>
                         <div className={styles.storeSwitch}>
                             <span className={`${styles.storeSwitchLabel} ${activeStore === 'butcher' ? styles.storeSwitchLabelActive : ''}`}>🥩 Butcher</span>
                             <button
@@ -2226,7 +2227,7 @@ export default function CustomOrdersPage({
                                     )}
                                 </span>
                             </button>
-                            <span className={`${styles.storeSwitchLabel} ${activeStore === 'depot' ? styles.storeSwitchLabelActive : ''}`}>Depot 🏪</span>
+                            <span className={`${styles.storeSwitchLabel} ${activeStore === 'depot' ? styles.storeSwitchLabelActive : ''}`}>Depot</span>
                         </div>
 
                         {/* Unified Search Row */}
@@ -2295,22 +2296,34 @@ export default function CustomOrdersPage({
                                     </div>
                                 )}
                             </div>
-                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                            <div className={styles.filterPillsRow}>
                                 <button
                                     className={`${styles.favFilterBtn} ${showFavoritesOnly ? styles.favFilterBtnActive : ''}`}
                                     onClick={() => setShowFavoritesOnly(f => !f)}
                                     type="button"
+                                    aria-label={showFavoritesOnly ? 'Showing favorites' : `Filter favorites (${favorites.size})`}
                                 >
-                                    {showFavoritesOnly ? '🔥 SHOWING FAVORITES' : `🔥 FAVORITES (${favorites.size})`}
+                                    <span className={styles.favDesktopText}>
+                                        {showFavoritesOnly ? '🔥 SHOWING FAVORITES' : `🔥 FAVORITES (${favorites.size})`}
+                                    </span>
+                                    <span className={styles.favMobileText}>
+                                        🔥 {favorites.size}
+                                    </span>
                                 </button>
                                 <button
                                     className={`${styles.hideOosBtn} ${hideOutOfStock ? styles.hideOosBtnActive : ''}`}
                                     onClick={() => setHideOutOfStock(h => !h)}
                                     type="button"
                                 >
-                                    {hideOutOfStock ? `SHOW ALL (${hiddenCount})` : 'HIDE OUT OF STOCK'}
+                                    <span className={styles.favDesktopText}>
+                                        {hideOutOfStock ? `SHOW ALL (${hiddenCount})` : '✓ IN STOCK ONLY'}
+                                    </span>
+                                    <span className={styles.favMobileText}>
+                                        {hideOutOfStock ? `ALL (${hiddenCount})` : 'IN STOCK'}
+                                    </span>
                                 </button>
                             </div>
+                        </div>
                         </div>
 
                         {/* Horizontal custom scrollbar (mobile) */}
@@ -2696,7 +2709,7 @@ export default function CustomOrdersPage({
                                                         )}
                                                     </div>
                                                 ) : (() => {
-                                                    const inCartItem = cart.find(i => i.name === item.name);
+                                                    const inCartItem = mounted ? cart.find(i => i.name === item.name) : undefined;
                                                     if (!inCartItem) {
                                                         return (
                                                             <button

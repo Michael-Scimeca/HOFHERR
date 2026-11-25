@@ -433,17 +433,19 @@ export default function InteractiveTimeline({ events }: Props) {
         };
         syncSize();
 
-        const observer = new IntersectionObserver(
-            (entries) => {
-                visible = Boolean(entries[0]?.isIntersecting);
-            },
-            { rootMargin: '200px 0px' }
-        );
-        observer.observe(section);
+        const sizeObserver = new ResizeObserver(syncSize);
+        sizeObserver.observe(container);
+
+        let lastPaint = 0;
 
         const loop = (now: number) => {
-            if (visible) {
-                syncSize();
+            if (!visible || document.hidden) {
+                raf = 0;
+                return;
+            }
+            const minInterval = window.innerWidth <= 768 ? 42 : 0; // ~24fps on mobile
+            if (minInterval === 0 || now - lastPaint >= minInterval) {
+                lastPaint = now;
                 renderer.render(
                     ctx,
                     canvas.width,
@@ -456,11 +458,44 @@ export default function InteractiveTimeline({ events }: Props) {
             }
             raf = requestAnimationFrame(loop);
         };
-        raf = requestAnimationFrame(loop);
+
+        const ensureRunning = () => {
+            if (!raf && visible && !document.hidden) {
+                raf = requestAnimationFrame(loop);
+            }
+        };
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                visible = Boolean(entries[0]?.isIntersecting);
+                if (visible) {
+                    ensureRunning();
+                } else if (raf) {
+                    cancelAnimationFrame(raf);
+                    raf = 0;
+                }
+            },
+            { rootMargin: '160px 0px' }
+        );
+        observer.observe(section);
+
+        const onVisibility = () => {
+            if (document.hidden) {
+                if (raf) {
+                    cancelAnimationFrame(raf);
+                    raf = 0;
+                }
+            } else {
+                ensureRunning();
+            }
+        };
+        document.addEventListener('visibilitychange', onVisibility);
 
         return () => {
-            cancelAnimationFrame(raf);
+            if (raf) cancelAnimationFrame(raf);
+            sizeObserver.disconnect();
             observer.disconnect();
+            document.removeEventListener('visibilitychange', onVisibility);
             flameRendererRef.current = null;
         };
     }, []);

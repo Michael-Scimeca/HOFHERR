@@ -78,7 +78,7 @@ export default function CateringMarquee({
     const wrapRef = useRef<HTMLDivElement>(null);
 
     return (
-        <section id={id} aria-label="BBQ and catering highlights" className="section-sm">
+        <section id={id} aria-label="BBQ and catering highlights" className={`section-sm ${styles.marqueeSection}`}>
             <div className={styles.marqueeOuter}>
                 <div ref={wrapRef} className={styles.marqueeWrap}>
                     <PressCanvasStage containerRef={wrapRef} />

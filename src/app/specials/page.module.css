@@ -1,3 +1,18 @@
+/* ── Page section spacing (prevent double 64px+64px=128px gap between adjacent .section-sm blocks) ── */
+.page > :global(.section-sm) + :global(.section-sm) {
+    padding-top: 0;
+}
+
+@media (max-width: 768px) {
+    .page > :global(.section-sm) {
+        padding: 40px 0;
+    }
+
+    .page > :global(.section-sm) + :global(.section-sm) {
+        padding-top: 0;
+    }
+}
+
 /* ── Hero ── */
 .hero {
     background: var(--bg-2);
@@ -184,7 +199,7 @@
 }
 
 .pigMenuWrap {
-    margin-bottom: var(--space-12);
+    margin-bottom: 0;
 }
 
 .appetizerTitleSpaced {

@@ -74,6 +74,23 @@ export default function RecipeCard({ recipe: r, today, onPickOccasion, open, onT
         });
     };
 
+    const handleAddPlan = (p: (typeof plans)[number], e: React.MouseEvent<HTMLButtonElement>) => {
+        addItem({
+            name: p.item.name,
+            price: p.item.price,
+            qty: p.qty,
+            note:
+                p.lb !== null
+                    ? `About ${p.lb} lb total for ${r.title} (serves ${servings})`
+                    : `For ${r.title} (serves ${servings})`,
+        });
+        flash(`ing-${p.item.name}`, e.currentTarget, {
+            itemName: p.item.name,
+            imageSrc: r.image,
+            arrivingQty: p.qty,
+        });
+    };
+
     const handleAddPick = (pick: MenuPick, e: React.MouseEvent<HTMLButtonElement>) => {
         addItem({ name: pick.name, price: pick.price, qty: 1, note: '' });
         flash(pick.name, e.currentTarget, { itemName: pick.name, arrivingQty: 1 });
@@ -130,7 +147,7 @@ export default function RecipeCard({ recipe: r, today, onPickOccasion, open, onT
                             </p>
                             {parcelSheetAvailable && (
                                 <Link href={`/recipes/${r.slug}/sheet`} className={styles.printSheetInlineLink}>
-                                    Print cooking sheet
+                                    View parcel sheet
                                 </Link>
                             )}
                         </div>
@@ -258,7 +275,7 @@ export default function RecipeCard({ recipe: r, today, onPickOccasion, open, onT
                         )}
                         {parcelSheetAvailable && (
                             <Link href={`/recipes/${r.slug}/sheet`} className={styles.printSheetBtn}>
-                                Print cooking sheet
+                                View parcel cooking sheet
                             </Link>
                         )}
                     </section>
@@ -266,22 +283,82 @@ export default function RecipeCard({ recipe: r, today, onPickOccasion, open, onT
                     <section>
                         <h3 className={styles.sectionLabel}>Ingredients for {servings}</h3>
                         <ul className={styles.list}>
-                            {plans.map(p => (
-                                <li key={p.item.name}>
-                                    {p.item.name}, {p.label}
-                                </li>
-                            ))}
-                            {r.ingredients.map(line => (
-                                <li key={line}>{scaleIngredient(line, factor)}</li>
-                            ))}
+                            {plans.map(p => {
+                                const addedKey = `ing-${p.item.name}`;
+                                return (
+                                    <li key={p.item.name} className={styles.shopIngredient}>
+                                        <span className={styles.shopIngredientText}>
+                                            <span>{p.item.name}, {p.label}</span>
+                                            <span className={styles.shopPrice}>
+                                                {p.item.price} · est. {formatEstimate(p.cost)}
+                                            </span>
+                                        </span>
+                                        <button
+                                            type="button"
+                                            className={styles.shopAddBtn}
+                                            aria-label={`Add ${p.item.name} (${p.item.price}) to cart`}
+                                            onClick={e => handleAddPlan(p, e)}
+                                        >
+                                            {justAdded === addedKey ? '✓ Added' : '+ Add to Cart'}
+                                        </button>
+                                    </li>
+                                );
+                            })}
+                            {r.ingredients.map(line => {
+                                const scaled = scaleIngredient(line, factor);
+                                const lower = scaled.toLowerCase();
+                                const matchedPlan = plans.find(p => lower.includes(p.item.name.toLowerCase()));
+                                if (!matchedPlan) {
+                                    return <li key={line}>{scaled}</li>;
+                                }
+                                const addedKey = `ing-${matchedPlan.item.name}`;
+                                return (
+                                    <li key={line} className={styles.shopIngredient}>
+                                        <span className={styles.shopIngredientText}>
+                                            <span>{scaled}</span>
+                                            <span className={styles.shopPrice}>{matchedPlan.item.price}</span>
+                                        </span>
+                                        <button
+                                            type="button"
+                                            className={styles.shopAddBtn}
+                                            aria-label={`Add ${matchedPlan.item.name} (${matchedPlan.item.price}) to cart`}
+                                            onClick={e => handleAddPlan(matchedPlan, e)}
+                                        >
+                                            {justAdded === addedKey ? '✓ Added' : '+ Add'}
+                                        </button>
+                                    </li>
+                                );
+                            })}
                         </ul>
                         {r.extraIngredients && (
                             <>
                                 <h4 className={styles.subLabel}>{r.extraIngredients.title}</h4>
                                 <ul className={styles.list}>
-                                    {r.extraIngredients.items.map(line => (
-                                        <li key={line}>{scaleIngredient(line, factor)}</li>
-                                    ))}
+                                    {r.extraIngredients.items.map(line => {
+                                        const scaled = scaleIngredient(line, factor);
+                                        const lower = scaled.toLowerCase();
+                                        const matchedPlan = plans.find(p => lower.includes(p.item.name.toLowerCase()));
+                                        if (!matchedPlan) {
+                                            return <li key={line}>{scaled}</li>;
+                                        }
+                                        const addedKey = `ing-${matchedPlan.item.name}`;
+                                        return (
+                                            <li key={line} className={styles.shopIngredient}>
+                                                <span className={styles.shopIngredientText}>
+                                                    <span>{scaled}</span>
+                                                    <span className={styles.shopPrice}>{matchedPlan.item.price}</span>
+                                                </span>
+                                                <button
+                                                    type="button"
+                                                    className={styles.shopAddBtn}
+                                                    aria-label={`Add ${matchedPlan.item.name} (${matchedPlan.item.price}) to cart`}
+                                                    onClick={e => handleAddPlan(matchedPlan, e)}
+                                                >
+                                                    {justAdded === addedKey ? '✓ Added' : '+ Add'}
+                                                </button>
+                                            </li>
+                                        );
+                                    })}
                                 </ul>
                             </>
                         )}

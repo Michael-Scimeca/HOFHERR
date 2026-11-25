@@ -298,7 +298,7 @@ export default function CutGuideClient({ sanityCuts = EMPTY_SANITY_CUTS, embedde
     const Heading = embedded ? 'h2' : 'h1';
 
     return (
-        <Shell id={embedded ? 'cut-guide' : undefined} className={styles.page}>
+        <Shell id={embedded ? 'cut-guide' : undefined} className={embedded ? `${styles.page} ${styles.embedded}` : styles.page}>
             {/* ── Open Hero Header ── */}
             <header className={styles.hero}>
                 <div className="container">

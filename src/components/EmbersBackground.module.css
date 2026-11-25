@@ -7,3 +7,9 @@
     pointer-events: none;
     display: block;
 }
+
+@media (max-width: 768px) {
+    .canvas {
+        opacity: 0.55;
+    }
+}

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import FireBorder from '@/components/TestimonialWall/FireBorder';
 import styles from './Hero.module.css';
+import HeroBackdropVideo from './HeroBackdropVideo';
 import HeroVideo from './HeroVideo';
 import LazyTrophy from './LazyTrophy';
 import HolidayHeroStrip from './HolidayHeroStrip';
@@ -10,32 +11,8 @@ export default function Hero() {
         <section className={styles.hero} data-asset-editor-root="true">
             <div className={styles.bg} />
 
-
             {/* Hero background: video on desktop (>1024px), lightweight 26KB image on tablet & mobile */}
-            <div className={styles.heroVideoCol}>
-                <video
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    poster="/assets/hero/hero-backdrop-mobile.jpg"
-                    className={styles.heroVideoPlayer}
-                >
-                    <source media="(min-width: 1025px)" src="/assets/video/3.mp4" type="video/mp4" />
-                </video>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                    src="/assets/hero/hero-backdrop-mobile.jpg"
-                    alt=""
-                    aria-hidden="true"
-                    width={1280}
-                    height={720}
-                    fetchPriority="high"
-                    decoding="sync"
-                    className={styles.heroMobileImg}
-                />
-            </div>
+            <HeroBackdropVideo />
 
             <div className={`container ${styles.content}`}>
 

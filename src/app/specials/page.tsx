@@ -62,7 +62,7 @@ export default async function SpecialsPage() {
 
 
     return (
-        <main>
+        <main className={styles.page}>
 
             {/* ── Hero ── */}
             <PageHero

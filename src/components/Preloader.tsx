@@ -136,6 +136,7 @@ export default function Preloader() {
                 initialStep={initialStep}
                 alwaysShowFlameProp={alwaysShowFlame}
                 initialPaused={initialPaused}
+                interactiveDrag={interactiveDrag}
                 onReveal={handleReveal}
                 onDone={handleDone}
                 onStepChange={handleStepChange}

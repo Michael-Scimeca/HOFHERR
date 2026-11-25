@@ -5,7 +5,6 @@ import ParcelSheetGraphic from '../../ParcelSheetGraphic';
 import { RECIPES } from '../../recipes';
 import { getAllSheetSlugs, resolveCookingSheet } from '../../sheets-data';
 import styles from '../../parcel-sheet.module.css';
-import PrintSheetButton from './PrintSheetButton';
 
 const KNOWN_RECIPE_SLUGS = new Set(RECIPES.map(r => r.slug));
 
@@ -25,7 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
     return {
         title: `${sheet.sheetTitle} — 12×16" Parchment Cooking Sheet | Hofherr Meat Co.`,
-        description: `Printable 12 by 16 inch half-sheet parchment parcel liner for ${sheet.sheetTitle} (Serves 2, ${sheet.ovenTemp}, ${sheet.bakeTime}) with life-size ingredient outlines.`,
+        description: `In-shop 12 by 16 inch FDA food-grade parchment parcel liner for ${sheet.sheetTitle} (Serves 2, ${sheet.ovenTemp}, ${sheet.bakeTime}) with life-size ingredient outlines. Not for home printing.`,
         robots: { index: false, follow: true },
     };
 }
@@ -57,16 +56,24 @@ export default async function RecipeCookingSheetPage({ params }: PageProps) {
 
                     <div className={styles.toolbarRight}>
                         <span className={styles.printSpecHint}>
-                            12 × 16 in Half-Sheet · 100% Scale · Conventional Oven Only (Max 425°F, No Broiler) · Place blank kitchen parchment over home toner prints
+                            🔥 In-Shop Counter Exclusive · Commercially printed on FDA food-grade parchment (Max 425°F) — Do not print on home paper for oven use
                         </span>
-                        <PrintSheetButton />
                     </div>
                 </div>
             </div>
 
+            <div className={styles.printBlockedNotice} aria-hidden="true">
+                <h2>Do Not Print for Oven Use — Fire &amp; Food Safety Notice</h2>
+                <p>
+                    Home printer paper and inkjet or laser toner are NOT oven-safe or food-safe and can ignite in an
+                    oven. Pick up authentic Hofherr Meat Co. 12×16&quot; FDA food-grade silicone parchment parcel
+                    cooking sheets free with your cut at our Northfield or Winnetka counters.
+                </p>
+            </div>
+
             <section
                 id="cooking-sheet-stage"
-                aria-label="Printable 12 by 16 inch parchment cooking sheet"
+                aria-label="In-shop 12 by 16 inch parchment cooking sheet preview"
                 className={styles.sheetStageSection}
             >
                 <ParcelSheetGraphic sheet={sheet} />

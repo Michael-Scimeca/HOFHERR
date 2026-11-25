@@ -133,10 +133,26 @@ export default async function CateringPage() {
 
     // Wild game processing lives on /selections, and pig roasts have their own section above.
     const isMovedElsewhere = (svc: ServiceItem) => /wild game|pig roast/i.test(svc.title);
-    const isSmallLink = (svc: ServiceItem) => /picnic|game day|tailgate/i.test(svc.title);
-    const remaining = services.filter((svc) => !isMovedElsewhere(svc));
-    const mosaicServices = remaining.filter((svc) => !isSmallLink(svc));
-    const smallLinks = remaining.filter(isSmallLink);
+    const mergedServices: ServiceItem[] = [];
+    const seenTitles = new Set<string>();
+    const addUnique = (svc: ServiceItem) => {
+        if (isMovedElsewhere(svc)) return;
+        const key = svc.title.trim().toLowerCase();
+        if (seenTitles.has(key)) return;
+        seenTitles.add(key);
+        mergedServices.push(svc);
+    };
+    services.forEach(addUnique);
+    FALLBACK_SERVICES.forEach(addUnique);
+    addUnique({
+        title: 'Holiday & Event Roasts',
+        emoji: '🎄',
+        description: 'Standing prime rib roasts, heritage turkeys, crown pork roasts, and full holiday spreads for Thanksgiving, Christmas & Easter.',
+        linkLabel: 'See Holiday Menus',
+        linkUrl: '/catering/holidays',
+    });
+    const mosaicServices = mergedServices.slice(0, 5);
+    const smallLinks: ServiceItem[] = [];
 
     return (
         <main>

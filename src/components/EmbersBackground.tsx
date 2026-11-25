@@ -357,22 +357,36 @@ export default function EmberBackground() {
 
         let animationId = 0;
         let lastFrameTime = 0;
-        const FRAME_INTERVAL = 1000 / 24;
-        let paused = false;
+        const getFrameInterval = () => (window.innerWidth <= 768 ? 1000 / 18 : 1000 / 24);
+        let paused = document.hidden;
 
         const loop = (now: number) => {
+            if (paused) {
+                animationId = 0;
+                return;
+            }
             animationId = requestAnimationFrame(loop);
-            if (paused) return;
-            if (now - lastFrameTime < FRAME_INTERVAL) return;
+            if (now - lastFrameTime < getFrameInterval()) return;
             lastFrameTime = now;
             draw(now);
         };
         const startTimer = window.setTimeout(() => {
-            animationId = requestAnimationFrame(loop);
+            if (!paused && !animationId) {
+                animationId = requestAnimationFrame(loop);
+            }
         }, 900);
 
         const onVisibility = () => {
             paused = document.hidden;
+            if (paused) {
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = 0;
+                }
+            } else if (!animationId) {
+                lastFrameTime = 0;
+                animationId = requestAnimationFrame(loop);
+            }
         };
         document.addEventListener('visibilitychange', onVisibility);
 

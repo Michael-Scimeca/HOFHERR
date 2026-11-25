@@ -7,9 +7,13 @@
     background: var(--bg-2);
 }
 
-/* Poster image hidden — video handles display */
+/* Static poster image shown until scrolled into view */
 .posterImg {
-    display: none;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 20px;
 }
 
 /* Video — ALWAYS in normal flow, no position absolute ever */
@@ -94,5 +98,62 @@
             rgba(0,0,0,0.65) 40%,
             rgba(0,0,0,0.0) 80%
         );
+    }
+}
+
+/* ── Mobile (≤768px): 01 · Bottom Gradient Bar (keeps food photography unobstructed) ── */
+@media (max-width: 768px) {
+    .overlay {
+        opacity: 1;
+        align-items: flex-start;
+        text-align: left;
+        padding: 16px 18px;
+        background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.94) 0%,
+            rgba(0, 0, 0, 0.72) 28%,
+            rgba(0, 0, 0, 0) 58%
+        );
+    }
+
+    .title {
+        font-family: var(--font-body), sans-serif;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--red-light, #ff4050);
+        margin-bottom: 4px;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+    }
+
+    .sub {
+        justify-content: flex-start;
+        gap: 0;
+        margin-top: 0;
+        line-height: 1.45;
+    }
+
+    .subLine {
+        padding: 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        box-shadow: none;
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        text-transform: none;
+        color: var(--fg);
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95);
+    }
+
+    .subLine:not(:last-child)::after {
+        content: "·";
+        color: var(--gold);
+        margin: 0 7px;
+        font-weight: 800;
     }
 }

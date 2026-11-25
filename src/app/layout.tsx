@@ -23,7 +23,6 @@ import ParallaxImages from "@/components/ParallaxImages";
 const AuthModal = dynamic(() => import("@/components/AuthModal"));
 const GlobalCartDrawer = dynamic(() => import("@/components/GlobalCartDrawer"));
 const EmbersBackground = dynamic(() => import("@/components/EmbersBackground"));
-const ChatWidgetWrapper = dynamic(() => import("@/components/ChatWidgetWrapper"));
 const DevNav = dynamic(() => import("@/components/DevNav"));
 const AddToOrderAnimStudio = dynamic(() => import("@/components/AddToOrderAnimStudio"));
 const Preloader = dynamic(() => import("@/components/Preloader"));
@@ -236,7 +235,6 @@ export default async function RootLayout({
                 <Footer />
               </PageTransition>
               <Preloader />
-              <ChatWidgetWrapper />
               {process.env.NODE_ENV === "development" && (
                 <>
                   <DevNav />

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import PrintSheetButton from '../../../[slug]/sheet/PrintSheetButton';
 import {
     ALL_STYLE_CONCEPTS,
     DEFAULT_SAUSAGE_RECIPE_SIDEBAR,
@@ -64,11 +63,19 @@ export default async function SheetStyleConceptPage({ params }: PageProps) {
 
                     <div className={styles.toolbarRight}>
                         <span className={styles.printSpecHint}>
-                            {`${concept.number.startsWith('F') || concept.number.startsWith('SS') ? `Edition ${concept.number}` : `Style ${concept.number} of ${SHEET_STYLE_CONCEPTS.length}`} · ${concept.register}`}
+                            {`🔥 In-Shop Counter Exclusive · ${concept.number.startsWith('F') || concept.number.startsWith('SS') ? `Edition ${concept.number}` : `Style ${concept.number} of ${SHEET_STYLE_CONCEPTS.length}`} · Do not print at home for oven use`}
                         </span>
-                        <PrintSheetButton />
                     </div>
                 </div>
+            </div>
+
+            <div className={styles.printBlockedNotice} aria-hidden="true">
+                <h2>Do Not Print for Oven Use — Fire &amp; Food Safety Notice</h2>
+                <p>
+                    Home printer paper and inkjet or laser toner are NOT oven-safe or food-safe and can ignite in an
+                    oven. Authentic Hofherr Meat Co. 12×16&quot; FDA food-grade silicone parchment parcel cooking
+                    sheets are available exclusively at our Northfield and Winnetka counters.
+                </p>
             </div>
 
             <header className={styles.styleHeaderBar} data-no-print>
@@ -78,7 +85,7 @@ export default async function SheetStyleConceptPage({ params }: PageProps) {
 
             <section
                 id="style-concept-stage"
-                aria-label={`Style ${concept.number} ${concept.title} 12 by 16 inch printable parchment sheet`}
+                aria-label={`Style ${concept.number} ${concept.title} 12 by 16 inch parchment sheet preview`}
                 className={styles.sheetStageSection}
             >
                 <article
@@ -88,7 +95,7 @@ export default async function SheetStyleConceptPage({ params }: PageProps) {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src={sheetSrc}
-                        alt={`Style ${concept.number} ${concept.title} 12 by 16 inch black and white printable parchment sheet`}
+                        alt={`Style ${concept.number} ${concept.title} 12 by 16 inch black and white parchment sheet preview`}
                         className={`${styles.styleConceptStageImg} ${needsBwFilter ? styles.bwRasterFilter : ''}`}
                     />
 

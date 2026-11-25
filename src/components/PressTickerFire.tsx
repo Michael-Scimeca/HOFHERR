@@ -544,6 +544,7 @@ export function PressCanvasStage({ containerRef, flames = true }: PressCanvasSta
 
         let raf = 0;
         let lastNow = performance.now();
+        let lastPaint = 0;
         let simTime = Math.random() * 40;
 
         const blitAtlasFlame = (
@@ -569,10 +570,16 @@ export function PressCanvasStage({ containerRef, flames = true }: PressCanvasSta
         };
 
         const tick = (now: number) => {
-            if (disposed) {
+            if (disposed || document.hidden) {
                 raf = 0;
                 return;
             }
+            // Cap mobile fire ticker canvas to ~24fps to save GPU/CPU battery
+            if (window.innerWidth <= 768 && now - lastPaint < 42) {
+                raf = requestAnimationFrame(tick);
+                return;
+            }
+            lastPaint = now;
 
             const dt = Math.min(0.05, Math.max(0.001, (now - lastNow) / 1000));
             lastNow = now;
@@ -794,7 +801,7 @@ export function PressCanvasStage({ containerRef, flames = true }: PressCanvasSta
         };
 
         const ensureRunning = () => {
-            if (!raf && !disposed) {
+            if (!raf && !disposed && !document.hidden) {
                 lastNow = performance.now();
                 raf = requestAnimationFrame(tick);
             }
@@ -809,12 +816,25 @@ export function PressCanvasStage({ containerRef, flames = true }: PressCanvasSta
             { rootMargin: '80px 0px' },
         );
         io.observe(host);
+
+        const onVisibility = () => {
+            if (document.hidden) {
+                if (raf) {
+                    cancelAnimationFrame(raf);
+                    raf = 0;
+                }
+            } else if (inView) {
+                ensureRunning();
+            }
+        };
+        document.addEventListener('visibilitychange', onVisibility);
         ensureRunning();
 
         return () => {
             disposed = true;
             pendingImgs.forEach(img => img.removeEventListener('load', onImgReady));
             io.disconnect();
+            document.removeEventListener('visibilitychange', onVisibility);
             window.clearTimeout(lateMeasure);
             if (raf) cancelAnimationFrame(raf);
             ro.disconnect();

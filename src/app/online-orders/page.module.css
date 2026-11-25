@@ -324,7 +324,62 @@
     padding-left: 2px;
 }
 
+@media (max-width: 640px) {
+    .hoursNoticeInner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .hoursNoticeDivider {
+        width: 100%;
+        height: 1px;
+    }
+
+    .hoursNoticeRight {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px 12px;
+    }
+
+    .hoursNoticeSchedule {
+        padding-left: 0;
+    }
+}
+
 /* Search Bar */
+.mobileCommandCard {
+    display: contents;
+}
+
+.favMobileText {
+    display: none;
+}
+
+.favDesktopText {
+    display: inline;
+}
+
+.filterPillsRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    width: 100%;
+}
+
+.filterPillsRow .favFilterBtn,
+.filterPillsRow .hideOosBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    padding: 7px 8px;
+    text-align: center;
+}
+
 .searchRow {
     position: relative;
     z-index: 5;
@@ -1187,7 +1242,95 @@
     .layout {
         grid-template-columns: 200px minmax(0, 1fr);
     }
+}
 
+/* ── Tablet (700px–1199px): Fixed Horizontal Bottom Cart Dock ── */
+@media (min-width: 700px) and (max-width: 1199px) {
+    .layoutWithRail {
+        padding-bottom: 132px;
+    }
+
+    .cartRail {
+        top: auto;
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        width: auto;
+        max-height: none;
+        flex-direction: row;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 16px;
+        border-top: 2px solid var(--red);
+        border-radius: var(--radius-lg, 14px);
+    }
+
+    .cartRailHeader {
+        padding: 0 14px 0 0;
+        border-bottom: none;
+        border-right: 1px solid var(--border);
+        flex-shrink: 0;
+    }
+
+    .cartRailPerk,
+    .cartRailListHeader,
+    .cartRailUpsell,
+    .cartRailUpsellBox {
+        display: none;
+    }
+
+    .cartRailList {
+        flex: 1;
+        min-width: 0;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        padding: 0;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .cartRailItem {
+        flex: 0 0 auto;
+        min-width: 180px;
+        max-width: 220px;
+        padding: 8px 10px;
+    }
+
+    .cartRailFooter {
+        flex-shrink: 0;
+        border-top: none;
+        border-left: 1px solid var(--border);
+        padding: 0 0 0 14px;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        background: transparent;
+    }
+
+    .cartRailTotalRow {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 2px;
+        margin-bottom: 0;
+    }
+
+    .cartRailActions {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .cartRailCheckoutBtn,
+    .cartRailExpandBtn {
+        width: auto;
+        white-space: nowrap;
+        padding: 10px 14px;
+    }
+}
+
+@media (max-width: 699px) {
     .cartRail {
         display: none;
     }
@@ -3201,18 +3344,56 @@
         margin-right: -16px;
         display: flex;
         flex-direction: column;
-        padding: 6px 16px 0;
+        gap: 6px;
+        padding: 10px 16px 0;
         position: sticky;
         z-index: 100;
         background: #000;
     }
 
-
+    .mobileCommandCard {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px 8px;
+        align-items: center;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 4px;
+        border-radius: 14px;
+        background: #141212;
+        border: 1px solid var(--border);
+    }
 
     .storeSwitch {
+        grid-column: 1;
+        grid-row: 2;
         display: inline-flex;
+        align-items: center;
+        gap: 6px;
         width: fit-content;
+        padding: 5px 9px;
         margin-bottom: 0;
+        border-radius: 999px;
+        background: #0e0d0d;
+        border: 1px solid var(--border);
+    }
+
+    .storeSwitchLabel {
+        font-size: 11.5px;
+    }
+
+    .storeSwitchTrack {
+        width: 38px;
+        height: 20px;
+    }
+
+    .storeSwitchKnob {
+        width: 16px;
+        height: 16px;
+    }
+
+    .storeSwitchTrackOn .storeSwitchKnob {
+        transform: translateX(18px);
     }
 
     .storeHours {
@@ -3244,12 +3425,75 @@
     }
 
     .searchRow {
-        position: static;
+        display: contents;
+    }
+
+    .searchWrap {
+        grid-column: 1 / -1;
+        grid-row: 1;
         width: 100%;
-        flex-direction: row;
+        background: #1f1c1c;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+    }
+
+    .searchInput {
+        color: var(--fg);
+    }
+
+    .searchInput::placeholder {
+        color: var(--fg-3);
+    }
+
+    .searchIcon {
+        color: var(--fg-3);
+    }
+
+    .searchKbd {
+        display: none;
+    }
+
+    .favDesktopText {
+        display: none;
+    }
+
+    .favMobileText {
+        display: inline;
+    }
+
+    .filterPillsRow {
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: end;
+        display: inline-flex;
         align-items: center;
-        gap: 10px;
-        padding: 4px 0;
+        gap: 6px;
+        width: auto;
+    }
+
+    .filterPillsRow .favFilterBtn,
+    .filterPillsRow .hideOosBtn {
+        width: auto;
+        justify-content: center;
+        padding: 7px 12px;
+        font-size: 11px;
+        letter-spacing: 0.05em;
+    }
+
+    .filterPillsRow .favFilterBtn {
+        background: #1f1c1c;
+        border: 1px solid var(--border);
+    }
+
+    .filterPillsRow .hideOosBtn {
+        background: var(--red);
+        border: 1px solid var(--red);
+        color: #fff;
+    }
+
+    .filterPillsRow .hideOosBtnActive {
+        background: #2b2727;
+        border-color: var(--border);
     }
 
     .sidebarScrollWrap {

@@ -182,6 +182,7 @@ export default function FireTestClient({
     initialStep = null,
     alwaysShowFlameProp = false,
     initialPaused = false,
+    interactiveDrag = false,
     onReveal,
     onDone,
     onStepChange,
@@ -271,7 +272,8 @@ export default function FireTestClient({
                 setDragMode(detail.dragMode);
                 dragModeRef.current = detail.dragMode;
                 if (controlsRef.current) {
-                    controlsRef.current.enabled = detail.dragMode === 'orbit';
+                    const allow = !preloaderRef.current || interactiveDragRef.current;
+                    controlsRef.current.enabled = allow && detail.dragMode === 'orbit';
                 }
             }
             if (detail?.cancelFlare && !settingsRef.current.autoLoopBurst) {
@@ -289,6 +291,7 @@ export default function FireTestClient({
     useEffect(() => { pausedRef.current = paused; }, [paused]);
     useEffect(() => { alwaysShowFlameRef.current = alwaysShowFlame; }, [alwaysShowFlame]);
     const preloaderRef = useRef(preloader);
+    const interactiveDragRef = useRef(interactiveDrag);
     const onRevealRef = useRef(onReveal);
     const onDoneRef = useRef(onDone);
     const onStepChangeRef = useRef(onStepChange);
@@ -298,9 +301,17 @@ export default function FireTestClient({
         onStepChangeRef.current = onStepChange;
     }, [onReveal, onDone, onStepChange]);
     useEffect(() => {
+        interactiveDragRef.current = interactiveDrag;
+        if (controlsRef.current) {
+            const allow = !preloaderRef.current || interactiveDrag;
+            controlsRef.current.enabled = allow && dragModeRef.current === 'orbit';
+        }
+    }, [interactiveDrag]);
+    useEffect(() => {
         dragModeRef.current = dragMode;
         if (controlsRef.current) {
-            controlsRef.current.enabled = dragMode === 'orbit';
+            const allow = !preloaderRef.current || interactiveDragRef.current;
+            controlsRef.current.enabled = allow && dragMode === 'orbit';
         }
     }, [dragMode]);
 
@@ -342,15 +353,16 @@ export default function FireTestClient({
         controls.minDistance = 2.2;
         controls.maxDistance = 9;
         controls.target.set(0, 0.2, 0);
-        controls.enabled = dragModeRef.current === 'orbit';
+        controls.enabled = (!preloaderRef.current || interactiveDragRef.current) && dragModeRef.current === 'orbit';
         controlsRef.current = controls;
 
-        /* Direct canvas dragging for moving the active flame on the page (click near a flame to select & drag it) */
+        /* Direct canvas dragging for moving the active flame on the page (only outside preloader or when explicitly enabled in dev HUD) */
         let isDraggingFlame = false;
         let lastPointerX = 0;
         let lastPointerY = 0;
 
         const onPointerDown = (e: PointerEvent) => {
+            if (preloaderRef.current && !interactiveDragRef.current) return;
             if (dragModeRef.current !== 'move') return;
             isDraggingFlame = true;
             lastPointerX = e.clientX;
@@ -387,6 +399,7 @@ export default function FireTestClient({
         };
 
         const onPointerMove = (e: PointerEvent) => {
+            if (preloaderRef.current && !interactiveDragRef.current) return;
             if (!isDraggingFlame || dragModeRef.current !== 'move') return;
             const dx = e.clientX - lastPointerX;
             const dy = e.clientY - lastPointerY;
@@ -1416,8 +1429,9 @@ export default function FireTestClient({
         <RootTag className={preloader ? styles.preloaderRoot : styles.page}>
             <canvas
                 ref={canvasRef}
-                className={styles.stage}
-                aria-label="Animated fire. Drag to move or rotate, scroll to zoom."
+                className={`${styles.stage} ${preloader && interactiveDrag ? styles.stageInteractive : ''}`}
+                aria-label={preloader && !interactiveDrag ? undefined : 'Animated fire. Drag to move or rotate, scroll to zoom.'}
+                aria-hidden={preloader && !interactiveDrag ? true : undefined}
                 data-lenis-prevent
             />
             <canvas ref={overlayRef} className={styles.embers} aria-hidden="true" />

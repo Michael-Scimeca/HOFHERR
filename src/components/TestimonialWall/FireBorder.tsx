@@ -147,7 +147,9 @@ ${noiseBlock}
             if (t < w) { x = P + t; y = P; } else if ((t -= w) < h) { x = W - P; y = P + t; } else if ((t -= h) < w) { x = W - P - t; y = H - P; } else { x = P; y = H - P - (t - w); }
             return { x, y, vx: (Math.random() - 0.5) * 0.4, vy: -(0.3 + Math.random() * 0.9), life: rand ? Math.random() : 1, r: 0.8 + Math.random() * 1.6 };
         };
-        const parts = Array.from({ length: s.embers }, () => spawn(true));
+        const isMobile = window.innerWidth <= 768;
+        const emberCount = isMobile ? Math.max(4, Math.ceil(s.embers * 0.5)) : s.embers;
+        const parts = Array.from({ length: emberCount }, () => spawn(true));
         let dots = em ? parts.map(() => { const c = document.createElementNS(NS, 'circle'); em!.appendChild(c); return c; }) : [];
 
         const ro = new ResizeObserver(() => {
@@ -171,24 +173,17 @@ ${noiseBlock}
         ro.observe(host);
 
         let t = Math.random() * 1000, last = performance.now(), lastPaint = 0, raf = 0;
-        let inView = true;
-
-        const io = new IntersectionObserver(
-            ([entry]) => {
-                inView = Boolean(entry?.isIntersecting);
-            },
-            { rootMargin: '120px' }
-        );
-        io.observe(host);
+        let inView = false;
+        const frameInterval = isMobile ? 66 : 42; // ~15fps on mobile, ~24fps on desktop
 
         const tick = (now: number) => {
-            raf = requestAnimationFrame(tick);
             if (!inView || document.hidden) {
-                last = now;
+                raf = 0;
                 return;
             }
-            // Cap SVG filter DOM mutations to ~24fps to slash main-thread rasterization work
-            if (now - lastPaint < 42) return;
+            raf = requestAnimationFrame(tick);
+            // Cap SVG filter DOM mutations to slash main-thread rasterization work
+            if (now - lastPaint < frameInterval) return;
             lastPaint = now;
 
             const dt = Math.min(80, now - last); last = now;
@@ -215,11 +210,45 @@ ${noiseBlock}
                 });
             }
         };
-        raf = requestAnimationFrame(tick);
+
+        const ensureRunning = () => {
+            if (!raf && inView && !document.hidden) {
+                last = performance.now();
+                raf = requestAnimationFrame(tick);
+            }
+        };
+
+        const io = new IntersectionObserver(
+            ([entry]) => {
+                inView = Boolean(entry?.isIntersecting);
+                if (inView) {
+                    ensureRunning();
+                } else if (raf) {
+                    cancelAnimationFrame(raf);
+                    raf = 0;
+                }
+            },
+            { rootMargin: '120px' }
+        );
+        io.observe(host);
+
+        const onVisibility = () => {
+            if (document.hidden) {
+                if (raf) {
+                    cancelAnimationFrame(raf);
+                    raf = 0;
+                }
+            } else {
+                ensureRunning();
+            }
+        };
+        document.addEventListener('visibilitychange', onVisibility);
+
         return () => {
-            cancelAnimationFrame(raf);
+            if (raf) cancelAnimationFrame(raf);
             ro.disconnect();
             io.disconnect();
+            document.removeEventListener('visibilitychange', onVisibility);
         };
     }, [isActive, radius]);
 

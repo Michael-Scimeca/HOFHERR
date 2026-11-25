@@ -34,7 +34,7 @@ export type FlameSettings = FlameSlot & {
     flames: FlameSlot[];
 };
 
-export const FLAME_STORAGE_KEY = 'hofherr_flame_settings_v14';
+export const FLAME_STORAGE_KEY = 'hofherr_flame_settings_v15';
 
 export const FIVE_FLAME_DEFAULTS: FlameSlot[] = [
     {
@@ -319,6 +319,8 @@ export interface FireTestClientProps {
     alwaysShowFlameProp?: boolean;
     /** Start paused at initialStep. */
     initialPaused?: boolean;
+    /** Allow interactive pointer dragging/orbiting of the flame (dev HUD edit mode only). */
+    interactiveDrag?: boolean;
     /** Called when the big logo starts burning away (time to reveal the page). */
     onReveal?: () => void;
     /** Called once the navbar hand-off is finished (safe to unmount). */

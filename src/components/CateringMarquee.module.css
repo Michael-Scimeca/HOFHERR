@@ -1,9 +1,13 @@
 /* ── Catering & BBQ Marquee — tilted counter-scrolling ticker with WebGL icon torch flames & phrase embers ── */
+.marqueeSection {
+    padding: 24px 0;
+}
+
 .marqueeOuter {
     position: relative;
     width: 100%;
     overflow: hidden;
-    padding-block: var(--space-4);
+    padding-block: 0;
 }
 
 .marqueeOuter::before,
@@ -31,7 +35,7 @@
     position: relative;
     width: 100%;
     overflow: visible;
-    padding: 64px 0 24px;
+    padding: 32px 0 16px;
     transform: rotate(-2deg);
     transform-origin: center center;
     cursor: default;
@@ -151,9 +155,13 @@
     -webkit-user-drag: none;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+    .marqueeSection {
+        padding: 8px 0;
+    }
+
     .marqueeWrap {
-        padding: 48px 0 16px;
+        padding: 24px 0 8px;
     }
 
     .marqueeText {

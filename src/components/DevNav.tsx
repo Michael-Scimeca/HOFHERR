@@ -7,9 +7,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { openAuthModal } from '@/components/AuthModal';
 import { useCartCount } from '@/context/CartContext';
 import { usePageTransition } from '@/components/PageTransition';
-import BorderColorsOverlay from '@/components/BorderColorsOverlay';
 import SectionGapsOverlay from '@/components/SectionGapsOverlay';
-import { getBorderColors, getBorderColorsServer, subscribeBorderColors, toggleBorderColors } from '@/lib/borderColorsStore';
 import { getSectionGaps, getSectionGapsServer, subscribeSectionGaps, toggleSectionGaps } from '@/lib/sectionGapsStore';
 import styles from './dev-nav.module.css';
 
@@ -22,8 +20,6 @@ type DevOverlayAction =
     | 'auth-login'
     | 'auth-register'
     | 'auth-forgot'
-    | 'chat-general'
-    | 'chat-quote'
     | 'cut-popover'
     | 'admin-customer-modal'
     | 'admin-add-product-modal';
@@ -72,8 +68,6 @@ const SECTIONS: DevSection[] = [
             { href: '#auth-login', icon: '🔑', label: 'Auth Modal (Sign In)', action: 'auth-login' },
             { href: '#auth-register', icon: '📝', label: 'Auth Modal (Sign Up)', action: 'auth-register' },
             { href: '#auth-forgot', icon: '🔐', label: 'Auth Modal (Forgot Pass)', action: 'auth-forgot' },
-            { href: '#chat', icon: '💬', label: 'Butcher Chat Popup', action: 'chat-general' },
-            { href: '#chat-quote', icon: '🍖', label: 'Catering Quote Chat', action: 'chat-quote' },
         ],
     },
     {
@@ -172,13 +166,11 @@ const DevNav = () => {
     const router = useRouter();
     const { navigateTo } = usePageTransition();
     const gapsOn = useSyncExternalStore(subscribeSectionGaps, getSectionGaps, getSectionGapsServer);
-    const bordersOn = useSyncExternalStore(subscribeBorderColors, getBorderColors, getBorderColorsServer);
 
     // Alt+G toggles the section-gap overlay from any page
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
             if (e.altKey && e.code === 'KeyG') toggleSectionGaps();
-            if (e.altKey && e.code === 'KeyB') toggleBorderColors();
         };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
@@ -275,12 +267,6 @@ const DevNav = () => {
             case 'auth-forgot':
                 openAuthModal('forgot', true);
                 return;
-            case 'chat-general':
-                window.dispatchEvent(new CustomEvent('open-chat'));
-                return;
-            case 'chat-quote':
-                window.dispatchEvent(new CustomEvent('open-chat', { detail: { subject: 'quote' } }));
-                return;
             case 'cut-popover':
                 if (pathname === '/dashboard') {
                     window.dispatchEvent(new CustomEvent('hofherr-dev-cut-popover'));
@@ -316,7 +302,6 @@ const DevNav = () => {
     return (
         <div className={styles.floatingNav}>
             {gapsOn && <SectionGapsOverlay />}
-            {bordersOn && <BorderColorsOverlay />}
             <div className={styles.floatingBar}>
                 <button
                     type="button"
@@ -346,16 +331,6 @@ const DevNav = () => {
                 >
                     <span>📏</span>
                     <span>{gapsOn ? 'GAPS: ON' : 'GAPS'}</span>
-                </button>
-                <button
-                    type="button"
-                    className={`${styles.godBtn} ${styles.mobileKeep} ${bordersOn ? styles.godBtnActive : ''}`}
-                    onClick={toggleBorderColors}
-                    aria-pressed={bordersOn}
-                    title="Show the colour of every border (Alt+B)"
-                >
-                    <span>🎨</span>
-                    <span>{bordersOn ? 'BORDERS: ON' : 'BORDERS'}</span>
                 </button>
             </div>
 

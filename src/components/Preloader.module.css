@@ -5,6 +5,10 @@
     inset: 0;
     z-index: 9998;
     background-color: #000;
+    touch-action: none;
+    overscroll-behavior: none;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .revealed {
