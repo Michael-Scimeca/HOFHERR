@@ -3,13 +3,11 @@
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.94);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: transparent;
     border-bottom: 1px solid transparent;
-    transition: border-color 0.3s, box-shadow 0.3s, background 0.3s, backdrop-filter 0.3s;
-    height: 88px;
-    min-height: 88px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    height: 100px;
+    min-height: 100px;
     /* No overflow-x: clip here: Safari then also clips vertically, which hides the mobile menu's
        background canvas (a fixed child of this header). body { overflow-x: clip } in globals.css
        already stops the menu button's overhanging drawing box from widening the page. */
@@ -17,14 +15,25 @@
     align-items: center;
 }
 
+.header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: #000000d9;
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
 
-
-.scrolled {
-    background: rgba(0, 0, 0, 0.94);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+.header.scrolled {
     border-bottom-color: var(--border);
     box-shadow: 0 1px 20px rgba(0, 0, 0, 0.4);
+}
+
+.header.scrolled::before {
+    opacity: 1;
 }
 
 /* ─── Inner row ─── */

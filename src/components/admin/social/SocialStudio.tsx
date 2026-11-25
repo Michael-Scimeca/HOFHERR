@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
-import Link from 'next/link';
 import { toPng } from 'html-to-image';
 import { Toggle } from '@/components/Toggle';
 import { ANIMALS } from '@/components/admin/social-kit/animals';
@@ -14,9 +13,51 @@ import {
     type SocialSettings,
     type SocialWeek,
 } from '@/lib/social/types';
-import HowItWorks from './HowItWorks';
 import SlidePreview, { getStickerSrc } from './SlidePreview';
 import s from './social.module.css';
+
+const BUILDER_PHOTOS = [
+    { label: 'Graphic Only', src: '' },
+    { label: 'Steak & BBQ', src: '/assets/specials-bbq.jpg' },
+    { label: 'Italian Beef', src: '/assets/specials-italian-beef.jpg' },
+    { label: 'Rotisserie', src: '/assets/specials-rotisserie.jpg' },
+    { label: 'Butcher Block', src: '/assets/store-butcher-front.jpg' },
+    { label: 'The Depot', src: '/shops/winnetka.png' },
+] as const;
+
+const BUILDER_TEMPLATES = [
+    { id: 'specials' as const, kind: 'specials' as const, label: 'Weekly Special', kicker: 'THIS WEEK AT THE BLOCK', tone: 'crimson' as const },
+    { id: 'tip' as const, kind: 'tip' as const, label: 'Butcher Tip', kicker: 'BUTCHER TIP', tone: 'charcoal' as const },
+    { id: 'trivia-q' as const, kind: 'trivia' as const, label: 'Trivia', kicker: 'BUTCHER TRIVIA', tone: 'charcoal' as const },
+    { id: 'howto-cover' as const, kind: 'howto' as const, label: 'How-To Guide', kicker: 'HOW TO COOK IT', tone: 'crimson' as const },
+] as const;
+
+const DAY_SHORT_FMT = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Chicago',
+    month: 'short',
+    day: 'numeric',
+});
+const TIME_ONLY_FMT = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Chicago',
+    hour: 'numeric',
+    minute: '2-digit',
+});
+
+function getWeekDayDate(weekOf: string, dayOffset: number): Date {
+    const base = new Date(`${weekOf}T12:00:00Z`);
+    base.setUTCDate(base.getUTCDate() + dayOffset);
+    return base;
+}
+
+function buildScheduledIso(weekOf: string, dayName: string, timeHHMM: string): string {
+    const idx = Math.max(0, DAYS.indexOf(dayName));
+    const d = getWeekDayDate(weekOf, idx);
+    const yyyy = d.getUTCFullYear();
+    const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const dd = String(d.getUTCDate()).padStart(2, '0');
+    const [hh = '11', min = '00'] = (timeHHMM || '11:00').split(':');
+    return `${yyyy}-${mm}-${dd}T${hh.padStart(2, '0')}:${min.padStart(2, '0')}:00-06:00`;
+}
 
 type Issue = { field: string; word: string; suggestions: string[] };
 type Post = SocialPost & { issues?: Issue[] };
@@ -110,73 +151,6 @@ function replaceWord(p: Post, word: string, fix: string): Post {
     };
 }
 
-/** Open a clean printable proof window for a single post (all slides + captions + verification sign-off). */
-function printSinglePost(week: Week, post: Post, verifier: string) {
-    const win = window.open('', '_blank', 'width=960,height=1100');
-    if (!win) {
-        window.print();
-        return;
-    }
-    const slidesHtml = post.slides
-        .map((sl, idx) => {
-            const icon = getStickerSrc(sl.iconId);
-            const itemsHtml = (sl.items ?? [])
-                .map((it) => `<li style="margin:4px 0;font-size:14px;">${it}</li>`)
-                .join('');
-            return `
-            <div style="border:2px solid #8B0A10;border-radius:10px;padding:18px;background:#F3EAD8;color:#1C1614;display:flex;flex-direction:column;gap:10px;break-inside:avoid;">
-                <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #8B0A10;padding-bottom:8px;">
-                    <span style="background:#F59B1A;color:#1C1614;font-weight:800;font-size:11px;padding:3px 8px;text-transform:uppercase;letter-spacing:1px;">
-                        Slide ${idx + 1} · ${sl.kicker || sl.template}
-                    </span>
-                    <img src="${icon}" alt="" style="width:42px;height:42px;object-fit:contain;" />
-                </div>
-                ${sl.photo ? `<img src="${sl.photo}" alt="" style="width:100%;max-height:260px;object-fit:contain;background:#1C1614;border-radius:6px;" />` : ''}
-                ${sl.headline ? `<div style="font-size:22px;font-weight:900;text-transform:uppercase;color:#8B0A10;line-height:1.05;">${sl.headline}</div>` : ''}
-                ${sl.body ? `<div style="font-size:15px;line-height:1.4;color:#1C1614;">${sl.body}</div>` : ''}
-                ${itemsHtml ? `<ul style="margin:0;padding-left:18px;">${itemsHtml}</ul>` : ''}
-            </div>`;
-        })
-        .join('');
-
-    win.document.write(`<!doctype html>
-<html>
-<head>
-    <title>Hofherr Social & Print Proof — ${post.label}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 28px; color: #1C1614; background: #fff; }
-        .head { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #8B0A10; padding-bottom: 12px; margin-bottom: 18px; }
-        .title { font-size: 24px; font-weight: 900; text-transform: uppercase; color: #8B0A10; }
-        .meta { font-size: 13px; color: #444; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
-        .cap { border: 1px solid #ccc; border-radius: 8px; padding: 14px; background: #fafafa; margin-bottom: 14px; white-space: pre-wrap; font-size: 13px; line-height: 1.5; }
-        .sign { border: 2px dashed #8B0A10; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-top: 16px; }
-    </style>
-</head>
-<body>
-    <div class="head">
-        <div>
-            <div class="title">HOFHERR MEAT CO. · SOCIAL & PRINT PROOF</div>
-            <div class="meta">Week of ${fmtWeek(week.weekOf)} · ${post.day} · ${post.label} · Scheduled: ${fmtWhen(post.scheduledFor)}</div>
-        </div>
-        <div style="text-align:right;font-size:13px;font-weight:700;color:${post.approved ? '#1a7f37' : '#8B0A10'};">
-            ${post.approved ? `✓ VERIFIED BY ${(post.verifiedBy || verifier).toUpperCase()}` : '⏳ PENDING PERSON VERIFICATION'}
-        </div>
-    </div>
-    <div class="grid">${slidesHtml}</div>
-    <div class="cap"><b>Instagram / Facebook Caption:</b>\n${post.caption}\n\n<span style="color:#8B0A10;">${post.hashtags}</span></div>
-    <div class="cap"><b>X (Twitter) Caption (${(post.captionX ?? '').length}/280):</b>\n${post.captionX ?? ''}</div>
-    <div class="sign">
-        <span><b>Person Verifying:</b> ${post.verifiedBy || verifier || '______________________'}</span>
-        <span><b>Status:</b> ${post.approved ? '✓ Approved for Auto-Post' : '□ Needs Review'}</span>
-        <span><b>Date / Time:</b> ${post.verifiedAt ? fmtWhen(post.verifiedAt) : '________________'}</span>
-    </div>
-    <script>window.onload = () => { setTimeout(() => window.print(), 250); };</script>
-</body>
-</html>`);
-    win.document.close();
-}
-
 /* ── One Post Card ─────────────────────────────────────── */
 function PostCard({
     week,
@@ -193,15 +167,13 @@ function PostCard({
     onUpdatePost: (weekId: string, postKey: string, patch: Partial<Post>) => Promise<boolean>;
     onAddWord: (w: string) => Promise<void>;
 }) {
-    const [draft, setDraft] = useState<Post>(post);
-    const [editing, setEditing] = useState(defaultEditing);
     const [busy, setBusy] = useState<string | null>(null);
     const [msg, setMsg] = useState<string | null>(null);
     const [slide, setSlide] = useState(0);
     const [tab, setTab] = useState<'facebook' | 'instagram' | 'x'>('facebook');
     const previewRef = React.useRef<HTMLDivElement>(null);
 
-    const issues = findClientIssues(editing ? draft : post);
+    const issues = findClientIssues(post);
     const posted = post.status === 'posted';
 
     const save = async (patch: Partial<Post>) => {
@@ -289,30 +261,7 @@ function PostCard({
         await save({ slides: next.slides, caption: next.caption, captionX: next.captionX });
     };
 
-    const setSlideField = (i: number, field: keyof Slide, value: string | string[]) => {
-        setDraft((d) => ({
-            ...d,
-            slides: d.slides.map((sl, j) => {
-                if (j !== i) return sl;
-                if (field === 'items') {
-                    const arr = Array.isArray(value) ? value : value.split('\n').filter((x) => x.trim());
-                    return { ...sl, items: arr };
-                }
-                return { ...sl, [field]: value };
-            }),
-        }));
-    };
-
-    const copy = async (text: string) => {
-        try {
-            await navigator.clipboard.writeText(text);
-            setMsg('Copied ✓');
-        } catch {
-            /* ignore */
-        }
-    };
-
-    const activePost = editing ? draft : post;
+    const activePost = post;
     const currentSlide = activePost.slides[slide] ?? activePost.slides[0];
     const format = tab === 'x' ? 'landscape' : 'portrait';
     const xLen = (activePost.captionX ?? '').length;
@@ -392,7 +341,6 @@ function PostCard({
                                 onBlur={(e) => {
                                     const nextCaption = e.currentTarget.innerText.trim();
                                     if (nextCaption !== activePost.caption) {
-                                        setDraft((d) => ({ ...d, caption: nextCaption }));
                                         void onUpdatePost(week._id, post._key, { caption: nextCaption });
                                     }
                                 }}
@@ -409,7 +357,6 @@ function PostCard({
                                     onBlur={(e) => {
                                         const nextTags = e.currentTarget.innerText.trim();
                                         if (nextTags !== activePost.hashtags) {
-                                            setDraft((d) => ({ ...d, hashtags: nextTags }));
                                             void onUpdatePost(week._id, post._key, { hashtags: nextTags });
                                         }
                                     }}
@@ -429,21 +376,10 @@ function PostCard({
                                         const nextSlides = activePost.slides.map((sl, idx) =>
                                             idx === slide ? { ...sl, [field]: val } : sl
                                         );
-                                        setDraft((d) => ({ ...d, slides: nextSlides }));
                                         void onUpdatePost(week._id, post._key, { slides: nextSlides });
                                     }}
                                 />
                             )}
-                        </div>
-
-                        <div className={s.fbStats}>
-                            <span>👍 ❤️ 42</span>
-                            <span>8 comments · 5 shares</span>
-                        </div>
-                        <div className={s.fbActions} aria-hidden="true">
-                            <span>👍 Like</span>
-                            <span>💬 Comment</span>
-                            <span>↗ Share</span>
                         </div>
                     </div>
                 ) : (
@@ -457,7 +393,6 @@ function PostCard({
                                     const nextSlides = activePost.slides.map((sl, idx) =>
                                         idx === slide ? { ...sl, [field]: val } : sl
                                     );
-                                    setDraft((d) => ({ ...d, slides: nextSlides }));
                                     void onUpdatePost(week._id, post._key, { slides: nextSlides });
                                 }}
                             />
@@ -494,7 +429,7 @@ function PostCard({
                                 <span className={s.issueField}>{iss.field}</span>
                                 <span className={s.issueFixes}>
                                     {iss.word.startsWith('[') ? (
-                                        <em>Click &ldquo;✎ Edit&rdquo; below to replace placeholder {iss.word}</em>
+                                        <em>Click the text in the preview above to replace placeholder {iss.word}</em>
                                     ) : (
                                         <>
                                             {iss.suggestions.map((sg) => (
@@ -524,171 +459,19 @@ function PostCard({
                     </div>
                 )}
 
-                {editing ? (
-                    <div className={s.editor}>
-                        <label>
-                            Post Title / Label
-                            <input
-                                value={draft.label}
-                                onChange={(e) => setDraft({ ...draft, label: e.target.value })}
-                            />
-                        </label>
-                        {draft.slides.map((sl, i) => (
-                            <fieldset key={sl._key} className={s.slideFields}>
-                                <legend>
-                                    Slide {i + 1} · {sl.template}
-                                </legend>
-                                <div className={s.row}>
-                                    <label>
-                                        Kicker Badge
-                                        <input
-                                            value={sl.kicker ?? ''}
-                                            onChange={(e) => setSlideField(i, 'kicker', e.target.value)}
-                                        />
-                                    </label>
-                                    <label>
-                                        Department Icon
-                                        <select
-                                            value={sl.iconId ?? 'cow'}
-                                            onChange={(e) => setSlideField(i, 'iconId', e.target.value)}
-                                        >
-                                            {ICON_OPTIONS.map((opt) => (
-                                                <option key={opt.id} value={opt.id}>
-                                                    {opt.label}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </label>
-                                </div>
-                                {sl.headline !== undefined && (
-                                    <label>
-                                        Headline
-                                        <input
-                                            spellCheck
-                                            value={sl.headline ?? ''}
-                                            onChange={(e) => setSlideField(i, 'headline', e.target.value)}
-                                        />
-                                    </label>
-                                )}
-                                {sl.body !== undefined && (
-                                    <label>
-                                        Body / Price / Fact Text
-                                        <textarea
-                                            spellCheck
-                                            rows={2}
-                                            value={sl.body ?? ''}
-                                            onChange={(e) => setSlideField(i, 'body', e.target.value)}
-                                        />
-                                    </label>
-                                )}
-                                {sl.items && (
-                                    <label>
-                                        {sl.template === 'guide'
-                                            ? 'Primal Cut Rows (Cut | Where | Best for — one per line)'
-                                            : sl.template === 'recipe-ingredients'
-                                                ? 'Ingredients (one per line)'
-                                                : 'Steps (one per line)'}
-                                        <textarea
-                                            spellCheck
-                                            rows={Math.min(7, sl.items.length + 1)}
-                                            value={sl.items.join('\n')}
-                                            onChange={(e) => setSlideField(i, 'items', e.target.value)}
-                                        />
-                                    </label>
-                                )}
-                            </fieldset>
-                        ))}
-                        <label>
-                            Caption · Instagram &amp; Facebook
-                            <textarea
-                                spellCheck
-                                rows={5}
-                                value={draft.caption}
-                                onChange={(e) => setDraft({ ...draft, caption: e.target.value })}
-                            />
-                        </label>
-                        <label>
-                            Hashtags
-                            <textarea
-                                rows={2}
-                                value={draft.hashtags}
-                                onChange={(e) => setDraft({ ...draft, hashtags: e.target.value })}
-                            />
-                        </label>
-                        <label>
-                            <span className={s.labelRow}>
-                                Caption · X{' '}
-                                <span className={(draft.captionX ?? '').length > 280 ? s.over : s.count}>
-                                    {(draft.captionX ?? '').length}/280
-                                </span>
-                            </span>
-                            <textarea
-                                spellCheck
-                                rows={3}
-                                value={draft.captionX ?? ''}
-                                onChange={(e) => setDraft({ ...draft, captionX: e.target.value })}
-                            />
-                        </label>
-                        <label>
-                            Automatic Post Time (Chicago Time)
-                            <input
-                                type="datetime-local"
-                                value={toLocalInputValue(draft.scheduledFor)}
-                                onChange={(e) => {
-                                    if (!e.target.value) return;
-                                    setDraft({ ...draft, scheduledFor: new Date(e.target.value).toISOString() });
-                                }}
-                            />
-                        </label>
-                        <div className={s.row}>
-                            <button
-                                type="button"
-                                className={s.btnPrimary}
-                                disabled={!!busy || (draft.captionX ?? '').length > 280}
-                                onClick={async () => {
-                                    if (
-                                        await save({
-                                            label: draft.label,
-                                            slides: draft.slides,
-                                            caption: draft.caption,
-                                            captionX: draft.captionX,
-                                            hashtags: draft.hashtags,
-                                            scheduledFor: draft.scheduledFor,
-                                        })
-                                    ) {
-                                        setEditing(false);
-                                    }
-                                }}
-                            >
-                                {busy === 'save' ? 'Saving…' : '✓ Save Edits'}
-                            </button>
-                            <button
-                                type="button"
-                                className={s.btn}
-                                onClick={() => {
-                                    setDraft(post);
-                                    setEditing(false);
-                                }}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <div className={s.captionBox}>
-                        {tab === 'x' ? (
-                            <>
-                                <pre className={s.caption}>{post.captionX}</pre>
-                                <p className={xLen > 280 ? s.over : s.count}>{xLen}/280 characters</p>
-                            </>
-                        ) : (
-                            <>
-                                <pre className={s.caption}>{post.caption}</pre>
-                                <p className={s.tags}>{post.hashtags}</p>
-                            </>
-                        )}
-                    </div>
-                )}
+                <div className={s.captionBox}>
+                    {tab === 'x' ? (
+                        <>
+                            <pre className={s.caption}>{post.captionX}</pre>
+                            <p className={xLen > 280 ? s.over : s.count}>{xLen}/280 characters</p>
+                        </>
+                    ) : (
+                        <>
+                            <pre className={s.caption}>{post.caption}</pre>
+                            <p className={s.tags}>{post.hashtags}</p>
+                        </>
+                    )}
+                </div>
 
                 {(post.results?.length ?? 0) > 0 && (
                     <ul className={s.results}>
@@ -716,33 +499,6 @@ function PostCard({
                 {msg && <p className={s.msg}>{msg}</p>}
 
                 <footer className={s.actions}>
-                    {!editing && (
-                            <button
-                                type="button"
-                                className={s.btn}
-                                onClick={() => {
-                                    setDraft(post);
-                                    setEditing(true);
-                                }}
-                            >
-                                ✎ Edit
-                            </button>
-                )}
-                            <button type="button" className={s.btn} onClick={() => printSinglePost(week, activePost, verifier)}>
-                                🖨 Print
-                            </button>
-                            <button type="button" className={s.btn} disabled={busy === 'png'} onClick={downloadCurrentSlidePng}>
-                                {busy === 'png' ? '…' : '⬇ PNG'}
-                            </button>
-                            <button
-                                type="button"
-                                className={s.btn}
-                                onClick={() =>
-                                    copy(tab === 'x' ? (post.captionX ?? '') : `${post.caption}\n\n${post.hashtags}`)
-                                }
-                            >
-                                Copy Caption
-                            </button>
                             {!posted &&
                                 (post.approved ? (
                                     <button
@@ -780,162 +536,188 @@ function PostCard({
 }
 
                 /* ── Settings Panel ────────────────────────────────────── */
-                function SettingsPanel({
-                    settings,
-                    connected,
-                    onSave,
+function SettingsPanel({
+    settings,
+    connected,
+    onSave,
 }: {
-                    settings: SocialSettings;
-                connected: Connected | null;
-                onSave: (p: Partial<SocialSettings>) => Promise<void>;
+    settings: SocialSettings;
+    connected: Connected | null;
+    onSave: (p: Partial<SocialSettings>) => Promise<void>;
 }) {
     const [d, setD] = useState(settings);
-                    const [busy, setBusy] = useState(false);
-                    const toggle = <T,>(arr: T[], v: T) => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
+    const [busy, setBusy] = useState(false);
+    const toggle = <T,>(arr: T[], v: T) => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
-                    return (
-                    <details className={s.settings}>
-                        <summary>
-                            ⚙ Automatic Posting &amp; Verification Rules —{' '}
-                            {d.frequency === 'daily'
-                                ? 'Every day'
-                                : d.frequency === 'alternate'
-                                    ? 'Every other day'
-                                    : d.frequency === 'weekdays'
-                                        ? 'Weekdays'
-                                        : (d.customDays ?? []).join(', ') || 'Custom'}{' '}
-                            at {d.postTime} CT · Verification: {(d.verificationCadence ?? 'weekly').toUpperCase()} ·{' '}
-                            {d.platforms.map((p) => PLATFORM_LABEL[p]).join(', ')}
-                        </summary>
-                        <div className={s.settingsGrid}>
-                            <fieldset>
-                                <legend>Automatic Posting Cadence</legend>
-                                {(
-                                    [
-                                        ['daily', 'Every day (Mon–Sun)'],
-                                        ['alternate', 'Every other day (Mon · Wed · Fri · Sun)'],
-                                        ['weekdays', 'Weekdays only (Mon–Fri)'],
-                                        ['custom', 'Pick specific days'],
-                                    ] as const
-                                ).map(([v, l]) => (
-                                    <label key={v} className={s.radio}>
-                                        <input
-                                            type="radio"
-                                            name="posting-frequency"
-                                            checked={d.frequency === v}
-                                            onChange={() => setD({ ...d, frequency: v })}
-                                        />{' '}
-                                        {l}
-                                    </label>
-                                ))}
-                                {d.frequency === 'custom' && (
-                                    <div className={s.dayPick}>
-                                        {DAYS.map((day) => (
-                                            <button
-                                                key={day}
-                                                type="button"
-                                                className={(d.customDays ?? []).includes(day) ? s.chip : s.chipGhost}
-                                                onClick={() => setD({ ...d, customDays: toggle(d.customDays ?? [], day) })}
-                                            >
-                                                {day}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                                <label className={s.inline}>
-                                    Auto-post at{' '}
-                                    <input
-                                        type="time"
-                                        value={d.postTime}
-                                        onChange={(e) => setD({ ...d, postTime: e.target.value })}
-                                    />{' '}
-                                    Chicago time
-                                </label>
-                            </fieldset>
+    const freqSummary =
+        d.frequency === 'daily'
+            ? 'Every day'
+            : d.frequency === 'alternate'
+                ? 'Every other day'
+                : d.frequency === 'weekdays'
+                    ? 'Weekdays'
+                    : (d.customDays ?? []).join(', ') || 'Custom';
 
-                            <fieldset>
-                                <legend>Person Verification &amp; Platforms</legend>
-                                <label className={s.radio}>
-                                    <input
-                                        type="checkbox"
-                                        checked={d.requireApproval}
-                                        onChange={(e) => setD({ ...d, requireApproval: e.target.checked })}
-                                    />
-                                    <b>Require person to verify before automatic posting</b>
-                                </label>
-                                {(
-                                    [
-                                        ['daily', 'Verify by Day (daily review)'],
-                                        ['weekly', 'Verify Weekly (batch review 7 days)'],
-                                        ['monthly', 'Verify Monthly (batch review full month)'],
-                                    ] as const
-                                ).map(([v, l]) => (
-                                    <label key={v} className={s.radio}>
-                                        <input
-                                            type="radio"
-                                            name="verification-cadence"
-                                            checked={(d.verificationCadence ?? 'weekly') === v}
-                                            onChange={() => setD({ ...d, verificationCadence: v })}
-                                        />{' '}
-                                        {l}
-                                    </label>
-                                ))}
-                                {(['instagram', 'facebook', 'x'] as Platform[]).map((p) => (
-                                    <label key={p} className={s.radio}>
-                                        <input
-                                            type="checkbox"
-                                            checked={d.platforms.includes(p)}
-                                            onChange={() => setD({ ...d, platforms: toggle(d.platforms, p) })}
-                                        />{' '}
-                                        {PLATFORM_LABEL[p]}
-                                        <span className={connected?.[p] ? s.conn : s.notConn}>
-                                            {connected?.[p] ? 'connected' : 'test mode'}
-                                        </span>
-                                    </label>
-                                ))}
-                            </fieldset>
-
-                            <fieldset>
-                                <legend>Reviewer Notification Emails</legend>
-                                <textarea
-                                    rows={3}
-                                    placeholder="sean@hofherrmeatco.com"
-                                    value={d.notifyEmails.join('\n')}
-                                    onChange={(e) =>
-                                        setD({
-                                            ...d,
-                                            notifyEmails: e.target.value
-                                                .split(/[\n,]/)
-                                                .map((x) => x.trim())
-                                                .filter(Boolean),
-                                        })
-                                    }
-                                />
-                                <span className={connected?.email ? s.conn : s.notConn}>
-                                    {connected?.email ? 'Email notifications active' : 'Local / Test mode'}
-                                </span>
-                            </fieldset>
+    return (
+        <div className={s.settingsBody}>
+            <div className={s.settingsGrid}>
+                {/* Col 1: Cadence & Time */}
+                <div className={s.settingsCol}>
+                    <span className={s.settingsLabel}>Posting Schedule</span>
+                    <div className={s.pillGroup} role="radiogroup" aria-label="Posting cadence">
+                        {(
+                            [
+                                ['daily', 'Daily'],
+                                ['alternate', 'Every other day'],
+                                ['weekdays', 'Weekdays'],
+                                ['custom', 'Custom'],
+                            ] as const
+                        ).map(([v, l]) => (
+                            <button
+                                key={v}
+                                type="button"
+                                role="radio"
+                                aria-checked={d.frequency === v}
+                                className={`${s.pillChoice} ${d.frequency === v ? s.pillChoiceActive : ''}`}
+                                onClick={() => setD({ ...d, frequency: v })}
+                            >
+                                {l}
+                            </button>
+                        ))}
+                    </div>
+                    {d.frequency === 'custom' && (
+                        <div className={s.dayPick}>
+                            {DAYS.map((day) => (
+                                <button
+                                    key={day}
+                                    type="button"
+                                    className={(d.customDays ?? []).includes(day) ? s.chip : s.chipGhost}
+                                    onClick={() => setD({ ...d, customDays: toggle(d.customDays ?? [], day) })}
+                                >
+                                    {day}
+                                </button>
+                            ))}
                         </div>
-                        <button
-                            type="button"
-                            className={s.btnPrimary}
-                            disabled={busy}
-                            onClick={async () => {
-                                setBusy(true);
-                                try {
-                                    await onSave(d);
-                                } finally {
-                                    setBusy(false);
-                                }
-                            }}
-                        >
-                            {busy ? 'Saving…' : 'Save Posting & Verification Settings'}
-                        </button>
-                    </details>
-                    );
+                    )}
+                    <label className={s.timeRow}>
+                        <span>Post time (CT)</span>
+                        <input
+                            type="time"
+                            className={s.timeInput}
+                            value={d.postTime}
+                            onChange={(e) => setD({ ...d, postTime: e.target.value })}
+                        />
+                    </label>
+                </div>
+
+                {/* Col 2: Verification */}
+                <div className={s.settingsCol}>
+                    <span className={s.settingsLabel}>Approval &amp; Review</span>
+                    <div className={s.toggleListRow}>
+                        <Toggle
+                            size="sm"
+                            variant="gold"
+                            checked={d.requireApproval}
+                            onChange={(checked) => setD({ ...d, requireApproval: checked })}
+                            label="Require approval before posting"
+                        />
+                    </div>
+                    <span className={s.settingsSubLabel}>Review cadence</span>
+                    <div className={s.pillGroup} role="radiogroup" aria-label="Verification cadence">
+                        {(
+                            [
+                                ['daily', 'Daily'],
+                                ['weekly', 'Weekly'],
+                                ['monthly', 'Monthly'],
+                            ] as const
+                        ).map(([v, l]) => (
+                            <button
+                                key={v}
+                                type="button"
+                                role="radio"
+                                aria-checked={(d.verificationCadence ?? 'weekly') === v}
+                                className={`${s.pillChoice} ${(d.verificationCadence ?? 'weekly') === v ? s.pillChoiceActive : ''}`}
+                                onClick={() => setD({ ...d, verificationCadence: v })}
+                            >
+                                {l}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Col 3: Platforms */}
+                <div className={s.settingsCol}>
+                    <span className={s.settingsLabel}>Platforms</span>
+                    <div className={s.platformList}>
+                        {(['instagram', 'facebook', 'x'] as Platform[]).map((p) => (
+                            <div key={p} className={s.platformRow}>
+                                <Toggle
+                                    size="sm"
+                                    checked={d.platforms.includes(p)}
+                                    onChange={() => setD({ ...d, platforms: toggle(d.platforms, p) })}
+                                    label={PLATFORM_LABEL[p]}
+                                />
+                                <span className={connected?.[p] ? s.conn : s.notConn}>
+                                    {connected?.[p] ? 'connected' : 'test mode'}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Col 4: Reviewer Emails */}
+                <div className={s.settingsCol}>
+                    <div className={s.settingsLabelRow}>
+                        <span className={s.settingsLabel}>Reviewer Emails</span>
+                        <span className={connected?.email ? s.conn : s.notConn}>
+                            {connected?.email ? 'active' : 'test mode'}
+                        </span>
+                    </div>
+                    <textarea
+                        rows={3}
+                        className={s.settingsTextarea}
+                        placeholder="sean@hofherrmeatco.com"
+                        aria-label="Reviewer notification emails"
+                        value={d.notifyEmails.join('\n')}
+                        onChange={(e) =>
+                            setD({
+                                ...d,
+                                notifyEmails: e.target.value
+                                    .split(/[\n,]/)
+                                    .map((x) => x.trim())
+                                    .filter(Boolean),
+                            })
+                        }
+                    />
+                </div>
+            </div>
+
+            <div className={s.settingsFooter}>
+                <span className={s.settingsSummary}>
+                    {freqSummary} at {d.postTime} CT · {(d.verificationCadence ?? 'weekly')} review ·{' '}
+                    {d.platforms.map((p) => PLATFORM_LABEL[p]).join(', ') || 'No platforms selected'}
+                </span>
+                <button
+                    type="button"
+                    className={s.btnPrimary}
+                    disabled={busy}
+                    onClick={async () => {
+                        setBusy(true);
+                        try {
+                            await onSave(d);
+                        } finally {
+                            setBusy(false);
+                        }
+                    }}
+                >
+                    {busy ? 'Saving…' : 'Save Rules'}
+                </button>
+            </div>
+        </div>
+    );
 }
 
-                    /* ── Main Admin Social & Print Studio Page ─────────────── */
+                    /* ── Main Admin Social Studio Page ─────────────────────── */
                     export default function SocialAdminPage() {
     const [weeks, setWeeks] = useState<Week[]>(() => buildStarterWeeks(DEFAULT_SETTINGS, 4));
                     const [bank, setBank] = useState<Bank>({total: 36, active: 36, fresh: 24 });
@@ -945,6 +727,18 @@ function PostCard({
                                         const [verifier, setVerifier] = useState<string>('Sean Hofherr');
                                             const [busy, setBusy] = useState<string | null>(null);
                                             const [bannerMsg, setBannerMsg] = useState<string | null>(null);
+                                            const [showSettingsDrawer, setShowSettingsDrawer] = useState(false);
+                                            const [selectedDay, setSelectedDay] = useState<string | null>(null);
+                                            const [showBuilder, setShowBuilder] = useState(false);
+                                            const [builderDay, setBuilderDay] = useState<string>('Tue');
+                                            const [builderTime, setBuilderTime] = useState<string>('11:00');
+                                            const [builderTpl, setBuilderTpl] = useState<(typeof BUILDER_TEMPLATES)[number]['id']>('specials');
+                                            const [builderHeadline, setBuilderHeadline] = useState<string>('45-Day Dry-Aged Prime Ribeye');
+                                            const [builderBody, setBuilderBody] = useState<string>('Hand-cut to your exact thickness at 300 Happ Rd. Reserve yours for weekend pickup.');
+                                            const [builderIcon, setBuilderIcon] = useState<string>('cow');
+                                            const [builderPhoto, setBuilderPhoto] = useState<string>('/assets/specials-bbq.jpg');
+                                            const [builderCaption, setBuilderCaption] = useState<string>('Fresh on the block in Northfield — hand-cut to order. Order ahead at hofherrmeatco.com.');
+                                            const [builderFormat, setBuilderFormat] = useState<'portrait' | 'facebook' | 'landscape'>('portrait');
 
     const persistLocal = useCallback((nextWeeks: Week[], nextSettings: SocialSettings, nextVerifier: string) => {
         try {
@@ -1173,160 +967,476 @@ function PostCard({
     const weekApproved = activeWeek?.posts.filter((p) => p.approved).length ?? 0;
     const autoPostEnabled = settings.requireApproval === false;
 
-                                                    return (
-                                                    <main className={s.page}>
-                                                            <header className={s.top}>
-                                                                <div>
-                                                                            <nav className={s.backRow} aria-label="Admin navigation">
-                                                                                <Link href="/admin" className={s.back}>
-                                                                                    ← Admin Console
-                                                                                </Link>
-                                                                                <Link href="/admin-dashboard/admin?tab=identity#cuts" className={s.back}>
-                                                                                    ← Social Media Kit &amp; Cut Charts
-                                                                                </Link>
-                                                                                <Link href="/admin-dashboard/admin?tab=print" className={s.back}>
-                                                                                    🖨 1:1 Print Proof Kit
-                                                                        </Link>
-                                                                    </nav>
-                                                                    <h1 className={s.h1}>Social &amp; Print Automation Admin</h1>
-                                                                    <p className={s.lead}>
-                                                                        Edit any Cut Chart, Primal Guide, Fact, Special, Recipe, or Trivia slide live, print 1:1 proof
-                                                                        sheets, or post immediately. <b>Automatic posting requires human verification</b> — review and
-                                                                        verify posts by <b>Day</b>, <b>Weekly</b>, or <b>Month</b>.
-                                                                    </p>
-                                                                </div>
-                                                                <div className={s.bank}>
-                                                                    <span>
-                                                                        <b>{bank.active}</b> templates &amp; cut charts in bank · <b>{totalMonthVerified}/{totalMonthPosts}</b>{' '}
-                                                                        verified this month
-                                                                    </span>
-                                                                    <div className={s.row}>
-                                                                        <button type="button" className={s.chip} onClick={() => addAnimalCutsPost('beef')}>
-                                                                            + Beef Cuts
-                                                                        </button>
-                                                                        <button type="button" className={s.chip} onClick={() => addAnimalCutsPost('pork')}>
-                                                                            + Pork Cuts
-                                                                        </button>
-                                                                        <button type="button" className={s.chip} onClick={() => addAnimalCutsPost('lamb')}>
-                                                                            + Lamb Cuts
-                                                                        </button>
-                                                                        <button type="button" className={s.chip} onClick={() => addAnimalCutsPost('chicken')}>
-                                                                            + Chicken Cuts
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                    </header>
+    const activeBuilderTemplate =
+        BUILDER_TEMPLATES.find((t) => t.id === builderTpl) ?? BUILDER_TEMPLATES[0];
 
-                                                    {/* ── Weekly Auto-Post Command Bar ── */}
-                                                        <section id="verification-controls" className={s.verifyBanner} aria-label="Weekly Auto-Post Controls">
-                                                            <div className={s.verifyBannerLeft}>
-                                                                <span className={s.verifyTitle}>
-                                                                    {autoPostEnabled
-                                                                        ? '⚡ Auto-Post Automatically ON · This Week'
-                                                                        : '🛡️ Manual Verification Gate · This Week'}
-                                                                </span>
-                                                                <span className={s.verifySub}>
-                                                                    {autoPostEnabled
-                                                                        ? 'Clean posts for this week publish automatically at their scheduled Chicago time (IG · FB · X).'
-                                                                        : 'Posts wait for approval before publishing. Toggle Auto-Post ON to publish automatically on schedule.'}
-                                                                </span>
-                                                            </div>
+    const builderSlide: Slide = {
+        _key: 'builder-preview',
+        template: activeBuilderTemplate.id,
+        kicker: activeBuilderTemplate.kicker,
+        headline: builderHeadline || 'Your Headline Here',
+        body: builderBody || 'Add your butcher note or special details.',
+        iconId: builderIcon,
+        photo: builderPhoto || undefined,
+        tone: activeBuilderTemplate.tone,
+    };
 
-                                                            <div className={s.verifyControls}>
-                                                                <Toggle
-                                                                    size="md"
-                                                                    variant="gold"
-                                                                    checked={autoPostEnabled}
-                                                                    onChange={(checked) => {
-                                                                        void saveSettings({ requireApproval: !checked });
-                                                                        setBannerMsg(
-                                                                            checked
-                                                                                ? '⚡ Auto-Post Automatically enabled — clean posts will publish automatically on schedule.'
-                                                                                : '🛡️ Manual verification enabled — posts will wait for approval before publishing.'
-                                                                        );
-                                                                    }}
-                                                                    label="Auto-Post Automatically"
-                                                                />
-                                                                <label className={s.verifierField}>
-                                                                    Verified By:
-                                                                    <input
-                                                                        type="text"
-                                                                        className={s.verifierInput}
-                                                                        value={verifier}
-                                                                        placeholder="Sean Hofherr"
-                                                                        onChange={(e) => {
-                                                                            setVerifier(e.target.value);
-                                                                            persistLocal(weeks, settings, e.target.value);
-                                                                        }}
+    const openBuilderForDay = (day: string) => {
+        setBuilderDay(day);
+        setBuilderTime(settings.postTime || '11:00');
+        setShowBuilder(true);
+    };
+
+    const handleAddBuiltPost = () => {
+        if (!activeWeek) return;
+        const scheduledIso = buildScheduledIso(activeWeek.weekOf, builderDay, builderTime);
+        const newPost: Post = {
+            _key: `custom-${Date.now()}`,
+            day: builderDay,
+            kind: activeBuilderTemplate.kind,
+            label: `${activeBuilderTemplate.label}: ${builderHeadline.trim() || 'Custom Post'}`,
+            contentIds: [],
+            slides: [{ ...builderSlide, _key: `sl-${Date.now()}` }],
+            caption: builderCaption.trim() || `${builderHeadline.trim()} — ${builderBody.trim()}`,
+            captionX: `${builderHeadline.trim()} — ${builderBody.trim()}`.slice(0, 260),
+            hashtags: '#hofherrmeatco #northfieldil #winnetka #chicagobutcher #shoplocal',
+            approved: false,
+            status: 'draft',
+            scheduledFor: scheduledIso,
+            version: 1,
+        };
+        const nextWeeks = weeks.map((w) => {
+            if (w._id !== activeWeek._id) return w;
+            const posts = [...w.posts, newPost].sort(
+                (a, b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day)
+            );
+            return { ...w, posts };
+        });
+        setWeeks(nextWeeks);
+        persistLocal(nextWeeks, settings, verifier);
+        setShowBuilder(false);
+        setSelectedDay(builderDay);
+        setBannerMsg(`✓ Scheduled "${builderHeadline.trim() || 'Custom Post'}" for ${builderDay} at ${TIME_ONLY_FMT.format(new Date(scheduledIso))} CT.`);
+    };
+
+    const visibleWeekPosts = activeWeek
+        ? selectedDay
+            ? activeWeek.posts.filter((p) => p.day === selectedDay)
+            : activeWeek.posts
+        : [];
+
+    return (
+        <div className={s.page}>
+            {/* ── Compact Title + Global Controls Row ── */}
+            <header className={s.top}>
+                <div className={s.topTitleCol}>
+                    <h2 className={s.h1Compact}>Social Studio Builder</h2>
+                    <p className={s.leadCompact}>
+                        Visual weekly posting calendar &amp; live post builder for Instagram, Facebook, and X.
+                    </p>
+                </div>
+
+                <div className={s.topControls}>
+                    <button
+                        type="button"
+                        className={s.btnPrimary}
+                        onClick={() => setShowBuilder((v) => !v)}
+                    >
+                        {showBuilder ? '✕ Close Builder' : '+ New Post'}
+                    </button>
+
+                    <div className={s.autoPostPill}>
+                        <Toggle
+                            size="sm"
+                            variant="gold"
+                            checked={autoPostEnabled}
+                            onChange={(checked) => {
+                                void saveSettings({ requireApproval: !checked });
+                                setBannerMsg(
+                                    checked
+                                        ? 'Auto-Post enabled — clean posts publish automatically on schedule.'
+                                        : 'Manual verification enabled — posts wait for approval before publishing.'
+                                );
+                            }}
+                            label="Auto-Post"
+                        />
+                    </div>
+
+                    <button
+                        type="button"
+                        className={`${s.btn} ${showSettingsDrawer ? s.btnActive : ''}`}
+                        aria-expanded={showSettingsDrawer}
+                        onClick={() => setShowSettingsDrawer((v) => !v)}
+                    >
+                        ⚙ Posting Rules
+                    </button>
+
+                    <details className={s.cutsMenu}>
+                        <summary className={s.btn}>+ Add Cuts ▾</summary>
+                        <div className={s.cutsDropdown}>
+                            <button type="button" className={s.cutsOption} onClick={(e) => { addAnimalCutsPost('beef'); e.currentTarget.closest('details')?.removeAttribute('open'); }}>
+                                + Beef Cuts
+                            </button>
+                            <button type="button" className={s.cutsOption} onClick={(e) => { addAnimalCutsPost('pork'); e.currentTarget.closest('details')?.removeAttribute('open'); }}>
+                                + Pork Cuts
+                            </button>
+                            <button type="button" className={s.cutsOption} onClick={(e) => { addAnimalCutsPost('lamb'); e.currentTarget.closest('details')?.removeAttribute('open'); }}>
+                                + Lamb Cuts
+                            </button>
+                            <button type="button" className={s.cutsOption} onClick={(e) => { addAnimalCutsPost('chicken'); e.currentTarget.closest('details')?.removeAttribute('open'); }}>
+                                + Chicken Cuts
+                            </button>
+                        </div>
+                    </details>
+                </div>
+            </header>
+
+            {bannerMsg && <p className={s.msg}>{bannerMsg}</p>}
+
+            {/* ── Visual Quick Post Builder ── */}
+            {showBuilder && activeWeek && (
+                <section className={s.builderPanel} aria-label="Visual social post builder">
+                    <div className={s.builderFormCol}>
+                        <div className={s.builderHead}>
+                            <h3 className={s.builderHeading}>Create &amp; Schedule Post</h3>
+                            <span className={s.builderSub}>Updates the live graphic preview as you type.</span>
+                        </div>
+
+                        <div className={s.builderRow}>
+                            <div className={s.builderField}>
+                                <span className={s.settingsLabel}>Send Day</span>
+                                <div className={s.pillGroup}>
+                                    {DAYS.map((day) => (
+                                        <button
+                                            key={day}
+                                            type="button"
+                                            className={`${s.pillChoice} ${builderDay === day ? s.pillChoiceActive : ''}`}
+                                            onClick={() => setBuilderDay(day)}
+                                        >
+                                            {day}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <label className={s.builderFieldNarrow}>
+                                <span className={s.settingsLabel}>Send Time (CT)</span>
+                                <input
+                                    type="time"
+                                    className={s.timeInput}
+                                    value={builderTime}
+                                    onChange={(e) => setBuilderTime(e.target.value)}
+                                />
+                            </label>
+                        </div>
+
+                        <div className={s.builderField}>
+                            <span className={s.settingsLabel}>Post Style</span>
+                            <div className={s.pillGroup}>
+                                {BUILDER_TEMPLATES.map((tpl) => (
+                                    <button
+                                        key={tpl.id}
+                                        type="button"
+                                        className={`${s.pillChoice} ${builderTpl === tpl.id ? s.pillChoiceActive : ''}`}
+                                        onClick={() => setBuilderTpl(tpl.id)}
+                                    >
+                                        {tpl.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <label className={s.builderField}>
+                            <span className={s.settingsLabel}>Headline</span>
+                            <input
+                                type="text"
+                                className={s.builderInput}
+                                value={builderHeadline}
+                                onChange={(e) => setBuilderHeadline(e.target.value)}
+                                placeholder="e.g. 45-Day Dry-Aged Prime Ribeye"
+                            />
+                        </label>
+
+                        <label className={s.builderField}>
+                            <span className={s.settingsLabel}>Card Details</span>
+                            <textarea
+                                rows={2}
+                                className={s.settingsTextarea}
+                                value={builderBody}
+                                onChange={(e) => setBuilderBody(e.target.value)}
+                                placeholder="Short punchy copy shown directly on the graphic…"
+                            />
+                        </label>
+
+                        <div className={s.builderField}>
+                            <span className={s.settingsLabel}>Department Sticker</span>
+                            <div className={s.stickerPicker}>
+                                {ICON_OPTIONS.map((ic) => (
+                                    <button
+                                        key={ic.id}
+                                        type="button"
+                                        title={ic.label}
+                                        className={`${s.stickerBtn} ${builderIcon === ic.id ? s.stickerBtnActive : ''}`}
+                                        onClick={() => setBuilderIcon(ic.id)}
+                                    >
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img src={getStickerSrc(ic.id)} alt={ic.label} className={s.stickerThumb} />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className={s.builderField}>
+                            <span className={s.settingsLabel}>Photo Backdrop</span>
+                            <div className={s.photoPicker}>
+                                {BUILDER_PHOTOS.map((ph) => (
+                                    <button
+                                        key={ph.label}
+                                        type="button"
+                                        className={`${s.photoChoice} ${builderPhoto === ph.src ? s.photoChoiceActive : ''}`}
+                                        onClick={() => setBuilderPhoto(ph.src)}
+                                    >
+                                        {ph.src ? (
+                                            /* eslint-disable-next-line @next/next/no-img-element */
+                                            <img src={ph.src} alt="" className={s.photoThumb} />
+                                        ) : (
+                                            <span className={s.photoThumbNone}>Aa</span>
+                                        )}
+                                        <span>{ph.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <label className={s.builderField}>
+                            <span className={s.settingsLabel}>Caption</span>
+                            <textarea
+                                rows={2}
+                                className={s.settingsTextarea}
+                                value={builderCaption}
+                                onChange={(e) => setBuilderCaption(e.target.value)}
+                                placeholder="Post caption for Instagram, Facebook & X…"
+                            />
+                        </label>
+
+                        <div className={s.builderActions}>
+                            <button type="button" className={s.btnPrimary} onClick={handleAddBuiltPost}>
+                                + Schedule on {builderDay} at {builderTime} CT
+                            </button>
+                            <button type="button" className={s.btn} onClick={() => setShowBuilder(false)}>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className={s.builderPreviewCol}>
+                        <div className={s.builderPreviewHead}>
+                            <span className={s.settingsLabel}>Live Preview</span>
+                            <div className={s.pillGroup}>
+                                {(
+                                    [
+                                        ['portrait', 'Instagram 4:5'],
+                                        ['facebook', 'Facebook'],
+                                        ['landscape', 'X 16:9'],
+                                    ] as const
+                                ).map(([fmt, lbl]) => (
+                                    <button
+                                        key={fmt}
+                                        type="button"
+                                        className={`${s.pillChoice} ${builderFormat === fmt ? s.pillChoiceActive : ''}`}
+                                        onClick={() => setBuilderFormat(fmt)}
+                                    >
+                                        {lbl}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className={s.builderPreviewStage}>
+                            <SlidePreview
+                                slide={builderSlide}
+                                format={builderFormat === 'landscape' ? 'landscape' : 'portrait'}
+                            />
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* ── Collapsible Rules, Status & Verifier Drawer ── */}
+            {showSettingsDrawer && (
+                <section id="verification-controls" className={s.settingsDrawer} aria-label="Posting rules and verification settings">
+                    <div className={s.drawerMetaRow}>
+                        <label className={s.verifierField}>
+                            Verified By:
+                            <input
+                                type="text"
+                                className={s.verifierInput}
+                                value={verifier}
+                                placeholder="Sean Hofherr"
+                                onChange={(e) => {
+                                    setVerifier(e.target.value);
+                                    persistLocal(weeks, settings, e.target.value);
+                                }}
+                            />
+                        </label>
+                        <span className={s.drawerStats}>
+                            <b>{bank.active}</b> templates in bank · <b>{totalMonthVerified}/{totalMonthPosts}</b> verified this month
+                        </span>
+                    </div>
+
+                    <SettingsPanel key={JSON.stringify(settings)} settings={settings} connected={connected} onSave={saveSettings} />
+                </section>
+            )}
+
+            {/* ── Unified Week Action Toolbar ── */}
+            <div className={s.toolbar}>
+                <select
+                    value={activeWeek?._id ?? ''}
+                    onChange={(e) => setCurrentWeekId(e.target.value)}
+                    className={s.select}
+                    aria-label="Select schedule week"
+                >
+                    {weeks.map((w, idx) => (
+                        <option key={w._id} value={w._id}>
+                            Week {idx + 1}: {fmtWeek(w.weekOf)} ({w.posts.filter((p) => p.approved).length}/{w.posts.length} verified)
+                        </option>
+                    ))}
+                </select>
+
+                <button type="button" className={s.btn} onClick={regenerateSchedule}>
+                    ↻ Regenerate
+                </button>
+
+                <span className={s.spacer} />
+
+                {activeWeek && (
+                    <>
+                        <span className={s.progress}>
+                            <b>{weekApproved}/{activeWeek.posts.length}</b> verified
+                        </span>
+                        <button
+                            type="button"
+                            className={s.btnSuccess}
+                            disabled={!!busy}
+                            onClick={() => verifyWeekPosts(activeWeek._id)}
+                        >
+                            ✓ Verify Week ({activeWeek.posts.length})
+                        </button>
+                    </>
+                )}
+            </div>
+
+            {/* ── Visual 7-Day Posting Calendar ── */}
+            {activeWeek && (
+                <section className={s.calendarSection} aria-label="Weekly visual posting calendar">
+                    <div className={s.calendarHeader}>
+                        <span className={s.settingsLabel}>
+                            Weekly Posting Calendar · Week of {fmtWeek(activeWeek.weekOf)}
+                        </span>
+                        {selectedDay && (
+                            <button
+                                type="button"
+                                className={s.calendarResetBtn}
+                                onClick={() => setSelectedDay(null)}
+                            >
+                                Showing {selectedDay} only · Show all days ×
+                            </button>
+                        )}
+                    </div>
+                    <div className={s.calendarGrid}>
+                        {DAYS.map((day, idx) => {
+                            const dayDate = getWeekDayDate(activeWeek.weekOf, idx);
+                            const dayPosts = activeWeek.posts.filter((p) => p.day === day);
+                            const isSelected = selectedDay === day;
+                            return (
+                                <div
+                                    key={day}
+                                    className={`${s.calDayCol} ${isSelected ? s.calDayColSelected : ''}`}
+                                >
+                                    <div className={s.calDayHead}>
+                                        <span className={s.calDayName}>{day}</span>
+                                        <span className={s.calDayDate}>{DAY_SHORT_FMT.format(dayDate)}</span>
+                                    </div>
+
+                                    {dayPosts.length > 0 ? (
+                                        <div className={s.calDayPosts}>
+                                            {dayPosts.map((p) => {
+                                                const first = p.slides[0];
+                                                const isPosted = p.status === 'posted';
+                                                const timeStr = p.scheduledFor
+                                                    ? `${TIME_ONLY_FMT.format(new Date(p.scheduledFor))} CT`
+                                                    : `${settings.postTime} CT`;
+                                                return (
+                                                    <button
+                                                        key={p._key}
+                                                        type="button"
+                                                        className={`${s.calPostCard} ${p.approved ? s.calPostApproved : ''}`}
+                                                        onClick={() => setSelectedDay(isSelected ? null : day)}
+                                                    >
+                                                        <div className={s.calPostThumb}>
+                                                            {first?.photo ? (
+                                                                /* eslint-disable-next-line @next/next/no-img-element */
+                                                                <img src={first.photo} alt="" className={s.calPostThumbImg} />
+                                                            ) : (
+                                                                <div className={s.calPostThumbGraphic}>
+                                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                                    <img
+                                                                        src={getStickerSrc(first?.iconId)}
+                                                                        alt=""
+                                                                        className={s.calPostSticker}
                                                                     />
-                                                                </label>
-                                                            </div>
-                                                        </section>
-
-                                                        {bannerMsg && <p className={s.msg}>{bannerMsg}</p>}
-
-                                                        <HowItWorks connected={connected} bankTotal={bank.total} hasWeek={weeks.length > 0} reviewerCount={settings.notifyEmails.length} />
-                                                        <SettingsPanel key={JSON.stringify(settings)} settings={settings} connected={connected} onSave={saveSettings} />
-
-                                                        {/* ── Sticky Weekly Action Toolbar ── */}
-                                                        <div className={s.toolbar}>
-                                                            <select
-                                                                value={activeWeek?._id ?? ''}
-                                                                onChange={(e) => setCurrentWeekId(e.target.value)}
-                                                                className={s.select}
-                                                            >
-                                                                {weeks.map((w, idx) => (
-                                                                    <option key={w._id} value={w._id}>
-                                                                        Week {idx + 1}: {fmtWeek(w.weekOf)} ({w.posts.filter((p) => p.approved).length}/
-                                                                        {w.posts.length} verified)
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-
-                                                            <button type="button" className={s.btn} onClick={regenerateSchedule}>
-                                                                ↻ Regenerate Week
-                                                            </button>
-                                                            <button type="button" className={s.btn} onClick={() => window.print()}>
-                                                                🖨 Print Weekly Proofs
-                                                            </button>
-
-                                                            <span className={s.spacer} />
-
-                                                            {activeWeek && (
-                                                                <>
-                                                                    <span className={s.progress}>
-                                                                        <b>
-                                                                            {weekApproved}/{activeWeek.posts.length}
-                                                                        </b>{' '}
-                                                                        verified this week
-                                                                    </span>
-                                                                    <button
-                                                                        type="button"
-                                                                        className={s.btnSuccess}
-                                                                        disabled={!!busy}
-                                                                        onClick={() => verifyWeekPosts(activeWeek._id)}
-                                                                    >
-                                                                        ✓ Verify Entire Week ({activeWeek.posts.length} Posts)
-                                                                    </button>
-                                                                </>
+                                                                </div>
                                                             )}
+                                                            <span
+                                                                className={`${s.calStatusDot} ${
+                                                                    isPosted || p.approved ? s.calStatusOk : s.calStatusWait
+                                                                }`}
+                                                            >
+                                                                {isPosted ? '✓ Sent' : p.approved ? '✓ Ready' : '⏳ Draft'}
+                                                            </span>
                                                         </div>
+                                                        <div className={s.calPostMeta}>
+                                                            <span className={s.calPostTime}>{timeStr}</span>
+                                                            <span className={s.calPostTitle}>
+                                                                {first?.headline || p.label}
+                                                            </span>
+                                                            <span className={s.calPlatforms}>
+                                                                {settings.platforms.map((pl) => pl === 'instagram' ? 'IG' : pl === 'facebook' ? 'FB' : 'X').join(' · ')}
+                                                            </span>
+                                                        </div>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className={s.calEmptySlot}
+                                            onClick={() => openBuilderForDay(day)}
+                                        >
+                                            <span>+ Schedule</span>
+                                        </button>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
+            )}
 
-                                                        {/* ── WEEKLY VIEW (This week's scheduled posts) ── */}
-                                                        {activeWeek && (
-                                                            <div className={s.grid}>
-                                                                {activeWeek.posts.map((p) => (
-                                                                    <PostCard
-                                                                        key={p._key}
-                                                                        week={activeWeek}
-                                                                        post={p}
-                                                                        verifier={verifier}
-                                                                        onUpdatePost={updatePost}
-                                                                        onAddWord={(w) => saveSettings({ addWord: w })}
-                                                                    />
-                                                                ))}
-                                                            </div>
-                                                        )}
-        </main>
-                                                        );
+            {/* ── WEEKLY VIEW (Scheduled post cards) ── */}
+            {activeWeek && (
+                <div className={s.grid}>
+                    {visibleWeekPosts.map((p) => (
+                        <PostCard
+                            key={p._key}
+                            week={activeWeek}
+                            post={p}
+                            verifier={verifier}
+                            onUpdatePost={updatePost}
+                            onAddWord={(w) => saveSettings({ addWord: w })}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
 }

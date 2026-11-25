@@ -19,8 +19,8 @@
     align-items: flex-end;
     gap: 24px;
     flex-wrap: wrap;
-    margin-bottom: 32px;
-    padding: 62px 0 48px;
+    margin-bottom: 24px;
+    padding: 48px 0 24px;
     background-image:
         radial-gradient(at 20%, #80002026 0%, #0000 60%),
         radial-gradient(at 80% 30%, #80002014 0%, #0000 50%);

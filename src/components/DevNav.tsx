@@ -322,16 +322,6 @@ const DevNav = () => {
                     <span>⚡</span>
                     <span>{godBusy ? 'LOADING…' : isGodMode ? 'GOD MODE: ON' : 'GOD MODE'}</span>
                 </button>
-                <button
-                    type="button"
-                    className={`${styles.godBtn} ${styles.mobileKeep} ${gapsOn ? styles.godBtnActive : ''}`}
-                    onClick={toggleSectionGaps}
-                    aria-pressed={gapsOn}
-                    title="Show the spacing between sections (Alt+G)"
-                >
-                    <span>📏</span>
-                    <span>{gapsOn ? 'GAPS: ON' : 'GAPS'}</span>
-                </button>
             </div>
 
             {open && (

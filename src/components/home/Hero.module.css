@@ -2,6 +2,8 @@
 .hero {
     position: relative;
     overflow: hidden;
+    margin-top: -100px;
+    padding-top: 100px;
     min-height: 840px;
     display: flex;
     align-items: flex-start;
@@ -91,7 +93,12 @@
 }
 
 @media (min-width: 1201px) {
+    .heroGrid {
+        position: relative;
+    }
+
     .headlineWrap {
+        position: static;
         flex-direction: column;
         align-items: flex-start;
         margin-bottom: 0;
@@ -103,13 +110,13 @@
 
     .floatingMedia {
         position: absolute;
-        right: 60px;
-        top: 0;
-        bottom: 0;
-        margin: auto;
+        right: 310px;
+        top: auto;
+        bottom: 16px;
+        margin: 0;
         gap: 16px;
         height: fit-content;
-        z-index: 5;
+        z-index: 6;
     }
 }
 

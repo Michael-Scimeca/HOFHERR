@@ -54,7 +54,7 @@ const textColors = [
 
 const spacingTokens = [
     { name: '--nav-h', value: '68px', desc: 'Navbar height' },
-    { name: '--max-w', value: '1400px', desc: 'Max content width' },
+    { name: '--max-w', value: '1430px', desc: 'Max content width' },
     { name: '--space-2 / --space-4 / --space-6', value: '8px / 16px / 24px', desc: 'Core 8px grid steps' },
     { name: '--space-8 / --space-10 / --space-12', value: '32px / 40px / 48px', desc: 'Section & hero padding' },
     { name: '--radius-sm / --radius / --radius-lg', value: '6px / 10px / 18px', desc: 'Corner radius scale' },

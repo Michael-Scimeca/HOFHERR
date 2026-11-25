@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Toggle } from '@/components/Toggle';
-import TransactionalEmailsSection from './TransactionalEmailsSection';
 import styles from './SubscribersPanel.module.css';
 
 const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const;
@@ -35,12 +34,29 @@ export interface AdminSubscriber {
     orderCount: number;
 }
 
+export interface AdminProductOption {
+    _id: string;
+    name: string;
+    category?: { name?: string };
+}
+
 interface SubscribersPanelProps {
     subscribers: AdminSubscriber[];
     totalCustomers: number;
+    products?: AdminProductOption[];
 }
 
 type EmailTheme = 'butcher' | 'depot' | 'gold';
+type OutreachSectionTab = 'subscribers' | 'builder' | 'social';
+
+const QUICK_DESTINATIONS = [
+    { label: 'Butcher Shop', url: '/online-orders?store=butcher', isOrder: true },
+    { label: 'Winnetka Depot', url: '/online-orders?store=depot', isOrder: true },
+    { label: 'Weekly Specials', url: '/specials', isOrder: false },
+    { label: 'Catering', url: '/catering', isOrder: false },
+    { label: 'BBQ & Pig Roast', url: '/bbq', isOrder: false },
+    { label: 'Recipes', url: '/recipes', isOrder: false },
+] as const;
 
 interface EmailHighlight {
     id?: string;
@@ -108,7 +124,7 @@ const EMAIL_TEMPLATES: EmailTemplate[] = [
         subject: 'Weekend Grill Forecast: Lock In Your Cuts Before Saturday Rush',
         previewText: 'Guarantee your 15-minute pickup slot in Northfield + grab our free sear & temp guides.',
         headline: 'Lock In Your Weekend Cuts',
-        body: `Hi neighbor,\n\nSaturday morning is our busiest rush at 300 Happ Rd — and the best dry-aged steaks and BaconFest-winning sausages go fast.\n\nOrder online today to lock in a guaranteed 15-minute pickup slot, and pair your cuts with our free printable 12×16" Parcel Sheet cooking guides.`,
+        body: `Hi neighbor,\n\nSaturday morning is our busiest rush at 300 Happ Rd — and the best dry-aged steaks and BaconFest-winning sausages go fast.\n\nOrder online today to lock in a guaranteed 15-minute pickup slot, and pair your cuts with our free in-shop 12×16" Parcel Sheet cooking guides.`,
         ctaLabel: 'Lock In My Weekend Cuts →',
         ctaUrl: '/online-orders?store=butcher',
         psNote: 'Skip the Saturday parking lot completely — select Curbside Trunk Drop-Off at checkout and call (847) 441-MEAT when you pull up.',
@@ -135,7 +151,13 @@ const EMAIL_TEMPLATES: EmailTemplate[] = [
     },
 ];
 
-export default function SubscribersPanel({ subscribers, totalCustomers }: SubscribersPanelProps) {
+const EMPTY_PRODUCTS: AdminProductOption[] = [];
+
+export default function SubscribersPanel({
+    subscribers,
+    totalCustomers,
+    products = EMPTY_PRODUCTS,
+}: SubscribersPanelProps) {
     const [testSubscribers, setTestSubscribers] = useState<AdminSubscriber[]>(() => {
         const alreadyInSanity = subscribers.some(
             s => s.email.toLowerCase() === 'mikeyscimeca.dev@gmail.com'
@@ -233,8 +255,8 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
         setTestSubscribers(prev => prev.filter(s => s._id !== id));
     };
 
-    // Toggle Email Builder visibility (Social Studio renders directly below this section)
-    const [showEmailBuilder, setShowEmailBuilder] = useState(true);
+    // Active sub-tab inside Subscribers & Outreach
+    const [activeSection, setActiveSection] = useState<OutreachSectionTab>('subscribers');
     const [theme, setTheme] = useState<EmailTheme>(EMAIL_TEMPLATES[0].theme);
     const [subject, setSubject] = useState(EMAIL_TEMPLATES[0].subject);
     const [previewText, setPreviewText] = useState(EMAIL_TEMPLATES[0].previewText);
@@ -271,6 +293,7 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
     };
     const [showHighlights, setShowHighlights] = useState(true);
     const [showQr, setShowQr] = useState(true);
+    const [qrProductSearch, setQrProductSearch] = useState('');
     const [autoSchedule, setAutoSchedule] = useState(true);
     const [testEmail, setTestEmail] = useState('mikeyscimeca.dev@gmail.com');
     const [sending, setSending] = useState<'test' | 'broadcast' | null>(null);
@@ -327,10 +350,43 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
         }
     };
 
-    const quickItemsList = quickItems
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean);
+    const quickItemsList = useMemo(
+        () =>
+            quickItems
+                .split(',')
+                .map(s => s.trim())
+                .filter(Boolean),
+        [quickItems]
+    );
+
+    const toggleQuickItem = (productName: string) => {
+        const exists = quickItemsList.some(
+            item => item.toLowerCase() === productName.toLowerCase()
+        );
+        const next = exists
+            ? quickItemsList.filter(item => item.toLowerCase() !== productName.toLowerCase())
+            : [...quickItemsList, productName];
+        setQuickItems(next.join(', '));
+    };
+
+    const filteredMenuProducts = useMemo(() => {
+        const seen = new Set<string>();
+        const unique = products.filter(p => {
+            const key = (p.name || '').trim().toLowerCase();
+            if (!key || seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+        const q = qrProductSearch.trim().toLowerCase();
+        const matches = q
+            ? unique.filter(
+                  p =>
+                      p.name.toLowerCase().includes(q) ||
+                      (p.category?.name?.toLowerCase().includes(q) ?? false)
+              )
+            : unique;
+        return matches.slice(0, 18);
+    }, [products, qrProductSearch]);
     const quickItemsLabel =
         quickItemsList.length === 0
             ? ''
@@ -415,49 +471,51 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
 
     return (
         <div className={styles.wrap}>
-            {/* ── Header ── */}
-            <div className={styles.headerRow}>
-                <div>
-                    <h2 className={styles.title}>Who&apos;s Subscribed ({allSubscribers.length})</h2>
-                    <p className={styles.sub}>
-                        Live newsletter opt-ins synced from Sanity customer profiles (<strong>{optInRate}%</strong> of{' '}
-                        {effectiveTotal} registered customer{effectiveTotal === 1 ? '' : 's'}).
-                    </p>
-                </div>
-
-                <div className={styles.actions}>
-                    <button
-                        type="button"
-                        className={styles.secondaryBtn}
-                        onClick={handleAddTestSubscriber}
-                    >
-                        + Add Test Subscriber
-                    </button>
-                    <button
-                        type="button"
-                        className={showEmailBuilder ? styles.copyBtn : styles.secondaryBtn}
-                        onClick={() => setShowEmailBuilder(v => !v)}
-                    >
-                        {showEmailBuilder ? '✉️ Email Builder ✓' : '✉️ Email Builder'}
-                    </button>
-                    <a
-                        href="#automated-emails-section"
-                        className={styles.secondaryBtn}
-                    >
-                        📧 Automated Emails ↓
-                    </a>
-                    <a
-                        href="#social-studio-section"
-                        className={styles.secondaryBtn}
-                    >
-                        📣 Post to IG · FB · X ↓
-                    </a>
-                </div>
+            {/* ── Sub-Section Tabs ── */}
+            <div className={styles.subTabBar} role="tablist" aria-label="Subscribers and Outreach sections">
+                <button
+                    type="button"
+                    role="tab"
+                    id="outreach-tab-subscribers"
+                    aria-selected={activeSection === 'subscribers'}
+                    aria-controls="outreach-panel-subscribers"
+                    className={`${styles.subTabBtn} ${activeSection === 'subscribers' ? styles.subTabBtnActive : ''}`}
+                    onClick={() => setActiveSection('subscribers')}
+                >
+                    👥 Subscribers ({allSubscribers.length})
+                </button>
+                <button
+                    type="button"
+                    role="tab"
+                    id="outreach-tab-builder"
+                    aria-selected={activeSection === 'builder'}
+                    aria-controls="outreach-panel-builder"
+                    className={`${styles.subTabBtn} ${activeSection === 'builder' ? styles.subTabBtnActive : ''}`}
+                    onClick={() => setActiveSection('builder')}
+                >
+                    ✉️ Email Builder
+                </button>
+                <button
+                    type="button"
+                    role="tab"
+                    id="outreach-tab-social"
+                    aria-selected={activeSection === 'social'}
+                    aria-controls="outreach-panel-social"
+                    className={`${styles.subTabBtn} ${activeSection === 'social' ? styles.subTabBtnActive : ''}`}
+                    onClick={() => setActiveSection('social')}
+                >
+                    📣 Social Studio Builder
+                </button>
             </div>
 
-            {/* ── Email Builder & Real Test Sender ── */}
-            {showEmailBuilder && (
-                <div className={styles.builderCard}>
+            {/* ── Email Builder & Real Test Sender Tab ── */}
+            {activeSection === 'builder' && (
+                <div
+                    id="outreach-panel-builder"
+                    role="tabpanel"
+                    aria-labelledby="outreach-tab-builder"
+                    className={styles.builderCard}
+                >
                     <div className={styles.builderTop}>
                         <div>
                             <h3 className={styles.builderTitle}>Email Builder &amp; Real Test Sender</h3>
@@ -570,16 +628,103 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
                                     />
                                 </label>
                             </div>
-                            <label className={styles.fieldLabel}>
-                                QR Quick-Order Items (pre-loaded when scanned)
-                                <input
-                                    type="text"
-                                    className={styles.fieldInput}
-                                    value={quickItems}
-                                    onChange={e => setQuickItems(e.target.value)}
-                                    placeholder="Bone-In Ribeye, Filet Mignon, Andouille Sausage"
-                                />
-                            </label>
+                            <div className={styles.quickLinkRow} role="group" aria-label="Quick link destinations">
+                                <span className={styles.quickLinkLabel}>Quick Link:</span>
+                                {QUICK_DESTINATIONS.map(dest => (
+                                    <button
+                                        key={dest.url}
+                                        type="button"
+                                        className={`${styles.quickLinkChip} ${ctaUrl.trim() === dest.url ? styles.quickLinkChipActive : ''}`}
+                                        onClick={() => {
+                                            setCtaUrl(dest.url);
+                                            if (!dest.isOrder) setQuickItems('');
+                                        }}
+                                    >
+                                        {dest.label}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className={styles.qrControlBox}>
+                                <div className={styles.qrControlHead}>
+                                    <Toggle
+                                        size="sm"
+                                        checked={showQr}
+                                        onChange={setShowQr}
+                                        label="Include QR Code in Email"
+                                    />
+                                    <span className={styles.qrStatusTag}>
+                                        {showQr ? 'Shown in email' : 'Hidden'}
+                                    </span>
+                                </div>
+                                {showQr && (
+                                    <>
+                                        {quickItemsList.length > 0 && (
+                                            <div className={styles.qrSelectedRow}>
+                                                {quickItemsList.map(item => (
+                                                    <button
+                                                        key={item}
+                                                        type="button"
+                                                        className={styles.qrSelectedPill}
+                                                        onClick={() => toggleQuickItem(item)}
+                                                        title={`Remove ${item}`}
+                                                    >
+                                                        <span>{item}</span>
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                ))}
+                                                <button
+                                                    type="button"
+                                                    className={styles.qrClearBtn}
+                                                    onClick={() => setQuickItems('')}
+                                                >
+                                                    Clear all
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        <input
+                                            type="search"
+                                            className={styles.fieldInput}
+                                            value={qrProductSearch}
+                                            onChange={e => setQrProductSearch(e.target.value)}
+                                            placeholder={
+                                                products.length > 0
+                                                    ? `Search ${products.length} current menu items to add to QR…`
+                                                    : 'No menu products loaded yet…'
+                                            }
+                                            aria-label="Search current menu items for QR quick order"
+                                        />
+
+                                        {filteredMenuProducts.length > 0 && (
+                                            <div className={styles.qrProductGrid} role="group" aria-label="Current menu items">
+                                                {filteredMenuProducts.map(prod => {
+                                                    const isPicked = quickItemsList.some(
+                                                        x => x.toLowerCase() === prod.name.toLowerCase()
+                                                    );
+                                                    return (
+                                                        <button
+                                                            key={prod._id}
+                                                            type="button"
+                                                            className={`${styles.qrProductChip} ${isPicked ? styles.qrProductChipActive : ''}`}
+                                                            onClick={() => toggleQuickItem(prod.name)}
+                                                        >
+                                                            <span>{isPicked ? '✓ ' : '+ '}{prod.name}</span>
+                                                            {prod.category?.name && (
+                                                                <span className={styles.qrProductCat}>{prod.category.name}</span>
+                                                            )}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+
+                                        <span className={styles.qrResolvedUrl}>
+                                            Scans to: <code>{resolvedCtaUrl}</code>
+                                        </span>
+                                    </>
+                                )}
+                            </div>
                             <label className={styles.fieldLabel}>
                                 P.S. Line (Skimmer Hook)
                                 <input
@@ -591,12 +736,6 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
                                 />
                             </label>
                             <div className={styles.toggleRow}>
-                                <Toggle
-                                    size="sm"
-                                    checked={showQr}
-                                    onChange={setShowQr}
-                                    label="Scan-to-Order QR Code"
-                                />
                                 <Toggle
                                     size="sm"
                                     checked={showHighlights}
@@ -855,8 +994,35 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
                 </div>
             )}
 
-            {/* ── Subscriber Search & Filters ── */}
-            <div className={styles.controls}>
+            {/* ── Subscribers Directory Tab ── */}
+            {activeSection === 'subscribers' && (
+                <div
+                    id="outreach-panel-subscribers"
+                    role="tabpanel"
+                    aria-labelledby="outreach-tab-subscribers"
+                    className={styles.subTabPanel}
+                >
+                    <div className={styles.headerRow}>
+                        <div>
+                            <h2 className={styles.title}>Who&apos;s Subscribed ({allSubscribers.length})</h2>
+                            <p className={styles.sub}>
+                                Live newsletter opt-ins synced from Sanity customer profiles (<strong>{optInRate}%</strong> of{' '}
+                                {effectiveTotal} registered customer{effectiveTotal === 1 ? '' : 's'}).
+                            </p>
+                        </div>
+
+                        <div className={styles.actions}>
+                            <button
+                                type="button"
+                                className={styles.secondaryBtn}
+                                onClick={handleAddTestSubscriber}
+                            >
+                                + Add Test Subscriber
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className={styles.controls}>
                 <input
                     type="search"
                     className={styles.searchInput}
@@ -963,27 +1129,33 @@ export default function SubscribersPanel({ subscribers, totalCustomers }: Subscr
                     </table>
                 </div>
             )}
+                </div>
+            )}
 
-            {/* ── Social & Print Automation Studio (IG · FB · X) ── */}
-            <section
-                id="social-studio-section"
-                aria-label="Social and Print Automation Studio"
-                className={styles.embeddedPanel}
-            >
-                <SocialAdminInline />
-            </section>
-
-            {/* ── Social Profiles, Cut Charts, Bios & Captions Kit (from /product-identity/social) ── */}
-            <section
-                id="social-profiles-kit-section"
-                aria-label="Social Profiles, Cut Charts, Bios and Captions Kit"
-                className={styles.embeddedPanel}
-            >
-                <SocialKitInline embedded />
-            </section>
-
-            {/* ── Automated Transactional Emails (Welcome, Verify, Reset, Order, Restock, Newsletter) ── */}
-            <TransactionalEmailsSection />
+            {/* ── Social Studio & Cut/Cooking Kit (IG · FB · X) Tab ── */}
+            {activeSection === 'social' && (
+                <div
+                    id="outreach-panel-social"
+                    role="tabpanel"
+                    aria-labelledby="outreach-tab-social"
+                    className={styles.subTabPanel}
+                >
+                    <section
+                        id="social-studio-section"
+                        aria-label="Social Automation Studio"
+                        className={styles.embeddedPanel}
+                    >
+                        <SocialAdminInline />
+                    </section>
+                    <section
+                        id="social-profiles-kit-section"
+                        aria-label="Social Media Cut Charts and Cooking Content"
+                        className={styles.embeddedPanel}
+                    >
+                        <SocialKitInline embedded />
+                    </section>
+                </div>
+            )}
         </div>
     );
 }

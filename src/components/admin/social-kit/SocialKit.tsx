@@ -4,7 +4,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 import Link from 'next/link';
 import { toPng } from 'html-to-image';
 import { FLAME_STICKERS } from '@/app/product-identity/ProductIdentityClient';
-import { BIOS, CAPTIONS, HASHTAGS, CADENCE, HANDLE, HOW_TOS, TRIVIA, TRICKS, DONENESS } from './copy';
+import { HANDLE, HOW_TOS, TRIVIA, TRICKS, DONENESS } from './copy';
 import { ANIMALS, type Animal } from './animals';
 import s from './social.module.css';
 
@@ -74,53 +74,6 @@ function Canvas({ name, w, h, preview = 320, svgHref, children }: { name: string
         }
     };
 
-    const printAsset = async () => {
-        if (!ref.current) return;
-        setBusy(true);
-        try {
-            const url = await toPng(ref.current, { width: w, height: h, pixelRatio: 1, cacheBust: true });
-            const win = window.open('', '_blank', 'width=900,height=1050');
-            if (!win) {
-                window.print();
-                return;
-            }
-            win.document.write(`<!doctype html>
-<html>
-<head>
-    <title>Hofherr Print Proof — ${name}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 24px; color: #1C1614; background: #fff; text-align: center; }
-        .head { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #8B0A10; padding-bottom: 10px; margin-bottom: 16px; text-align: left; }
-        .title { font-size: 20px; font-weight: 900; color: #8B0A10; text-transform: uppercase; }
-        img { max-width: 100%; max-height: 8.2in; object-fit: contain; border: 2px solid #1C1614; }
-        .foot { margin-top: 14px; border: 2px dashed #8B0A10; padding: 10px 14px; display: flex; justify-content: space-between; font-size: 12px; }
-    </style>
-</head>
-<body>
-    <div class="head">
-        <div>
-            <div class="title">HOFHERR MEAT CO. · 1:1 PRINT &amp; SOCIAL PROOF</div>
-            <div style="font-size:12px;color:#555;">Asset: ${name} (${w} × ${h} px)</div>
-        </div>
-        <div style="font-size:12px;font-weight:700;color:${vInfo ? '#1a7f37' : '#8B0A10'};">
-            ${vInfo ? `✓ VERIFIED BY ${vInfo.by.toUpperCase()}` : '⏳ PENDING PERSON VERIFICATION'}
-        </div>
-    </div>
-    <img src="${url}" alt="${name}" />
-    <div class="foot">
-        <span><b>Verified By:</b> ${vInfo?.by || verifier || '__________________'}</span>
-        <span><b>Auto-Post Status:</b> ${vInfo ? '✓ Approved & Queued' : 'Needs Review'}</span>
-        <span><b>Hofherr Meat Co. · (847) 441-MEAT</b></span>
-    </div>
-    <script>window.onload = () => { setTimeout(() => window.print(), 200); };</script>
-</body>
-</html>`);
-            win.document.close();
-        } finally {
-            setBusy(false);
-        }
-    };
-
     const postAsset = () => {
         if (!vInfo) {
             toggleVerify(name);
@@ -130,7 +83,10 @@ function Canvas({ name, w, h, preview = 320, svgHref, children }: { name: string
     };
 
     return (
-        <figure className={`${s.asset} ${vInfo ? s.assetVerified : ''}`}>
+        <figure
+            className={`${s.asset} ${vInfo ? s.assetVerified : ''}`}
+            style={{ '--preview-w': `${preview}px` } as React.CSSProperties}
+        >
             <div className={s.previewBox} style={{ width: preview, height: h * scale }}>
                 <div style={{ transform: `scale(${scale})`, transformOrigin: 'top left', width: w, height: h }}>
                     <div ref={ref} style={{ width: w, height: h, position: 'relative', overflow: 'hidden', fontFamily: BODY }}>
@@ -144,17 +100,6 @@ function Canvas({ name, w, h, preview = 320, svgHref, children }: { name: string
                     {vInfo && <span className={s.badgeVerified}>✓ Verified ({vInfo.by})</span>}
                 </span>
                 <span className={s.capSize}>{w} × {h}</span>
-                {svgHref && (
-                    <a href={svgHref} download={`hofherr-${name}.svg`} className={s.dl}>
-                        ⬇ SVG
-                    </a>
-                )}
-                <button type="button" className={s.dl} onClick={download} data-download disabled={busy}>
-                    {busy ? '…' : '⬇ PNG'}
-                </button>
-                <button type="button" className={s.dl} onClick={printAsset} disabled={busy}>
-                    🖨 Print
-                </button>
                 <button
                     type="button"
                     className={vInfo ? s.dlVerified : s.dlVerify}
@@ -759,19 +704,10 @@ function CutFactPost({ a, fact, i, icon }: { a: Animal; fact: string; i: number;
     );
 }
 
-function PromptCopy({ a }: { a: Animal }) {
-    return <CopyBlock title={`${a.name} cut chart — Nano Banana prompt`} text={a.chartPrompt} />;
-}
-
 /* ── page ─────────────────────────────────────────── */
 const GROUPS = [
-    { id: 'cuts', title: 'Know your cuts · beef, pork, lamb & chicken', note: 'A carousel per animal: cut chart → cut guide → "Did you know?" facts. Chart images are generated with Nano Banana — prompts with the correct label placement are under each set.' },
+    { id: 'cuts', title: 'Know your cuts · beef, pork, lamb & chicken', note: 'A carousel per animal: cut chart → cut guide → "Did you know?" facts.' },
     { id: 'cooking', title: 'Cooking content · how-to, trivia & tricks', note: 'Your everyday posts. How-tos and trivia come as 2-slide carousels (cover/question first, steps/answer second). Click any text to rewrite it.' },
-    { id: 'posts', title: 'Promo posts · 1080 × 1350 (4:5)', note: 'Specials, new cuts, catering, holidays, reviews, hiring and notices. Works on Instagram, Facebook, LinkedIn and X.' },
-    { id: 'stories', title: 'Stories & Reels covers · 1080 × 1920 (9:16)', note: 'Dashed boxes show where to drop the platform sticker (link, poll, quiz, countdown) — place the sticker over the box.' },
-    { id: 'highlights', title: 'Instagram highlight covers', note: 'Post as a story, then set as the highlight cover. Icons are centred to survive the circle crop.' },
-    { id: 'profile', title: 'Profile pictures', note: 'Use the same one everywhere. Platforms crop to a circle — the mark stays inside the safe zone.' },
-    { id: 'covers', title: 'Cover & banner images', note: 'Text sits in the centre-safe band so avatars and mobile crops do not cover it.' },
 ];
 
 const SCHEDULE_ITEMS = [
@@ -794,11 +730,9 @@ const SCHEDULE_ITEMS = [
 ];
 
 export default function SocialKit({ embedded = false }: { embedded?: boolean }) {
-    const [photo, setPhoto] = useState(PHOTOS[0].src);
-    const [icon, setIcon] = useState(FLAME_STICKERS[0].src);
+    const photo = PHOTOS[0].src;
+    const icon = FLAME_STICKERS[0].src;
     const [animalsData, setAnimalsData] = useState<Animal[]>(ANIMALS);
-    const [editingAnimalSlug, setEditingAnimalSlug] = useState<string>('beef');
-    const [showCutEditor, setShowCutEditor] = useState<boolean>(true);
     const [verifier, setVerifier] = useState<string>('Sean Hofherr');
     const [horizon, setHorizon] = useState<'day' | 'week' | 'month'>('week');
     const [selectedDayIdx, setSelectedDayIdx] = useState<number>(0);
@@ -908,31 +842,6 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
             });
         };
 
-        const activeEditAnimal = animalsData.find((a) => a.slug === editingAnimalSlug) ?? animalsData[0];
-
-        const updateAnimalPrimals = (slug: string, rawLines: string) => {
-            const primals = rawLines
-                .split('\n')
-                .filter((line) => line.trim())
-                .map((line) => {
-                    const [name = '', where = '', bestFor = ''] = line.split('|').map((s) => s.trim());
-                    return { name, where, bestFor };
-                });
-            const next = animalsData.map((a) => (a.slug === slug ? { ...a, primals } : a));
-            setAnimalsData(next);
-            saveLocal(next, verifiedMap, verifier);
-        };
-
-        const updateAnimalFacts = (slug: string, rawLines: string) => {
-            const facts = rawLines
-                .split('\n')
-                .map((s) => s.trim())
-                .filter(Boolean);
-            const next = animalsData.map((a) => (a.slug === slug ? { ...a, facts } : a));
-            setAnimalsData(next);
-            saveLocal(next, verifiedMap, verifier);
-        };
-
         const visibleScheduleItems =
             horizon === 'day'
                 ? [SCHEDULE_ITEMS[selectedDayIdx] ?? SCHEDULE_ITEMS[0]]
@@ -947,14 +856,13 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
                     <Wrapper id="social-kit" className={embedded ? s.embeddedShell : s.shell}>
                         <header className={`container ${s.top}`}>
                             {embedded ? (
-                                <h2 className={s.h1}>11 / Social Media, Cut Charts &amp; Auto-Post Studio</h2>
+                                <h2 className={s.h1}>Cut Charts &amp; Cooking Posts</h2>
                             ) : (
-                                <h1 className={s.h1}>Social Media &amp; Print Kit</h1>
+                                <h1 className={s.h1}>Cut Charts &amp; Cooking Posts</h1>
                             )}
                             <p className={s.lead}>
-                                Ready-to-post and ready-to-print templates for every platform. <b>Click any text on a template to rewrite it</b>,
-                                use the <b>Admin Studio</b> below to edit cut guides/facts, print 1:1 proofs, or verify automatic posts by{' '}
-                                <b>Day</b>, <b>Weekly</b>, or <b>Month</b>.
+                                Ready-to-post butcher cut guides, how-tos, trivia, and kitchen tricks.{' '}
+                                <b>Click any text on a card to rewrite it</b>, then verify or post to Instagram, Facebook, and X.
                             </p>
 
                             {/* ── Embedded Admin & Auto-Post Verification Bar (Day / Weekly / Month) ── */}
@@ -973,9 +881,6 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
                                             <Link href="/admin-dashboard/admin?tab=subscribers" className={s.dlAll}>
                                                 ⚙ Open Full Admin Console →
                                     </Link>
-                                    <button type="button" className={s.dl} onClick={() => window.print()}>
-                                        🖨 Print Page / Proofs
-                                    </button>
                                 </div>
                             </div>
 
@@ -1108,47 +1013,6 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
                             })}
                         </div>
                     </div>
-
-                    <div className={s.controls}>
-                        <label className={s.ctl}>
-                            Photo
-                            <select value={photo} onChange={(e) => setPhoto(e.target.value)}>
-                                {PHOTOS.map((p) => (
-                                    <option key={p.src} value={p.src}>
-                                        {p.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
-                        <div className={s.ctl}>
-                            Department icon
-                            <div className={s.iconRow}>
-                                {FLAME_STICKERS.map((f) => (
-                                    <button
-                                        key={f.id}
-                                        type="button"
-                                        title={f.name}
-                                        onClick={() => setIcon(f.src)}
-                                        className={`${s.iconBtn} ${icon === f.src ? s.iconOn : ''}`}
-                                    >
-                                        <img src={f.src} alt={f.name} />
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                        <nav className={s.jump} aria-label="Social media kit sections">
-                            {GROUPS.map((g) => (
-                                <a key={g.id} href={`#${g.id}`}>
-                                    {g.title.split(' ·')[0]}
-                                </a>
-                            ))}
-                            <a href="#copy">Bios &amp; captions</a>
-                                <Link href="/admin-dashboard/admin?tab=subscribers" className={s.jumpAdmin}>
-                                    ⚙ Admin Auto-Post &amp; Print Studio →
-                        </Link>
-                        <Link href="/admin-dashboard/admin?tab=identity">← Identity system</Link>
-                    </nav>
                 </header>
 
                 {GROUPS.map((g) => (
@@ -1159,105 +1023,11 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
                                     <p className={s.note}>{g.note}</p>
                                 </div>
                                 <div className={s.groupActions}>
-                                    {g.id === 'cuts' && (
-                                        <button
-                                            type="button"
-                                            className={s.dl}
-                                            onClick={() => setShowCutEditor((v) => !v)}
-                                        >
-                                            {showCutEditor ? '▾ Hide Admin Cut Editor' : '✎ Open Admin Cut Editor'}
-                                        </button>
-                                    )}
-                                    <button type="button" className={s.dl} onClick={() => window.print()}>
-                                        🖨 Print Section
-                                    </button>
                                     <button type="button" className={s.dlAll} onClick={() => downloadGroup(g.id)}>
                                         ⬇ Download all
                                     </button>
                                 </div>
                             </div>
-
-                            {g.id === 'cuts' && showCutEditor && activeEditAnimal && (
-                                <div className={s.cutEditorBox}>
-                                    <div className={s.cutEditorTabs}>
-                                        <b>✎ Admin Cut Guide &amp; Fact Editor:</b>
-                                        {animalsData.map((a) => (
-                                            <button
-                                                key={a.slug}
-                                                type="button"
-                                                className={editingAnimalSlug === a.slug ? s.dlAll : s.dl}
-                                                onClick={() => setEditingAnimalSlug(a.slug)}
-                                            >
-                                                {a.name}
-                                            </button>
-                                        ))}
-                                        {(() => {
-                                            const animalKeys = [
-                                                `cuts-${activeEditAnimal.slug}-1-chart`,
-                                                `cuts-${activeEditAnimal.slug}-2-guide`,
-                                                ...activeEditAnimal.facts.map(
-                                                    (_, idx) => `cuts-${activeEditAnimal.slug}-fact-${idx + 1}`
-                                                ),
-                                            ];
-                                            const allVerified = animalKeys.every((k) => Boolean(verifiedMap[k]));
-                                            return (
-                                                <button
-                                                    type="button"
-                                                    className={allVerified ? s.dl : s.dlVerify}
-                                                    onClick={() => {
-                                                        if (allVerified) {
-                                                            unverifyBatch(animalKeys, `${activeEditAnimal.name} Cut Carousel`);
-                                                        } else {
-                                                            verifyBatch(animalKeys, `${activeEditAnimal.name} Cut Carousel`);
-                                                        }
-                                                    }}
-                                                >
-                                                    {allVerified
-                                                        ? `✕ Unverify All ${activeEditAnimal.name} Slides`
-                                                        : `✓ Verify All ${activeEditAnimal.name} Slides`}
-                                                </button>
-                                            );
-                                        })()}
-                                        <button
-                                            type="button"
-                                            className={s.dl}
-                                            onClick={() => {
-                                                setAnimalsData(ANIMALS);
-                                                saveLocal(ANIMALS, verifiedMap, verifier);
-                                                setStatusBanner('Reset all animal cut guides & facts to factory defaults.');
-                                            }}
-                                        >
-                                            ↺ Reset Defaults
-                                        </button>
-                                    </div>
-                                    <div className={s.cutEditorGrid}>
-                                        <div className={s.cutEditorCol}>
-                                            <label>
-                                                {activeEditAnimal.name} Primal Cuts (Format: Cut Name | Where | Best For — one per line)
-                                            </label>
-                                            <textarea
-                                                rows={6}
-                                                value={activeEditAnimal.primals
-                                                    .map((p) => `${p.name} | ${p.where} | ${p.bestFor}`)
-                                                    .join('\n')}
-                                                onChange={(e) =>
-                                                    updateAnimalPrimals(activeEditAnimal.slug, e.target.value)
-                                                }
-                                            />
-                                        </div>
-                                        <div className={s.cutEditorCol}>
-                                            <label>
-                                                {activeEditAnimal.name} &ldquo;Did You Know?&rdquo; Facts (one slide per line)
-                                            </label>
-                                            <textarea
-                                                rows={6}
-                                                value={activeEditAnimal.facts.join('\n')}
-                                                onChange={(e) => updateAnimalFacts(activeEditAnimal.slug, e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
 
                             <div className={s.grid}>
                                 {g.id === 'cuts' &&
@@ -1270,9 +1040,6 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
                                                 {a.facts.map((f, i) => (
                                                 <CutFactPost key={f} a={a} fact={f} i={i} icon={aIcon} />
                                                 ))}
-                                                <div style={{ flexBasis: '100%' }}>
-                                                    <PromptCopy a={a} />
-                                                </div>
                                             </React.Fragment>
                                         );
                                     })}
@@ -1294,160 +1061,9 @@ export default function SocialKit({ embedded = false }: { embedded?: boolean }) 
                                         {TRICKS.map((t) => <TrickPost key={t.slug} t={t} ctx={ctx} />)}
                                     </>
                                 )}
-                                {g.id === 'posts' && (
-                                    <>
-                                        <Canvas
-                                            name="phone-example-1-this-weeks-specials"
-                                            w={1080}
-                                            h={1350}
-                                            svgHref="/assets/identity/social/social-example-1-this-weeks-specials.svg"
-                                        >
-                                            <img
-                                                src="/assets/identity/social/social-example-1-this-weeks-specials.svg"
-                                                alt="This Week's Specials Feed Template"
-                                                className={s.fullSvgCanvas}
-                                            />
-                                        </Canvas>
-                                        <Canvas
-                                            name="phone-example-2-new-cut-picanha"
-                                            w={1080}
-                                            h={1350}
-                                            svgHref="/assets/identity/social/social-example-2-new-cut-picanha.svg"
-                                        >
-                                            <img
-                                                src="/assets/identity/social/social-example-2-new-cut-picanha.svg"
-                                                alt="New Cut: Picanha Feed Template"
-                                                className={s.fullSvgCanvas}
-                                            />
-                                        </Canvas>
-                                        <PostSpecials ctx={ctx} />
-                                        <PostMenu ctx={ctx} />
-                                        <PostNewCut ctx={ctx} />
-                                        <PostEvent ctx={ctx} />
-                                        <PostHoliday ctx={ctx} />
-                                        <PostReview />
-                                        <PostHiring />
-                                        <PostNotice />
-                                    </>
-                                )}
-                                {g.id === 'stories' && (
-                                    <>
-                                        <Canvas
-                                            name="phone-example-3-behind-the-block"
-                                            w={1080}
-                                            h={1920}
-                                            preview={260}
-                                            svgHref="/assets/identity/social/social-example-3-behind-the-block.svg"
-                                        >
-                                            <img
-                                                src="/assets/identity/social/social-example-3-behind-the-block.svg"
-                                                alt="Behind The Block 9:16 Story Template"
-                                                className={s.fullSvgCanvas}
-                                            />
-                                        </Canvas>
-                                        <Canvas
-                                            name="ig-link-in-bio-screen"
-                                            w={1080}
-                                            h={1920}
-                                            preview={260}
-                                            svgHref="/assets/identity/apps/ig-link-in-bio-screen.svg"
-                                        >
-                                            <img
-                                                src="/assets/identity/apps/ig-link-in-bio-screen.svg"
-                                                alt="Instagram Link-in-Bio Screen"
-                                                className={s.fullSvgCanvas}
-                                            />
-                                        </Canvas>
-                                        <StorySpecial ctx={ctx} />
-                                        <StoryQuiz ctx={ctx} />
-                                        <StoryPoll ctx={ctx} />
-                                        <StoryDeadline ctx={ctx} />
-                                        <StoryBehind ctx={ctx} />
-                                    </>
-                                )}
-                                {g.id === 'highlights' && <Highlights />}
-                                {g.id === 'profile' && <ProfileSet ctx={ctx} />}
-                                {g.id === 'covers' && (
-                                    <>
-                                        <Canvas
-                                            name="fb-hero-set-1-wrapping-paper"
-                                            w={1640}
-                                            h={624}
-                                            preview={460}
-                                            svgHref="/assets/identity/apps/fb-hero-cover-wrapping-paper.svg"
-                                        >
-                                            <img
-                                                src="/assets/identity/apps/fb-hero-cover-wrapping-paper.svg"
-                                                alt="Facebook Hero Cover Set 1 — Wrapping Paper & 10-Dept Suite"
-                                                className={s.fullSvgCanvas}
-                                            />
-                                        </Canvas>
-                                        <Canvas
-                                            name="fb-hero-set-2-crimson-smokehouse"
-                                            w={1640}
-                                            h={624}
-                                            preview={460}
-                                            svgHref="/assets/identity/apps/fb-hero-cover-crimson-smokehouse.svg"
-                                        >
-                                            <img
-                                                src="/assets/identity/apps/fb-hero-cover-crimson-smokehouse.svg"
-                                                alt="Facebook Hero Cover Set 2 — Crimson & Charcoal Split"
-                                                className={s.fullSvgCanvas}
-                                            />
-                                        </Canvas>
-                                        <Canvas
-                                            name="fb-hero-set-3-two-locations"
-                                            w={1640}
-                                            h={624}
-                                            preview={460}
-                                            svgHref="/assets/identity/apps/fb-hero-cover-two-locations.svg"
-                                        >
-                                            <img
-                                                src="/assets/identity/apps/fb-hero-cover-two-locations.svg"
-                                                alt="Facebook Hero Cover Set 3 — Two Locations Showcase"
-                                                className={s.fullSvgCanvas}
-                                            />
-                                        </Canvas>
-                                        <Canvas
-                                            name="ordering-app-storefront-banner"
-                                            w={1600}
-                                            h={900}
-                                            preview={460}
-                                            svgHref="/assets/identity/apps/ordering-app-storefront-banner.svg"
-                                        >
-                                            <img
-                                                src="/assets/identity/apps/ordering-app-storefront-banner.svg"
-                                                alt="Ordering App Storefront Banner (16:9)"
-                                                className={s.fullSvgCanvas}
-                                            />
-                                        </Canvas>
-                                        <Cover name="facebook-cover" w={1640} h={624} ctx={ctx} />
-                                        <Cover name="x-twitter-header" w={1500} h={500} ctx={ctx} />
-                                        <Cover name="linkedin-banner" w={1584} h={396} ctx={ctx} />
-                                        <Cover name="youtube-channel-art" w={2560} h={1440} ctx={ctx} />
-                                        <Cover name="google-business-cover" w={1080} h={608} ctx={ctx} />
-                                        <Cover name="email-newsletter-header" w={1200} h={400} ctx={ctx} />
-                                    </>
-                                )}
                             </div>
                         </section>
             ))}
-
-                            <section id="copy" aria-labelledby="copy-heading" className={`container ${s.group}`}>
-                                <h2 id="copy-heading" className={s.h2}>Caption templates</h2>
-                                <p className={s.note}>Swap anything in [brackets]. Each pairs with a template above.</p>
-                                <div className={s.copyGrid}>{CAPTIONS.map((c) => <CopyBlock key={c.title} {...c} />)}</div>
-                                <h2 className={s.h2}>Hashtag sets</h2>
-                                <div className={s.copyGrid}>{HASHTAGS.map((h) => <CopyBlock key={h.title} {...h} />)}</div>
-                                <h2 className={s.h2}>Bios</h2>
-                                <div className={s.copyGrid}>{BIOS.map((b) => <CopyBlock key={b.title} {...b} />)}</div>
-                                <h2 className={s.h2}>Weekly posting rhythm</h2>
-                                <div className={s.cadence}>
-                                    {CADENCE.map((d) => (
-                                        <div key={d.day} className={s.day}><b>{d.day}</b><span>{d.what}</span><em>{d.template}</em></div>
-                                    ))}
-                                </div>
-                            </section>
                         </Wrapper>
                     </VerifyCtx.Provider>
                 );

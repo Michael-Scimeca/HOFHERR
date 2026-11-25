@@ -5,6 +5,10 @@
     color: var(--fg);
 }
 
+.page :global(.container) {
+    padding-inline: 0;
+}
+
 /* ── Hero Header (Open Backdrop, No Content-Boxing, No Eyebrow Pills) ── */
 .hero {
     position: relative;

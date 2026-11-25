@@ -12,11 +12,7 @@ export async function GET(req: Request) {
         }
 
         const { searchParams } = new URL(req.url);
-        const customerId = searchParams.get('customerId');
-
-        if (!customerId) {
-            return NextResponse.json({ error: 'Customer ID is required' }, { status: 400 });
-        }
+        const customerId = searchParams.get('customerId') || session.user.id;
 
         // Verify the requesting user owns this customer ID (or is admin)
         if (session.user.id !== customerId && !session.user.isAdmin) {

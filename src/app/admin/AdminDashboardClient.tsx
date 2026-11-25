@@ -4,7 +4,6 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
-import type * as RechartsModule from 'recharts';
 import styles from './admin.module.css';
 import Pagination from '@/components/shared/Pagination';
 import { usePageTransition } from '@/components/PageTransition';
@@ -15,6 +14,7 @@ import SubscribersPanel from '@/components/admin/SubscribersPanel';
 const loadPrintStudio = () => import('@/components/admin/print-studio/PrintStudioClient');
 const loadProductIdentity = () => import('@/app/product-identity/ProductIdentityClient');
 const loadGoogleSeo = () => import('@/components/admin/GoogleSeoEditorPanel');
+const loadTransactionalEmails = () => import('@/components/admin/TransactionalEmailsSection');
 
 const PrintStudioInline = dynamic(loadPrintStudio, {
     ssr: false,
@@ -29,6 +29,11 @@ const ProductIdentityInline = dynamic(loadProductIdentity, {
 const GoogleSeoEditorInline = dynamic(loadGoogleSeo, {
     ssr: false,
     loading: () => <div className={styles.tabPanelInner}>Loading Google SEO Editor &amp; Preview…</div>,
+});
+
+const TransactionalEmailsInline = dynamic(loadTransactionalEmails, {
+    ssr: false,
+    loading: () => <div className={styles.tabPanelInner}>Loading Automated Transactional Emails…</div>,
 });
 
 interface OrderItem {
@@ -568,7 +573,6 @@ export default function AdminDashboard({
 } = {}) {
     const hasInitialData = Boolean(initialData);
     const [loading, setLoading] = useState(!hasInitialData);
-    const [rechartsMod, setRechartsMod] = useState<typeof RechartsModule | null>(null);
     const [rawOrders, setRawOrders] = useState<Order[]>(() =>
         initialData ? mergeWithSeedOrders(initialData.orders) : SEED_ADMIN_ORDERS
     );
@@ -587,7 +591,7 @@ export default function AdminDashboard({
         }));
     };
     const searchParams = useSearchParams();
-    const [activeTab, setActiveTab] = useState<'orders' | 'users' | 'restocks' | 'subscribers' | 'print' | 'identity' | 'google'>('orders');
+    const [activeTab, setActiveTab] = useState<'orders' | 'users' | 'restocks' | 'subscribers' | 'emails' | 'print' | 'identity' | 'google'>('orders');
 
     useEffect(() => {
         const tabParam = searchParams.get('tab');
@@ -596,6 +600,7 @@ export default function AdminDashboard({
             tabParam === 'users' ||
             tabParam === 'restocks' ||
             tabParam === 'subscribers' ||
+            tabParam === 'emails' ||
             tabParam === 'print' ||
             tabParam === 'identity' ||
             tabParam === 'google'
@@ -614,11 +619,6 @@ export default function AdminDashboard({
 
     useEffect(() => {
         let cancelled = false;
-        import('recharts')
-            .then(mod => {
-                if (!cancelled) setRechartsMod(mod);
-            })
-            .catch(() => { });
         const warmTabs = () => {
             if (cancelled) return;
             void loadProductIdentity();
@@ -980,145 +980,6 @@ export default function AdminDashboard({
     }, [activeInProgressOrders, progressSortBy]);
 
     const totalRevenue = orders.reduce((acc, o) => acc + (o.total || 0), 0) / 100;
-
-    // Process data for Pie Chart (Order Status)
-    const statusCounts = orders.reduce((acc, order) => {
-        const s = order.status || 'pending';
-        acc[s] = (acc[s] || 0) + 1;
-        return acc;
-    }, {} as Record<string, number>);
-
-    const STATUS_COLORS: Record<string, string> = {
-        pending: '#f59e0b',
-        paid: '#d97706',
-        processing: '#cc0e1d',
-        ready_paid: '#10b981',
-        ready_pending: '#10b981',
-        completed: '#737373',
-        cancelled: '#ef4444',
-    };
-
-    const pieData = Object.keys(statusCounts).map(k => {
-        let name = k.charAt(0).toUpperCase() + k.slice(1);
-        if (k === 'ready_paid') name = 'Ready (Paid)';
-        if (k === 'ready_pending') name = 'Ready (Pickup)';
-        if (k === 'processing') name = 'On the Block';
-        return {
-            name,
-            value: statusCounts[k],
-            color: STATUS_COLORS[k.toLowerCase()] || '#a3a3a3',
-        };
-    });
-
-    const COLORS = ['#cc0e1d', '#a8905f', '#10b981', '#f59e0b', '#e11d48', '#d97706'];
-
-    const revenueByDate = orders.reduce((acc, order) => {
-        const dateStr = (order.createdAt || '').slice(5, 10);
-        acc[dateStr] = (acc[dateStr] || 0) + (order.total || 0) / 100;
-        return acc;
-    }, {} as Record<string, number>);
-
-    const barData = Object.keys(revenueByDate)
-        .map(date => ({
-            date,
-            revenue: revenueByDate[date],
-        }))
-        .sort((a, b) => a.date.localeCompare(b.date))
-        .slice(-7);
-
-    const customerStats = orders.reduce((acc, order) => {
-        const identifier = order.customer?.email || 'guest';
-        if (identifier !== 'guest') {
-            if (!acc[identifier]) acc[identifier] = { count: 0, spend: 0 };
-            acc[identifier].count += 1;
-            acc[identifier].spend += (order.total || 0) / 100;
-        }
-        return acc;
-    }, {} as Record<string, { count: number; spend: number }>);
-
-    let newCustCount = 0;
-    let retCustCount = 0;
-    let newCustSpend = 0;
-    let retCustSpend = 0;
-
-    Object.values(customerStats).forEach(stat => {
-        if (stat.count > 1) {
-            retCustCount++;
-            retCustSpend += stat.spend;
-        } else {
-            newCustCount++;
-            newCustSpend += stat.spend;
-        }
-    });
-
-    const customerTypesData = [
-        { name: 'New Customers', value: newCustCount },
-        { name: 'Returning', value: retCustCount },
-    ];
-
-    const newAOV = newCustCount > 0 ? newCustSpend / newCustCount : 0;
-    const retAOV = retCustCount > 0 ? retCustSpend / retCustCount : 0;
-
-    const itemCounts = orders.reduce((acc, order) => {
-        if (Array.isArray(order.items)) {
-            order.items.forEach(item => {
-                const name = item.name || 'Unknown Item';
-                const qty = item.qty || item.quantity || 1;
-                acc[name] = (acc[name] || 0) + qty;
-            });
-        }
-        return acc;
-    }, {} as Record<string, number>);
-
-    const topItemsData = Object.keys(itemCounts)
-        .map(name => ({ name, quantity: itemCounts[name] }))
-        .sort((a, b) => b.quantity - a.quantity)
-        .slice(0, 5);
-
-    const categoryRevenue = orders.reduce((acc, order) => {
-        if (Array.isArray(order.items)) {
-            order.items.forEach(item => {
-                const product = products.find(p => p.name === item.name);
-                let categoryName = product?.category?.name;
-                if (!categoryName) {
-                    const lcName = (item.name || '').toLowerCase();
-                    if (lcName.match(/beef|ribeye|steak|brisket|strip|filet|tenderloin|chuck|sirloin|burger|marrow/))
-                        categoryName = 'Beef';
-                    else if (lcName.match(/pork|ribs|bacon|belly/)) categoryName = 'Pork';
-                    else if (lcName.match(/chicken|poultry|turkey/)) categoryName = 'Poultry';
-                    else if (lcName.match(/sausage|brat|chorizo|kielbasa/)) categoryName = 'Sausages';
-                    else if (lcName.match(/lamb/)) categoryName = 'Lamb';
-                    else categoryName = 'Prepared & Sides';
-                }
-                let itemPrice = 0;
-                if (typeof item.price === 'string') {
-                    const match = item.price.match(/\d+(?:\.\d+)?/);
-                    itemPrice = match ? parseFloat(match[0]) : 0;
-                } else if (typeof item.price === 'number') {
-                    itemPrice = item.price;
-                }
-                const itemTotal = itemPrice * (item.qty || item.quantity || 1);
-                acc[categoryName] = (acc[categoryName] || 0) + itemTotal;
-            });
-        }
-        return acc;
-    }, {} as Record<string, number>);
-
-    const categoryData = Object.entries(categoryRevenue)
-        .map(([name, value]) => ({ name, value }))
-        .sort((a, b) => b.value - a.value);
-
-    const vipData = useMemo(() => {
-        const spendByName = new Map<string, number>();
-        orders.forEach(o => {
-            const name = o.customer?.name || o.metadata?.customer_name || 'Guest';
-            spendByName.set(name, (spendByName.get(name) || 0) + (o.total || 0) / 100);
-        });
-        return Array.from(spendByName.entries())
-            .map(([name, spend]) => ({ name, spend }))
-            .sort((a, b) => b.spend - a.spend)
-            .slice(0, 5);
-    }, [orders]);
 
     const handleSort = (field: 'orderNumber' | 'customer' | 'createdAt' | 'items' | 'total' | 'status') => {
         if (sortField === field) {
@@ -1909,6 +1770,15 @@ export default function AdminDashboard({
                     </button>
                     <button
                         type="button"
+                        onClick={() => setActiveTab('emails')}
+                        onMouseEnter={() => { void loadTransactionalEmails(); }}
+                        onFocus={() => { void loadTransactionalEmails(); }}
+                        className={`${styles.headerBtn} ${activeTab === 'emails' ? styles.headerBtnGold : ''}`}
+                    >
+                        ✉️ Emails (6)
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => setActiveTab('print')}
                         onMouseEnter={() => { void loadPrintStudio(); }}
                         onFocus={() => { void loadPrintStudio(); }}
@@ -2072,132 +1942,6 @@ export default function AdminDashboard({
                 <>
                     {/* ── 🔥 LIVE KITCHEN LOAD & HOLIDAY PICKUP SLOT THROTTLE ── */}
                     <KitchenThrottleBar />
-
-                    {/* ── 🎛️ MASTER PROGRESS STAGE FILTER & SORT BAR ── */}
-                    <section className={styles.progressControlBar} aria-label="Filter and sort orders by progress stage">
-                        <div className={styles.progressControlHeaderRow}>
-                            <div className={styles.progressControlTitleGroup}>
-                                <span className={styles.progressControlKicker}>
-                                    4-STAGE ORDER PROGRESS FILTER &amp; STAGE SORTER
-                                </span>
-                                <h2 className={styles.progressControlTitle}>
-                                    Filter &amp; Sort Out Each Progress Stage
-                                </h2>
-                            </div>
-                            <div className={styles.progressSortWrap}>
-                                <span className={styles.progressSortLabel}>Sort Progress By:</span>
-                                <div className={styles.progressSortBtnGroup}>
-                                    {[
-                                        { key: 'stage_asc', label: '↑ Stage 1 → 4 (Placed → Picked Up)' },
-                                        { key: 'stage_desc', label: '↓ Stage 4 → 1 (Picked Up → Placed)' },
-                                        { key: 'urgent_first', label: '🚨 Urgent / Behind First' },
-                                        { key: 'total_desc', label: '💰 Highest Total' },
-                                    ].map(opt => (
-                                        <button
-                                            key={opt.key}
-                                            type="button"
-                                            onClick={() =>
-                                                setProgressSortBy(
-                                                    opt.key as
-                                                    | 'stage_asc'
-                                                    | 'stage_desc'
-                                                    | 'urgent_first'
-                                                    | 'total_desc'
-                                                )
-                                            }
-                                            className={`${styles.progressSortBtn} ${progressSortBy === opt.key ? styles.progressSortBtnActive : ''
-                                                }`}
-                                        >
-                                            {opt.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className={styles.progressStagePillGrid}>
-                            {[
-                                {
-                                    key: 'all' as const,
-                                    step: 'ALL',
-                                    label: 'All Stages (Sorted 1 → 4)',
-                                    sub: 'Every active & <24h order grouped by progress',
-                                    count: activeBoardOrders.length,
-                                    tone: 'neutral',
-                                },
-                                {
-                                    key: 'behind' as const,
-                                    step: 'SLA',
-                                    label: '🚨 Running Behind',
-                                    sub: 'Overdue pickup window',
-                                    count: runningBehindOrders.length,
-                                    tone: 'danger',
-                                },
-                                {
-                                    key: 'placed' as const,
-                                    step: 'STEP 01',
-                                    label: 'Order Placed',
-                                    sub: 'Ticket Verified • In Queue',
-                                    count: placedCount,
-                                    tone: 'stage1',
-                                },
-                                {
-                                    key: 'cutting' as const,
-                                    step: 'STEP 02',
-                                    label: 'Cutting · On the Block',
-                                    sub: 'Hand-Cut & Scale Weighed',
-                                    count: onTheBlockCount,
-                                    tone: 'stage2',
-                                },
-                                {
-                                    key: 'ready' as const,
-                                    step: 'STEP 03',
-                                    label: 'Ready for Pickup',
-                                    sub: 'Waiting in Cold Case',
-                                    count: readyForPickupCount,
-                                    tone: 'stage3',
-                                },
-                                {
-                                    key: 'done' as const,
-                                    step: 'STEP 04',
-                                    label: 'Picked Up (<24h)',
-                                    sub: 'Theme Green • 1-Day Retention',
-                                    count: pickedUpCount,
-                                    tone: 'stage4',
-                                },
-                            ].map(pill => {
-                                const isActive = inProgressStageFilter === pill.key;
-                                return (
-                                    <button
-                                        key={pill.key}
-                                        type="button"
-                                        onClick={() => handleSelectProgressFilter(pill.key)}
-                                        className={`${styles.progressStageCardBtn} ${pill.tone === 'stage4' ? styles.progressStageCardBtnGreen : ''
-                                            } ${pill.tone === 'danger' ? styles.progressStageCardBtnDanger : ''} ${isActive
-                                                ? pill.tone === 'stage4'
-                                                    ? styles.progressStageCardBtnActiveGreen
-                                                    : styles.progressStageCardBtnActive
-                                                : ''
-                                            }`}
-                                    >
-                                        <div className={styles.progressStageCardTop}>
-                                            <span
-                                                className={`${styles.progressStageStepTag} ${pill.tone === 'stage4'
-                                                    ? styles.progressStageStepTagGreen
-                                                    : ''
-                                                    }`}
-                                            >
-                                                {pill.step}
-                                            </span>
-                                            <span className={styles.progressStageCountBadge}>{pill.count}</span>
-                                        </div>
-                                        <span className={styles.progressStageCardTitle}>{pill.label}</span>
-                                        <span className={styles.progressStageCardSub}>{pill.sub}</span>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </section>
 
                     {/* ── 🚨 1. ORDERS RUNNING BEHIND & NEEDING IMMEDIATE ATTENTION ── */}
                     {(inProgressStageFilter === 'all' || inProgressStageFilter === 'behind') && (
@@ -2429,7 +2173,12 @@ export default function AdminDashboard({
                                 orderCount: u.orderCount ?? 0,
                             }))}
                         totalCustomers={users.length}
+                        products={products}
                     />
+                </div>
+            ) : activeTab === 'emails' ? (
+                <div className={styles.tabPanelInner}>
+                    <TransactionalEmailsInline />
                 </div>
             ) : activeTab === 'print' ? (
                 <PrintStudioInline embedded />
@@ -2866,253 +2615,6 @@ export default function AdminDashboard({
                 )}
             </div>
             )}
-
-            {/* ── 4. ANALYTICS & STORE METRICS ── */}
-            {rechartsMod &&
-                (() => {
-                    const {
-                        PieChart,
-                        Pie,
-                        Cell,
-                        Tooltip: RechartsTooltip,
-                        ResponsiveContainer,
-                        BarChart,
-                        Bar,
-                        XAxis,
-                        YAxis,
-                        CartesianGrid,
-                        Legend,
-                    } = rechartsMod;
-                    return (
-                        <div className={styles.metricsContainer}>
-                            <div className={styles.chartCard}>
-                                <h3>Order Stage Breakdown</h3>
-                                <div className={styles.chartWrapper}>
-                                    {pieData.length > 0 ? (
-                                        <ResponsiveContainer width="100%" height={240}>
-                                            <PieChart>
-                                                <Pie
-                                                    data={pieData}
-                                                    cx="50%"
-                                                    cy="50%"
-                                                    innerRadius={58}
-                                                    outerRadius={80}
-                                                    paddingAngle={4}
-                                                    dataKey="value"
-                                                >
-                                                    {pieData.map(entry => (
-                                                        <Cell key={`cell-${entry.name}`} fill={entry.color} />
-                                                    ))}
-                                                </Pie>
-                                                <RechartsTooltip />
-                                                <Legend verticalAlign="bottom" height={36} />
-                                            </PieChart>
-                                        </ResponsiveContainer>
-                                    ) : (
-                                        <div className={styles.emptyChart}>No order data yet</div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className={styles.chartCard}>
-                                <h3>Recent Revenue</h3>
-                                <div className={styles.chartWrapper}>
-                                    {barData.length > 0 ? (
-                                        <ResponsiveContainer width="100%" height={240}>
-                                            <BarChart
-                                                data={barData}
-                                                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                                            >
-                                                <CartesianGrid
-                                                    strokeDasharray="3 3"
-                                                    stroke="#222"
-                                                    vertical={false}
-                                                />
-                                                <XAxis
-                                                    dataKey="date"
-                                                    stroke="#888"
-                                                    fontSize={12}
-                                                    tickLine={false}
-                                                    axisLine={false}
-                                                />
-                                                <YAxis
-                                                    stroke="#888"
-                                                    fontSize={12}
-                                                    tickLine={false}
-                                                    axisLine={false}
-                                                    tickFormatter={v => `$${v}`}
-                                                />
-                                                <RechartsTooltip />
-                                                <Bar dataKey="revenue" fill="#cc0e1d" radius={[4, 4, 0, 0]} />
-                                            </BarChart>
-                                        </ResponsiveContainer>
-                                    ) : (
-                                        <div className={styles.emptyChart}>No revenue data yet</div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className={styles.chartCard}>
-                                <h3>Revenue by Category</h3>
-                                <div className={styles.chartWrapper}>
-                                    {categoryData.length > 0 ? (
-                                        <ResponsiveContainer width="100%" height={240}>
-                                            <PieChart>
-                                                <Pie
-                                                    data={categoryData}
-                                                    cx="50%"
-                                                    cy="50%"
-                                                    outerRadius={60}
-                                                    dataKey="value"
-                                                    stroke="none"
-                                                    label={props =>
-                                                        `${props.name} ${((props.percent || 0) * 100).toFixed(0)}%`
-                                                    }
-                                                >
-                                                    {categoryData.map((entry, index) => (
-                                                        <Cell
-                                                            key={`cell-${entry.name}`}
-                                                            fill={COLORS[index % COLORS.length]}
-                                                        />
-                                                    ))}
-                                                </Pie>
-                                                <RechartsTooltip />
-                                            </PieChart>
-                                        </ResponsiveContainer>
-                                    ) : (
-                                        <div className={styles.emptyChart}>No category data yet</div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className={styles.chartCard}>
-                                <h3>🔥 Top 5 Cuts Ordered</h3>
-                                <div className={styles.chartWrapper}>
-                                    {topItemsData.length > 0 ? (
-                                        <ResponsiveContainer width="100%" height={240}>
-                                            <BarChart
-                                                data={topItemsData}
-                                                layout="vertical"
-                                                margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
-                                            >
-                                                <CartesianGrid
-                                                    strokeDasharray="3 3"
-                                                    stroke="#222"
-                                                    horizontal={false}
-                                                />
-                                                <XAxis
-                                                    type="number"
-                                                    stroke="#888"
-                                                    fontSize={12}
-                                                    tickLine={false}
-                                                    axisLine={false}
-                                                    allowDecimals={false}
-                                                />
-                                                <YAxis
-                                                    type="category"
-                                                    dataKey="name"
-                                                    stroke="#aaa"
-                                                    fontSize={11}
-                                                    tickLine={false}
-                                                    axisLine={false}
-                                                    width={130}
-                                                />
-                                                <RechartsTooltip />
-                                                <Bar dataKey="quantity" fill="#cc0e1d" radius={[0, 4, 4, 0]} />
-                                            </BarChart>
-                                        </ResponsiveContainer>
-                                    ) : (
-                                        <div className={styles.emptyChart}>No item data yet</div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className={styles.chartCard}>
-                                <h3>🏆 Top Customers</h3>
-                                <div className={styles.vipListWrap}>
-                                    {vipData.length > 0 ? (
-                                        vipData.map((vip, i) => {
-                                            const maxSpend = vipData[0]?.spend || 1;
-                                            const pct = Math.round((vip.spend / maxSpend) * 100);
-                                            const medals = ['🥇', '🥈', '🥉', '4.', '5.'];
-                                            const barStyle = {
-                                                '--vip-width': `${pct}%`,
-                                            } as React.CSSProperties;
-                                            return (
-                                                <div key={`${vip.name}-${vip.spend}`} className={styles.vipRow}>
-                                                    <span className={styles.vipMedal}>{medals[i]}</span>
-                                                    <div className={styles.vipBarCol}>
-                                                        <div className={styles.vipMetaRow}>
-                                                            <span className={styles.vipName}>{vip.name}</span>
-                                                            <span className={styles.vipSpend}>
-                                                                {formatCurrency(vip.spend)}
-                                                            </span>
-                                                        </div>
-                                                        <div className={styles.vipTrack}>
-                                                            <div
-                                                                className={styles.vipFill}
-                                                                style={barStyle}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })
-                                    ) : (
-                                        <div className={styles.emptyChart}>No customer data yet</div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className={styles.chartCard}>
-                                <h3>👥 New vs Returning</h3>
-                                <div className={styles.vipBarCol}>
-                                    {customerTypesData.some(d => d.value > 0) ? (
-                                        <>
-                                            <ResponsiveContainer width="100%" height={175}>
-                                                <PieChart>
-                                                    <Pie
-                                                        data={customerTypesData}
-                                                        cx="50%"
-                                                        cy="50%"
-                                                        innerRadius={48}
-                                                        outerRadius={70}
-                                                        paddingAngle={5}
-                                                        dataKey="value"
-                                                        startAngle={90}
-                                                        endAngle={-270}
-                                                    >
-                                                        <Cell fill="#cc0e1d" />
-                                                        <Cell fill="#a8905f" />
-                                                    </Pie>
-                                                    <RechartsTooltip />
-                                                </PieChart>
-                                            </ResponsiveContainer>
-                                            <div className={styles.customerSplitGrid}>
-                                                <div className={styles.splitBoxNew}>
-                                                    <div className={styles.splitBoxLabel}>New Customers</div>
-                                                    <div className={styles.splitBoxVal}>{newCustCount}</div>
-                                                    <div className={styles.splitBoxSub}>
-                                                        AOV {formatCurrency(newAOV)}
-                                                    </div>
-                                                </div>
-                                                <div className={styles.splitBoxRet}>
-                                                    <div className={styles.splitBoxLabel}>Returning</div>
-                                                    <div className={styles.splitBoxVal}>{retCustCount}</div>
-                                                    <div className={styles.splitBoxSub}>
-                                                        AOV {formatCurrency(retAOV)}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <div className={styles.emptyChart}>No customer data yet</div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })()}
 
             {/* ── Customer Detail Modal ── */}
             {selectedCustomerMeta && (
