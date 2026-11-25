@@ -486,11 +486,31 @@
 .closing .statusLabel {
     color: #f1c40f;
     font-weight: 700;
+    animation: closingDim 2.2s infinite ease-in-out;
 }
 
 .closing .statusDot {
     background: #f1c40f;
-    box-shadow: 0 0 8px rgba(241, 196, 15, 0.4);
+    box-shadow: 0 0 8px rgba(241, 196, 15, 0.45);
+    animation: breathe 2.2s infinite ease-in-out;
+}
+
+@keyframes closingDim {
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.42;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .closing .statusLabel,
+    .closing .statusDot {
+        animation: none;
+    }
 }
 
 /* closed = muted */
