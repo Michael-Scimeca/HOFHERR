@@ -25,7 +25,7 @@ export default function HeroBackdropVideo() {
     }, []);
 
     useEffect(() => {
-        if (!isDesktop) return; n
+        if (!isDesktop) return;
         const vid = videoRef.current as VideoWithVFC | null;
         if (!vid) return;
 
