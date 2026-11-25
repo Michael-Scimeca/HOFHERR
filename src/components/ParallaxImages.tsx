@@ -45,6 +45,14 @@ export default function ParallaxImages() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Only /visit uses [data-parallax]; avoid attaching a global document.body MutationObserver on every route.
+    if (
+      !pathname?.startsWith('/visit') ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return;
+    }
+
     let entries: ParallaxEntry[] = [];
     let rafId: number | null = null;
     let ticking = false;

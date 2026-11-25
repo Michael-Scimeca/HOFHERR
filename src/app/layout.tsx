@@ -19,13 +19,15 @@ import PageTransition, { TransitionProvider } from "@/components/PageTransition"
 import { auth } from "@/auth";
 import ParallaxImages from "@/components/ParallaxImages";
 
+import LazyGlobalCartDrawer from "@/components/LazyGlobalCartDrawer";
+import LazyAuthModal from "@/components/LazyAuthModal";
+import ServiceWorkerRegistrar from "@/components/ServiceWorkerRegistrar";
 // ── Lazy-loaded heavy & interactive-only components (code-split from initial JS/CSS bundle) ──
-const AuthModal = dynamic(() => import("@/components/AuthModal"));
-const GlobalCartDrawer = dynamic(() => import("@/components/GlobalCartDrawer"));
 const EmbersBackground = dynamic(() => import("@/components/EmbersBackground"));
-const DevNav = dynamic(() => import("@/components/DevNav"));
-const AddToOrderAnimStudio = dynamic(() => import("@/components/AddToOrderAnimStudio"));
 const Preloader = dynamic(() => import("@/components/Preloader"));
+const DevNav = process.env.NODE_ENV === "development" ? dynamic(() => import("@/components/DevNav")) : null;
+const AddToOrderAnimStudio =
+  process.env.NODE_ENV === "development" ? dynamic(() => import("@/components/AddToOrderAnimStudio")) : null;
 
 const yanone = Yanone_Kaffeesatz({
   subsets: ["latin"],
@@ -226,8 +228,8 @@ export default async function RootLayout({
               <SmoothScroll />
               <ScrollToTop />
               <Navbar />
-              <AuthModal />
-              <GlobalCartDrawer />
+              <LazyAuthModal />
+              <LazyGlobalCartDrawer />
               <PageTransition>
                 <div className="site-shell">
                   {children}
@@ -235,13 +237,10 @@ export default async function RootLayout({
                 <Footer />
               </PageTransition>
               <Preloader />
-              {process.env.NODE_ENV === "development" && (
-                <>
-                  <DevNav />
-                  <AddToOrderAnimStudio />
-                </>
-              )}
+              {DevNav && <DevNav />}
+              {AddToOrderAnimStudio && <AddToOrderAnimStudio />}
               <ParallaxImages />
+              <ServiceWorkerRegistrar />
               </TransitionProvider>
             </CartProvider>
           </ClientProviders>

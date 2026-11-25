@@ -3,7 +3,7 @@ import { getClient } from '@/sanity/client';
 import { SIGNATURE_PRODUCTS_QUERY, ROTISSERIE_STATUS_QUERY } from '@/sanity/queries';
 import VideoCallout from '@/components/specials/VideoCalloutWrapper';
 import ParallaxMedia from '@/components/ParallaxMedia';
-import styles from '@/app/specials/page.module.css';
+import styles from './SignatureDishesSection.module.css';
 
 export type SignatureProduct = {
     _id: string;
@@ -206,34 +206,34 @@ export default async function SignatureDishesSection({
                         return {
                             emoji: '🟡',
                             message: 'Serving hot now at The Depot — limited daily roast until sold out!',
-                            bg: '#d97706',
-                            border: '#e85222',
+                            bg: '#9a4a00',
+                            border: '#d97706',
                         };
                     }
                     if (isWeekday && mins >= 840 && mins < 960) {
                         return {
                             emoji: '🟡',
                             message: 'Next hot batch at The Depot at 4:00pm — sells out fast!',
-                            bg: '#d97706',
-                            border: '#e85222',
+                            bg: '#9a4a00',
+                            border: '#d97706',
                         };
                     }
                     return {
                         emoji: '🟡',
                         message: 'Limited daily roast at The Depot — sells out fast, no pre-orders!',
-                        bg: '#d97706',
-                        border: '#e85222',
+                        bg: '#9a4a00',
+                        border: '#d97706',
                     };
                 };
                 const beefBadge = getBeefScarcityBadge();
 
                 const stockBadgeColor =
                     rStatus?.status === 'available'
-                        ? { bg: '#16a34a', border: '#15803d' }
+                        ? { bg: '#15803d', border: '#22c55e' }
                         : rStatus?.status === 'low'
-                            ? { bg: '#d97706', border: '#e85222' }
+                            ? { bg: '#9a4a00', border: '#d97706' }
                             : rStatus?.status === 'sold_out'
-                                ? { bg: '#dc2626', border: '#cc0e1d' }
+                                ? { bg: '#b91c1c', border: '#ef4444' }
                                 : { bg: '#475569', border: '#334155' };
 
                 const stockMessage = rStatus?.note

@@ -36,13 +36,26 @@ const PROVIDERS: { id: string; label: string; icon: ReactNode }[] = [
 const EMPTY_LOGIN = { email: '', password: '' };
 const EMPTY_REGISTER = { name: '', email: '', phone: '', address: '', password: '' };
 
-export default function AuthModal() {
+export interface AuthModalProps {
+    initialRequest?: { mode?: AuthMode; force?: boolean } | null;
+}
+
+export default function AuthModal({ initialRequest = null }: AuthModalProps) {
     const { status } = useSession();
     const { navigateTo } = usePageTransition();
-    const [mode, setMode] = useState<AuthMode | null>(null);
+    const [mode, setMode] = useState<AuthMode | null>(() => {
+        if (!initialRequest) return null;
+        if (status === 'authenticated' && !initialRequest.force) return null;
+        return initialRequest.mode === 'register'
+            ? 'register'
+            : initialRequest.mode === 'forgot'
+                ? 'forgot'
+                : 'login';
+    });
     const [error, setError] = useState('');
     const [notice, setNotice] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [activeRequestId, setActiveRequestId] = useState<number | null>(null);
+    const loading = activeRequestId !== null;
     const [forgotSent, setForgotSent] = useState(false);
     const [loginData, setLoginData] = useState(EMPTY_LOGIN);
     const [registerData, setRegisterData] = useState(EMPTY_REGISTER);
@@ -50,6 +63,7 @@ export default function AuthModal() {
     const [closing, setClosing] = useState(false);
     const panelRef = useRef<HTMLDialogElement>(null);
     const returnFocusRef = useRef<HTMLElement | null>(null);
+    const requestIdRef = useRef(0);
     const open = mode !== null;
 
     const finalizeClose = useCallback(() => {
@@ -57,7 +71,7 @@ export default function AuthModal() {
         setMode(null);
         setError('');
         setNotice('');
-        setLoading(false);
+        setActiveRequestId(null);
         setForgotSent(false);
     }, []);
 
@@ -137,23 +151,27 @@ export default function AuthModal() {
 
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
+        const reqId = ++requestIdRef.current;
         setError('');
-        setLoading(true);
+        setActiveRequestId(reqId);
         try {
             const res = await signIn('credentials', { email: loginData.email, password: loginData.password, redirect: false });
+            if (requestIdRef.current !== reqId) return;
             if (res?.error) throw new Error('Invalid email or password');
             finishSignedIn();
         } catch (err) {
+            if (requestIdRef.current !== reqId) return;
             setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
         } finally {
-            setLoading(false);
+            setActiveRequestId(prev => (prev === reqId ? null : prev));
         }
     };
 
     const handleRegister = async (e: FormEvent) => {
         e.preventDefault();
+        const reqId = ++requestIdRef.current;
         setError('');
-        setLoading(true);
+        setActiveRequestId(reqId);
         try {
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
@@ -161,6 +179,7 @@ export default function AuthModal() {
                 body: JSON.stringify(registerData),
             });
             const data = await res.json();
+            if (requestIdRef.current !== reqId) return;
             if (!res.ok) throw new Error(data.error || 'Registration failed');
 
             if (data.requiresVerification) {
@@ -170,20 +189,23 @@ export default function AuthModal() {
             }
 
             const signInRes = await signIn('credentials', { email: registerData.email, password: registerData.password, redirect: false });
+            if (requestIdRef.current !== reqId) return;
             if (signInRes?.error) throw new Error('Could not automatically log in');
             finishSignedIn();
         } catch (err) {
+            if (requestIdRef.current !== reqId) return;
             setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
         } finally {
-            setLoading(false);
+            setActiveRequestId(prev => (prev === reqId ? null : prev));
         }
     };
 
     const handleForgot = async (e: FormEvent) => {
         e.preventDefault();
+        const reqId = ++requestIdRef.current;
         setError('');
         setForgotSent(false);
-        setLoading(true);
+        setActiveRequestId(reqId);
         try {
             const res = await fetch('/api/auth/forgot-password', {
                 method: 'POST',
@@ -191,12 +213,14 @@ export default function AuthModal() {
                 body: JSON.stringify({ email: forgotEmail }),
             });
             const data = await res.json();
+            if (requestIdRef.current !== reqId) return;
             if (!res.ok) setError(data.error || 'Failed to send reset link.');
             else setForgotSent(true);
         } catch {
+            if (requestIdRef.current !== reqId) return;
             setError('An unexpected error occurred. Please try again.');
         } finally {
-            setLoading(false);
+            setActiveRequestId(prev => (prev === reqId ? null : prev));
         }
     };
 

@@ -23,6 +23,16 @@ const PRELOADER_SYNC_VERSION = 7;
 const emptySubscribe = () => () => {};
 const seenServerSnapshot = () => false;
 
+function shouldSkipPreloaderClient(): boolean {
+    if (hasSeenPreloaderThisSession()) return true;
+    if (typeof window === 'undefined') return false;
+    return (
+        window.innerWidth <= 768 ||
+        window.matchMedia('(pointer: coarse)').matches ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+}
+
 /**
  * Site preloader, shown on the first full page load of a browser session (refreshes and return
  * visits in the same tab skip it) and controllable on-demand from the unified Transition UI HUD
@@ -39,9 +49,9 @@ export default function Preloader() {
     const [runKey, setRunKey] = useState(0);
     const syncVerRef = useRef(PRELOADER_SYNC_VERSION);
 
-    // Already played in this tab's session: treat it as finished until the HUD asks for a replay
-    // (every HUD restart bumps runKey). PageTransition melts the page in on its own in that case.
-    const seenThisSession = useSyncExternalStore(emptySubscribe, hasSeenPreloaderThisSession, seenServerSnapshot);
+    // Already played in this tab's session (or mobile/touch/reduced-motion): treat as finished so
+    // the heavy Three.js fire preloader never downloads or blocks mobile LCP/TBT.
+    const seenThisSession = useSyncExternalStore(emptySubscribe, shouldSkipPreloaderClient, seenServerSnapshot);
     const finished = done || (seenThisSession && runKey === 0);
 
     // No scrolling while the preloader is on screen.

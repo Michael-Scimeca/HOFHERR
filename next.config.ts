@@ -46,6 +46,9 @@ const nextConfig: NextConfig = {
   // Compress all static assets
   compress: true,
 
+  // Emit browser source maps in production for Lighthouse Best Practices & DevTools debugging (never fetched by end users)
+  productionBrowserSourceMaps: true,
+
   // Enable React strict mode
   reactStrictMode: true,
 
@@ -95,6 +98,15 @@ const nextConfig: NextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+        ],
+      },
+      // Never cache the service worker script so browser always checks for updates
+      {
+        source: '/sw.js',
+        headers: [
+          { key: 'Content-Type', value: 'application/javascript; charset=utf-8' },
+          { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
+          { key: 'Service-Worker-Allowed', value: '/' },
         ],
       },
       // Long-lived immutable cache for static media (images, videos, 3D models, fonts)

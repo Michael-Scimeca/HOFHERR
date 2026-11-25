@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import styles from './TestimonialWall.module.css';
+import styles from './FireBorder.module.css';
 
 interface FireBorderConfig {
     ramp: [string, string, string, string];
@@ -82,6 +82,8 @@ export default function FireBorder({
         const svg = svgRef.current;
         const host = svg?.parentElement;
         if (!svg || !host || !isActive) return;
+        // Skip CPU-heavy SVG feTurbulence filter rasterization on mobile/touch viewports
+        if (window.innerWidth <= 768 || window.matchMedia('(pointer: coarse)').matches) return;
         const s = loadFireBorderConfig();
         const TH = Math.max(80, Math.round(s.tileH || 200));
         const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -211,12 +213,20 @@ ${noiseBlock}
             }
         };
 
+        let interacted = false;
         const ensureRunning = () => {
-            if (!raf && inView && !document.hidden) {
+            if (!raf && interacted && inView && !document.hidden) {
                 last = performance.now();
                 raf = requestAnimationFrame(tick);
             }
         };
+
+        const onFirstInteract = () => {
+            interacted = true;
+            ensureRunning();
+        };
+        const interactEvents = ['pointermove', 'pointerdown', 'scroll', 'keydown'] as const;
+        interactEvents.forEach((ev) => window.addEventListener(ev, onFirstInteract, { once: true, passive: true }));
 
         const io = new IntersectionObserver(
             ([entry]) => {
@@ -246,6 +256,7 @@ ${noiseBlock}
 
         return () => {
             if (raf) cancelAnimationFrame(raf);
+            interactEvents.forEach((ev) => window.removeEventListener(ev, onFirstInteract));
             ro.disconnect();
             io.disconnect();
             document.removeEventListener('visibilitychange', onVisibility);

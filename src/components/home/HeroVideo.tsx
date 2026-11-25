@@ -159,10 +159,6 @@ export default function HeroVideo() {
                 className={`${styles.videoWrap} ${styles.circleBubble}`}
                 onMouseDown={handleMouseDown}
                 onClick={handlePlayAction}
-                style={{
-                    cursor: hasStarted ? 'default' : (uiIsDragging ? 'grabbing' : 'grab'),
-                    touchAction: 'none'
-                }}
             >
                 <div className={styles.bubbleInner}>
                     {loadBubbleVideo ? (
@@ -181,8 +177,8 @@ export default function HeroVideo() {
                         <img
                             src="/assets/home/italian-beef-thumb.webp"
                             alt="Hofherr Meat Co. Italian Beef preview"
-                            width={320}
-                            height={320}
+                            width={640}
+                            height={640}
                             className={styles.poster}
                             draggable={false}
                         />

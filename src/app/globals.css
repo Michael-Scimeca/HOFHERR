@@ -6,6 +6,7 @@
   --red: #CC0E1D;
   --red-dark: #a00b17;
   --red-light: #e01e2e;
+  --red-text: #f04854;
 
   --gold: #A8905F;
   --gold-dark: #8a7349;
@@ -405,7 +406,7 @@ h1 {
   font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--red);
+  color: var(--red-text);
   margin-bottom: 12px;
   vertical-align: top;
 }

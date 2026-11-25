@@ -24,6 +24,15 @@ export default function EmberBackground() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
+        // Skip continuous 2D canvas radial-gradient & particle rendering on mobile/touch/reduced-motion
+        if (
+            window.innerWidth <= 768 ||
+            window.matchMedia('(pointer: coarse)').matches ||
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ) {
+            return;
+        }
+
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -371,9 +380,10 @@ export default function EmberBackground() {
             lastFrameTime = now;
             draw(now);
         };
-        // Embers sit behind the preloader's solid black overlay, so the loop only starts once that
-        // overlay has dropped away (never earlier than the original 900ms settle delay).
+        // Start ambient embers only after the user interacts (and preloader has revealed)
+        // so initial page load incurs zero canvas/JS main-thread overhead.
         let started = false;
+        let interacted = false;
         let unsubscribePreloader = () => {};
         const startLoop = () => {
             if (started) return;
@@ -383,7 +393,8 @@ export default function EmberBackground() {
                 animationId = requestAnimationFrame(loop);
             }
         };
-        const startTimer = window.setTimeout(() => {
+        const tryStart = () => {
+            if (!interacted) return;
             if (isPreloaderRevealed()) {
                 startLoop();
                 return;
@@ -391,7 +402,22 @@ export default function EmberBackground() {
             unsubscribePreloader = subscribePreloader(() => {
                 if (isPreloaderRevealed()) startLoop();
             });
-        }, 900);
+        };
+        const onFirstInteract = () => {
+            interacted = true;
+            removeInteract();
+            tryStart();
+        };
+        const removeInteract = () => {
+            window.removeEventListener('pointermove', onFirstInteract);
+            window.removeEventListener('pointerdown', onFirstInteract);
+            window.removeEventListener('scroll', onFirstInteract);
+            window.removeEventListener('keydown', onFirstInteract);
+        };
+        window.addEventListener('pointermove', onFirstInteract, { passive: true, once: true });
+        window.addEventListener('pointerdown', onFirstInteract, { passive: true, once: true });
+        window.addEventListener('scroll', onFirstInteract, { passive: true, once: true });
+        window.addEventListener('keydown', onFirstInteract, { passive: true, once: true });
 
         const onVisibility = () => {
             paused = document.hidden;
@@ -414,7 +440,7 @@ export default function EmberBackground() {
         window.addEventListener('resize', onResize);
 
         return () => {
-            window.clearTimeout(startTimer);
+            removeInteract();
             unsubscribePreloader();
             cancelAnimationFrame(animationId);
             window.removeEventListener('resize', onResize);

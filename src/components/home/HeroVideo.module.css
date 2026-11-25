@@ -6,8 +6,8 @@
 }
 
 .idle {
-    height: 126px;
-    width: 126px;
+    height: 132px;
+    width: 132px;
 }
 
 .playing {
@@ -30,13 +30,13 @@
     }
 
     .idle {
-        height: 140px !important;
-        width: 140px !important;
+        height: 147px !important;
+        width: 147px !important;
     }
 
     .circleBubble {
-        width: 140px !important;
-        height: 140px !important;
+        width: 147px !important;
+        height: 147px !important;
     }
 }
 
@@ -50,12 +50,14 @@
 }
 
 .circleBubble {
-    width: 126px;
-    height: 126px;
+    width: 132px;
+    height: 132px;
     border-radius: 50%;
     border: 3px solid var(--red);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     pointer-events: auto;
+    cursor: pointer;
+    touch-action: none;
     will-change: transform;
     animation: popIn 0.7s 0.5s both;
 }
