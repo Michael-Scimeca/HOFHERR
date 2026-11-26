@@ -2,6 +2,11 @@
 
 import { useLayoutEffect, useRef, type RefObject } from 'react';
 import { createBurner, type Burner } from '@/lib/burner';
+import {
+    getMobileBurnState,
+    hydrateMobileBurnConfig,
+    subscribeMobileBurn,
+} from '@/lib/mobileBurnConfig';
 
 /**
  * "Lit fuse" entrance for the mobile menu.
@@ -20,19 +25,10 @@ import { createBurner, type Burner } from '@/lib/burner';
  *   data-closing     the menu is on its way out: ignore taps
  */
 
-const SWEEP_MS = 600; // fuse + page burn
-const TEXT_AT_MS = SWEEP_MS - 200; // links start flaming in as the page burn is finishing
-const TEXT_MS = 450;
-const TOTAL_MS = Math.max(SWEEP_MS, TEXT_AT_MS + TEXT_MS);
 const LINE_MS = 250; // the divider lines fade in over this long, ending the moment the text flame ends
-const CLOSE_SPEED = 1.7;
-const FUSE_END_T = 0.6; // fraction of the sweep the spark takes to reach the end of the fuse
-const FUSE_POWER = 2.6; // the spark starts slow and keeps speeding up (1 = steady speed)
-const FIELD_W = 80; // the burn is computed on a small buffer and scaled up smooth
 
 /** Same flame settings as the site's burning modals. */
 const TEXT_FLAME = { flameHeight: 0.46, flameRadius: 0.056, flameFlickerSpeed: 1, edgeRaggedness: 0.14, direction: 'left-to-right' as const };
-const TEXT_FLAME_BOOST = 1.5;
 
 type Vec = [number, number];
 type RGB = [number, number, number];
@@ -120,8 +116,19 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
         const sctx = sparkCanvas?.getContext('2d') ?? null;
         if (!canvas || !menu || !ctx || !sparkCanvas || !sctx) return;
 
+        hydrateMobileBurnConfig();
+        const getTiming = () => {
+            const cfg = getMobileBurnState().config;
+            const sweepMs = cfg.sweepMs;
+            const textAtMs = Math.max(0, sweepMs - 200);
+            const textMs = cfg.textMs;
+            const totalMs = Math.max(sweepMs, textAtMs + textMs);
+            return { cfg, sweepMs, textAtMs, textMs, totalMs };
+        };
+
         const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        let m = reduce ? TOTAL_MS : 0; // position on the timeline, in ms
+        let m = reduce ? getTiming().totalMs : 0; // position on the timeline, in ms
+        let lastFieldW = getMobileBurnState().config.fieldW;
         let raf = 0;
         let last = 0;
         let disposed = false;
@@ -155,11 +162,13 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
             sh = sr.height;
             sparkCanvas.width = Math.max(1, Math.round(sw));
             sparkCanvas.height = Math.max(1, Math.round(sh));
+            const { cfg } = getTiming();
             const b = buttonRef.current?.getBoundingClientRect();
             fuseFrom = b ? [b.left + b.width / 2 - r.left, b.top + b.height / 2 - r.top] : [w - 27, -26];
-            fuseTo = [w * 0.06, h * 0.8];
-            buf.width = FIELD_W;
-            buf.height = Math.max(1, Math.round((FIELD_W * h) / Math.max(1, w)));
+            fuseTo = [w * cfg.fuseToX, h * cfg.fuseToY];
+            lastFieldW = cfg.fieldW;
+            buf.width = Math.max(20, Math.round(cfg.fieldW));
+            buf.height = Math.max(1, Math.round((buf.width * h) / Math.max(1, w)));
             img = bctx ? bctx.createImageData(buf.width, buf.height) : null;
         };
 
@@ -214,18 +223,30 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
         };
 
         const drawText = (tt: number, time: number) => {
+            const { cfg } = getTiming();
             burners.forEach(b => {
                 const env = Math.min(1, tt / 0.1) * Math.min(1, (1 - tt) / 0.1);
                 b.wake();
-                b.draw(b.frontFor(-0.16 + 1.4 * tt), time, false, 'in', { ...TEXT_FLAME, flameBoost: TEXT_FLAME_BOOST * env });
+                b.draw(b.frontFor(-0.16 + 1.4 * tt), time, false, 'in', { ...TEXT_FLAME, flameBoost: cfg.textFlameBoost * env });
             });
         };
 
         /** The page burning away from the fuse line. */
         const drawBurn = (t: number, time: number) => {
+            const { cfg } = getTiming();
+            if (lastFieldW !== cfg.fieldW && w > 0 && h > 0) {
+                lastFieldW = cfg.fieldW;
+                buf.width = Math.max(20, Math.round(cfg.fieldW));
+                buf.height = Math.max(1, Math.round((buf.width * h) / Math.max(1, w)));
+                img = bctx ? bctx.createImageData(buf.width, buf.height) : null;
+            }
             if (!img || !bctx) return;
+            fuseTo = [w * cfg.fuseToX, h * cfg.fuseToY];
             const bw = buf.width, bh = buf.height, px = img.data, asp = h / Math.max(1, w), diag = Math.hypot(w, h);
             const dx = fuseTo[0] - fuseFrom[0], dy = fuseTo[1] - fuseFrom[1], len2 = dx * dx + dy * dy || 1;
+            const band = Math.max(0.035, cfg.bandWidth);
+            const coreEnd = band * 0.2;
+            const tailSpan = Math.max(0.01, band - coreEnd);
             for (let y = 0; y < bh; y++) {
                 for (let x = 0; x < bw; x++) {
                     const u = (x + 0.5) / bw, v = (y + 0.5) / bh, X = u * w, Y = v * h;
@@ -233,9 +254,9 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
                     const s = clamp(((X - fuseFrom[0]) * dx + (Y - fuseFrom[1]) * dy) / len2);
                     const dist = Math.hypot(X - fuseFrom[0] - dx * s, Y - fuseFrom[1] - dy * s);
                     // the spark passes s later the further along it is (it is speeding up), and the burn spreads sideways faster toward the end
-                    const d = (t - FUSE_END_T * Math.pow(s, 1 / FUSE_POWER) - (dist / diag) * (1.5 - s) - fbm(u * 6, v * 6 * asp) * 0.12) * 1.7;
-                    const cover = sstep(0.03, 0.1, d);
-                    const heat = d > 0 && d < 0.15 ? (d < 0.03 ? d / 0.03 : 1 - (d - 0.03) / 0.12) * (0.82 + 0.18 * Math.sin(time * 21 + u * 40)) : 0;
+                    const d = (t - cfg.fuseEndT * Math.pow(s, 1 / cfg.fusePower) - (dist / diag) * (1.5 - s) - fbm(u * cfg.noiseScale, v * cfg.noiseScale * asp) * cfg.noiseAmp) * 1.7;
+                    const cover = sstep(coreEnd, band * 0.67, d);
+                    const heat = d > 0 && d < band ? (d < coreEnd ? d / coreEnd : 1 - (d - coreEnd) / tailSpan) * (0.82 + 0.18 * Math.sin(time * 21 + u * 40)) : 0;
                     const hs = clamp(heat) * 4, k = Math.min(3, Math.floor(hs)), f = hs - k, A = HEAT[k], B = HEAT[k + 1], i = (y * bw + x) * 4;
                     px[i] = A[0] + (B[0] - A[0]) * f;
                     px[i + 1] = A[1] + (B[1] - A[1]) * f;
@@ -248,18 +269,22 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
             ctx.imageSmoothingQuality = 'high';
             ctx.drawImage(buf, 0, 0, w, h);
             // soft glow over the top (browsers without canvas filters just skip the blur)
-            ctx.save();
-            ctx.globalCompositeOperation = 'lighter';
-            ctx.globalAlpha = 0.6;
-            if ('filter' in ctx) ctx.filter = 'blur(8px)';
-            ctx.drawImage(buf, 0, 0, w, h);
-            ctx.restore();
+            if (cfg.glowAlpha > 0) {
+                ctx.save();
+                ctx.globalCompositeOperation = 'lighter';
+                ctx.globalAlpha = cfg.glowAlpha;
+                if (cfg.edgeBlur > 0 && 'filter' in ctx) ctx.filter = `blur(${cfg.edgeBlur}px)`;
+                ctx.drawImage(buf, 0, 0, w, h);
+                ctx.restore();
+            }
         };
 
         /** The spark running along the fuse, shedding sparks. It simply dies out at the end: no burst. */
         const drawSpark = (t: number, timeMs: number) => {
-            const k = Math.pow(clamp(t / FUSE_END_T), FUSE_POWER);
-            const grow = 1 + k * 1.1; // the spark gets bigger as it speeds up
+            const { cfg } = getTiming();
+            if (cfg.sparkSize <= 0) return;
+            const k = Math.pow(clamp(t / cfg.fuseEndT), cfg.fusePower);
+            const grow = (1 + k * 1.1) * cfg.sparkSize; // the spark gets bigger as it speeds up
             const dx = fuseTo[0] - fuseFrom[0], dy = fuseTo[1] - fuseFrom[1];
             const at = (q: number): Vec => [fuseFrom[0] + dx * q, fuseFrom[1] + dy * q];
             if (k > 0 && k < 1) {
@@ -293,8 +318,9 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
         };
 
         const render = (now: number) => {
-            const t = clamp(m / SWEEP_MS);
-            const tt = clamp((m - TEXT_AT_MS) / TEXT_MS);
+            const { sweepMs, textAtMs, textMs, totalMs } = getTiming();
+            const t = clamp(m / sweepMs);
+            const tt = clamp((m - textAtMs) / textMs);
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             ctx.clearRect(0, 0, w, h);
             sctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -314,7 +340,7 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
                     ctx.globalAlpha = 1;
                 }
             }
-            const done = m >= TOTAL_MS;
+            const done = m >= totalMs;
             if (textReady && !done) drawText(tt, now / 1000);
             const plain = !textReady && !textPending; // no burners to draw with: just show the real links
             if (layer) layer.style.visibility = done || !textReady ? 'hidden' : 'visible';
@@ -322,7 +348,7 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
             if (t > 0.86 || plain) menu.setAttribute('data-lit', '');
             else menu.removeAttribute('data-lit');
             // the divider lines (full width throughout) take LINE_MS to fade in and are fully visible the moment the text flame finishes
-            const line = clamp((m - (TEXT_AT_MS + TEXT_MS - LINE_MS)) / LINE_MS);
+            const line = clamp((m - (textAtMs + textMs - LINE_MS)) / LINE_MS);
             menu.style.setProperty('--menu-line', plain ? '1' : line.toFixed(3));
         };
 
@@ -339,13 +365,21 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
         const frame = (now: number) => {
             raf = 0;
             if (disposed || failed) return;
+            const { cfg, totalMs } = getTiming();
+            const scrub = getMobileBurnState().scrubProgress;
             // real elapsed time, so the burn takes the same time on a slow phone; capped so a stalled tab doesn't jump
             const dt = last ? Math.min(120, now - last) : 16;
             last = now;
-            const goal = openRef.current ? TOTAL_MS : 0;
-            if (reduce) m = goal;
-            else if (m < goal) m = Math.min(goal, m + dt);
-            else if (m > goal) m = Math.max(goal, m - dt * CLOSE_SPEED);
+            const goal = openRef.current ? totalMs : 0;
+            if (scrub !== null) {
+                m = scrub * totalMs;
+            } else if (reduce) {
+                m = goal;
+            } else if (m < goal) {
+                m = Math.min(goal, m + dt);
+            } else if (m > goal) {
+                m = Math.max(goal, m - dt * cfg.closeSpeed);
+            }
             try {
                 render(now);
             } catch {
@@ -353,8 +387,12 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
                 if (!openRef.current) exitedRef.current();
                 return;
             }
-            if (m !== goal) raf = requestAnimationFrame(frame);
-            else {
+            if (scrub !== null) {
+                // Keep flickering smoothly while frozen at a scrub point
+                raf = requestAnimationFrame(frame);
+            } else if (m !== goal) {
+                raf = requestAnimationFrame(frame);
+            } else {
                 last = 0;
                 if (!openRef.current) exitedRef.current();
             }
@@ -391,14 +429,25 @@ export default function MobileMenuBurn({ open, onExited, menuRef, buttonRef, tex
             window.clearTimeout(resizeTimer);
             resizeTimer = window.setTimeout(setup, 150);
         };
+        const onReplay = () => {
+            m = 0;
+            last = 0;
+            kick();
+        };
+        const unsubBurnCfg = subscribeMobileBurn(() => {
+            kick();
+        });
         window.addEventListener('resize', onResize);
+        window.addEventListener('hofherr-replay-mobile-burn', onReplay);
 
         return () => {
             disposed = true;
             kickRef.current = () => {};
             cancelAnimationFrame(raf);
             window.clearTimeout(resizeTimer);
+            unsubBurnCfg();
             window.removeEventListener('resize', onResize);
+            window.removeEventListener('hofherr-replay-mobile-burn', onReplay);
             layer?.replaceChildren();
         };
     }, [menuRef, buttonRef, textLayerRef, linkSelector]);

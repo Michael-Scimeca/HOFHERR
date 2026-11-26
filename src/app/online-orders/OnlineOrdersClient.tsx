@@ -2196,7 +2196,11 @@ export default function CustomOrdersPage({
                 {/* Sidebar */}
                 <aside className={styles.sidebar}>
                     <div ref={catSentinelRef} style={{ height: 0 }} />
-                    <div ref={mobileHeaderRef} className={`${styles.mobileHeader} ${isCatSticky ? styles.stickyHeader : ''}`} style={{ top: Math.max(0, Math.floor(navbarHeight)) }}>
+                    <div
+                        ref={mobileHeaderRef}
+                        className={`${styles.mobileHeader} ${isCatSticky ? styles.stickyHeader : ''}`}
+                        style={{ '--mobile-header-top': `${Math.max(0, Math.floor(navbarHeight) - 3)}px` } as React.CSSProperties}
+                    >
 
 
                         <div className={styles.mobileCommandCard}>
