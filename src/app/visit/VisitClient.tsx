@@ -98,8 +98,10 @@ const LOCATIONS = [
 export default function VisitClient() {
     const [active, setActive] = useState(0);
     const [loadedMaps, setLoadedMaps] = useState<Record<string, boolean>>({});
+    const [mapsVisible, setMapsVisible] = useState(false);
     const [useThemedMap, setUseThemedMap] = useState(Boolean(GOOGLE_MAPS_KEY));
     const mapReadyDispatched = useRef(false);
+    const mapColRef = useRef<HTMLDivElement>(null);
     const loc = LOCATIONS[active];
 
     const markMapReady = useCallback(() => {
@@ -139,10 +141,29 @@ export default function VisitClient() {
     );
 
     useEffect(() => {
-        // Safety fallback so page transition never stays waiting if Google Maps is slow or blocked
-        const t = setTimeout(markMapReady, 650);
-        return () => clearTimeout(t);
+        // Reveal /visit immediately without blocking page transition on Google Maps network load
+        markMapReady();
     }, [markMapReady]);
+
+    useEffect(() => {
+        if (mapsVisible) return;
+        const el = mapColRef.current;
+        if (!el || typeof IntersectionObserver === 'undefined') {
+            setMapsVisible(true);
+            return;
+        }
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries.some((e) => e.isIntersecting)) {
+                    setMapsVisible(true);
+                    observer.disconnect();
+                }
+            },
+            { rootMargin: '300px 0px' }
+        );
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [mapsVisible]);
 
     return (
         <main className={styles.page}>
@@ -233,12 +254,13 @@ export default function VisitClient() {
                     <section id="location-details" aria-labelledby="location-details-heading" className={`${styles.locationSection} ${styles.locationOverlap}`}>
                         <div className="container">
                             <div className={styles.grid}>
-                                {/* Map — both locations preloaded eagerly so switching & initial reveal are instant */}
-                                <div className={styles.mapCol}>
+                                {/* Map — lazy-mounted when approaching viewport, only for active/already-loaded location */}
+                                <div ref={mapColRef} className={styles.mapCol}>
                                     <div className={styles.mapWrap}>
-                                        {LOCATIONS.map((item, idx) => {
+                                        {mapsVisible && LOCATIONS.map((item, idx) => {
                                             const isActive = idx === active;
                                             const isLoaded = Boolean(loadedMaps[item.id]);
+                                            if (!isActive && !isLoaded) return null;
 
                                             return (
                                                 <div
@@ -262,7 +284,7 @@ export default function VisitClient() {
                                                             src={`https://www.google.com/maps?q=${encodeURIComponent(item.address)}&output=embed`}
                                                             className={`${styles.mapIframe} ${isLoaded ? styles.mapIframeLoaded : styles.mapIframeLoading}`}
                                                             allowFullScreen
-                                                            loading="eager"
+                                                            loading="lazy"
                                                             referrerPolicy="no-referrer-when-downgrade"
                                                             sandbox={GOOGLE_MAPS_SANDBOX}
                                                             title={`Map of ${item.label}`}
