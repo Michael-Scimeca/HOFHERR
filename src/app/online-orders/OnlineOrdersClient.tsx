@@ -1078,11 +1078,19 @@ export default function CustomOrdersPage({
         } catch {
             setCart([]);
         }
+        const isMobileViewport = typeof window !== 'undefined' && window.innerWidth <= 820;
+        const savedScrollY = isMobileViewport ? window.scrollY : 0;
         setActiveStore(store);
         setSearchQuery('');
         const firstCat = store === 'butcher' ? butcherCategories[0].id : depotCategories[0].id;
         setActiveCategory(firstCat);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (isMobileViewport) {
+            requestAnimationFrame(() => {
+                window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+            });
+        } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     };
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [drawerClosing, setDrawerClosing] = useState(false);
