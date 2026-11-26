@@ -3334,8 +3334,14 @@
     }
 
     .locationHero {
-        height: 300px;
-        min-height: 300px;
+        height: 168px;
+        min-height: 168px;
+    }
+
+    .locationHeroOverlay {
+        justify-content: flex-start;
+        padding-top: 40px;
+        padding-bottom: 24px;
     }
 
     .main {
