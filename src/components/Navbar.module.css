@@ -27,12 +27,14 @@
     transition: opacity 0.3s ease;
 }
 
-.header.scrolled {
+.header.scrolled,
+.header.menuOpen {
     border-bottom-color: var(--border);
     box-shadow: 0 1px 20px rgba(0, 0, 0, 0.4);
 }
 
-.header.scrolled::before {
+.header.scrolled::before,
+.header.menuOpen::before {
     opacity: 1;
 }
 
@@ -1054,7 +1056,7 @@
 /* ─── Mobile menu ─── */
 .mobile {
     position: fixed; /* Fixed is safer for fullscreen overlays */
-    top: 88px;
+    top: 100px;
     left: 0;
     z-index: 999;
     border-top: 1px solid var(--border);
@@ -1063,8 +1065,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Spread content out */
-    height: calc(100dvh - 88px);
-    min-height: calc(100dvh - 88px);
+    height: calc(100dvh - 100px);
+    min-height: calc(100dvh - 100px);
     overflow-y: auto;
     width: 100%;
     box-sizing: border-box;
@@ -1074,12 +1076,12 @@
    menu and burns the page away ("lit fuse"). The data-* states below are set by that component. */
 .mobileBurn {
     position: fixed;
-    top: 88px;
+    top: 100px;
     left: 0;
     z-index: 998;
     display: block;
     width: 100%;
-    height: calc(100dvh - 88px);
+    height: calc(100dvh - 100px);
     pointer-events: none;
 }
 

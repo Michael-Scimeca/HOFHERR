@@ -321,7 +321,7 @@ export default function Navbar() {
     };
 
     return (
-        <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
+        <header className={`${styles.header} ${scrolled ? styles.scrolled : ''} ${mobileOpen ? styles.menuOpen : ''}`}>
             <div className={`container ${styles.inner}`}>
                 {/* Logo */}
                 <TransitionLink href="/" className={styles.logo} onClick={() => setMobileOpen(false)}>
@@ -442,18 +442,7 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* Mobile Menu */}
-            {menuMounted && (
-                <MobileMenuBurn
-                    open={mobileOpen}
-                    onExited={handleMenuExited}
-                    menuRef={menuRef}
-                    buttonRef={hamburgerRef}
-                    textLayerRef={menuBurnTextRef}
-                    linkSelector={`.${styles.mobilePrimary}`}
-                    className={styles.mobileBurn}
-                />
-            )}
+            {/* Mobile Menu (rendered before MobileMenuBurn so menuRef & menuBurnTextRef are attached before MobileMenuBurn's useLayoutEffect runs in React 19 production) */}
             {menuMounted && (
                 <div ref={menuRef} className={styles.mobile} data-lenis-prevent>
                     {/* Burning link text is drawn into this box by MobileMenuBurn */}
@@ -539,6 +528,17 @@ export default function Navbar() {
                         </div>
                     </div>
                 </div>
+            )}
+            {menuMounted && (
+                <MobileMenuBurn
+                    open={mobileOpen}
+                    onExited={handleMenuExited}
+                    menuRef={menuRef}
+                    buttonRef={hamburgerRef}
+                    textLayerRef={menuBurnTextRef}
+                    linkSelector={`.${styles.mobilePrimary}`}
+                    className={styles.mobileBurn}
+                />
             )}
         </header>
     );
