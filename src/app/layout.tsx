@@ -28,8 +28,6 @@ const Preloader = dynamic(() => import("@/components/Preloader"));
 const DevNav = process.env.NODE_ENV === "development" ? dynamic(() => import("@/components/DevNav")) : null;
 const AddToOrderAnimStudio =
   process.env.NODE_ENV === "development" ? dynamic(() => import("@/components/AddToOrderAnimStudio")) : null;
-const MobileMenuBurnHud =
-  process.env.NODE_ENV === "development" ? dynamic(() => import("@/components/MobileMenuBurnHud")) : null;
 
 const yanone = Yanone_Kaffeesatz({
   subsets: ["latin"],
@@ -241,7 +239,6 @@ export default async function RootLayout({
               <Preloader />
               {DevNav && <DevNav />}
               {AddToOrderAnimStudio && <AddToOrderAnimStudio />}
-              {MobileMenuBurnHud && <MobileMenuBurnHud />}
               <ParallaxImages />
               <ServiceWorkerRegistrar />
               </TransitionProvider>
