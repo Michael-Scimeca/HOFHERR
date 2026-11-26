@@ -427,6 +427,10 @@
     transition: width 0.25s ease;
 }
 
+.mobileSearchToggleBtn {
+    display: none;
+}
+
 .searchIcon {
     position: absolute;
     left: 10px;
@@ -3356,7 +3360,7 @@
     .mobileCommandCard {
         display: grid;
         grid-template-columns: auto 1fr;
-        gap: 10px 8px;
+        gap: 0 8px;
         align-items: center;
         width: 100%;
         padding: 0;
@@ -3364,6 +3368,10 @@
         border-radius: 0;
         background: transparent;
         border: none;
+    }
+
+    .mobileCommandCardSearchOpen {
+        gap: 10px 8px;
     }
 
     .storeSwitch {
@@ -3434,6 +3442,33 @@
         grid-column: 1 / -1;
         grid-row: 1;
         width: 100%;
+        display: none;
+    }
+
+    .searchWrapMobileOpen {
+        display: flex;
+    }
+
+    .mobileSearchToggleBtn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border-radius: 999px;
+        background: #1f1c1c;
+        border: 1px solid var(--border);
+        color: var(--fg-2);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .mobileSearchToggleBtnActive {
+        background: rgba(204, 14, 29, 0.22);
+        border-color: var(--red);
+        color: #fff;
     }
 
     .searchInput {

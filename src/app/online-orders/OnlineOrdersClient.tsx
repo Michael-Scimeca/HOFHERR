@@ -935,6 +935,7 @@ export default function CustomOrdersPage({
     }, [quickOrderParam, activeStore, butcherCategories, depotCategories]);
     const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') ?? '');
     const [searchFocused, setSearchFocused] = useState(false);
+    const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
     const [hideOutOfStock, setHideOutOfStock] = useState(false);
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
     const [placeholderIdx, setPlaceholderIdx] = useState(0);
@@ -2203,7 +2204,7 @@ export default function CustomOrdersPage({
                     >
 
 
-                        <div className={styles.mobileCommandCard}>
+                        <div className={`${styles.mobileCommandCard} ${mobileSearchOpen || searchQuery ? styles.mobileCommandCardSearchOpen : ''}`}>
                         <div className={styles.storeSwitch}>
                             <span className={`${styles.storeSwitchLabel} ${activeStore === 'butcher' ? styles.storeSwitchLabelActive : ''}`}>🥩 Butcher</span>
                             <button
@@ -2236,7 +2237,7 @@ export default function CustomOrdersPage({
 
                         {/* Unified Search Row */}
                         <div className={styles.searchRow} ref={searchRowRef}>
-                            <div className={`${styles.searchWrap} ${searchFocused ? styles.searchWrapFocused : ''}`}>
+                            <div className={`${styles.searchWrap} ${searchFocused ? styles.searchWrapFocused : ''} ${mobileSearchOpen || searchQuery ? styles.searchWrapMobileOpen : ''}`}>
                                 <svg className={styles.searchIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
                                 <input
                                     ref={searchRef}
@@ -2247,6 +2248,11 @@ export default function CustomOrdersPage({
                                     onFocus={() => setSearchFocused(true)}
                                     onBlur={() => { setTimeout(() => setSearchFocused(false), 200); saveRecentSearch(searchQuery); }}
                                     onKeyDown={e => {
+                                        if (e.key === 'Escape') {
+                                            setMobileSearchOpen(false);
+                                            searchRef.current?.blur();
+                                            return;
+                                        }
                                         if ((e.key === 'Tab' || e.key === 'ArrowRight') && suggestions[0] && searchQuery) {
                                             const s = suggestions[0];
                                             if (s.toLowerCase().startsWith(searchQuery.toLowerCase())) {
@@ -2301,6 +2307,27 @@ export default function CustomOrdersPage({
                                 )}
                             </div>
                             <div className={styles.filterPillsRow}>
+                                <button
+                                    type="button"
+                                    className={`${styles.mobileSearchToggleBtn} ${mobileSearchOpen || searchQuery ? styles.mobileSearchToggleBtnActive : ''}`}
+                                    aria-label={mobileSearchOpen || searchQuery ? 'Close search' : 'Open search'}
+                                    aria-expanded={mobileSearchOpen || Boolean(searchQuery)}
+                                    onClick={() => {
+                                        const next = !(mobileSearchOpen || Boolean(searchQuery));
+                                        if (!next && searchQuery) {
+                                            setSearchQuery('');
+                                        }
+                                        setMobileSearchOpen(next);
+                                        if (next) {
+                                            requestAnimationFrame(() => searchRef.current?.focus());
+                                        }
+                                    }}
+                                >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                        <circle cx="11" cy="11" r="8" />
+                                        <path d="m21 21-4.3-4.3" />
+                                    </svg>
+                                </button>
                                 <button
                                     className={`${styles.favFilterBtn} ${showFavoritesOnly ? styles.favFilterBtnActive : ''}`}
                                     onClick={() => setShowFavoritesOnly(f => !f)}
