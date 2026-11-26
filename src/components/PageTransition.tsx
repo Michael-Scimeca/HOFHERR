@@ -21,8 +21,16 @@ import {
     BurnTransitionOverlay,
     DEFAULT_SITE_BURN_ENTER_MS,
     DEFAULT_SITE_BURN_EXIT_MS,
+    DEFAULT_SITE_BURN_MODE,
     type BurnOverlayHandle,
 } from './BurnTransitionOverlay';
+import {
+    TRANSFORM_PIVOTS,
+    getPageTransitionConfig,
+    hydratePageTransitionConfig,
+    subscribePageTransitionConfig,
+    type PageTransitionRuntimeConfig,
+} from '@/lib/pageTransitionConfig';
 import styles from './PageTransition.module.css';
 
 /* ─── Context ─── */
@@ -440,6 +448,10 @@ export default function PageTransition({ children }: { children: React.ReactNode
     const animRafRef = useRef<number | null>(null);
     const previewTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const paramsRef = useRef<MeltConfig>(DEFAULT_MELT_CONFIG);
+    const smokeTurbRef = useRef<SVGFETurbulenceElement | null>(null);
+    const smokeOffsetRef = useRef<SVGFEOffsetElement | null>(null);
+    const smokeDispRef = useRef<SVGFEDisplacementMapElement | null>(null);
+    const smokeErodeRef = useRef<SVGFEFuncAElement | null>(null);
 
     // Load saved flame & melt settings on mount, and sync canvas drag events
     useEffect(() => {
@@ -753,10 +765,22 @@ export default function PageTransition({ children }: { children: React.ReactNode
             if (burnP === null || burnP <= 0.002) {
                 el.style.maskImage = '';
                 el.style.webkitMaskImage = '';
+                el.style.maskSize = '';
+                el.style.webkitMaskSize = '';
+                el.style.maskPosition = '';
+                el.style.webkitMaskPosition = '';
+                el.style.maskRepeat = '';
+                el.style.webkitMaskRepeat = '';
                 el.style.opacity = '';
                 portals.forEach(p => {
                     p.style.maskImage = '';
                     p.style.webkitMaskImage = '';
+                    p.style.maskSize = '';
+                    p.style.webkitMaskSize = '';
+                    p.style.maskPosition = '';
+                    p.style.webkitMaskPosition = '';
+                    p.style.maskRepeat = '';
+                    p.style.webkitMaskRepeat = '';
                     p.style.opacity = '';
                 });
                 return;
@@ -794,16 +818,366 @@ export default function PageTransition({ children }: { children: React.ReactNode
             });
         };
 
+        const applySmokeDissolveStyle = (
+            phase: 'exit' | 'enter' | 'clear',
+            progress01: number,
+            cfg?: PageTransitionRuntimeConfig
+        ) => {
+            if (phase === 'clear' || !cfg || (!cfg.enableSmokeDissolve && !cfg.enableMelt)) {
+                el.style.filter = '';
+                if (smokeDispRef.current) smokeDispRef.current.setAttribute('scale', '0');
+                if (smokeErodeRef.current) smokeErodeRef.current.setAttribute('intercept', '4');
+                return;
+            }
+            const p = Math.min(1, Math.max(0, progress01));
+            // k = 0 (clean content) -> 1 (fully burned up / melted)
+            const k = phase === 'exit' ? p : 1 - p;
+            if (k <= 0.005) {
+                el.style.filter = '';
+                if (smokeDispRef.current) smokeDispRef.current.setAttribute('scale', '0');
+                if (smokeErodeRef.current) smokeErodeRef.current.setAttribute('intercept', '4');
+                return;
+            }
+
+            const parts: string[] = [];
+
+            // 1. Content Burn / Up in Smoke filter layer
+            if (cfg.enableSmokeDissolve) {
+                const easeSmoke = Math.pow(k, 1.3);
+                const burnStyle = cfg.contentBurnStyle ?? 'ember-smoke';
+                const freqMult = Math.max(0.25, (cfg.smokeFreq ?? 3.5) / 3.5);
+                const warpPx = cfg.smokeWarp * easeSmoke;
+                const erodeStrength = Math.max(0, Math.min(1, (cfg.burnErode ?? 85) / 100));
+
+                if (smokeDispRef.current) {
+                    smokeDispRef.current.setAttribute('scale', warpPx.toFixed(1));
+                }
+                if (smokeErodeRef.current) {
+                    if (erodeStrength <= 0.01) {
+                        smokeErodeRef.current.setAttribute('intercept', '4');
+                    } else {
+                        // Sweep intercept from +2.0 (100% solid) -> -12.5 (100% eaten away in jagged burn holes)
+                        const erodeK = Math.pow(k, 0.92) * erodeStrength;
+                        const intercept = 2.0 - erodeK * 14.5;
+                        smokeErodeRef.current.setAttribute('intercept', intercept.toFixed(2));
+                    }
+                }
+                if (smokeTurbRef.current) {
+                    let baseX = 0.011 + easeSmoke * 0.018;
+                    let baseY = 0.018 + easeSmoke * 0.028;
+                    if (burnStyle === 'ash-dissolve') {
+                        baseX = 0.042 + easeSmoke * 0.055;
+                        baseY = 0.042 + easeSmoke * 0.055;
+                    } else if (burnStyle === 'heat-melt') {
+                        baseX = 0.008 + easeSmoke * 0.012;
+                        baseY = 0.032 + easeSmoke * 0.045;
+                    } else if (burnStyle === 'smokehouse-veil') {
+                        baseX = 0.006 + easeSmoke * 0.008;
+                        baseY = 0.009 + easeSmoke * 0.012;
+                    }
+                    const fx = Math.min(0.28, baseX * freqMult).toFixed(4);
+                    const fy = Math.min(0.28, baseY * freqMult).toFixed(4);
+                    smokeTurbRef.current.setAttribute('baseFrequency', `${fx} ${fy}`);
+                }
+                if (smokeOffsetRef.current) {
+                    const driftSign = cfg.exitSlideY > 0 ? 1 : -1;
+                    const driftY = driftSign * easeSmoke * 48;
+                    smokeOffsetRef.current.setAttribute('dy', driftY.toFixed(1));
+                }
+
+                const scorch = Math.max(0, Math.min(1, cfg.scorchAmount / 100));
+                const flashAmt = Math.max(0, Math.min(1, (cfg.emberFlash ?? 60) / 100));
+                if (warpPx > 0.4 || erodeStrength > 0.01) {
+                    parts.push('url(#pt-smoke-dissolve)');
+                }
+                if (cfg.smokeBlurPx > 0) {
+                    parts.push(`blur(${(cfg.smokeBlurPx * easeSmoke).toFixed(2)}px)`);
+                }
+                if (scorch > 0.01 || flashAmt > 0.01) {
+                    const midFlash = Math.sin(k * Math.PI);
+                    if (burnStyle === 'ash-dissolve') {
+                        const gray = (easeSmoke * 0.92 * scorch).toFixed(2);
+                        const contrast = (1 + easeSmoke * 1.15 * scorch).toFixed(2);
+                        const bright = Math.max(
+                            0.14,
+                            1 + midFlash * 0.35 * flashAmt - Math.pow(k, 1.75) * 0.78 * scorch
+                        ).toFixed(2);
+                        parts.push(`grayscale(${gray})`, `contrast(${contrast})`, `brightness(${bright})`);
+                    } else if (burnStyle === 'white-hot-flash') {
+                        const sepia = (easeSmoke * 0.85 * scorch).toFixed(2);
+                        const sat = (1 + easeSmoke * 3.0 * scorch).toFixed(2);
+                        const hue = (-12 * easeSmoke * scorch).toFixed(1);
+                        const bright = Math.max(
+                            0.3,
+                            1 + midFlash * 1.45 * flashAmt - Math.pow(k, 2.8) * 0.45 * scorch
+                        ).toFixed(2);
+                        parts.push(`sepia(${sepia})`, `saturate(${sat})`, `hue-rotate(${hue}deg)`, `brightness(${bright})`);
+                    } else if (burnStyle === 'heat-melt') {
+                        const sepia = (easeSmoke * 0.9 * scorch).toFixed(2);
+                        const sat = (1 + easeSmoke * 2.8 * scorch).toFixed(2);
+                        const hue = (-24 * easeSmoke * scorch).toFixed(1);
+                        const contrast = (1 + easeSmoke * 0.65 * scorch).toFixed(2);
+                        const bright = Math.max(
+                            0.22,
+                            1 + midFlash * 0.55 * flashAmt - Math.pow(k, 2.2) * 0.55 * scorch
+                        ).toFixed(2);
+                        parts.push(
+                            `sepia(${sepia})`,
+                            `saturate(${sat})`,
+                            `hue-rotate(${hue}deg)`,
+                            `contrast(${contrast})`,
+                            `brightness(${bright})`
+                        );
+                    } else if (burnStyle === 'smokehouse-veil') {
+                        const sepia = (easeSmoke * 0.45 * scorch).toFixed(2);
+                        const contrast = (1 + easeSmoke * 0.35 * scorch).toFixed(2);
+                        const bright = Math.max(
+                            0.15,
+                            1 + midFlash * 0.15 * flashAmt - Math.pow(k, 1.6) * 0.72 * scorch
+                        ).toFixed(2);
+                        parts.push(`sepia(${sepia})`, `contrast(${contrast})`, `brightness(${bright})`);
+                    } else {
+                        const sepia = (easeSmoke * 0.95 * scorch).toFixed(2);
+                        const sat = (1 + easeSmoke * 2.6 * scorch).toFixed(2);
+                        const hue = (-18 * easeSmoke * scorch).toFixed(1);
+                        const contrast = (1 + easeSmoke * 0.55 * scorch).toFixed(2);
+                        const bright = Math.max(
+                            0.18,
+                            1 + midFlash * 0.5 * flashAmt - Math.pow(k, 2.1) * 0.68 * scorch
+                        ).toFixed(2);
+                        parts.push(
+                            `sepia(${sepia})`,
+                            `saturate(${sat})`,
+                            `hue-rotate(${hue}deg)`,
+                            `contrast(${contrast})`,
+                            `brightness(${bright})`
+                        );
+                    }
+                }
+            } else if (smokeDispRef.current) {
+                smokeDispRef.current.setAttribute('scale', '0');
+            }
+
+            // 2. Stackable Page Melt filter layer (blur + contrast liquefy)
+            if (cfg.enableMelt) {
+                const amt = (cfg.meltAmount ?? 80) / 100;
+                const meltCurve = Math.pow(k, 0.85);
+                const blurRem = meltCurve * (cfg.meltBlur ?? 1.2) * amt;
+                const conVal = 1 + meltCurve * Math.max(0, (cfg.meltContrast ?? 4.5) - 1) * amt;
+                if (blurRem > 0.005) parts.push(`blur(${blurRem.toFixed(3)}rem)`);
+                if (conVal > 1.02) parts.push(`contrast(${conVal.toFixed(2)})`);
+            }
+
+            el.style.filter = parts.join(' ');
+        };
+
+        const applyCardGlideStyle = (
+            phase: 'exit' | 'enter' | 'clear',
+            progress01: number,
+            cfg?: PageTransitionRuntimeConfig
+        ) => {
+            if (phase === 'clear') {
+                el.style.transform = '';
+                el.style.opacity = '';
+                el.style.transformOrigin = '';
+                el.style.willChange = '';
+                applySmokeDissolveStyle('clear', 1);
+                return;
+            }
+            const c = cfg ?? getPageTransitionConfig();
+            applySmokeDissolveStyle(phase, progress01, c);
+
+            if (!c.enableCardGlide && !c.enableSmokeDissolve && !c.enableMelt) {
+                el.style.transform = '';
+                el.style.opacity = '';
+                el.style.transformOrigin = '';
+                el.style.willChange = '';
+                return;
+            }
+
+            const p = Math.min(1, Math.max(0, progress01));
+            // Exit keeps moving continuously all the way through 100% with the fire/smoke (no early brake);
+            // Enter glides smoothly into place.
+            const k = phase === 'exit' ? Math.pow(p, 1.25) : Math.pow(1 - p, 2.2);
+            const kFade = phase === 'exit' ? Math.pow(p, 1.35) : Math.pow(1 - p, 1.35);
+
+            const pivotObj = TRANSFORM_PIVOTS.find((pv) => pv.id === c.transformPivot) ?? TRANSFORM_PIVOTS[0];
+            el.style.transformOrigin = pivotObj.origin;
+            el.style.willChange = (c.enableSmokeDissolve || c.enableMelt) ? 'transform, opacity, filter' : 'transform, opacity';
+
+            let tx = 0;
+            let ty = 0;
+            let rot = 0;
+            let scaleX = 1;
+            let scaleY = 1;
+            let fadeMult = 0;
+
+            if (c.enableCardGlide) {
+                if (phase === 'exit') {
+                    tx = c.exitSlideX * k;
+                    ty = c.exitSlideY * k;
+                    rot = c.exitTiltDeg * k;
+                    const s = 1 + (c.exitScalePct / 100) * k;
+                    scaleX *= s;
+                    scaleY *= s;
+                    fadeMult = c.exitFade / 100;
+                } else {
+                    const enX = c.mirrorEnter ? -c.exitSlideX : c.enterSlideX;
+                    const enY = c.mirrorEnter ? -c.exitSlideY : c.enterSlideY;
+                    const enTilt = c.mirrorEnter ? -c.exitTiltDeg : c.enterTiltDeg;
+                    const enScale = c.mirrorEnter ? c.exitScalePct : c.enterScalePct;
+                    const enFade = c.mirrorEnter ? c.exitFade : c.enterFade;
+                    tx = enX * k;
+                    ty = enY * k;
+                    rot = enTilt * k;
+                    const s = 1 + (enScale / 100) * k;
+                    scaleX *= s;
+                    scaleY *= s;
+                    fadeMult = enFade / 100;
+                }
+            } else if (c.enableSmokeDissolve || c.enableMelt) {
+                fadeMult = 0.92;
+            }
+
+            // Stack melt vertical stretch + directional melt drift on top
+            if (c.enableMelt) {
+                const amt = (c.meltAmount ?? 80) / 100;
+                const meltK = phase === 'exit' ? p * p : Math.pow(1 - p, 2);
+                const dirSign = c.meltDirection === 'up' ? -1 : c.meltDirection === 'down' ? 1 : 0;
+                const phaseSign = phase === 'exit' ? 1 : -1;
+                ty += dirSign * phaseSign * (c.meltDropPx ?? 28) * amt * meltK;
+                scaleY *= 1 + ((c.meltStretchY ?? 8) / 100) * amt * meltK;
+            }
+
+            const op = Math.max(0, 1 - kFade * fadeMult);
+            el.style.transform = `translate3d(${tx.toFixed(2)}%, ${ty.toFixed(1)}px, 0) rotate(${rot.toFixed(2)}deg) scale(${scaleX.toFixed(4)}, ${scaleY.toFixed(4)})`;
+            el.style.opacity = op.toFixed(3);
+        };
+
+        const applyDiagonalBurnMask = (
+            phase: 'exit' | 'enter',
+            progress01: number,
+            cfg: PageTransitionRuntimeConfig
+        ) => {
+            const portals = document.querySelectorAll<HTMLElement>('[data-pt-portal]');
+            const p = Math.min(1, Math.max(0, progress01));
+            // 35deg = bottom-left -> top-right (exact match to smoke-32-chimney-updraft)
+            const baseAngle = cfg.maskAngleDeg ?? 35;
+            const angle = cfg.sweepReverse ? (baseAngle + 180) % 360 : baseAngle;
+            const dir = `${angle}deg`;
+            const feather = Math.max(0.02, Math.min(0.25, (cfg.maskFeather ?? 10) / 100));
+            const offset = (cfg.maskOffset ?? 0) / 100;
+
+            // Lock mask to the visible viewport instead of the full document height!
+            const rect = el.getBoundingClientRect();
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const maskSize = `${vw}px ${vh}px`;
+            const maskPos = `${Math.round(-rect.left)}px ${Math.round(-rect.top)}px`;
+
+            if (phase === 'exit') {
+                if (p <= 0.002) {
+                    applyPageBurnMask(null);
+                    return;
+                }
+                // Sweeps 0% (bottom-left) -> 100% (top-right): content behind the flame is erased (transparent)
+                const front = -0.08 + 1.24 * p - offset;
+                if (front >= 1.0 + feather) {
+                    applyPageBurnMask(null);
+                    el.style.opacity = '0';
+                    portals.forEach(pt => {
+                        pt.style.opacity = '0';
+                    });
+                    return;
+                }
+                const clearStop = Math.max(0, (front - feather) * 100).toFixed(2);
+                const solidStop = Math.min(100, (front + feather) * 100).toFixed(2);
+                const mask = `linear-gradient(${dir}, transparent ${clearStop}%, #000 ${solidStop}%)`;
+                el.style.maskImage = mask;
+                el.style.webkitMaskImage = mask;
+                el.style.maskSize = maskSize;
+                el.style.webkitMaskSize = maskSize;
+                el.style.maskPosition = maskPos;
+                el.style.webkitMaskPosition = maskPos;
+                el.style.maskRepeat = 'no-repeat';
+                el.style.webkitMaskRepeat = 'no-repeat';
+                portals.forEach(pt => {
+                    pt.style.opacity = '1';
+                    pt.style.maskImage = mask;
+                    pt.style.webkitMaskImage = mask;
+                });
+            } else {
+                if (p >= 0.998) {
+                    applyPageBurnMask(null);
+                    return;
+                }
+                // Enter reveals continuously along the same direction (bottom-left -> top-right)
+                const front = -0.08 + 1.24 * p + offset;
+                if (front >= 1.0 + feather) {
+                    applyPageBurnMask(null);
+                    return;
+                }
+                const solidStop = Math.max(0, (front - feather) * 100).toFixed(2);
+                const clearStop = Math.min(100, (front + feather) * 100).toFixed(2);
+                const mask = `linear-gradient(${dir}, #000 ${solidStop}%, transparent ${clearStop}%)`;
+                el.style.maskImage = mask;
+                el.style.webkitMaskImage = mask;
+                el.style.maskSize = maskSize;
+                el.style.webkitMaskSize = maskSize;
+                el.style.maskPosition = maskPos;
+                el.style.webkitMaskPosition = maskPos;
+                el.style.maskRepeat = 'no-repeat';
+                el.style.webkitMaskRepeat = 'no-repeat';
+                portals.forEach(pt => {
+                    pt.style.opacity = '1';
+                    pt.style.maskImage = mask;
+                    pt.style.webkitMaskImage = mask;
+                });
+            }
+        };
+
+        const renderTransitionFrame = (phase: 'exit' | 'enter', p: number, cfg: PageTransitionRuntimeConfig) => {
+            applyCardGlideStyle(
+                cfg.enableCardGlide || cfg.enableSmokeDissolve || cfg.enableMelt ? phase : 'clear',
+                p,
+                cfg
+            );
+            if (cfg.enableBurnMask) {
+                applyDiagonalBurnMask(phase, p, cfg);
+            } else {
+                applyPageBurnMask(null);
+            }
+            if (cfg.enableFire) {
+                const burnP = phase === 'exit' ? p : 1 - p;
+                const shaderReverse = phase === 'exit' ? cfg.sweepReverse : !cfg.sweepReverse;
+                burnRef.current?.renderFrame(burnP, DEFAULT_SITE_BURN_MODE, {
+                    heatBoost: cfg.heatBoost,
+                    bandScale: cfg.bandScale,
+                    smokeScale: cfg.smokeScale,
+                    turbScale: cfg.turbScale,
+                    sparkScale: cfg.sparkScale,
+                    flowSpeed: cfg.flowSpeed,
+                    reverse: shaderReverse,
+                    transparentVoid: true,
+                });
+            } else {
+                burnRef.current?.clear();
+            }
+        };
+
         const handleExit = () => {
             cancelLoop();
-            const dur = paramsRef.current.exitMs;
-            const en = paramsRef.current.enterMs;
+            hydratePageTransitionConfig();
+            const ptCfg = getPageTransitionConfig();
+            const dur = ptCfg.exitMs || paramsRef.current.exitMs;
+            const en = ptCfg.enterMs || paramsRef.current.enterMs;
             const split = Math.round((dur / Math.max(1, dur + en)) * 100);
 
             if (prefersReducedMotion()) {
                 burnActiveRef.current = false;
                 burnRef.current?.clear();
                 applyPageBurnMask(null);
+                applyCardGlideStyle('clear', 1);
                 el.classList.remove('pt-enter', 'pt-waiting', 'pt-exit');
                 paintMeltStyle('clear', 1, false);
                 setScrubPct(split);
@@ -816,32 +1190,34 @@ export default function PageTransition({ children }: { children: React.ReactNode
             el.classList.remove('pt-enter', 'pt-waiting');
             el.classList.add('pt-exit');
             paintMeltStyle('clear', 1, false);
-            applyPageBurnMask(0);
+            renderTransitionFrame('exit', 0, ptCfg);
+
             setMeltStep(1);
             setPhaseLabel('BURNING OUT');
             setScrubPct(0);
             syncScrubberDom(0);
-            burnRef.current?.renderFrame(0);
 
             let elapsed = 0;
             let lastNow = 0;
 
             const tick = (now: number) => {
-                // Clamp delta to max 28ms per frame so layout/paint spikes never skip frames
                 const dt = lastNow === 0 ? 0 : Math.min(now - lastNow, 28);
                 lastNow = now;
                 elapsed += dt;
                 const p = Math.min(1, elapsed / Math.max(1, dur));
+                const liveCfg = getPageTransitionConfig();
 
-                applyPageBurnMask(p);
-                burnRef.current?.renderFrame(p);
+                renderTransitionFrame('exit', p, liveCfg);
                 syncScrubberDom(Math.round(p * split));
 
                 if (p < 1) {
                     animRafRef.current = requestAnimationFrame(tick);
                 } else {
                     animRafRef.current = null;
-                    applyPageBurnMask(1);
+                    applyCardGlideStyle('exit', 1, liveCfg);
+                    if (liveCfg.enableBurnMask) {
+                        applyDiagonalBurnMask('exit', 1, liveCfg);
+                    }
                     burnRef.current?.clear();
                     setScrubPct(split);
                     window.dispatchEvent(new CustomEvent('page-transition-exit-done'));
@@ -853,12 +1229,17 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
         const handleWaiting = () => {
             cancelLoop();
-            const { exitMs: ex, enterMs: en } = paramsRef.current;
+            const ptCfg = getPageTransitionConfig();
+            const ex = ptCfg.exitMs || paramsRef.current.exitMs;
+            const en = ptCfg.enterMs || paramsRef.current.enterMs;
             const split = Math.round((ex / Math.max(1, ex + en)) * 100);
             el.classList.remove('pt-exit', 'pt-enter');
             el.classList.add('pt-waiting');
             if (burnActiveRef.current) {
-                applyPageBurnMask(1);
+                applyCardGlideStyle('exit', 1, ptCfg);
+                if (ptCfg.enableBurnMask) {
+                    applyDiagonalBurnMask('exit', 1, ptCfg);
+                }
                 burnRef.current?.clear();
             } else {
                 paintMeltStyle('enter', 0, false);
@@ -871,10 +1252,13 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
         const handleEnter = (e: Event) => {
             cancelLoop();
+            hydratePageTransitionConfig();
+            const ptCfg = getPageTransitionConfig();
             const detail = (e as CustomEvent<{ includeHeader?: boolean; durationMs?: number }>).detail;
             const includeHeader = Boolean(detail?.includeHeader);
             const useBurn = burnActiveRef.current && !includeHeader;
-            const { exitMs: ex, enterMs: cfgDur } = paramsRef.current;
+            const ex = ptCfg.exitMs || paramsRef.current.exitMs;
+            const cfgDur = ptCfg.enterMs || paramsRef.current.enterMs;
             const dur = typeof detail?.durationMs === 'number'
                 ? detail.durationMs
                 : useBurn
@@ -882,12 +1266,13 @@ export default function PageTransition({ children }: { children: React.ReactNode
                     : includeHeader
                         ? Math.min(560, cfgDur)
                         : cfgDur;
-            const split = Math.round((ex / (ex + dur)) * 100);
+            const split = Math.round((ex / Math.max(1, ex + dur)) * 100);
 
             if (prefersReducedMotion()) {
                 burnActiveRef.current = false;
                 burnRef.current?.clear();
                 applyPageBurnMask(null);
+                applyCardGlideStyle('clear', 1);
                 el.classList.remove('pt-exit', 'pt-waiting', 'pt-enter');
                 paintMeltStyle('clear', 1, includeHeader);
                 setMeltStep(4);
@@ -899,11 +1284,10 @@ export default function PageTransition({ children }: { children: React.ReactNode
             }
 
             if (useBurn) {
-                // Keep live background embers 100% visible while the new page blooms back in behind the swirl
                 paintMeltStyle('clear', 1, false);
                 el.classList.remove('pt-exit', 'pt-waiting', 'pt-enter');
-                applyPageBurnMask(1);
-                burnRef.current?.renderFrame(1);
+                renderTransitionFrame('enter', 0, ptCfg);
+
                 setMeltStep(3);
                 setPhaseLabel('BURNING IN');
                 setScrubPct(split);
@@ -917,10 +1301,9 @@ export default function PageTransition({ children }: { children: React.ReactNode
                     lastNow = now;
                     elapsed += dt;
                     const p = Math.min(1, elapsed / Math.max(1, dur));
-                    const burnP = 1 - p;
+                    const liveCfg = getPageTransitionConfig();
 
-                    applyPageBurnMask(burnP);
-                    burnRef.current?.renderFrame(burnP);
+                    renderTransitionFrame('enter', p, liveCfg);
                     syncScrubberDom(Math.round(split + p * (100 - split)));
 
                     if (p < 1) {
@@ -929,6 +1312,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
                         animRafRef.current = null;
                         burnActiveRef.current = false;
                         applyPageBurnMask(null);
+                        applyCardGlideStyle('clear', 1);
                         burnRef.current?.clear();
                         setMeltStep(4);
                         setPhaseLabel('READY');
@@ -1006,6 +1390,70 @@ export default function PageTransition({ children }: { children: React.ReactNode
             }
         };
 
+        let scrubRafId: number | null = null;
+        let isScrubbingNow = false;
+
+        const stopScrubLoop = () => {
+            if (scrubRafId !== null) {
+                cancelAnimationFrame(scrubRafId);
+                scrubRafId = null;
+            }
+        };
+
+        const syncLiveScrub = (cfg: PageTransitionRuntimeConfig) => {
+            if (cfg.scrubPct === null) {
+                if (isScrubbingNow) {
+                    isScrubbingNow = false;
+                    stopScrubLoop();
+                    burnActiveRef.current = false;
+                    applyPageBurnMask(null);
+                    burnRef.current?.clear();
+                    applyCardGlideStyle('clear', 1);
+                    el.classList.remove('pt-exit', 'pt-waiting', 'pt-enter');
+                }
+                return;
+            }
+
+            cancelLoop();
+            stopScrubLoop();
+            isScrubbingNow = true;
+            burnActiveRef.current = true;
+            paintMeltStyle('clear', 1, false);
+            el.classList.remove('pt-waiting');
+
+            const pct = Math.max(0, Math.min(100, cfg.scrubPct));
+            const phase: 'exit' | 'enter' = pct <= 50 ? 'exit' : 'enter';
+            const localP = pct <= 50 ? pct / 50 : (pct - 50) / 50;
+            el.classList.toggle('pt-exit', phase === 'exit');
+            el.classList.toggle('pt-enter', phase === 'enter');
+
+            const paintScrub = () => {
+                const latest = getPageTransitionConfig();
+                if (latest.scrubPct === null) {
+                    stopScrubLoop();
+                    return;
+                }
+                const lp = Math.max(0, Math.min(100, latest.scrubPct));
+                const ph: 'exit' | 'enter' = lp <= 50 ? 'exit' : 'enter';
+                const p = lp <= 50 ? lp / 50 : (lp - 50) / 50;
+                renderTransitionFrame(ph, p, latest);
+                if (latest.enableFire) {
+                    scrubRafId = requestAnimationFrame(paintScrub);
+                } else {
+                    scrubRafId = null;
+                }
+            };
+
+            renderTransitionFrame(phase, localP, cfg);
+            if (cfg.enableFire) {
+                scrubRafId = requestAnimationFrame(paintScrub);
+            }
+        };
+
+        const unsubPtCfg = subscribePageTransitionConfig(() => {
+            syncLiveScrub(getPageTransitionConfig());
+        });
+
         window.addEventListener('page-transition-exit', handleExit);
         window.addEventListener('page-transition-waiting', handleWaiting);
         window.addEventListener('page-transition-enter', handleEnter);
@@ -1013,6 +1461,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
         return () => {
             cancelLoop();
+            stopScrubLoop();
+            unsubPtCfg();
             window.removeEventListener('page-transition-exit', handleExit);
             window.removeEventListener('page-transition-waiting', handleWaiting);
             window.removeEventListener('page-transition-enter', handleEnter);
@@ -1165,6 +1615,40 @@ export default function PageTransition({ children }: { children: React.ReactNode
                 {children}
             </div>
             <BurnTransitionOverlay ref={burnRef} />
+            <svg className={styles.svgFilterHost} aria-hidden="true">
+                <defs>
+                    <filter id="pt-smoke-dissolve" x="-15%" y="-15%" width="130%" height="130%" colorInterpolationFilters="sRGB">
+                        <feTurbulence
+                            ref={smokeTurbRef}
+                            type="fractalNoise"
+                            baseFrequency="0.014 0.022"
+                            numOctaves={3}
+                            seed={7}
+                            result="noise"
+                        />
+                        <feOffset ref={smokeOffsetRef} in="noise" dx="0" dy="0" result="driftingNoise" />
+                        <feDisplacementMap
+                            ref={smokeDispRef}
+                            in="SourceGraphic"
+                            in2="driftingNoise"
+                            scale={0}
+                            xChannelSelector="R"
+                            yChannelSelector="G"
+                            result="warped"
+                        />
+                        <feColorMatrix
+                            in="driftingNoise"
+                            type="matrix"
+                            values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0"
+                            result="noiseAlpha"
+                        />
+                        <feComponentTransfer in="noiseAlpha" result="burnMask">
+                            <feFuncA ref={smokeErodeRef} type="linear" slope={12} intercept={4} />
+                        </feComponentTransfer>
+                        <feComposite in="warped" in2="burnMask" operator="in" />
+                    </filter>
+                </defs>
+            </svg>
 
                 {/* Left HUD: Dedicated Page Melt & Preloader Timeline UI (hidden) */}
                 {false && (

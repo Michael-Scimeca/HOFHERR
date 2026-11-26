@@ -28,7 +28,8 @@ export type CanvasBurnId =
     | 'smoke-37-white-oak-sparks'
     | 'smoke-38-butcher-paper-singe'
     | 'smoke-39-barrel-smoke-roll'
-    | 'smoke-40-midnight-velvet';
+    | 'smoke-40-midnight-velvet'
+    | 'smoke-41-left-sweep';
 
 interface Particle {
     x: number;

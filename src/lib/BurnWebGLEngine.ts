@@ -331,7 +331,7 @@ void main() {
         band = 0.30;
         flameBoost = 0.96;
         smokeAmt = 0.90;
-    } else {
+    } else if (uMode == 27) {
         // 40: Midnight Inferno Velvet (high-contrast velvet smoke + vivid crimson-gold ribbons)
         float swirl = sin(ang * 3.0 - ndist * 9.0 + t * 3.0) * 0.13;
         field = (1.0 - ndist) + swirl + (flameTurb - 0.42) * 0.32;
@@ -339,6 +339,12 @@ void main() {
         flameBoost = 1.32;
         smokeAmt = 0.88;
         sparkAmt = 0.65;
+    } else {
+        // 41: Smokehouse Draft Left Sweep (exact #24 Smokehouse Draft look, linear right-to-left sweep — no radial swirl)
+        float wave = sin(uv.y * 5.2 - uv.x * 3.5 + t * 2.2) * 0.055;
+        field = (1.0 - uv.x) + wave + (flameTurb - 0.4) * 0.34;
+        band = 0.26;
+        flameBoost = 0.95;
     }
 
     // Apply user UI tuning overrides
@@ -440,6 +446,7 @@ const MODE_MAP: Partial<Record<CanvasBurnId, number>> = {
     'smoke-38-butcher-paper-singe': 25,
     'smoke-39-barrel-smoke-roll': 26,
     'smoke-40-midnight-velvet': 27,
+    'smoke-41-left-sweep': 28,
 };
 
 export interface BurnWebGLContext {

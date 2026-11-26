@@ -1,5 +1,13 @@
 /* ─── Page Transition & Timeline Controller HUD (Bottom-Left) ─── */
 
+.svgFilterHost {
+    position: fixed;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
 .hud {
     display: none !important;
     position: fixed;

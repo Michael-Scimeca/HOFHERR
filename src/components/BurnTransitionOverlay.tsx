@@ -1,6 +1,7 @@
 'use client';
 
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import type { CanvasBurnId } from '@/lib/BurnCanvasEngine';
 import {
     initBurnWebGL,
     renderWebGLBurnFrame,
@@ -9,15 +10,15 @@ import {
 } from '@/lib/BurnWebGLEngine';
 import styles from './BurnTransitionOverlay.module.css';
 
-export const DEFAULT_SITE_BURN_MODE = 'vortex-24-smokehouse-draft' as const;
-export const DEFAULT_SITE_BURN_EXIT_MS = 450;
+export const DEFAULT_SITE_BURN_MODE = 'smoke-32-chimney-updraft' as const;
+export const DEFAULT_SITE_BURN_EXIT_MS = 350;
 export const DEFAULT_SITE_BURN_ENTER_MS = 300;
 export const DEFAULT_SITE_BURN_DURATION_MS = DEFAULT_SITE_BURN_EXIT_MS;
 export const DEFAULT_SITE_BURN_PARAMS: BurnShaderParams = {
-    heatBoost: 0.30,
-    bandScale: 0.50,
+    heatBoost: 0.36,
+    bandScale: 0.58,
     smokeScale: 1.15,
-    turbScale: 1.20,
+    turbScale: 1.30,
     sparkScale: 0.00,
     flowSpeed: 0.30,
     reverse: false,
@@ -25,7 +26,11 @@ export const DEFAULT_SITE_BURN_PARAMS: BurnShaderParams = {
 };
 
 export interface BurnOverlayHandle {
-    renderFrame: (progress: number) => void;
+    renderFrame: (
+        progress: number,
+        mode?: CanvasBurnId,
+        paramsOverride?: Partial<BurnShaderParams>
+    ) => void;
     clear: () => void;
 }
 
@@ -37,7 +42,11 @@ export const BurnTransitionOverlay = forwardRef<BurnOverlayHandle>(
         const [active, setActive] = useState(false);
 
         useImperativeHandle(ref, () => ({
-            renderFrame(progress: number) {
+            renderFrame(
+                progress: number,
+                mode: CanvasBurnId = DEFAULT_SITE_BURN_MODE,
+                paramsOverride?: Partial<BurnShaderParams>
+            ) {
                 const canvas = canvasRef.current;
                 if (!canvas) return;
 
@@ -66,10 +75,12 @@ export const BurnTransitionOverlay = forwardRef<BurnOverlayHandle>(
                     ctx,
                     glW,
                     glH,
-                    DEFAULT_SITE_BURN_MODE,
+                    mode,
                     Math.min(1, Math.max(0, progress)),
                     performance.now() / 1000,
-                    DEFAULT_SITE_BURN_PARAMS
+                    paramsOverride
+                        ? { ...DEFAULT_SITE_BURN_PARAMS, ...paramsOverride }
+                        : DEFAULT_SITE_BURN_PARAMS
                 );
             },
             clear() {
@@ -102,4 +113,3 @@ export const BurnTransitionOverlay = forwardRef<BurnOverlayHandle>(
         );
     }
 );
-
