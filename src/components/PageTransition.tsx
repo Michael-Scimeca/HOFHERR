@@ -3,7 +3,7 @@
 import { createContext, useContext, useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { waitForPageAssets } from '@/lib/waitForPageAssets';
-import { hasSeenPreloaderThisSession } from '@/lib/preloaderGate';
+import { isLowPowerPreloaderSkip, shouldSkipPreloaderOnClient } from '@/lib/preloaderGate';
 import {
     PRELOADER_STEPS,
     PRESETS,
@@ -1027,11 +1027,11 @@ export default function PageTransition({ children }: { children: React.ReactNode
         if (!el) return;
         const isSheetRoute =
             pathname === '/recipes/sheets' || Boolean(pathname?.endsWith('/sheet'));
-        // Also true when the preloader already played in this tab's session (see Preloader.tsx)
+        // Also true when the preloader already played in this tab's session or is skipped on touch/mobile (see Preloader.tsx)
         const skipsPreloader =
             PRELOADER_SKIP_ROUTES.some(p => pathname?.startsWith(p)) ||
             isSheetRoute ||
-            hasSeenPreloaderThisSession();
+            shouldSkipPreloaderOnClient();
         if (!skipsPreloader) {
             el.classList.add('pt-waiting');
             setMeltStep(2);
@@ -1039,7 +1039,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
             return;
         }
 
-        if (pathname?.startsWith('/studio') || pathname?.startsWith('/fire-test') || isSheetRoute) {
+        // On mobile/tablet touch devices or reduced-motion, show the page immediately with zero opacity-0 hold
+        if (pathname?.startsWith('/studio') || pathname?.startsWith('/fire-test') || isSheetRoute || isLowPowerPreloaderSkip()) {
             return;
         }
 

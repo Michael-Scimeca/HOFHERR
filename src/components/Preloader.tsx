@@ -6,10 +6,10 @@ import { usePathname } from 'next/navigation';
 import styles from './Preloader.module.css';
 import { lockScroll } from '@/lib/scrollLock';
 import {
-    hasSeenPreloaderThisSession,
     markPreloaderDone,
     markPreloaderRevealed,
     rememberPreloaderSeen,
+    shouldSkipPreloaderOnClient,
 } from '@/lib/preloaderGate';
 
 // The fire/burn engine is heavy (three.js + per-pixel canvas), so it loads on the client only.
@@ -22,16 +22,6 @@ const PRELOADER_SYNC_VERSION = 7;
 
 const emptySubscribe = () => () => {};
 const seenServerSnapshot = () => false;
-
-function shouldSkipPreloaderClient(): boolean {
-    if (hasSeenPreloaderThisSession()) return true;
-    if (typeof window === 'undefined') return false;
-    return (
-        window.innerWidth <= 768 ||
-        window.matchMedia('(pointer: coarse)').matches ||
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    );
-}
 
 /**
  * Site preloader, shown on the first full page load of a browser session (refreshes and return
@@ -51,7 +41,7 @@ export default function Preloader() {
 
     // Already played in this tab's session (or mobile/touch/reduced-motion): treat as finished so
     // the heavy Three.js fire preloader never downloads or blocks mobile LCP/TBT.
-    const seenThisSession = useSyncExternalStore(emptySubscribe, shouldSkipPreloaderClient, seenServerSnapshot);
+    const seenThisSession = useSyncExternalStore(emptySubscribe, shouldSkipPreloaderOnClient, seenServerSnapshot);
     const finished = done || (seenThisSession && runKey === 0);
 
     // No scrolling while the preloader is on screen.

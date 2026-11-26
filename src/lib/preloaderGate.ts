@@ -79,6 +79,24 @@ export function hasSeenPreloaderThisSession(): boolean {
     return seenAtLoad;
 }
 
+/**
+ * True when the preloader should be skipped on the current client (already seen this tab session,
+ * mobile/tablet touch device, narrow viewport, or prefers-reduced-motion). Shared by Preloader
+ * and PageTransition so they never disagree about holding `.pt-wrap` in `.pt-waiting`.
+ */
+export function isLowPowerPreloaderSkip(): boolean {
+    if (typeof window === 'undefined') return false;
+    return (
+        window.innerWidth <= 768 ||
+        window.matchMedia('(pointer: coarse)').matches ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+}
+
+export function shouldSkipPreloaderOnClient(): boolean {
+    return hasSeenPreloaderThisSession() || isLowPowerPreloaderSkip();
+}
+
 /** Records that the preloader has played, so later page loads in this tab skip it. */
 export function rememberPreloaderSeen(): void {
     if (typeof window === 'undefined') return;
