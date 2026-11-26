@@ -887,14 +887,14 @@ export default function FireTestClient({
         document.fonts?.ready.then(buildBurn).catch(() => { });
 
         /* Logo hand-off: during the preloader the whole navbar is hidden and only the big burning
-           logo shows. Once it is fully lit (at 2.8s), the big logo burns away while
-           the navbar logo burns in, and once the logo is 2/3 burned through, the page melts in.
-           Timeline, in seconds after 100% (2.8s): */
-        const OUT_START = 0.05; // at 2.85s (50ms after 100%), center logo burn-out + nav logo burn-in start
-        const OUT_DUR = 0.95; // 950ms burn-out duration
-        const MELT_START = OUT_START + OUT_DUR * (2 / 3); // page starts melting in once the logo is 2/3 burned through
-        const MELT_DUR = 0.55; // page melt-in duration from 0% -> 100% starting at the 2/3 mark
-        const DONE_AT = Math.max(OUT_START + OUT_DUR, MELT_START + MELT_DUR) + 0.12; // burn-out, nav hand-off, and melt-in complete
+           logo shows. Once it is fully lit (at 1.25s), the big logo burns away while
+           the navbar logo burns in, and halfway through burn-out, the page melts in.
+           Timeline, in seconds after 100% (1.25s): */
+        const OUT_START = 0.02; // 20ms after 100%, center logo burn-out + nav logo burn-in start
+        const OUT_DUR = 0.55; // 550ms burn-out duration
+        const MELT_START = OUT_START + OUT_DUR * 0.5; // page starts melting in halfway through burn-out
+        const MELT_DUR = 0.35; // page melt-in duration from 0% -> 100%
+        const DONE_AT = Math.max(OUT_START + OUT_DUR, MELT_START + MELT_DUR) + 0.05; // burn-out, nav hand-off, and melt-in complete
         const easeInOut = (p: number) => (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2);
         const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 

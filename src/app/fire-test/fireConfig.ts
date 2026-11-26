@@ -242,7 +242,7 @@ export const POSITION_SLIDERS: { key: 'posX' | 'posY' | 'scale'; label: string; 
     { key: 'scale', label: 'Flame Size', min: 0.3, max: 2.5, step: 0.05, fmt: v => `${v.toFixed(2)}×` },
 ];
 
-export const LOAD_SECONDS = 2.8; // 2.8s (2800ms) for the logo to burn in 0%->100%, then burn-out + page melt start immediately
+export const LOAD_SECONDS = 1.25; // 1.25s (1250ms) for the logo to burn in 0%->100%, then burn-out + page melt start immediately
 export const ORBIT_COUNT = 16; // embers rising off the headline; kept sparse on purpose
 
 export const IDLE_HEIGHT = 0.38;

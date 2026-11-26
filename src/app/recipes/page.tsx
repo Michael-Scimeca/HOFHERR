@@ -6,8 +6,8 @@ import RecipesBrowser from './RecipesBrowser';
 import { COLLECTIONS } from './recipes';
 import styles from './page.module.css';
 
-/* The featured collection follows the calendar, so read the date on each request. */
-export const dynamic = 'force-dynamic';
+/* Revalidate hourly so the calendar-based featured collection stays current without cold serverless TTFB on every visit. */
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
     title: "Butcher's Cut Recipes — Hofherr Meat Co. | Beef, Pork, Poultry & Lamb",
