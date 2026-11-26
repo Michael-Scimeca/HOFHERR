@@ -19,7 +19,8 @@ import {
 } from '@/app/fire-test/fireConfig';
 import {
     BurnTransitionOverlay,
-    DEFAULT_SITE_BURN_DURATION_MS,
+    DEFAULT_SITE_BURN_ENTER_MS,
+    DEFAULT_SITE_BURN_EXIT_MS,
     type BurnOverlayHandle,
 } from './BurnTransitionOverlay';
 import styles from './PageTransition.module.css';
@@ -69,7 +70,7 @@ export const MELT_TIMELINE_STEPS = [
 ] as const;
 
 const PRELOADER_SKIP_ROUTES = ['/studio', '/admin', '/dashboard', '/fire-test'];
-const MELT_STORAGE_KEY = 'hofherr_melt_settings_v1';
+const MELT_STORAGE_KEY = 'hofherr_melt_settings_v2';
 
 interface MeltConfig {
     exitMs: number;
@@ -82,8 +83,8 @@ interface MeltConfig {
 }
 
 const DEFAULT_MELT_CONFIG: MeltConfig = {
-    exitMs: DEFAULT_SITE_BURN_DURATION_MS,
-    enterMs: DEFAULT_SITE_BURN_DURATION_MS,
+    exitMs: DEFAULT_SITE_BURN_EXIT_MS,
+    enterMs: DEFAULT_SITE_BURN_ENTER_MS,
     meltAmount: 100,
     meltY: 12,
     meltScale: 2,
@@ -111,8 +112,8 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
     const safetyRef = useRef<NodeJS.Timeout | null>(null);
     const exitDoneHandlerRef = useRef<(() => void) | null>(null);
-    const exitMsRef = useRef(DEFAULT_SITE_BURN_DURATION_MS);
-    const enterMsRef = useRef(DEFAULT_SITE_BURN_DURATION_MS);
+    const exitMsRef = useRef(DEFAULT_SITE_BURN_EXIT_MS);
+    const enterMsRef = useRef(DEFAULT_SITE_BURN_ENTER_MS);
 
     // Sync custom durations from HUD sliders
     useEffect(() => {
@@ -795,9 +796,9 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
         const handleExit = () => {
             cancelLoop();
-            const dur = DEFAULT_SITE_BURN_DURATION_MS;
-            const en = DEFAULT_SITE_BURN_DURATION_MS;
-            const split = Math.round((dur / (dur + en)) * 100);
+            const dur = paramsRef.current.exitMs;
+            const en = paramsRef.current.enterMs;
+            const split = Math.round((dur / Math.max(1, dur + en)) * 100);
 
             if (prefersReducedMotion()) {
                 burnActiveRef.current = false;
@@ -852,8 +853,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
         const handleWaiting = () => {
             cancelLoop();
-            const dur = DEFAULT_SITE_BURN_DURATION_MS;
-            const split = Math.round((dur / (dur + dur)) * 100);
+            const { exitMs: ex, enterMs: en } = paramsRef.current;
+            const split = Math.round((ex / Math.max(1, ex + en)) * 100);
             el.classList.remove('pt-exit', 'pt-enter');
             el.classList.add('pt-waiting');
             if (burnActiveRef.current) {
@@ -877,7 +878,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
             const dur = typeof detail?.durationMs === 'number'
                 ? detail.durationMs
                 : useBurn
-                    ? DEFAULT_SITE_BURN_DURATION_MS
+                    ? cfgDur
                     : includeHeader
                         ? Math.min(560, cfgDur)
                         : cfgDur;

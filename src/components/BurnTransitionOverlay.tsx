@@ -10,7 +10,9 @@ import {
 import styles from './BurnTransitionOverlay.module.css';
 
 export const DEFAULT_SITE_BURN_MODE = 'vortex-24-smokehouse-draft' as const;
-export const DEFAULT_SITE_BURN_DURATION_MS = 600;
+export const DEFAULT_SITE_BURN_EXIT_MS = 450;
+export const DEFAULT_SITE_BURN_ENTER_MS = 300;
+export const DEFAULT_SITE_BURN_DURATION_MS = DEFAULT_SITE_BURN_EXIT_MS;
 export const DEFAULT_SITE_BURN_PARAMS: BurnShaderParams = {
     heatBoost: 0.30,
     bandScale: 0.50,
