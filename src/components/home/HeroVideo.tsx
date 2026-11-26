@@ -19,6 +19,7 @@ declare global {
 export default function HeroVideo() {
     const containerRef = useRef<HTMLDivElement>(null);
     const wrapRef = useRef<HTMLDivElement>(null);
+    const bubbleVideoRef = useRef<HTMLVideoElement>(null);
     const playerRef = useRef<YT.Player | null>(null);
 
     const [hasStarted, setHasStarted] = useState(false);
@@ -34,6 +35,40 @@ export default function HeroVideo() {
             events.forEach((ev) => window.removeEventListener(ev, activate));
         };
     }, []);
+
+    // Pause the floating beef.mp4 bubble whenever it scrolls out of view or the tab is hidden
+    useEffect(() => {
+        if (!loadBubbleVideo) return;
+        const vid = bubbleVideoRef.current;
+        if (!vid) return;
+
+        let inView = true;
+        const syncPlayback = () => {
+            if (inView && !document.hidden && !hasStarted) {
+                vid.play().catch(() => { });
+            } else {
+                vid.pause();
+            }
+        };
+
+        const observer = typeof IntersectionObserver !== 'undefined'
+            ? new IntersectionObserver(
+                (entries) => {
+                    inView = entries.some((e) => e.isIntersecting);
+                    syncPlayback();
+                },
+                { threshold: 0.05 }
+            )
+            : null;
+        observer?.observe(vid);
+        document.addEventListener('visibilitychange', syncPlayback);
+        syncPlayback();
+
+        return () => {
+            observer?.disconnect();
+            document.removeEventListener('visibilitychange', syncPlayback);
+        };
+    }, [loadBubbleVideo, hasStarted]);
 
     // Draggable refs for 60fps performance
     const dragData = useRef({
@@ -163,6 +198,7 @@ export default function HeroVideo() {
                 <div className={styles.bubbleInner}>
                     {loadBubbleVideo ? (
                         <video
+                            ref={bubbleVideoRef}
                             src="/video-clips/beef.mp4"
                             poster="/assets/home/italian-beef-thumb.webp"
                             muted

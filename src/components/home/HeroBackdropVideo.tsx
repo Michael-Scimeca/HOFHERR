@@ -32,7 +32,17 @@ export default function HeroBackdropVideo() {
         vid.defaultMuted = true;
         vid.muted = true;
 
+        let inView = true;
+        const syncPlayback = () => {
+            if (inView && !document.hidden) {
+                vid.play().catch(() => { });
+            } else {
+                vid.pause();
+            }
+        };
+
         const tryPlay = () => {
+            if (!inView || document.hidden) return;
             vid.play().catch(() => { });
         };
 
@@ -84,6 +94,18 @@ export default function HeroBackdropVideo() {
             }
         };
 
+        const observer = typeof IntersectionObserver !== 'undefined'
+            ? new IntersectionObserver(
+                (entries) => {
+                    inView = entries.some((e) => e.isIntersecting);
+                    syncPlayback();
+                },
+                { threshold: 0.05 }
+            )
+            : null;
+        observer?.observe(vid);
+        document.addEventListener('visibilitychange', syncPlayback);
+
         tryPlay();
         vid.addEventListener('canplay', tryPlay);
         vid.addEventListener('ended', onEnded);
@@ -96,6 +118,8 @@ export default function HeroBackdropVideo() {
 
         return () => {
             disposed = true;
+            observer?.disconnect();
+            document.removeEventListener('visibilitychange', syncPlayback);
             vid.removeEventListener('canplay', tryPlay);
             vid.removeEventListener('ended', onEnded);
             if (hasVFC) {
